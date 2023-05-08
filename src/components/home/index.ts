@@ -1,0 +1,9 @@
+export { default as HomeBanner } from './banner';
+export { default as HomeAbbreviationCuration } from './curation-abbreviation';
+export { default as HomeTableCuration } from './curation-table';
+export { default as HomeSmallSlideCuration } from './curation-small-slide';
+export { default as HomeLargeSlideCuration } from './curation-large-slide';
+export { default as HomeCurationItem } from './curation-item';
+export { default as HomeCurationTip } from './curation-tip';
+export { default as HomePartner } from './partner';
+export { default as HomeProductList } from './product-list';

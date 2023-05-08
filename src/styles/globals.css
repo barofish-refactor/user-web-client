@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    border-width: 0px;
+    border-style: solid;
+  }
+
+  ::before,
+  ::after {
+    --tw-content: '';
+  }
+
+  html {
+    block-size: 100%;
+    font-family: theme('fontFamily.sans');
+    -webkit-text-size-adjust: none;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    font-family: inherit;
+    min-block-size: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body > div#__next {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  ul,
+  ol {
+    list-style-type: none;
+  }
+
+  b,
+  strong {
+    font-weight: bolder;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  select {
+    appearance: none;
+  }
+
+  button {
+    appearance: none;
+    background-color: transparent;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font-family: inherit;
+    font-size: 100%;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'] {
+    background-color: transparent;
+    background-image: none;
+    -webkit-appearance: button;
+  }
+
+  button,
+  select {
+    text-transform: none;
+  }
+
+  button,
+  label,
+  select,
+  summary,
+  [role='button'],
+  [role='option'] {
+    cursor: pointer;
+  }
+
+  label:has(> input:disabled),
+  label:has(+ input:disabled) {
+    cursor: not-allowed;
+  }
+
+  hr {
+    overflow: visible;
+    border: none;
+    border-block-start: 1px solid;
+    color: inherit;
+    block-size: 0;
+  }
+
+  img,
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    display: block;
+  }
+
+  img,
+  picture,
+  svg {
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  summary {
+    cursor: pointer;
+    list-style-type: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  table {
+    border-collapse: collapse;
+    text-indent: 0px;
+    border-color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  :disabled {
+    cursor: not-allowed;
+  }
+
+  [hidden] {
+    display: none;
+  }
+
+  [type='search'] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+  }
+
+  ::-webkit-file-upload-button {
+    -webkit-appearance: button;
+    font: inherit;
+  }
+
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    height: auto;
+  }
+}

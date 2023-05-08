@@ -1,0 +1,15 @@
+# (관리자)로그인
+mutation SignInAdminByEveryone($id: String!, $password: String!) {
+  signInAdminByEveryone(id: $id, password: $password) {
+    accessToken
+    refreshToken
+  }
+}
+
+# 토큰 재발급
+mutation RenewToken($accessToken: String!, $refreshToken: String!) {
+  renewToken(accessToken: $accessToken, refreshToken: $refreshToken) {
+    accessToken
+    refreshToken
+  }
+}

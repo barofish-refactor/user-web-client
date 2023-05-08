@@ -1,0 +1,57 @@
+{
+  "name": "initproject-web-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "cp .env.dev .env && next dev",
+    "build:dev": "cp .env.dev .env && next build",
+    "build:master": "cp .env.master .env && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type": "tsc",
+    "prettier": "prettier -w src",
+    "generate": "graphql-codegen --config .graphqlrc.cjs",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@radix-ui/react-alert-dialog": "^1.0.3",
+    "@radix-ui/react-dialog": "^1.0.3",
+    "@tanstack/react-query": "^4.29.5",
+    "@tanstack/react-query-devtools": "^4.29.6",
+    "clsx": "^1.2.1",
+    "cookies-next": "^2.1.1",
+    "date-fns": "^2.30.0",
+    "graphql": "^16.6.0",
+    "graphql-request": "^6.0.0",
+    "graphql-ws": "^5.12.1",
+    "next": "^13.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intersection-observer": "^9.4.3",
+    "swiper": "^9.2.4",
+    "tailwind-merge": "^1.12.0",
+    "zustand": "^4.3.7"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^3.3.1",
+    "@graphql-codegen/client-preset": "^3.0.1",
+    "@svgr/webpack": "^7.0.0",
+    "@types/react": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.39.0",
+    "eslint-config-next": "^13.3.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "postcss": "^8.4.23",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.2.8",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^5.0.4"
+  },
+  "volta": {
+    "node": "14.20.0",
+    "npm": "7.24.0"
+  }
+}
