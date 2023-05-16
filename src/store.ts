@@ -24,3 +24,13 @@ export const useAlertStore = create<AlertStore>()(set => ({
   setAlert: alert => set({ alert }),
   clearAlert: () => set({ alert: null }),
 }));
+
+interface OpenStore {
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+}
+
+export const useOpenStore = create<OpenStore>()(set => ({
+  isOpen: false,
+  setIsOpen: value => set(() => ({ isOpen: value })),
+}));

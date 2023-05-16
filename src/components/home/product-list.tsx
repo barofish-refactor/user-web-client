@@ -1,14 +1,17 @@
 import Image from 'next/image';
 import { useInView } from 'react-intersection-observer';
 import { ProductItem } from 'src/components/common';
+import { useOpenStore } from 'src/store';
+import cm from 'src/utils/class-merge';
 import { formatToLocaleString } from 'src/utils/functions';
 
 interface Props {
   type?: string; // 신상품, 인기상품, 특가할인 등등...
+  className?: string;
 }
 
 /** 홈화면 - 상품 리스트 (신상품, 인기상품, ...) */
-const ProductList = ({ type }: Props) => {
+const ProductList = ({ className }: Props) => {
   const { ref } = useInView({
     initialInView: false,
     // skip: !hasNextPage,
@@ -16,9 +19,10 @@ const ProductList = ({ type }: Props) => {
     //   if (inView) fetchNextPage();
     // },
   });
+  const { setIsOpen } = useOpenStore();
 
   return (
-    <div className='px-4 py-[18px]'>
+    <div className={cm('px-4 py-[16px]', className)} id='test'>
       <div className='flex items-center justify-between'>
         <p className='text-[14px] font-medium leading-[22px] -tracking-[3%] text-black'>{`총 ${formatToLocaleString(
           100,
@@ -40,14 +44,9 @@ const ProductList = ({ type }: Props) => {
               height={5}
             />
           </button>
-          <button
-            className='flex items-center gap-1'
-            onClick={() => {
-              //
-            }}
-          >
+          <button className='flex items-center gap-1' onClick={() => setIsOpen(true)}>
             <p className='text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-10'>
-              추천순
+              필터
             </p>
             <Image src='/assets/icons/common/filter.svg' alt='filter' width={15} height={10} />
           </button>

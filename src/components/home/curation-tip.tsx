@@ -16,7 +16,7 @@ const CurationTip = ({}: Props) => {
         <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[3%] text-grey-10'>
           알아두면 좋은 정보 💡
         </p>
-        <Link href='' className=''>
+        <Link href='/' className=''>
           <div className='flex h-[30px] items-center gap-1'>
             <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-50'>
               전체보기
@@ -32,7 +32,7 @@ const CurationTip = ({}: Props) => {
         freeMode
         slidesPerView={1.2}
         modules={[FreeMode]}
-        spaceBetween={10}
+        spaceBetween={11}
         className='mt-5'
         style={{
           marginLeft: '-16px',
@@ -45,7 +45,6 @@ const CurationTip = ({}: Props) => {
           const image = idx % 2 === 0 ? '/dummy/dummy-tip-1.png' : '/dummy/dummy-tip-2.png';
           return (
             <SwiperSlide key={`tip${idx}`} className=''>
-              {/* TODO : 더미 이미지 이상해서 임시로 scale-110 추가함 / 나중에 삭제 필요 */}
               <div className='relative aspect-[294/419] w-full overflow-hidden rounded-lg shadow-[0px_5px_10px_rgba(0,0,0,0.15)]'>
                 <Image fill src={image} alt='tip' draggable={false} className='scale-110' />
               </div>

@@ -5,22 +5,24 @@ import {
   HomeSmallSlideCuration,
   HomeTableCuration,
 } from 'src/components/home';
+import cm from 'src/utils/class-merge';
 
 interface Props {
   type: 'TABLE' | 'SLIDE_SMALL' | 'SLIDE_LARGE';
   title: string;
   description: string;
+  className?: string;
 }
 
 /** 홈화면 - 큐레이션 Item (type 처리) */
-const CurationItem = ({ type, title, description }: Props) => {
+const CurationItem = ({ type, title, description, className }: Props) => {
   return (
-    <div className='px-4 py-[30px]'>
+    <div className={cm('px-4 py-[30px]', className)}>
       <div className='flex items-center justify-between'>
         <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[3%] text-grey-10'>
           {title}
         </p>
-        <Link href='' className=''>
+        <Link href={{ pathname: '/search/product-result', query: { title } }} className=''>
           <div className='flex h-[30px] items-center gap-1'>
             <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-50'>
               전체보기

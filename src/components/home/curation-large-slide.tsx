@@ -8,13 +8,13 @@ interface Props {
 }
 
 /** 홈화면 - 큐레이션 (슬라이드 - 대) */
-const CurationLargeSlide = ({ data }: Props) => {
+const CurationLargeSlide = ({}: Props) => {
   return (
     <Swiper
       freeMode
       slidesPerView={1.3}
       modules={[FreeMode]}
-      spaceBetween={10}
+      spaceBetween={11}
       className='mt-5'
       style={{
         marginLeft: '-16px',

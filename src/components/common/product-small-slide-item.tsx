@@ -1,15 +1,24 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { formatToLocaleString } from 'src/utils/functions';
 
 const ProductSmallSlideItem = () => {
+  const router = useRouter();
+
   return (
-    <div className=''>
+    <div
+      className='cursor-pointer'
+      onClick={() => {
+        router.push({ pathname: '/product', query: { id: 1 } });
+      }}
+    >
       <div className='relative aspect-square w-full overflow-hidden rounded-lg'>
         <Image fill src='/dummy/dummy-thumbnail-2.png' alt='image' draggable={false} />
         <button
           className='absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#5B5D62]/[.7]'
-          onClick={() => {
-            //
+          onClick={e => {
+            e.stopPropagation();
+            console.log('장바구니');
           }}
         >
           <Image src='/assets/icons/common/cart-product.svg' alt='cart' width={16} height={17} />

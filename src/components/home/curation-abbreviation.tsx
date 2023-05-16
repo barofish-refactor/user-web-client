@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -28,11 +29,9 @@ const CurationAbbreviation = () => {
         const image = `/dummy/dummy-curation-${(idx % 4) + 1}.png`;
         return (
           <SwiperSlide key={`mainTab${idx}`} className='' style={{ width: '70px' }}>
-            <button
+            <Link
+              href={{ pathname: '/search/product-result', query: { title: v } }}
               className='flex h-[95px] w-[70px] flex-col items-center justify-between'
-              onClick={() => {
-                console.log(v);
-              }}
             >
               <div className='h-[70px] w-[70px] rounded-full bg-primary-90'>
                 <Image src={image} alt={v} width={70} height={70} />
@@ -40,7 +39,7 @@ const CurationAbbreviation = () => {
               <p className='text-[13px] font-medium leading-[20px] -tracking-[3%] text-grey-20'>
                 {v}
               </p>
-            </button>
+            </Link>
           </SwiperSlide>
         );
       })}

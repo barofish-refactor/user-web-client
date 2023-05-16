@@ -55,7 +55,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <div className='max-md:w-[100vw]'>
       {/* Tab */}
-      <Swiper freeMode slidesPerView={4} modules={[FreeMode]} className=''>
+      <Swiper freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
         {['바로추천', '신상품', '인기상품', '특가할인', '특가할인2'].map((v, idx) => {
           return (
             <SwiperSlide key={`mainTab${idx}`} className='h-full w-1/4'>
@@ -69,7 +69,11 @@ const Home: NextPageWithLayout = () => {
                   >
                     {v}
                   </p>
-                  <div className={cm('h-[2.5px]', { 'bg-primary-50': selectedTabIndex === idx })} />
+                  <div
+                    className={cm('mt-[3.5px] h-[2.5px]', {
+                      'bg-primary-50': selectedTabIndex === idx,
+                    })}
+                  />
                 </div>
               </button>
             </SwiperSlide>

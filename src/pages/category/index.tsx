@@ -15,7 +15,7 @@ interface CategoryType {
   }[];
 }
 
-const categoryList: CategoryType[] = [
+export const categoryList: CategoryType[] = [
   {
     id: 0,
     icon: '/dummy/dummy-category-1.png',
@@ -162,7 +162,14 @@ const Category: NextPageWithLayout = () => {
                   return (
                     <Link
                       key={`subItem${subItem.id}`}
-                      href='/category'
+                      href={{
+                        pathname: '/search/product-result',
+                        query: { id: v.id, title: v.name, subItemId: subItem.id },
+                      }}
+                      // as={{
+                      //   pathname: '/search/product-result',
+                      //   query: { id: v.id, title: v.name },
+                      // }}
                       className={cm('ml-[50px] flex h-[38px] items-center pl-4', {
                         'ml-[14px] mr-[36px]': idx % 2 === 1,
                       })}
