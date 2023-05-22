@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ProductSelector } from 'src/components/product';
 import { type ProductSelectorType } from 'src/components/product/selector';
@@ -20,7 +21,7 @@ const dummyOption: ProductSelectorType[] = [
   },
 ];
 
-interface optionState {
+export interface optionState {
   id: number;
   name: string;
   amount: number;
@@ -49,6 +50,7 @@ const BottomSheet = ({ setIsVisible }: Props) => {
   const onPressMinus = (item: optionState) => {
     const tmp = [...selectedOption];
     const amount = item.amount;
+    if (amount - 1 <= 0) return;
     const objIndex = tmp.findIndex(obj => obj.name === item.name);
     tmp[objIndex].amount = amount - 1;
     setSelectedOption(tmp);
@@ -93,11 +95,11 @@ const BottomSheet = ({ setIsVisible }: Props) => {
     >
       <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' />
       <div className='flex w-full flex-col'>
-        <p className='self-center text-[16px] font-semibold leading-[24px] -tracking-[5%] text-black'>
+        <p className='self-center text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
           옵션 선택
         </p>
         <div className='min-h-[220px] px-4 pt-3.5'>
-          <p className='text-[13px] font-medium leading-[20px] -tracking-[3%] text-grey-40'>
+          <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'>
             필수옵션
           </p>
           <ProductSelector
@@ -128,7 +130,7 @@ const BottomSheet = ({ setIsVisible }: Props) => {
                   className='flex h-[100px] flex-col justify-between rounded-lg bg-[#F7F7F7] px-3 pb-3 pt-[12.5px]'
                 >
                   <div className='flex items-start justify-between gap-1'>
-                    <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[3%] text-grey-20'>
+                    <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                       {v.name}
                     </p>
                     <button
@@ -138,7 +140,7 @@ const BottomSheet = ({ setIsVisible }: Props) => {
                       }}
                     >
                       <Image
-                        src='/assets/icons/common/close-small.svg'
+                        src='/assets/icons/common/close-small-grey.svg'
                         alt='close'
                         width={19}
                         height={19}
@@ -155,7 +157,7 @@ const BottomSheet = ({ setIsVisible }: Props) => {
                           height={24}
                         />
                       </button>
-                      <p className='min-w-[30px] text-center text-[16px] font-semibold tabular-nums leading-[24px] -tracking-[3%] text-grey-20'>
+                      <p className='min-w-[30px] text-center text-[16px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
                         {v.amount}
                       </p>
                       <button className='' onClick={() => onPressPlus(v)}>
@@ -167,7 +169,7 @@ const BottomSheet = ({ setIsVisible }: Props) => {
                         />
                       </button>
                     </div>
-                    <p className='text-[16px] font-bold leading-[24px] -tracking-[3%] text-grey-10'>{`${formatToLocaleString(
+                    <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
                       v.price,
                     )}원`}</p>
                   </div>
@@ -179,13 +181,28 @@ const BottomSheet = ({ setIsVisible }: Props) => {
             <div className=''>
               <div className='h-[1px] bg-grey-90' />
               <div className='mt-[10.5px] flex items-center justify-between'>
-                <p>{`${selectedOption.length}개 상품`}</p>
-                <p>{`총 ${formatToLocaleString(totalPrice)}원`}</p>
+                <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-40'>{`${selectedOption.length}개 상품`}</p>
+                <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`총 ${formatToLocaleString(
+                  totalPrice,
+                )}원`}</p>
               </div>
-              <div className='mt-[30px] flex items-center'>
-                <button>
-                  <p>장바구니</p>
+              <div className='mt-[30px] flex items-center gap-[7px]'>
+                <button
+                  className='h-[52px] flex-1 rounded-lg border border-primary-50'
+                  onClick={() => {
+                    //
+                  }}
+                >
+                  <p className='text-[16px] font-bold -tracking-[0.03em] text-primary-50'>
+                    장바구니
+                  </p>
                 </button>
+                <Link
+                  className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+                  href={{ pathname: '/product/order', query: { id: 1 } }}
+                >
+                  <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>바로 구매</p>
+                </Link>
               </div>
             </div>
           )}

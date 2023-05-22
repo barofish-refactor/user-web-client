@@ -37,10 +37,10 @@ const ProductResult: NextPageWithLayout = () => {
         <button onClick={() => router.back()}>
           <Image src='/assets/icons/common/arrow-back.svg' alt='back' width={24} height={24} />
         </button>
-        <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[3%] text-grey-10'>
+        <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           {title}
         </p>
-        <Link href='/'>
+        <Link href='/product/cart'>
           <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
         </Link>
       </div>
@@ -55,7 +55,7 @@ const ProductResult: NextPageWithLayout = () => {
                     <div className='flex h-full w-full flex-col justify-between'>
                       <p
                         className={cm(
-                          'text-[16px] font-medium leading-[24px] -tracking-[3%] text-grey-50',
+                          'text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
                           { 'font-semibold text-primary-50': selectedTabIndex === idx },
                         )}
                       >

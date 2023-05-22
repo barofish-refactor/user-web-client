@@ -86,10 +86,10 @@ const PopularSearchTerms = ({ setSearchText }: Props) => {
   return (
     <>
       <div className='mt-[35px] flex items-end gap-2'>
-        <p className='text-[16px] font-semibold leading-[24px] -tracking-[3%] text-grey-10'>
+        <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
           인기 검색어
         </p>
-        <p className='pb-0.5 text-[12px] font-medium leading-[18px] -tracking-[3%] text-grey-80'>{`${formatToUtc(
+        <p className='pb-0.5 text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-80'>{`${formatToUtc(
           new Date(),
           'MM.dd HH:mm',
         )} 기준`}</p>
@@ -106,13 +106,13 @@ const PopularSearchTerms = ({ setSearchText }: Props) => {
             >
               <p
                 className={cm(
-                  'text-[16px] font-bold tabular-nums leading-[24px] -tracking-[3%] text-grey-10',
+                  'text-[16px] font-bold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-10',
                   { 'w-[22px] text-end': v.rank % 2 === 0 },
                 )}
               >
                 {v.rank}
               </p>
-              <p className='flex-1 text-start text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-10'>
+              <p className='flex-1 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
                 {v.name}
               </p>
               {parseRankState(v.state)}

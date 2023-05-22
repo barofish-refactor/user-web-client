@@ -28,7 +28,7 @@ const Selector = ({ list, placeHolder, className, value, setValue }: Props) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <p
-          className={cm('text-[14px] font-medium -tracking-[3%] text-grey-10', {
+          className={cm('text-[14px] font-medium -tracking-[0.03em] text-grey-10', {
             'text-grey-50': isOpen,
           })}
         >
@@ -44,18 +44,18 @@ const Selector = ({ list, placeHolder, className, value, setValue }: Props) => {
         />
       </button>
       {isOpen && (
-        <div className='absolute left-0 right-0 flex flex-col items-start overflow-hidden rounded-b-lg border border-t-0 border-grey-40'>
+        <div className='scrollbar-hide absolute left-0 right-0 flex max-h-[calc(40px*4)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40'>
           {list.map((v, idx) => {
             return (
               <button
                 key={`selector${idx}`}
-                className='flex h-10 w-full items-center border-b border-b-grey-90 bg-white px-3 last-of-type:border-b-0'
+                className='flex h-10 w-full shrink-0 items-center border-b border-b-grey-90 bg-white px-3 last-of-type:border-b-0'
                 onClick={() => {
                   setIsOpen(false);
                   setValue && setValue(v);
                 }}
               >
-                <p className='text-[13px] font-medium -tracking-[3%] text-grey-10'>{v.label}</p>
+                <p className='text-[13px] font-medium -tracking-[0.03em] text-grey-10'>{v.label}</p>
               </button>
             );
           })}

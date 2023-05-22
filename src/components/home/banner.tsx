@@ -31,7 +31,7 @@ const Banner = () => {
           );
         })}
       </Swiper>
-      <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[20px] items-center justify-center rounded-full bg-black/[.3] px-[9px]'>
+      <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[19.71px] w-[41px] items-center justify-center rounded-full bg-black/[.3] backdrop-blur-[5px]'>
         <p className='whitespace-pre text-[12px] font-semibold tabular-nums tracking-[15%] text-white'>{`${
           pageIndex + 1
         } `}</p>

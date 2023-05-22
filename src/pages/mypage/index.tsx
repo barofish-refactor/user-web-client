@@ -1,19 +1,17 @@
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import Layout from 'src/components/common/layout';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToLocaleString } from 'src/utils/functions';
 
 /** 마이페이지 */
 const MyPage: NextPageWithLayout = () => {
-  const router = useRouter();
-
   return (
     <div className='max-md:w-[100vw]'>
       <div className='flex items-center justify-between px-4 pt-6'>
         <button className='flex flex-col gap-0.5'>
           <div className='flex items-center gap-0.5'>
-            <p className='text-[20px] font-bold leading-[30px] -tracking-[3%] text-grey-10'>
+            <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
               홍길동
             </p>
             <Image
@@ -24,7 +22,7 @@ const MyPage: NextPageWithLayout = () => {
               className='rotate-90'
             />
           </div>
-          <p className='text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-60'>
+          <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
             기본 정보보기
           </p>
         </button>
@@ -39,62 +37,60 @@ const MyPage: NextPageWithLayout = () => {
       <div className='rounded-b-2xl px-4 pb-4 pt-6 shadow-[0px_4px_5px_rgba(0,0,0,0.04)]'>
         <div className='flex h-[61px] items-center justify-evenly rounded-lg bg-grey-90'>
           <div className='flex w-[60px] flex-col items-center gap-0.5'>
-            <p className='text-[18px] font-bold leading-[21px] -tracking-[3%] text-grey-10'>
+            <p className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(142)}
             </p>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[3%] text-grey-50'>
+            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
               구매후기
             </p>
           </div>
           <div className='h-6 w-[1px] bg-[#E2E2E2]' />
           <div className='flex w-[60px] flex-col items-center gap-0.5'>
-            <p className='text-[18px] font-bold leading-[21px] -tracking-[3%] text-grey-10'>
+            <p className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(12)}
             </p>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[3%] text-grey-50'>
+            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
               찜한상품
             </p>
           </div>
           <div className='h-6 w-[1px] bg-[#E2E2E2]' />
           <div className='flex w-[60px] flex-col items-center gap-0.5'>
-            <p className='text-[18px] font-bold leading-[21px] -tracking-[3%] text-grey-10'>
+            <p className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(24)}
             </p>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[3%] text-grey-50'>
+            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
               최근본상품
             </p>
           </div>
           <div className='h-6 w-[1px] bg-[#E2E2E2]' />
           <div className='flex w-[60px] flex-col items-center gap-0.5'>
-            <p className='text-[18px] font-bold leading-[21px] -tracking-[3%] text-grey-10'>
+            <p className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(21)}
             </p>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[3%] text-grey-50'>
+            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
               구매한상품
             </p>
           </div>
         </div>
       </div>
       <div className='p-4'>
-        <button
+        <Link
           className='relative flex h-[140px] w-full flex-col items-start justify-between overflow-hidden rounded-lg bg-grey-10 px-4 pb-4 pt-6 text-start shadow-[0px_4px_10px_rgba(0,0,0,0.08)]'
-          onClick={() => {
-            router.push({
-              pathname: '/search/product-result',
-              query: { title: '지금이 딱인 제철 해산물 🦐' },
-            });
+          href={{
+            pathname: '/search/product-result',
+            query: { title: '지금이 딱인 제철 해산물 🦐' },
           }}
         >
           <div className='z-20 flex flex-col'>
-            <p className='text-[16px] font-semibold leading-[24px] -tracking-[3%] text-white'>
+            <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-white'>
               지금이 딱인 제철 해산물 🦐
             </p>
-            <p className='text-[12px] font-medium leading-[18px] -tracking-[3%] text-grey-70'>
+            <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-70'>
               따뜻한 봄, 가장 맛있게 먹을 수 있는 봄철 해산물 어때요?
             </p>
           </div>
           <div className='z-20 flex items-center gap-1'>
-            <p className='text-[12px] font-medium leading-[18px] -tracking-[3%] text-grey-60'>
+            <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
               제철 해산물 보러가기
             </p>
             <Image
@@ -104,7 +100,7 @@ const MyPage: NextPageWithLayout = () => {
               height={16}
             />
           </div>
-        </button>
+        </Link>
       </div>
       <div className='h-2 bg-grey-90' />
       {[
@@ -121,7 +117,7 @@ const MyPage: NextPageWithLayout = () => {
         return (
           <div key={`mypage${idx}`}>
             <button
-              className='flex h-[56px] items-center justify-between px-4'
+              className='flex h-[56px] w-full items-center justify-between border-b border-b-grey-90 px-4'
               onClick={() => {
                 switch (idx) {
                   // 주문내역
@@ -156,7 +152,13 @@ const MyPage: NextPageWithLayout = () => {
                 }
               }}
             >
-              <p className='text-[16px] font-medium -tracking-[3%] text-grey-10'>{v}</p>
+              <p className='text-[16px] font-medium -tracking-[0.03em] text-grey-10'>{v}</p>
+              <Image
+                src='/assets/icons/common/chevron-mypage.svg'
+                alt='chevron'
+                width={24}
+                height={24}
+              />
             </button>
             {[3, 6].includes(idx) && <div className='h-2 bg-grey-90' />}
           </div>
@@ -166,6 +168,6 @@ const MyPage: NextPageWithLayout = () => {
   );
 };
 
-MyPage.getLayout = page => <Layout>{page}</Layout>;
+MyPage.getLayout = page => <Layout headerProps={{ disable: true }}>{page}</Layout>;
 
 export default MyPage;

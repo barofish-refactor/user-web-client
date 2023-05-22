@@ -7,3 +7,4 @@ export { default as HomeCurationItem } from './curation-item';
 export { default as HomeCurationTip } from './curation-tip';
 export { default as HomePartner } from './partner';
 export { default as HomeProductList } from './product-list';
+export { default as HomeFooter } from './footer';

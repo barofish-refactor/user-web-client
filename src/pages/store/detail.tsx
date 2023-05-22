@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Layout from 'src/components/common/layout';
@@ -31,8 +32,11 @@ const StoreDetail: NextPageWithLayout = () => {
               //
             }}
           >
-            <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+            <Image src='/assets/icons/common/star.svg' alt='star' width={24} height={24} />
           </button>
+          <Link href='/product/cart'>
+            <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          </Link>
           <button
             onClick={() => {
               //
@@ -49,8 +53,8 @@ const StoreDetail: NextPageWithLayout = () => {
       </div>
 
       {/* info */}
-      <div className='flex items-start justify-between pb-5 pl-[17px] pr-[21px] pt-[11px]'>
-        <div className='mt-[5px] flex flex-1 items-center gap-3'>
+      <div className='flex items-start justify-between pb-5 pl-[17px] pr-[21px] pt-4'>
+        <div className='flex flex-1 items-center gap-3'>
           <Image
             src='/dummy/dummy-partner-1.png'
             alt='partner'
@@ -59,20 +63,20 @@ const StoreDetail: NextPageWithLayout = () => {
             className='rounded-full border border-grey-90'
           />
           <div className=''>
-            <p className='text-[20px] font-bold leading-[30px] -tracking-[3%] text-grey-10'>
+            <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
               {name}
             </p>
-            <p className='text-[14px] font-semibold leading-[22px] -tracking-[3%] text-grey-30'>
+            <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
               {location}
             </p>
-            <div className='flex gap-1'>
+            <div className='mt-[5px] flex gap-1'>
               {tag.slice(0, 3).map((v, idx) => {
                 return (
                   <div
                     key={`tag${idx}`}
                     className='flex h-[22px] items-center justify-center rounded bg-grey-90 px-2'
                   >
-                    <p className='whitespace-pre text-[13px] font-medium -tracking-[3%] text-grey-40'>
+                    <p className='whitespace-pre text-[13px] font-medium -tracking-[0.03em] text-grey-40'>
                       {v}
                     </p>
                   </div>
@@ -81,13 +85,6 @@ const StoreDetail: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
-        <button
-          onClick={() => {
-            //
-          }}
-        >
-          <Image src='/assets/icons/common/bookmark.svg' alt='bookmark' width={30} height={36} />
-        </button>
       </div>
       <div className='h-2 bg-grey-90' />
       {/* 구매자들의 솔직 리뷰 */}

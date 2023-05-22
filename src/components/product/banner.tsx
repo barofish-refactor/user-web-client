@@ -40,7 +40,7 @@ const Banner = ({ isShowArrow = false }: Props) => {
           );
         })}
       </Swiper>
-      <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[20px] items-center justify-center rounded-full bg-black/[.3] px-[9px]'>
+      <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[20px] w-10 items-center justify-center rounded-full bg-grey-10/[.6]'>
         <p className='whitespace-pre text-[12px] font-semibold tabular-nums tracking-[15%] text-white'>{`${
           pageIndex + 1
         } `}</p>

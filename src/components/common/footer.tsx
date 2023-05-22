@@ -86,7 +86,7 @@ export function Footer({ className, ...props }: FooterProps) {
               />
               <p
                 className={cm(
-                  'whitespace-nowrap text-[12px] font-medium leading-[18px] -tracking-[3%] text-[#969696]',
+                  'whitespace-nowrap text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-[#969696]',
                   { 'font-bold text-primary-50': isActive },
                 )}
               >

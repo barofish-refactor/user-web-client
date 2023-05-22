@@ -26,7 +26,7 @@ const CurationLargeSlide = ({}: Props) => {
       {[...Array(10)].map((v, idx) => {
         return (
           <SwiperSlide key={`curation${idx}`} className=''>
-            <ProductSmallSlideItem />
+            <ProductSmallSlideItem type='LARGE' />
           </SwiperSlide>
         );
       })}

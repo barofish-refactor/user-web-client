@@ -19,10 +19,10 @@ const ReviewChart = ({ data }: Props) => {
 
   return (
     <div className='px-4 pb-[30px] pt-5'>
-      <p className='text-[16px] font-bold leading-[24px] -tracking-[3%] text-grey-10'>
+      <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
         구매자들의 솔직 리뷰
       </p>
-      <p className='text-[13px] font-medium leading-[20px] -tracking-[3%] text-grey-60'>
+      <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
         다른 구매자들은 상품을 이렇게 평가했어요.
       </p>
       <div className='mt-2.5 flex items-center py-[3px]'>
@@ -33,10 +33,10 @@ const ReviewChart = ({ data }: Props) => {
           height={10}
           draggable={false}
         />
-        <p className='ml-1.5 text-[13px] font-bold leading-[20px] -tracking-[3%] text-secondary-50'>{`총${formatToLocaleString(
+        <p className='ml-1.5 text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-secondary-50'>{`총 ${formatToLocaleString(
           totalCount,
         )}개`}</p>
-        <p className='text-[13px] font-medium leading-[20px] -tracking-[3%] text-grey-10'>
+        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-10'>
           의 평가
         </p>
       </div>
@@ -61,11 +61,11 @@ const ReviewChart = ({ data }: Props) => {
                 height={16}
                 draggable={false}
               />
-              <p className='text-[14px] font-semibold -tracking-[3%] text-grey-10'>
+              <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>
                 맛이 만족스러워요
               </p>
             </div>
-            <p className='text-[14px] font-bold -tracking-[3%] text-primary-70'>{`${data.taste}명`}</p>
+            <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-70'>{`${data.taste}명`}</p>
           </div>
         </div>
         {/* 신선도 */}
@@ -87,11 +87,11 @@ const ReviewChart = ({ data }: Props) => {
                 height={16}
                 draggable={false}
               />
-              <p className='text-[14px] font-semibold -tracking-[3%] text-grey-10'>
+              <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>
                 신선도가 좋아요
               </p>
             </div>
-            <p className='text-[14px] font-bold -tracking-[3%] text-primary-70'>{`${data.freshness}명`}</p>
+            <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-70'>{`${data.freshness}명`}</p>
           </div>
         </div>
         {/* 가격 */}
@@ -113,11 +113,11 @@ const ReviewChart = ({ data }: Props) => {
                 height={16}
                 draggable={false}
               />
-              <p className='text-[14px] font-semibold -tracking-[3%] text-grey-10'>
+              <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>
                 가격이 합리적이에요
               </p>
             </div>
-            <p className='text-[14px] font-bold -tracking-[3%] text-primary-70'>{`${data.price}명`}</p>
+            <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-70'>{`${data.price}명`}</p>
           </div>
         </div>
         {/* 포장 */}
@@ -139,11 +139,11 @@ const ReviewChart = ({ data }: Props) => {
                 height={16}
                 draggable={false}
               />
-              <p className='text-[14px] font-semibold -tracking-[3%] text-grey-10'>
+              <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>
                 포장이 꼼꼼해요
               </p>
             </div>
-            <p className='text-[14px] font-bold -tracking-[3%] text-primary-70'>{`${data.packaging}명`}</p>
+            <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-70'>{`${data.packaging}명`}</p>
           </div>
         </div>
         {/* 크기 */}
@@ -165,11 +165,11 @@ const ReviewChart = ({ data }: Props) => {
                 height={16}
                 draggable={false}
               />
-              <p className='text-[14px] font-semibold -tracking-[3%] text-grey-10'>
+              <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>
                 크기가 사진과 같아요
               </p>
             </div>
-            <p className='text-[14px] font-bold -tracking-[3%] text-primary-70'>{`${data.size}명`}</p>
+            <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-70'>{`${data.size}명`}</p>
           </div>
         </div>
       </div>

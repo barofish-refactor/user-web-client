@@ -18,13 +18,13 @@ const RecentSearches = ({
   handleClearKeywords,
 }: Props) => {
   return (
-    <div className='flex flex-col gap-4 pt-5'>
+    <div className='flex flex-col gap-4'>
       <div className='flex items-center justify-between'>
-        <p className='text-[16px] font-semibold leading-[24px] -tracking-[3%] text-grey-10'>
+        <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
           최근 검색어
         </p>
         <button onClick={handleClearKeywords}>
-          <p className='text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-50'>
+          <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
             모두삭제
           </p>
         </button>
@@ -40,7 +40,9 @@ const RecentSearches = ({
                 handleAddKeyword(v);
               }}
             >
-              <p className='text-[14px] font-normal -tracking-[5%] text-grey-10'>{v}</p>
+              <p className='line-clamp-1 text-[14px] font-normal -tracking-[0.05em] text-grey-10'>
+                {v}
+              </p>
               <Image
                 src='/assets/icons/common/close-small.svg'
                 alt='delete'

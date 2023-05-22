@@ -17,10 +17,10 @@ const content =
 const Partner = ({}: Props) => {
   return (
     <div className='px-4 py-[30px]'>
-      <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[3%] text-grey-10'>
+      <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
         믿고 구매할 수 있는 스토어 🏡
       </p>
-      <p className='text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-60'>
+      <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         바로피쉬에서 입증한 스토어에서 실패없는 수산물 쇼핑!
       </p>
 
@@ -40,9 +40,9 @@ const Partner = ({}: Props) => {
         {[...Array(3)].map((v, idx) => {
           return (
             <SwiperSlide key={`partner${idx}`} className=''>
-              <div className='overflow-hidden rounded-lg border border-grey-90 px-4 pb-[19px] pt-5'>
-                <div className='mt-0.5 flex items-start justify-between'>
-                  <div className='mt-1 flex flex-1 items-center gap-3'>
+              <div className='overflow-hidden rounded-lg border border-grey-90 px-4 pb-[19px] pt-[26px]'>
+                <div className='flex items-start justify-between'>
+                  <div className='flex flex-1 items-center gap-3'>
                     <Image
                       src='/dummy/dummy-partner-1.png'
                       alt='partner'
@@ -51,20 +51,20 @@ const Partner = ({}: Props) => {
                       className='rounded-full border border-grey-90'
                     />
                     <div className=''>
-                      <p className='text-[20px] font-bold leading-[30px] -tracking-[3%] text-grey-10'>
+                      <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
                         {name}
                       </p>
-                      <p className='text-[14px] font-semibold leading-[22px] -tracking-[3%] text-grey-30'>
+                      <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
                         {location}
                       </p>
-                      <div className='flex gap-1'>
+                      <div className='mt-[5px] flex gap-1'>
                         {tag.slice(0, 3).map((v, idx) => {
                           return (
                             <div
                               key={`tag${idx}`}
                               className='flex h-[22px] items-center justify-center rounded bg-grey-90 px-2'
                             >
-                              <p className='whitespace-pre text-[13px] font-medium -tracking-[3%] text-grey-40'>
+                              <p className='whitespace-pre text-[13px] font-medium -tracking-[0.03em] text-grey-40'>
                                 {v}
                               </p>
                             </div>
@@ -79,15 +79,15 @@ const Partner = ({}: Props) => {
                     }}
                   >
                     <Image
-                      src='/assets/icons/common/bookmark.svg'
+                      src='/assets/icons/common/partner-star.svg'
                       alt='bookmark'
-                      width={30}
-                      height={36}
+                      width={24}
+                      height={24}
                     />
                   </button>
                 </div>
                 <div className='my-4 h-[1px] bg-grey-90' />
-                <p className='text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-10'>
+                <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
                   {content}
                 </p>
               </div>

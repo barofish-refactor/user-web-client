@@ -12,6 +12,7 @@ const BottomSheet = () => {
   const { setIsOpen } = useOpenStore();
 
   const [selectedTab, setSelectedTab] = useState<number>(0);
+  // TODO : 구조 제대로 안잡혀있어서 데이터 보고 바꿔야함
   const [selectedItem, setSelectedItem] = useState<{ text: string; id: number }[]>([]);
 
   useClickAway(target, () => {
@@ -27,13 +28,13 @@ const BottomSheet = () => {
         e.stopPropagation();
       }}
     >
-      <div className='mb-[10px] mt-[18px] h-1 w-8 rounded-full bg-grey-80' />
+      <div className='mb-[10px] mt-[18px] h-1 w-9 rounded-full bg-grey-80' />
       <div className='flex w-full flex-col'>
-        <p className='pl-4 text-[20px] font-semibold leading-[30px] -tracking-[5%] text-black'>
+        <p className='pl-4 text-[20px] font-semibold leading-[30px] -tracking-[0.05em] text-black'>
           필터
         </p>
       </div>
-      <div className='mt-3 flex w-full items-center justify-around px-4'>
+      <div className='mt-3 flex w-full items-center justify-between pl-4 pr-[27px]'>
         {['카테고리', '구분', '지역', '가공', '용도', '보관', '가격'].map((v, idx) => {
           const isActive = selectedTab === idx;
 
@@ -51,7 +52,7 @@ const BottomSheet = () => {
             >
               <p
                 className={cm(
-                  'text-[14px] leading-[22px] -tracking-[3%]',
+                  'text-[14px] leading-[22px] -tracking-[0.03em]',
                   isActive ? 'font-semibold text-primary-50' : 'font-medium text-grey-50',
                 )}
               >
@@ -63,7 +64,7 @@ const BottomSheet = () => {
       </div>
       <div className='h-[1px] w-full bg-grey-90' />
       <div className='h-[250px] w-full overflow-y-auto'>
-        <div className='flex flex-col items-start px-1 py-4'>
+        <div className='flex flex-col items-start px-2 py-4'>
           {categoryList.map((v, idx) => {
             const isActive = selectedItem.map(x => x.id).includes(idx);
             return (
@@ -81,7 +82,7 @@ const BottomSheet = () => {
                 <CheckIcon isActive={isActive} />
                 <p
                   className={cm(
-                    'text-[14px] font-medium -tracking-[3%]',
+                    'text-[14px] font-medium -tracking-[0.03em]',
                     isActive ? 'text-grey-10' : 'text-grey-50',
                   )}
                 >
@@ -92,38 +93,40 @@ const BottomSheet = () => {
           })}
         </div>
       </div>
-      <div className='flex w-full flex-wrap items-center gap-3 border-t border-t-grey-90 px-4 py-2'>
-        {selectedItem.map((v, idx) => {
-          return (
-            <button
-              key={`selected${idx}`}
-              className='flex items-center'
-              onClick={() => {
-                setSelectedItem(selectedItem.filter(x => x.id !== v.id));
-              }}
-            >
-              <p className='text-[14px] font-medium leading-[22px] -tracking-[3%] text-primary-50'>
-                {v.text}
-              </p>
-              <Image
-                src='/assets/icons/common/close-small.svg'
-                alt='delete'
-                width={19}
-                height={19}
-              />
-            </button>
-          );
-        })}
-      </div>
+      {selectedItem.length > 0 && (
+        <div className='mb-[4.54px] flex w-full flex-wrap items-center gap-3 border-t border-t-grey-90 px-4 py-2'>
+          {selectedItem.map((v, idx) => {
+            return (
+              <button
+                key={`selected${idx}`}
+                className='flex items-center'
+                onClick={() => {
+                  setSelectedItem(selectedItem.filter(x => x.id !== v.id));
+                }}
+              >
+                <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
+                  {v.text}
+                </p>
+                <Image
+                  src='/assets/icons/common/close-small.svg'
+                  alt='delete'
+                  width={19}
+                  height={19}
+                />
+              </button>
+            );
+          })}
+        </div>
+      )}
       <div className='mt-4 flex w-full items-center gap-[18px] px-4'>
         <button
-          className='flex h-full items-center gap-1'
+          className='flex h-full items-center gap-2'
           onClick={() => {
             setSelectedItem([]);
           }}
         >
-          <Image src='/assets/icons/common/refresh.svg' alt='refresh' width={20} height={20} />
-          <p className='text-[16px] font-semibold leading-[19px] -tracking-[5%] text-grey-80'>
+          <Image src='/assets/icons/common/refresh.svg' alt='refresh' width={15} height={10} />
+          <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-grey-80'>
             초기화
           </p>
         </button>
@@ -133,7 +136,7 @@ const BottomSheet = () => {
             setIsOpen(false);
           }}
         >
-          <p className='text-[16px] font-bold -tracking-[3%] text-white'>
+          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
             {`${selectedItem.length > 0 ? '0개의 ' : ''}상품보기`}
           </p>
         </button>

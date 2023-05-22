@@ -121,7 +121,7 @@ const Category: NextPageWithLayout = () => {
 
   return (
     <div className='max-md:w-[100vw]'>
-      <p className='px-4 pb-4 pt-[25px] text-[20px] font-bold leading-[30px] -tracking-[3%] text-grey-10'>
+      <p className='px-4 pb-4 pt-[25px] text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
         카테고리
       </p>
       <div className='h-[1px] bg-grey-90' />
@@ -143,7 +143,7 @@ const Category: NextPageWithLayout = () => {
                 className='cover'
                 draggable={false}
               />
-              <p className='flex-1 text-start text-[16px] font-medium -tracking-[1%] text-grey-20'>
+              <p className='flex-1 text-start text-[16px] font-medium -tracking-[0.01em] text-grey-20'>
                 {v.name}
               </p>
               <Image
@@ -174,7 +174,7 @@ const Category: NextPageWithLayout = () => {
                         'ml-[14px] mr-[36px]': idx % 2 === 1,
                       })}
                     >
-                      <p className='text-[14px] font-normal -tracking-[3%] text-grey-20'>
+                      <p className='text-[14px] font-normal -tracking-[0.03em] text-grey-20'>
                         {subItem.name}
                       </p>
                     </Link>

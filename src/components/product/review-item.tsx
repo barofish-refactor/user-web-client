@@ -13,21 +13,21 @@ const ReviewItem = ({}: Props) => {
   return (
     <div className='py-4'>
       <div className='flex items-center gap-1'>
-        <p className='text-[14px] font-semibold leading-[22px] -tracking-[3%] text-grey-10'>
+        <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
           닉네임
         </p>
         <div className='flex h-[22px] items-center justify-center rounded border border-[#6085EC] px-2'>
-          <p className='text-[12px] font-medium -tracking-[3%] text-primary-50'>멸치</p>
+          <p className='text-[12px] font-medium -tracking-[0.03em] text-primary-50'>멸치</p>
         </div>
       </div>
-      <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-60'>
+      <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         {`옵션 : ${'TextTextTextTextTextTextTextTextTextTextTextTextTextText'}`}
       </p>
       <Swiper
         freeMode
         slidesPerView={2.2}
         modules={[FreeMode]}
-        spaceBetween={10}
+        spaceBetween={11}
         className='mt-4'
         style={{
           marginLeft: '-16px',
@@ -52,7 +52,7 @@ const ReviewItem = ({}: Props) => {
           );
         })}
       </Swiper>
-      <p className='mt-3 text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-50'>
+      <p className='mt-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
         TextTextTextTextTextTextTextTextTextTextTextText
         TextTextTextTextTextTextTextTextTextTextTextTextText TextTextTextTextTextTextTextTextText
       </p>
@@ -70,22 +70,22 @@ const ReviewItem = ({}: Props) => {
           height={72}
         />
         <div className='flex flex-1 flex-col truncate text-start'>
-          <p className='text-[13px] font-bold leading-[16px] -tracking-[5%] text-grey-10'>
+          <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
             서준수산
           </p>
-          <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[5%] text-grey-30'>
+          <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
             [3차 세척,스킨포장] 목포 손질 먹갈치 400~650g
           </p>
           <div className='flex items-center gap-0.5'>
-            <p className='text-[16px] font-semibold leading-[19px] -tracking-[5%] text-teritory'>{`${40}%`}</p>
-            <p className='text-[16px] font-bold leading-[22px] -tracking-[5%] text-grey-10'>{`${formatToLocaleString(
+            <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${40}%`}</p>
+            <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>{`${formatToLocaleString(
               9600,
             )}원`}</p>
           </div>
         </div>
       </button>
       <div className='flex items-center justify-between'>
-        <p className='text-[12px] font-medium leading-[18px] -tracking-[3%] text-grey-70'>{`${formatToUtc(
+        <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-70'>{`${formatToUtc(
           new Date(),
           'yyyy.MM.dd',
         )}`}</p>
@@ -96,8 +96,8 @@ const ReviewItem = ({}: Props) => {
           }}
         >
           <Image src='/assets/icons/product/review-like.svg' alt='like' width={12} height={13} />
-          <p className='text-[12px] font-medium -tracking-[5%] text-grey-60'>도움돼요</p>
-          <p className='text-[12px] font-medium -tracking-[5%] text-grey-60'>{`${formatToLocaleString(
+          <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>도움돼요</p>
+          <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>{`${formatToLocaleString(
             500,
           )}`}</p>
         </button>

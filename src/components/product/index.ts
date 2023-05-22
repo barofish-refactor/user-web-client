@@ -8,3 +8,5 @@ export { default as ProductReviewPhoto } from './review-photo';
 export { default as ProductReviewItem } from './review-item';
 export { default as ProductInquiry } from './inquiry';
 export { default as ProductSelector } from './selector';
+export { default as ProductBottomSheet } from './bottom-sheet';
+export { default as ProductShippingAddress } from './shipping-address';

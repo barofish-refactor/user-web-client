@@ -33,7 +33,7 @@ const Inquiry: NextPageWithLayout = () => {
         <button onClick={() => router.back()}>
           <Image src='/assets/icons/common/arrow-back.svg' alt='back' width={24} height={24} />
         </button>
-        <p className='text-[16px] font-bold -tracking-[3%] text-grey-10'>문의하기</p>
+        <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>문의하기</p>
         <div className='w-6' />
       </div>
 
@@ -48,23 +48,23 @@ const Inquiry: NextPageWithLayout = () => {
             height={72}
           />
           <div className='flex flex-1 flex-col truncate text-start'>
-            <p className='text-[13px] font-bold leading-[16px] -tracking-[5%] text-grey-10'>
+            <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
               서준수산
             </p>
-            <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[5%] text-grey-30'>
+            <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
               [3차 세척,스킨포장] 목포 손질 먹갈치 400~650g
             </p>
             <div className='flex items-center gap-0.5'>
-              <p className='text-[16px] font-semibold leading-[19px] -tracking-[5%] text-teritory'>{`${40}%`}</p>
-              <p className='text-[16px] font-bold leading-[22px] -tracking-[5%] text-grey-10'>{`${formatToLocaleString(
+              <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${40}%`}</p>
+              <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>{`${formatToLocaleString(
                 9600,
               )}원`}</p>
             </div>
           </div>
         </div>
 
-        <p className='mt-[26px] text-[13px] font-bold leading-[20px] -tracking-[3%] text-grey-20'>
-          문의하기
+        <p className='mt-[26px] text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+          문의유형
         </p>
         <Selector
           className='mt-2'
@@ -76,7 +76,7 @@ const Inquiry: NextPageWithLayout = () => {
         <div className='mt-4 h-[212px] w-full rounded-lg border border-grey-80 py-3'>
           <textarea
             spellCheck={false}
-            className='h-full  w-full px-3 text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-10 placeholder:text-grey-80'
+            className='h-full  w-full px-3 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
             placeholder='문의 내용을 작성 해 주세요.'
             value={content}
             onChange={e => setContent(e.target.value)}
@@ -87,12 +87,12 @@ const Inquiry: NextPageWithLayout = () => {
           onClick={() => setIsSecret(!isSecret)}
         >
           <CheckIcon isActive={isSecret} width={24} height={24} />
-          <p className='text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-50'>
+          <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
             비밀글로 문의하기
           </p>
         </button>
       </div>
-      <div className='fixed bottom-0 w-[375px] px-4 pb-7 max-md:w-full'>
+      <div className='fixed bottom-0 z-50 w-[375px] px-4 pb-7 max-md:w-full'>
         <button
           className={cm(
             'flex h-[52px] w-full items-center justify-center rounded-lg bg-[#D4D5D8]',
@@ -105,7 +105,7 @@ const Inquiry: NextPageWithLayout = () => {
             }
           }}
         >
-          <p className='text-[16px] font-bold -tracking-[3%] text-white'>등록하기</p>
+          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>등록하기</p>
         </button>
       </div>
     </div>

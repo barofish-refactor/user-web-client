@@ -24,7 +24,7 @@ const ProductList = ({ className }: Props) => {
   return (
     <div className={cm('px-4 py-[16px]', className)} id='test'>
       <div className='flex items-center justify-between'>
-        <p className='text-[14px] font-medium leading-[22px] -tracking-[3%] text-black'>{`총 ${formatToLocaleString(
+        <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-black'>{`총 ${formatToLocaleString(
           100,
         )}건`}</p>
         <div className='flex items-center gap-[19px]'>
@@ -34,7 +34,7 @@ const ProductList = ({ className }: Props) => {
               //
             }}
           >
-            <p className='text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-10'>
+            <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
               추천순
             </p>
             <Image
@@ -45,7 +45,7 @@ const ProductList = ({ className }: Props) => {
             />
           </button>
           <button className='flex items-center gap-1' onClick={() => setIsOpen(true)}>
-            <p className='text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-10'>
+            <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
               필터
             </p>
             <Image src='/assets/icons/common/filter.svg' alt='filter' width={15} height={10} />

@@ -59,7 +59,7 @@ const Notice: NextPageWithLayout = () => {
         <button onClick={() => router.back()}>
           <Image src='/assets/icons/common/arrow-back.svg' alt='back' width={24} height={24} />
         </button>
-        <p className='text-[16px] font-bold -tracking-[3%] text-grey-10'>알림</p>
+        <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>알림</p>
         <div className='w-6' />
       </div>
 
@@ -85,15 +85,15 @@ const Notice: NextPageWithLayout = () => {
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
                     <Image src={icon} alt={v.type} width={24} height={24} />
-                    <p className='text-[16px] font-semibold leading-[24px] -tracking-[3%] text-grey-10'>
+                    <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
                       {v.title}
                     </p>
                   </div>
-                  <p className='text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-70'>
+                  <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
                     {`${formatToUtc(v.createdAt, 'M월 d일')}`}
                   </p>
                 </div>
-                <p className='pl-8 pt-2.5 text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-10'>
+                <p className='pl-8 pt-2.5 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
                   {v.content}
                 </p>
               </button>
@@ -103,7 +103,7 @@ const Notice: NextPageWithLayout = () => {
       ) : (
         <div className='mt-[200px] flex flex-col items-center gap-2'>
           <Image src='/assets/icons/common/error.svg' alt='error' width={40} height={40} />
-          <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[5%] text-[#B5B5B5]'>
+          <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
             {`등록된 알림이 없습니다.\n알림이 오면 빠르게 알려드리겠습니다 :)`}
           </p>
         </div>

@@ -1,16 +1,17 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Layout from 'src/components/common/layout';
 import {
   ProductBanner,
+  ProductBottomSheet,
   ProductCompare,
   ProductInformationDefault,
   ProductInquiry,
   ProductReview,
   ProductTab,
 } from 'src/components/product';
-import { StoreBottomSheet } from 'src/components/store';
 import { type NextPageWithLayout } from 'src/types/common';
 
 /** 상품 상세 */
@@ -28,24 +29,20 @@ const ProductDetail: NextPageWithLayout = () => {
       <div className='sticky top-0 z-[100] w-full'>
         {isVisible && (
           <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
-            <StoreBottomSheet setIsVisible={setIsVisible} />
+            <ProductBottomSheet setIsVisible={setIsVisible} />
           </div>
         )}
       </div>
 
       {/* header */}
-      <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
+      <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'>
         <button onClick={() => router.back()}>
           <Image src='/assets/icons/common/arrow-back.svg' alt='back' width={24} height={24} />
         </button>
         <div className='flex items-center gap-4'>
-          <button
-            onClick={() => {
-              //
-            }}
-          >
+          <Link href='/product/cart'>
             <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
-          </button>
+          </Link>
           <button
             onClick={() => {
               //
@@ -92,9 +89,19 @@ const ProductDetail: NextPageWithLayout = () => {
           }}
         >
           {isLiked ? (
-            <Image src='/assets/icons/product/heart-on.svg' alt='heart' width={30} height={30} />
+            <Image
+              src='/assets/icons/product/product-bookmark-on.svg'
+              alt='heart'
+              width={30}
+              height={30}
+            />
           ) : (
-            <Image src='/assets/icons/product/heart-off.svg' alt='heart' width={30} height={30} />
+            <Image
+              src='/assets/icons/product/product-bookmark-off.svg'
+              alt='heart'
+              width={30}
+              height={30}
+            />
           )}
         </button>
         <button
@@ -103,7 +110,7 @@ const ProductDetail: NextPageWithLayout = () => {
             setIsVisible(true);
           }}
         >
-          <p className='text-[16px] font-bold -tracking-[3%] text-white'>구매하기</p>
+          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>구매하기</p>
         </button>
       </div>
     </div>

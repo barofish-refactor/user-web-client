@@ -30,7 +30,7 @@ const Selector = ({ list, placeHolder, className, setValue }: Props) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <p
-          className={cm('text-[14px] font-medium -tracking-[3%] text-grey-10', {
+          className={cm('text-[14px] font-medium -tracking-[0.03em] text-grey-10', {
             'text-grey-50': isOpen,
           })}
         >
@@ -47,21 +47,21 @@ const Selector = ({ list, placeHolder, className, setValue }: Props) => {
         />
       </button>
       {isOpen && (
-        <div className='absolute left-0 right-0 flex flex-col items-start overflow-hidden rounded-b-lg border border-t-0 border-grey-40'>
+        <div className='scrollbar-hide absolute left-0 right-0 flex max-h-[calc(68px*2.5)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40'>
           {list.map((v, idx) => {
             return (
               <button
                 key={`selector${idx}`}
-                className='flex h-[68px] w-full flex-col justify-center gap-1 border-b border-b-grey-90 bg-white px-3 last-of-type:border-b-0'
+                className='flex h-[68px] w-full shrink-0 flex-col justify-center gap-1 border-b border-b-grey-90 bg-white px-3 last-of-type:border-b-0'
                 onClick={() => {
                   setIsOpen(false);
                   setValue && setValue(v);
                 }}
               >
-                <p className='text-[13px] font-medium leading-[20px] -tracking-[3%] text-grey-30'>
+                <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-30'>
                   {v.option}
                 </p>
-                <p className='text-[16px] font-semibold leading-[24px] -tracking-[3%] text-grey-10'>{`${formatToLocaleString(
+                <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
                   v.price,
                 )}원`}</p>
               </button>

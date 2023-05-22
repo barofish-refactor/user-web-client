@@ -68,7 +68,7 @@ const Inquiry = () => {
         href={{ pathname: '/product/inquiry', query: { id: 1 } }}
         className='mx-4 mb-[18px] mt-5 flex h-[42px] items-center justify-center rounded-lg border border-primary-50'
       >
-        <p className='text-[14px] font-semibold leading-[22px] -tracking-[3%] text-primary-50'>
+        <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>
           상품 문의하기
         </p>
       </Link>
@@ -87,7 +87,7 @@ const Inquiry = () => {
                   <div className='flex items-center gap-0.5'>
                     <p
                       className={cm(
-                        'text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-20',
+                        'text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20',
                         { 'text-grey-70': isDone },
                       )}
                     >
@@ -99,7 +99,7 @@ const Inquiry = () => {
                     </p>
                     <p
                       className={cm(
-                        'text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-20',
+                        'text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20',
                         { 'text-grey-70': isDone },
                       )}
                     >
@@ -109,18 +109,18 @@ const Inquiry = () => {
                   <div className='flex items-center gap-2'>
                     <p
                       className={cm(
-                        'text-[13px] font-normal leading-[20px] -tracking-[3%] text-grey-30',
+                        'text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-30',
                         { 'font-medium text-primary-50': isDone },
                       )}
                     >
                       {isDone ? '답변완료' : '답변대기'}
                     </p>
                     <div className='h-2.5 w-[1px] bg-grey-80' />
-                    <p className='text-[13px] font-normal leading-[20px] -tracking-[3%] text-grey-30'>
+                    <p className='text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-30'>
                       {v.userName}
                     </p>
                     <div className='h-2.5 w-[1px] bg-grey-80' />
-                    <p className='text-[13px] font-normal leading-[20px] -tracking-[3%] text-grey-30'>{`${formatToUtc(
+                    <p className='text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-30'>{`${formatToUtc(
                       v.createdAt,
                       'yyyy.MM.dd',
                     )}`}</p>

@@ -10,6 +10,7 @@ import {
   HomeBanner,
   HomeCurationItem,
   HomeCurationTip,
+  HomeFooter,
   HomePartner,
   HomeProductList,
 } from 'src/components/home';
@@ -58,12 +59,12 @@ const Home: NextPageWithLayout = () => {
       <Swiper freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
         {['바로추천', '신상품', '인기상품', '특가할인', '특가할인2'].map((v, idx) => {
           return (
-            <SwiperSlide key={`mainTab${idx}`} className='h-full w-1/4'>
+            <SwiperSlide key={`mainTab${idx}`} className='h-full !w-1/4'>
               <button className='w-full' onClick={() => setSelectedTabIndex(idx)}>
                 <div className='flex h-full w-full flex-col justify-between'>
                   <p
                     className={cm(
-                      'text-[16px] font-medium leading-[24px] -tracking-[3%] text-grey-50',
+                      'text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
                       { 'font-semibold text-primary-50': selectedTabIndex === idx },
                     )}
                   >
@@ -112,6 +113,7 @@ const Home: NextPageWithLayout = () => {
           <HomeProductList type='' />
         </>
       )}
+      <HomeFooter />
     </div>
   );
 };

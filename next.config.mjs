@@ -12,6 +12,9 @@ const config = {
   // distDir: 'dist', // Static HTML Export면 주석 해제
   // output: '', // Static HTML Export면 'export', Dockerizing이면 'standalone'
   reactStrictMode: false,
+  experimental: {
+    scrollRestoration: true,
+  },
   images: {
     unoptimized: true,
     disableStaticImages: true,

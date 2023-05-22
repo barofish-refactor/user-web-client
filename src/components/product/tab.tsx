@@ -24,7 +24,7 @@ const Tab = ({ selectedTab, setSelectedTab }: Props) => {
           >
             <p
               className={cm(
-                'text-[14px] leading-[22px] -tracking-[3%]',
+                'text-[14px] leading-[22px] -tracking-[0.03em]',
                 isActive ? 'font-semibold text-primary-50' : 'font-medium text-grey-50',
               )}
             >

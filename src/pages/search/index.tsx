@@ -8,6 +8,7 @@ import { PopularSearchTerms, RecentSearches } from 'src/components/search';
 import { type NextPageWithLayout } from 'src/types/common';
 
 /**
+ * TODO : 테스트용입니다.
  * 랜덤 한글 테스트 (임의의 한글 문자 생성)
  * @returns string
  */
@@ -80,7 +81,7 @@ const Search: NextPageWithLayout = () => {
             <Image src='/assets/icons/common/search.svg' alt='search' width={24} height={24} />
           </button>
           <input
-            className='flex-1 bg-grey-90 text-[14px] font-normal leading-[22px] -tracking-[3%] text-grey-10 placeholder:text-grey-80'
+            className='flex-1 bg-grey-90 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
             placeholder='검색어를 입력해주세요.'
             value={searchText}
             onChange={e => {
@@ -126,8 +127,8 @@ const Search: NextPageWithLayout = () => {
             <PopularSearchTerms setSearchText={onSearch} />
           </>
         ) : searchState === 'searching' ? (
-          <div className='mt-1.5'>
-            <p className='text-[12px] font-medium leading-[18px] -tracking-[3%] text-grey-60'>
+          <div className=''>
+            <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
               상품 바로가기
             </p>
             <div className='flex flex-col'>
@@ -142,7 +143,7 @@ const Search: NextPageWithLayout = () => {
                       //
                     }}
                   >
-                    <p className='line-clamp-1 text-start text-[14px] font-medium leading-[22px] -tracking-[3%] text-grey-20'>
+                    <p className='line-clamp-1 text-start text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
                       {`[상품${idx}] ${searchText}${example}`}
                     </p>
                   </button>
@@ -151,12 +152,12 @@ const Search: NextPageWithLayout = () => {
             </div>
           </div>
         ) : (
-          <ProductList className='p-0' />
+          <ProductList className='p-0.5' />
           // 검색 결과 없을 경우
           // <div className=''>
           //   <div className='h-[176px] flex flex-col items-center justify-center gap-2'>
           //     <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
-          //     <p className='font-medium text-[14px] leading-[20px] -tracking-[5%] text-[#B5B5B5] text-center whitespace-pre'>
+          //     <p className='font-medium text-[14px] leading-[20px] -tracking-[0.05em] text-[#B5B5B5] text-center whitespace-pre'>
           //       {`‘${searchText}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
           //     </p>
           //   </div>

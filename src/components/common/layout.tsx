@@ -42,7 +42,7 @@ export default function Layout({
         {/* bottomSheet */}
         <div className='sticky top-0 z-[100] w-full'>
           {isOpen && (
-            <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/30'>
+            <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/40'>
               <BottomSheet />
             </div>
           )}
