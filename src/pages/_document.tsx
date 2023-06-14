@@ -1,19 +1,20 @@
 import { Head, Html, Main, NextScript } from 'next/document';
-
-// https://realfavicongenerator.net/ favicon 생성사이트
+import { VARIABLES } from 'src/variables';
 
 export default function Document() {
   return (
     <Html lang='ko'>
       <Head>
-        <link href='/favicon.ico' rel='icon' />
-        <link href='/favicon-16x16.png' rel='icon' sizes='16x16' type='image/png' />
-        <link href='/favicon-32x32.png' rel='icon' sizes='32x32' type='image/png' />
-        <link href='/apple-touch-icon.png' rel='apple-touch-icon' />
-        <link href='/manifest.json' rel='manifest' />
-        <link color='#5bbad5' href='/safari-pinned-tab.svg' rel='mask-icon' />
-        <meta content='#da532c' name='msapplication-TileColor' />
-        <meta content='#ffffff' name='theme-color' />
+        <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
+        <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
+        <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
+        <link rel='manifest' href='/site.webmanifest' />
+        <link rel='mask-icon' href='/safari-pinned-tab.svg' color='#5bbad5' />
+        <meta name='msapplication-TileColor' content='#da532c' />
+        <meta name='theme-color' content='#ffffff' />
+        {VARIABLES.END_POINT.startsWith('https') && (
+          <meta httpEquiv='Content-Security-Policy' content='upgrade-insecure-requests' />
+        )}
       </Head>
       <body>
         <Main />

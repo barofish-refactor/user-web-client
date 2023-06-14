@@ -1,0 +1,62 @@
+import clsx from 'clsx';
+import { useReducer } from 'react';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+import {
+  errorMessageClassName,
+  eyeButtonClassName,
+  inputClassName,
+  labelClassName,
+} from 'src/components/form';
+
+interface Props<T> {
+  label?: string;
+  placeholder?: string;
+  fieldKey: T;
+  options?: RegisterOptions<FieldValues>;
+}
+
+export function PasswordField<T extends string>({
+  fieldKey,
+  label,
+  options,
+  placeholder,
+}: Props<T>) {
+  const { register, formState } = useFormContext();
+  const [visiblePassword, toggleVisiblePassword] = useReducer(p => !p, false);
+
+  const error = formState.errors[fieldKey];
+
+  return (
+    <div>
+      {label && (
+        <label htmlFor={fieldKey} className={labelClassName}>
+          {label}
+        </label>
+      )}
+      <div className='relative'>
+        <input
+          {...register(fieldKey, options)}
+          id={fieldKey}
+          placeholder={placeholder}
+          type={visiblePassword ? 'text' : 'password'}
+          spellCheck={false}
+          data-invalid={!!error}
+          className={clsx(inputClassName, '[&]:pr-[34px]')}
+          disabled={options?.disabled}
+        />
+        <button
+          type='button'
+          tabIndex={-1}
+          data-visible={visiblePassword}
+          className={eyeButtonClassName}
+          onClick={toggleVisiblePassword}
+        />
+      </div>
+      {error && (
+        <small className={errorMessageClassName}>
+          {typeof error.message === 'string' && error.message}
+        </small>
+      )}
+    </div>
+  );
+}

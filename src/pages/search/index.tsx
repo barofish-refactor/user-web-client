@@ -1,27 +1,68 @@
+import { useQuery } from '@tanstack/react-query';
+import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { client } from 'src/api/client';
+import { type CustomResponseListSearchKeyword } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
-import { HomeCurationItem } from 'src/components/home';
-import ProductList from 'src/components/home/product-list';
+import { HomeProductList } from 'src/components/home';
 import { PopularSearchTerms, RecentSearches } from 'src/components/search';
+import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
 
-/**
- * TODO : 테스트용입니다.
- * 랜덤 한글 테스트 (임의의 한글 문자 생성)
- * @returns string
- */
-export function random_hangul() {
-  return String.fromCharCode(44031 + Math.ceil(11172 * Math.random()));
+interface Props {
+  initialData: CustomResponseListSearchKeyword;
 }
 
 /** 검색 */
-const Search: NextPageWithLayout = () => {
+const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
-  const [searchText, setSearchText] = useState<string>('');
+  const { v = '' } = router.query;
+  const [searchText, setSearchText] = useState<string>(v as string);
   const [searchState, setSearchState] = useState<'default' | 'searching' | 'result'>(); // 기본, 검색중, 결과
   const [recentData, setRecentData] = useState<string[]>([]); // 최근 검색어
+
+  const { data: rankData } = useQuery(
+    queryKey.topSearchKeywords,
+    async () => {
+      const { selectTopSearchKeywords } = client();
+      const res = await selectTopSearchKeywords();
+      return res.data;
+    },
+    {
+      initialData,
+      staleTime: 0,
+    },
+  );
+
+  const { data: searchData, isLoading } = useQuery(
+    queryKey.search.list(v),
+    async () => {
+      const { searchProduct } = client();
+      const res = await searchProduct({ keyword: v as string, page: 1, take: 10 });
+      return res.data.data;
+    },
+    {
+      enabled: v !== '',
+      staleTime: 0,
+    },
+  );
+
+  const { data: directData } = useQuery(
+    queryKey.search.list(searchText),
+    async () => {
+      const { searchingProductDirect } = client();
+      const res = await searchingProductDirect({ keyword: searchText as string });
+      console.log(res.data.data);
+      return res.data.data;
+    },
+    {
+      enabled: searchText !== '',
+      staleTime: 0,
+    },
+  );
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -39,6 +80,7 @@ const Search: NextPageWithLayout = () => {
     const trim = text.trim();
     const deleted = recentData.filter(data => data !== trim);
     setRecentData([trim, ...deleted]);
+    router.replace({ pathname: '/search', query: { v: text } });
   };
 
   // 검색어 삭제
@@ -66,9 +108,7 @@ const Search: NextPageWithLayout = () => {
     <div className='max-md:w-[100vw]'>
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
-        <button onClick={() => router.back()}>
-          <Image src='/assets/icons/common/arrow-back.svg' alt='back' width={24} height={24} />
-        </button>
+        <BackButton />
         <div className='ite ms-center flex h-[40px] flex-1 gap-2 rounded-md bg-grey-90 pl-3'>
           <button
             className=''
@@ -91,18 +131,28 @@ const Search: NextPageWithLayout = () => {
               else setSearchState('searching');
             }}
             onFocus={() => {
-              if (searchText.trim() === '') setSearchState('default');
-              else setSearchState('searching');
+              // if (searchText.trim() === '') setSearchState('default');
+              // else setSearchState('searching');
             }}
             onKeyDown={e => {
               if (e.key === 'Enter') {
-                if (searchText.trim() === '') return;
+                if (searchText.trim() === '') {
+                  router.replace('/search');
+                  setSearchState('default');
+                  return;
+                }
                 setSearchState('result');
                 handleAddKeyword(searchText);
               }
             }}
           />
-          <button className='h-full cursor-default pr-3' onClick={() => setSearchText('')}>
+          <button
+            className='h-full cursor-default pr-3'
+            onClick={() => {
+              setSearchText('');
+              router.replace({ pathname: '/search' });
+            }}
+          >
             <Image
               src='/assets/icons/search/close-search.svg'
               alt='delete'
@@ -124,7 +174,7 @@ const Search: NextPageWithLayout = () => {
               handleRemoveKeyword={handleRemoveKeyword}
               handleClearKeywords={handleClearKeywords}
             />
-            <PopularSearchTerms setSearchText={onSearch} />
+            <PopularSearchTerms data={rankData.data ?? []} setSearchText={onSearch} />
           </>
         ) : searchState === 'searching' ? (
           <div className=''>
@@ -132,9 +182,7 @@ const Search: NextPageWithLayout = () => {
               상품 바로가기
             </p>
             <div className='flex flex-col'>
-              {[...Array(5)].map((v, idx) => {
-                const example =
-                  random_hangul() + random_hangul() + random_hangul() + random_hangul();
+              {(directData ?? []).map((v, idx) => {
                 return (
                   <button
                     key={`searching${idx}`}
@@ -144,31 +192,30 @@ const Search: NextPageWithLayout = () => {
                     }}
                   >
                     <p className='line-clamp-1 text-start text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
-                      {`[상품${idx}] ${searchText}${example}`}
+                      {`${v.title}`}
                     </p>
                   </button>
                 );
               })}
             </div>
           </div>
+        ) : isLoading ? null : searchData && searchData.length > 0 ? (
+          <HomeProductList className='p-0.5' data={searchData ?? []} dataDto={searchData ?? []} />
         ) : (
-          <ProductList className='p-0.5' />
           // 검색 결과 없을 경우
-          // <div className=''>
-          //   <div className='h-[176px] flex flex-col items-center justify-center gap-2'>
-          //     <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
-          //     <p className='font-medium text-[14px] leading-[20px] -tracking-[0.05em] text-[#B5B5B5] text-center whitespace-pre'>
-          //       {`‘${searchText}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
-          //     </p>
-          //   </div>
-          //   <div className='mt-4 h-2 bg-[#F2F2F2]' />
-          //   <HomeCurationItem
-          //     type='TABLE'
-          //     title='지금이 딱인 제철 해산물 🦐'
-          //     description='따뜻한 봄, 가장 맛있게 먹을 수 있는 봄철 해산물 어때요?'
-          //     className='p-0'
-          //   />
-          // </div>
+          <div className=''>
+            <div className='flex h-[176px] flex-col items-center justify-center gap-2'>
+              <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+              <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                {`‘${v}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
+              </p>
+            </div>
+            <div className='mt-4 h-2 bg-[#F2F2F2]' />
+            {/* <HomeCurationItem
+              className='p-0'
+              data={[]}
+            /> */}
+          </div>
         )}
       </div>
     </div>
@@ -180,5 +227,12 @@ Search.getLayout = page => (
     {page}
   </Layout>
 );
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { selectTopSearchKeywords } = client();
+  return {
+    props: { initialData: (await selectTopSearchKeywords()).data },
+  };
+};
 
 export default Search;

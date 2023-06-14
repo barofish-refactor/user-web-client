@@ -1,0 +1,122 @@
+import { useQuery } from '@tanstack/react-query';
+import { type GetServerSideProps } from 'next';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { client } from 'src/api/client';
+import { type Notice } from 'src/api/swagger/data-contracts';
+import Layout from 'src/components/common/layout';
+import { ChevronIcon } from 'src/components/icons';
+import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { useAlertStore } from 'src/store';
+import { type NextPageWithLayout } from 'src/types/common';
+import { formatToUtc } from 'src/utils/functions';
+
+interface Props {
+  initialData: Notice;
+}
+
+const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
+  const router = useRouter();
+  const { setAlert } = useAlertStore();
+  const { id } = router.query;
+
+  const { data } = useQuery(
+    queryKey.notice.detail(Number(id)),
+    async () => {
+      const res = await client().selectNotice(Number(id));
+      console.log(res);
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      initialData,
+    },
+  );
+
+  return (
+    <div className='flex flex-1 flex-col justify-between pb-10 pt-4'>
+      <div className='space-y-3'>
+        <div className='flex items-center justify-between gap-2 px-4'>
+          <h3 className='line-clamp-1 flex-1 font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+            {data?.title}
+          </h3>
+          <time className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+            {formatToUtc(data?.createdAt, 'yyyy.MM.dd')}
+          </time>
+        </div>
+        <details open>
+          <summary className='line-clamp-2 whitespace-pre-line px-4 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-10'>
+            {data?.content}
+          </summary>
+          <p className='mt-3 whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+            {data?.content}
+          </p>
+        </details>
+      </div>
+      <nav className='grid grid-cols-[1fr,auto,1fr,auto,1fr] items-center justify-between px-4'>
+        {/* {prev ? (
+          <Link
+            href='#'
+            // TODO 작업 필요
+            className='flex items-center gap-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'
+          >
+            <ChevronIcon width={24} height={24} />
+            이전글
+          </Link>
+        ) : (
+          <div />
+        )} */}
+        {/* TODO 일단 숨김 */}
+        <div />
+        <div className='h-[14px] w-[1px] bg-[#e2e2e2]' />
+        <Link
+          href='/mypage/notice'
+          className='text-center text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'
+        >
+          목록
+        </Link>
+        <div className='h-[14px] w-[1px] bg-[#e2e2e2]' />
+        {/* {next && (
+          <Link
+            href='#'
+            // TODO 작업 필요
+            className='flex items-center justify-end gap-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'
+          >
+            다음글
+            <ChevronIcon width={24} height={24} className='rotate-180' />
+          </Link>
+        )} */}
+        {/* TODO 일단 숨김 */}
+        <div />
+      </nav>
+    </div>
+  );
+};
+
+MypageNotice.getLayout = page => (
+  <Layout className='flex flex-col' headerProps={{ disable: true }} footerProps={{ disable: true }}>
+    <div className='flex flex-1 flex-col'>
+      <header className='title-header'>
+        <BackButton />
+        <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>공지사항</h2>
+        <div className='h-6 w-6' />
+      </header>
+      {page}
+    </div>
+  </Layout>
+);
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const { id } = context.query;
+  const { selectNotice } = client();
+  return {
+    props: { initialData: (await selectNotice(Number(id))).data.data },
+  };
+};
+
+export default MypageNotice;

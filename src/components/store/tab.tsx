@@ -1,14 +1,20 @@
+import { type SimpleStore } from 'src/api/swagger/data-contracts';
 import cm from 'src/utils/class-merge';
 
 interface Props {
+  data?: SimpleStore;
   selectedTab: number;
   setSelectedTab: (value: number) => void;
 }
 
-const Tab = ({ selectedTab, setSelectedTab }: Props) => {
+const Tab = ({ data, selectedTab, setSelectedTab }: Props) => {
   return (
     <div className='mt-1 flex w-full items-center justify-between border-b border-b-[#F2F2F2] px-[21.5px]'>
-      {['방문일지', '판매상품 21', '후기 9,999+'].map((v, idx) => {
+      {[
+        '방문일지',
+        `판매상품 ${(data?.products ?? []).length}`,
+        `후기 ${(data?.reviews ?? []).length}`,
+      ].map((v, idx) => {
         const isActive = selectedTab === idx;
 
         return (

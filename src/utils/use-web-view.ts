@@ -1,43 +1,25 @@
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { off, on } from 'src/utils/functions';
+import { userAgentFromString } from 'next/server';
 
-declare global {
-  interface Window {
-    ReactNativeWebView: any;
-  }
-}
-
-/** React Native Backbutton 처리 */
-export default function useWebView() {
-  const router = useRouter();
-
+/**
+ * @description 가급적 useCallback을 사용하여 listener를 생성해야 합니다.
+ */
+export default function useWebview(callback: (event: MessageEvent) => void) {
   useEffect(() => {
-    if (window.ReactNativeWebView) {
-      const listener = (event: MessageEvent) => {
-        const message = JSON.parse(event.data);
+    if (!window.ReactNativeWebView) return;
+    const isAndroid = userAgentFromString(navigator.userAgent).os.name === 'Android';
 
-        if (message.type === 'backEvent') {
-          window.ReactNativeWebView.postMessage(
-            JSON.stringify({
-              type: 'exitApp',
-            }),
-          );
-          router.back();
-        } else if (message.type === 'navigate') {
-          router.push(message.url);
-        }
-      };
-      /** android */
-      on(document, 'message', e => listener(e as MessageEvent));
-      /** ios */
-      on(window, 'message', e => listener(e as MessageEvent));
-      return () => {
-        /** android */
-        off(document, 'message', e => listener(e as MessageEvent));
-        /** ios */
-        off(window, 'message', e => listener(e as MessageEvent));
-      };
+    const listener = (e: MessageEvent | Event) => {
+      const event = e as MessageEvent;
+      callback(event);
+    };
+
+    if (isAndroid) {
+      document.addEventListener('message', listener);
+      return () => document.removeEventListener('message', listener);
+    } else {
+      window.addEventListener('message', listener);
+      return () => window.removeEventListener('message', listener);
     }
-  }, [router]);
+  }, [callback]);
 }

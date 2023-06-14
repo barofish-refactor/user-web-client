@@ -3,17 +3,13 @@ import { Swiper, type SwiperRef, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import Image from 'next/image';
 
-const maxLength = 4;
-
 interface Props {
-  image?: {
-    origin: string;
-  };
+  image: string[];
   isShowArrow?: boolean;
 }
 
 /** 상품 상세 - 배너 */
-const Banner = ({ isShowArrow = false }: Props) => {
+const Banner = ({ image, isShowArrow = false }: Props) => {
   const refSwiper = useRef<SwiperRef>(null);
   const [pageIndex, setPageIndex] = useState<number>(0);
 
@@ -26,27 +22,17 @@ const Banner = ({ isShowArrow = false }: Props) => {
         className=''
         onSlideChange={v => setPageIndex(v.realIndex)}
       >
-        {[...Array(maxLength)].map((v, idx) => {
+        {image.map((v, idx) => {
           return (
             <SwiperSlide key={`product${idx}`} className='aspect-square w-full'>
-              <Image
-                fill
-                priority
-                src='/dummy/dummy-product-detail-1.png'
-                alt='product'
-                className=''
-              />
+              <Image fill priority src={v} alt='product' className='' />
             </SwiperSlide>
           );
         })}
       </Swiper>
       <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[20px] w-10 items-center justify-center rounded-full bg-grey-10/[.6]'>
-        <p className='whitespace-pre text-[12px] font-semibold tabular-nums tracking-[15%] text-white'>{`${
-          pageIndex + 1
-        } `}</p>
-        <p className='text-[12px] font-medium tabular-nums tracking-[15%] text-[#DDDDDD]'>
-          {`/ ${maxLength}`}
-        </p>
+        <p className='whitespace-pre text-[12px] font-semibold text-white'>{`${pageIndex + 1} `}</p>
+        <p className='text-[12px] font-medium  text-[#DDDDDD]'>{`/ ${image.length}`}</p>
       </div>
       {isShowArrow && (
         <Fragment>

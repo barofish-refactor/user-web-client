@@ -2,10 +2,7 @@ export { default as ProductBanner } from './banner';
 export { default as ProductInformationDefault } from './information-default';
 export { default as ProductCompare } from './compare';
 export { default as ProductTab } from './tab';
-export { default as ProductReview } from './review';
-export { default as ProductReviewChart } from './review-chart';
-export { default as ProductReviewPhoto } from './review-photo';
-export { default as ProductReviewItem } from './review-item';
+
 export { default as ProductInquiry } from './inquiry';
 export { default as ProductSelector } from './selector';
 export { default as ProductBottomSheet } from './bottom-sheet';

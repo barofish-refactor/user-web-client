@@ -4,10 +4,14 @@ import cm from 'src/utils/class-merge';
 import { formatToLocaleString } from 'src/utils/functions';
 
 export interface ProductSelectorType {
-  id: number;
+  // id: number;
+  optionId: number;
+  productId: number;
   option: string;
   price: number;
   value: string;
+  additionalPrice: number;
+  amount: number;
 }
 
 interface Props {
@@ -17,6 +21,7 @@ interface Props {
   setValue?: (value: ProductSelectorType) => void;
 }
 
+/** 상품 옵션 선택 Selector */
 const Selector = ({ list, placeHolder, className, setValue }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -47,7 +52,7 @@ const Selector = ({ list, placeHolder, className, setValue }: Props) => {
         />
       </button>
       {isOpen && (
-        <div className='scrollbar-hide absolute left-0 right-0 flex max-h-[calc(68px*2.5)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40'>
+        <div className='absolute left-0 right-0 flex max-h-[calc(68px*2.5)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40 scrollbar-hide'>
           {list.map((v, idx) => {
             return (
               <button
@@ -59,10 +64,11 @@ const Selector = ({ list, placeHolder, className, setValue }: Props) => {
                 }}
               >
                 <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-30'>
-                  {v.option}
+                  {`${v.option}`}{' '}
+                  {v.additionalPrice !== 0 && `(+${formatToLocaleString(v.additionalPrice)}원)`}
                 </p>
                 <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                  v.price,
+                  v.price + v.additionalPrice,
                 )}원`}</p>
               </button>
             );

@@ -1,16 +1,13 @@
 import clsx, { type ClassValue } from 'clsx';
 import { extendTailwindMerge } from 'tailwind-merge';
 
-const customFontRegex = /\b(?:display|headline|title|body|label)-(?:L(?:-long)?|M(?:-long)?|S)\b/g;
 const customColorRegex =
-  /\b(?:black|white|yellow|red|blue|orange|green|primary|secondary|transparent)\b.*/g;
+  /\b(?:black|white|transparent|primary|secondary|grey|error|warning|success|teritory)\b.*/g;
 
 const isCustomColor = (v: string): boolean => customColorRegex.test(v);
-const isCustomFont = (v: string): boolean => customFontRegex.test(v);
 
 const customTwMerge = extendTailwindMerge({
   classGroups: {
-    'font-size': [{ text: [isCustomFont] }],
     'text-color': [{ text: [isCustomColor] }],
   },
 });

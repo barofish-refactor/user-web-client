@@ -1,0 +1,20 @@
+.review-form-swiper {
+  max-width: 100vw;
+}
+.review-form-swiper div.swiper-slide {
+  width: 160px;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 8px;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+.review-form-swiper .swiper-slide:first-of-type {
+  margin-left: 16px;
+}
+
+@screen md {
+  .review-form-swiper {
+    max-width: 375px;
+  }
+}

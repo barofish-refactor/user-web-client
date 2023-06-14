@@ -9,8 +9,7 @@ const config = {
 
     return config;
   },
-  // distDir: 'dist', // Static HTML Export면 주석 해제
-  // output: '', // Static HTML Export면 'export', Dockerizing이면 'standalone'
+  output: 'standalone',
   reactStrictMode: false,
   experimental: {
     scrollRestoration: true,
@@ -19,6 +18,38 @@ const config = {
     unoptimized: true,
     disableStaticImages: true,
   },
+  env: {
+    NEXT_PUBLIC_IAMPORT_KEY: 'imp38983932',
+    NAVER_KEY: '6R7kGWl8rIGqIYSXt91M',
+    KAKAO_KEY: 'ce11ca781427ffa0ee2f8358ab575e9a',
+    APPLE_KEY: 'com.matsinger.barofish.signin',
+  },
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/:path*',
+  //       has: [
+  //         {
+  //           type: 'host',
+  //           value: 'www.shop.barofish.com',
+  //         },
+  //       ],
+  //       destination: 'shop.barofish.com/:path*',
+  //       permanent: true,
+  //     },
+  //     {
+  //       source: '/:path*',
+  //       has: [
+  //         {
+  //           type: 'host',
+  //           value: 'www.app.barofish.com',
+  //         },
+  //       ],
+  //       destination: 'app.barofish.com/:path*',
+  //       permanent: true,
+  //     },
+  //   ];
+  // },
 };
 
 export default config;

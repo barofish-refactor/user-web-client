@@ -34,13 +34,13 @@ const RecentSearches = ({
           return (
             <button
               key={`recent${idx}`}
-              className='flex h-9 items-center justify-center gap-1 rounded-full border border-grey-80 px-3'
+              className='flex h-9 max-w-full items-center justify-center gap-1 rounded-full border border-grey-80 px-3'
               onClick={() => {
                 setSearchText(v);
                 handleAddKeyword(v);
               }}
             >
-              <p className='line-clamp-1 text-[14px] font-normal -tracking-[0.05em] text-grey-10'>
+              <p className='line-clamp-1 break-keep text-[14px] font-normal -tracking-[0.05em] text-grey-10'>
                 {v}
               </p>
               <Image

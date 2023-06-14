@@ -1,33 +1,53 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatToLocaleString } from 'src/utils/functions';
+import { useRouter } from 'next/router';
+import { type ProductListDto, type Product } from 'src/api/swagger/data-contracts';
+import { calcDiscountPrice, formatToLocaleString } from 'src/utils/functions';
 
-const ProductItem = () => {
+interface Props {
+  data: Product;
+  dataDto?: ProductListDto;
+}
+
+const ProductItem = ({ data, dataDto }: Props) => {
+  const router = useRouter();
+  const image = (data.images ?? '')?.replace('[', '').replace(']', '').split(',');
+
   return (
-    <Link href={{ pathname: '/product', query: { id: 1 } }}>
+    <button
+      className='flex w-full flex-col text-start'
+      onClick={() => {
+        router.push({ pathname: '/product', query: { id: data.id } });
+      }}
+    >
       <div className='relative aspect-square w-full overflow-hidden rounded-lg'>
-        <Image fill src='/dummy/dummy-thumbnail-1.png' alt='image' draggable={false} />
-        <span
-          className='absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#5B5D62]/[.7] backdrop-blur-[2.5px]'
-          onClick={e => {
-            e.preventDefault();
-            console.log('장바구니 id:1');
-          }}
+        <Image
+          fill
+          src={(dataDto ? dataDto.image : image?.[0]) ?? '/'}
+          alt='image'
+          draggable={false}
+        />
+        <Link
+          href={{ pathname: '/product', query: { id: data.id, openState: 'open' } }}
+          as={{ pathname: '/product', query: { id: data.id } }}
+          className='absolute bottom-2 right-2 grid h-9 w-9 place-items-center rounded-full bg-[#5B5D62]/[.7] backdrop-blur-[2.5px]'
         >
           <Image src='/assets/icons/common/cart-product.svg' alt='cart' width={16} height={17} />
-        </span>
+        </Link>
       </div>
       <p className='mt-2 line-clamp-2 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-        [현대식 냉풍기계 건조] 목포 반건조 병어 37-~510g
+        {data.title}
       </p>
       <div className='mt-0.5 flex items-center gap-0.5'>
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${15}%`}</p>
+        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${
+          data.discountRate ?? 0
+        }%`}</p>
         <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-          12300,
+          calcDiscountPrice(data.originPrice, data.discountRate),
         )}원`}</p>
       </div>
       <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
-        15000,
+        data.originPrice,
       )}원`}</p>
       <div className='mt-1 flex items-center gap-0.5'>
         <Image
@@ -40,9 +60,11 @@ const ProductItem = () => {
         <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>
           후기
         </p>
-        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${0}+`}</p>
+        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${
+          (data.reviews ?? []).length
+        }`}</p>
       </div>
-    </Link>
+    </button>
   );
 };
 

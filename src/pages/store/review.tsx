@@ -1,21 +1,18 @@
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import Layout from 'src/components/common/layout';
 import { ProductBanner } from 'src/components/product';
+import { BackButton } from 'src/components/ui';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToUtc, formatToLocaleString } from 'src/utils/functions';
 
 /** 후기 상세보기 */
 const Review: NextPageWithLayout = () => {
-  const router = useRouter();
   // const { id } = router.query;
 
   return (
     <div className='max-md:w-[100vw]'>
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
-        <button onClick={() => router.back()}>
-          <Image src='/assets/icons/common/arrow-back.svg' alt='back' width={24} height={24} />
-        </button>
+        <BackButton />
         <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           후기 상세보기
         </p>
@@ -24,7 +21,7 @@ const Review: NextPageWithLayout = () => {
           <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
         </Link> */}
       </div>
-      <ProductBanner isShowArrow />
+      <ProductBanner isShowArrow image={[]} />
       <div className='p-4'>
         <div className='flex items-center gap-1'>
           <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>

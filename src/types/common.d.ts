@@ -1,6 +1,38 @@
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 
+type Naver = {
+  LoginWithNaverId: new (args: any) => {
+    init: () => void;
+    getLoginStatus: (callback: (status: boolean) => void) => void;
+    user: {
+      id: string;
+      age?: string;
+      // birthday
+      // birthyear
+      // email
+      // gender
+      // mobile
+      // name
+      // nickname
+      // profile_image
+    };
+  };
+};
+
+type Daum = {
+  Postcode: {
+    new (postcodeOptions: PostcodeOptions): Postcode;
+  };
+};
+
+type IMP = {
+  init: (key: string) => void;
+  request_pay: (props: any, callback: (response: any) => void) => void;
+};
+
+type ReactNativeWebView = any;
+
 declare global {
   type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
   /**
@@ -22,9 +54,22 @@ declare global {
    * @example type Example = Nullish<number> // expect number | null | undefined
    */
   type Nullish<T> = T | null | undefined;
+
+  interface Window {
+    naver: Naver;
+    daum: Daum;
+    IMP: IMP;
+    ReactNativeWebView: ReactNativeWebView;
+  }
 }
 
 /** 각 page component의 getLayout함수를 수용 */
 type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type FileType = {
+  id?: string;
+  file: File | null;
+  previewUrl: string;
 };

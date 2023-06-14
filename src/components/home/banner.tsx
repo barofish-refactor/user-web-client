@@ -3,11 +3,14 @@ import { Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import Image from 'next/image';
+import { Banner } from 'src/api/swagger/data-contracts';
 
-const maxLength = 4;
+interface Props {
+  data: Banner[];
+}
 
 /** 홈화면 - 배너 */
-const Banner = () => {
+const Banner = ({ data }: Props) => {
   const [pageIndex, setPageIndex] = useState<number>(0);
 
   return (
@@ -16,28 +19,26 @@ const Banner = () => {
         loop
         modules={[Autoplay]}
         spaceBetween={16}
-        className=''
+        className='aspect-[375/208]'
         autoplay={{
           delay: 3000,
           disableOnInteraction: false,
         }}
         onSlideChange={v => setPageIndex(v.realIndex)}
       >
-        {[...Array(maxLength)].map((v, idx) => {
+        {data.map((v, idx) => {
           return (
             <SwiperSlide key={`banner_${idx}`} className='aspect-[375/208] w-full'>
-              <Image fill priority src='/dummy/dummy-banner-1.png' alt='banner' className='' />
+              <Image fill priority src={v.image ?? ''} alt='banner' className='object-cover' />
             </SwiperSlide>
           );
         })}
       </Swiper>
       <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[19.71px] w-[41px] items-center justify-center rounded-full bg-black/[.3] backdrop-blur-[5px]'>
-        <p className='whitespace-pre text-[12px] font-semibold tabular-nums tracking-[15%] text-white'>{`${
+        <p className='whitespace-pre text-[12px] font-semibold tabular-nums text-white'>{`${
           pageIndex + 1
         } `}</p>
-        <p className='text-[12px] font-medium tabular-nums tracking-[15%] text-[#DDDDDD]'>
-          {`/ ${maxLength}`}
-        </p>
+        <p className='text-[12px] font-medium tabular-nums text-[#DDDDDD]'>{`/ ${data.length}`}</p>
       </div>
     </div>
   );

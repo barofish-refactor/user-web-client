@@ -1,9 +1,11 @@
+import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type ComponentProps } from 'react';
 
 import cm from 'src/utils/class-merge';
+import { VARIABLES } from 'src/variables';
 
 interface GnbType {
   title: string;
@@ -66,33 +68,43 @@ export function Footer({ className, ...props }: FooterProps) {
 
   return (
     <footer {...props} className={cm('sticky bottom-0 z-50', className)}>
-      <div className='flex h-[56px] border-t border-t-grey-90 bg-white pt-2'>
+      <div className='flex h-[56px] border-t border-t-grey-90 bg-white'>
         {gnbList.map((v, i) => {
           const isActive = v.path === router.pathname;
 
           return (
-            <Link
+            <button
               key={i}
-              href={v.path}
-              className={cm('flex h-[48px] flex-1 flex-col items-center justify-between', {
-                'pt-0.5': v.paddingTop === 2,
-              })}
+              className='h-[56px] flex-1'
+              onClick={() => {
+                if (i === 4) {
+                  // console.log(getCookie(VARIABLES.ACCESS_TOKEN));
+                  if (!getCookie(VARIABLES.ACCESS_TOKEN)) router.push('/login');
+                  else router.push(v.path);
+                } else router.push(v.path);
+              }}
             >
-              <Image
-                src={isActive ? v.activeIcon : v.inactiveIcon}
-                alt={v.title}
-                width={v.iconWidth}
-                height={v.iconHeight}
-              />
-              <p
-                className={cm(
-                  'whitespace-nowrap text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-[#969696]',
-                  { 'font-bold text-primary-50': isActive },
-                )}
+              <div
+                className={cm('flex h-[48px] flex-1 flex-col items-center justify-between pt-2', {
+                  'pt-2.5': v.paddingTop === 2,
+                })}
               >
-                {v.title}
-              </p>
-            </Link>
+                <Image
+                  src={isActive ? v.activeIcon : v.inactiveIcon}
+                  alt={v.title}
+                  width={v.iconWidth}
+                  height={v.iconHeight}
+                />
+                <p
+                  className={cm(
+                    'whitespace-nowrap text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-[#969696]',
+                    { 'font-bold text-primary-50': isActive },
+                  )}
+                >
+                  {v.title}
+                </p>
+              </div>
+            </button>
           );
         })}
       </div>

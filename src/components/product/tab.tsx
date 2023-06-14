@@ -3,12 +3,13 @@ import cm from 'src/utils/class-merge';
 interface Props {
   selectedTab: number;
   setSelectedTab: (value: number) => void;
+  reviewCount: number;
 }
 
-const Tab = ({ selectedTab, setSelectedTab }: Props) => {
+const Tab = ({ selectedTab, setSelectedTab, reviewCount }: Props) => {
   return (
     <div className='mt-3 flex w-full items-center justify-between border-b border-b-[#F2F2F2] px-3'>
-      {['상품상세', '후기 9,999+', '문의', '배송'].map((v, idx) => {
+      {['상품상세', `후기 ${reviewCount}`, '문의', '배송'].map((v, idx) => {
         const isActive = selectedTab === idx;
 
         return (

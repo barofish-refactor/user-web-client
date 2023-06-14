@@ -44,7 +44,7 @@ const Selector = ({ list, placeHolder, className, value, setValue }: Props) => {
         />
       </button>
       {isOpen && (
-        <div className='scrollbar-hide absolute left-0 right-0 flex max-h-[calc(40px*4)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40'>
+        <div className='absolute left-0 right-0 flex max-h-[calc(40px*4)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40 scrollbar-hide'>
           {list.map((v, idx) => {
             return (
               <button

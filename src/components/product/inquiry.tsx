@@ -1,71 +1,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { type inquiryType } from 'src/pages/product/inquiry';
+import { useState } from 'react';
+import { Inquiry } from 'src/api/swagger/data-contracts';
 import cm from 'src/utils/class-merge';
 import { formatToUtc } from 'src/utils/functions';
+import { parseInquiryState } from 'src/utils/parse';
 
-interface Inquiry {
-  title: string;
-  content: string;
-  type: inquiryType;
-  state: 'WAITING' | 'DONE';
-  isSecret: boolean;
-  answer?: string;
-  userName: string;
-  user: {
-    id: number;
-    name: string;
-  };
-  createdAt: Date;
+interface Props {
+  productId: number;
+  data: Inquiry[];
 }
 
-const dummyInquiry: Inquiry[] = [
-  {
-    title: '언제도착하나요',
-    content: '궁금해요',
-    type: 'DELIVERY',
-    state: 'WAITING',
-    isSecret: false,
-    userName: '이**',
-    user: {
-      id: 0,
-      name: '이이이',
-    },
-    createdAt: new Date(),
-  },
-  {
-    title: '언제도착하나요',
-    content: '궁금해요',
-    type: 'REFUND',
-    state: 'DONE',
-    isSecret: false,
-    userName: '이**',
-    user: {
-      id: 0,
-      name: '이이이',
-    },
-    createdAt: new Date(),
-  },
-  {
-    title: '언제도착하나요',
-    content: '궁금해요',
-    type: 'ETC',
-    state: 'DONE',
-    isSecret: true,
-    userName: '이**',
-    user: {
-      id: 0,
-      name: '이이이',
-    },
-    createdAt: new Date(),
-  },
-];
+const Inquiry = ({ productId, data }: Props) => {
+  const [openIndex, setOpenIndex] = useState<number>();
 
-const Inquiry = () => {
   return (
     <div className=''>
       <Link
-        href={{ pathname: '/product/inquiry', query: { id: 1 } }}
+        href={{ pathname: '/product/inquiry', query: { id: productId } }}
         className='mx-4 mb-[18px] mt-5 flex h-[42px] items-center justify-center rounded-lg border border-primary-50'
       >
         <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>
@@ -73,14 +25,14 @@ const Inquiry = () => {
         </p>
       </Link>
       <div>
-        {dummyInquiry.map((v, idx) => {
-          const isDone = v.state === 'DONE';
+        {data.map((v, idx) => {
+          const isDone = !!v.answer;
           return (
             <div key={`inquiry${idx}`} className=''>
               <button
-                className='flex w-full items-end justify-between py-[22px] pl-4 pr-[14.5px]'
+                className='flex w-full items-end justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px]'
                 onClick={() => {
-                  //
+                  setOpenIndex(openIndex === idx ? undefined : idx);
                 }}
               >
                 <div className='flex flex-col gap-2'>
@@ -88,22 +40,18 @@ const Inquiry = () => {
                     <p
                       className={cm(
                         'text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20',
-                        { 'text-grey-70': isDone },
+                        { 'text-grey-70': v.isSecret },
                       )}
                     >
-                      {v.type === 'DELIVERY'
-                        ? '[상품문의]'
-                        : v.type === 'REFUND'
-                        ? '[반품/취소]'
-                        : '[기타]'}
+                      {`[${parseInquiryState(v.type)}]`}
                     </p>
                     <p
                       className={cm(
                         'text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20',
-                        { 'text-grey-70': isDone },
+                        { 'text-grey-70': v.isSecret },
                       )}
                     >
-                      {v.title}
+                      {v.isSecret ? '비밀글입니다.' : v.content}
                     </p>
                   </div>
                   <div className='flex items-center gap-2'>
@@ -117,7 +65,7 @@ const Inquiry = () => {
                     </p>
                     <div className='h-2.5 w-[1px] bg-grey-80' />
                     <p className='text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-30'>
-                      {v.userName}
+                      {v.id}
                     </p>
                     <div className='h-2.5 w-[1px] bg-grey-80' />
                     <p className='text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-30'>{`${formatToUtc(
@@ -131,10 +79,30 @@ const Inquiry = () => {
                   alt='chevron'
                   width={23.5}
                   height={24.5}
-                  className={cm('mb-[3px]', { 'rotate-180': true })}
+                  className={cm('mb-[3px]', { 'rotate-180': openIndex !== idx })}
                   draggable={false}
                 />
               </button>
+              {openIndex === idx && (
+                <div className='flex flex-col gap-[17px] bg-grey-90 px-4 pb-[27px] pt-5'>
+                  <div className='flex gap-3'>
+                    <div className='flex h-[26px] w-[26px] items-center justify-center rounded-full bg-primary-70'>
+                      <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-90'>Q</p>
+                    </div>
+                    <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20'>
+                      {v.content}
+                    </p>
+                  </div>
+                  <div className='flex gap-3'>
+                    <div className='flex h-[26px] w-[26px] items-center justify-center rounded-full bg-primary-50'>
+                      <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-90'>A</p>
+                    </div>
+                    <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20'>
+                      {v.answer}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}

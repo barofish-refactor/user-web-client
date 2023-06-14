@@ -1,7 +1,8 @@
 import { add, format } from 'date-fns';
-import { useCallback } from 'react';
+import useScript from 'src/utils/use-script';
 import { VARIABLES } from 'src/variables';
-import useScript from './use-script';
+
+export const impSuccessKey = 'imp_success';
 
 /** 아임포트 pg사 종류 */
 export enum IamportPg {
@@ -59,6 +60,7 @@ export enum IamportPg {
   Smartro = 'smartro',
   /** 세틀뱅크 */
   Settle = 'settle',
+  TosspayPayment = 'tosspayments',
 }
 
 /** 아임포트 결제수단 */
@@ -108,7 +110,7 @@ export enum IamportPayMethod {
 /** 아임포트 결제정보 */
 export type IamportData = {
   /** pg사 종류 */
-  pg?: IamportPg;
+  pg?: IamportPg | any;
   /** 결제수단 */
   payMethod?: IamportPayMethod;
   /** 주문번호 */
@@ -140,71 +142,47 @@ export interface IamportProps {
   /** 성공시 실행 함수 */
   onSuccess: () => void;
   /** 실패시 실행 함수 */
-  onFailure: () => void;
+  onFailure: (message: string) => void;
 }
 
-type RequestPayParam = any;
-type RequestPayCallback = any;
+export const useIamport = () => {
+  const iamportScriptState = useScript('https://cdn.iamport.kr/v1/iamport.js');
 
-declare global {
-  interface Window {
-    IMP: {
-      init: (key: string) => void;
-      request_pay: (
-        props: RequestPayParam,
-        callback: (response: RequestPayCallback) => void,
-      ) => void;
+  const onIamport = (p: IamportProps) => {
+    if (iamportScriptState !== 'ready') return;
+
+    const { IMP } = window;
+
+    IMP.init(process.env.NEXT_PUBLIC_IAMPORT_KEY);
+
+    const value = {
+      pg: p.data.pg ?? IamportPg.Html5Inicis,
+      pay_method: p.data.payMethod ?? IamportPayMethod.Card,
+      merchant_uid: p.data.merchantUid,
+      name: p.data.productName,
+      amount: p.data.amount,
+      buyer_email: p.data.email,
+      buyer_name: p.data.name,
+      buyer_tel: p.data.tel,
+      buyer_addr: p.data.address,
+      buyer_postcode: p.data.postcode,
+      vbank_due: format(add(new Date(), { hours: p.data.vbankDueHour ?? 24 }), 'yyyyMMddHHmm'),
+      m_redirect_url: p.data.mobileRedirectUrl,
+      notice_url: VARIABLES.END_POINT + '/callback/iamport_pay_result',
+      // notice_url: 'http://43.201.240.47:8080/callback/iamport_pay_result',
     };
-  }
-}
 
-export default function useIamport() {
-  const jqueryStatus = useScript('https://code.jquery.com/jquery-1.12.4.min.js');
-  const iamportStatus = useScript('https://cdn.iamport.kr/js/iamport.payment-1.2.0.js');
-
-  const executeIamport = useCallback(
-    () => (p: IamportProps) => {
-      if (jqueryStatus !== 'ready') {
-        console.log('jquery script load에 실패했습니다.');
-        return;
+    const callback = (response: any) => {
+      if (response.error_code) {
+        if (process.env.NODE_ENV === 'development') console.log(response);
+        p.onFailure(response.error_msg);
+      } else {
+        p.onSuccess();
       }
-      if (iamportStatus !== 'ready') {
-        console.log('iamport script load에 실패했습니다.');
-        return;
-      }
+    };
 
-      const { IMP } = window;
+    IMP.request_pay(value, callback);
+  };
 
-      IMP.init(process.env.NEXT_PUBLIC_IAMPORT_KEY);
-
-      const value = {
-        pg: p.data.pg ?? IamportPg.Html5Inicis,
-        pay_method: p.data.payMethod ?? IamportPayMethod.Card,
-        merchant_uid: p.data.merchantUid,
-        name: p.data.productName,
-        amount: p.data.amount,
-        buyer_email: p.data.email,
-        buyer_name: p.data.name,
-        buyer_tel: p.data.tel,
-        buyer_addr: p.data.address,
-        buyer_postcode: p.data.postcode,
-        vbank_due: format(add(new Date(), { hours: p.data.vbankDueHour ?? 24 }), 'yyyyMMddHHmm'),
-        m_redirect_url: p.data.mobileRedirectUrl,
-        notice_url: VARIABLES.END_POINT.replace('/graphql', '/callback/iamport_pay_result'),
-      };
-
-      const callback = (response: RequestPayCallback) => {
-        if (response.success) {
-          p.onSuccess();
-        } else {
-          p.onFailure();
-        }
-      };
-
-      IMP.request_pay(value, callback);
-    },
-    [iamportStatus, jqueryStatus],
-  );
-
-  return [executeIamport];
-}
+  return onIamport;
+};

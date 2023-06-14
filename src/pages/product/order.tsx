@@ -1,22 +1,113 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
 import { ProductShippingAddress } from 'src/components/product';
+import { type optionState } from 'src/components/product/bottom-sheet';
+import { BackButton } from 'src/components/ui';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { formatToLocaleString } from 'src/utils/functions';
+import { formatToLocaleString, formatToPhone } from 'src/utils/functions';
+import { bToA } from 'src/utils/parse';
+import { IamportPayMethod, IamportPg, impSuccessKey, useIamport } from 'src/utils/use-iamport';
+import { type OrderReq, type DeliverPlace } from 'src/api/swagger/data-contracts';
+import { useAlertStore } from 'src/store';
+import { queryKey } from 'src/query-key';
+import { PatternFormat } from 'react-number-format';
 
 /** 주문하기 */
 const Order: NextPageWithLayout = () => {
   const router = useRouter();
-  // const { id } = router.query;
+  const { options } = router.query;
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const { setAlert } = useAlertStore();
+
+  const selectedOption: optionState[] = router.isReady ? JSON.parse(bToA(options as string)) : [];
+  const totalPrice =
+    selectedOption.length > 0
+      ? selectedOption
+          .map(x => (x.price + x.additionalPrice) * x.amount)
+          .reduce((a: number, b: number) => a + b)
+      : 0;
+  const totalDelivery =
+    selectedOption.length > 0
+      ? selectedOption.map(x => x.deliveryFee).reduce((a: number, b: number) => a + b)
+      : 0;
 
   const [name, setName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
+  const [shippingAddress, setShippingAddress] = useState<DeliverPlace[]>([]);
   const [point, setPoint] = useState<string>('');
-  const [isCheck, setIsCheck] = useState<boolean>(false);
+  const [isOpenProduct, setIsOpenProduct] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isCheck, setIsCheck] = useState<boolean>(true);
+  const onIamport = useIamport();
+
+  const onIamportResult = (orderId: string, isSuccess: boolean) => {
+    console.log('isSuccess :', isSuccess);
+    router.push({
+      pathname: '/product/payment',
+      query: { ...router.query, [impSuccessKey]: isSuccess, orderId },
+    });
+  };
+
+  const getMobileResultUrl = (orderId: string) => {
+    const url = new URL(`${location.origin}${'/product/payment'}`);
+    url.searchParams.set('id', router.query.id as string);
+    url.searchParams.set('orderId', orderId);
+    url.searchParams.set('options', options as string);
+
+    return url.href;
+  };
+
+  // const { data } = useQuery(
+  //   queryKey.product.detail(id),
+  //   async () => {
+  //     const res = await client().selectProduct(Number(id));
+  //     if (res.data.isSuccess) {
+  //       return res.data.data;
+  //     } else {
+  //       throw new Error(res.data.code + ': ' + res.data.errorMsg);
+  //     }
+  //   },
+  //   {
+  //     enabled: !!id,
+  //     onError: err => console.log(err),
+  //   },
+  // );
+
+  const { data: _ } = useQuery(
+    queryKey.user,
+    async () => {
+      const res = await client().selectUserSelfInfo();
+
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        if (res.data.code === 'FORBIDDEN') {
+          router.replace('/login');
+          return;
+        }
+        setAlert({ message: res.data.errorMsg ?? '' });
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      staleTime: 0,
+      onSuccess: res => {
+        setName(res?.name ?? '');
+        setPhone(res?.phone ?? '');
+        setShippingAddress(res?.deliverPlaces ?? []);
+      },
+    },
+  );
+
+  const { mutateAsync: orderProduct } = useMutation((args: OrderReq) =>
+    client().orderProduct(args),
+  );
 
   useEffect(() => {
     const close = () => {
@@ -43,16 +134,14 @@ const Order: NextPageWithLayout = () => {
       <div className='sticky top-0 z-[100] w-full'>
         {isVisible && (
           <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
-            <ProductShippingAddress setIsVisible={setIsVisible} />
+            <ProductShippingAddress data={shippingAddress} setIsVisible={setIsVisible} />
           </div>
         )}
       </div>
 
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
-        <button onClick={() => router.back()}>
-          <Image src='/assets/icons/common/arrow-back.svg' alt='back' width={24} height={24} />
-        </button>
+        <BackButton />
         <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>주문하기</p>
         <div className='w-6' />
       </div>
@@ -78,17 +167,14 @@ const Order: NextPageWithLayout = () => {
           <p className='w-[71px] text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
             연락처
           </p>
-          <input
-            maxLength={13}
-            type='number'
-            className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+          <PatternFormat
+            format='###-####-####'
             placeholder='휴대폰 번호를 입력해주세요'
+            inputMode='numeric'
+            spellCheck={false}
             value={phone}
-            onChange={e => {
-              const text = e.target.value;
-              if (text.length > 11) return;
-              setPhone(text);
-            }}
+            className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+            onChange={e => setPhone(e.target.value)}
           />
         </div>
       </div>
@@ -112,48 +198,109 @@ const Order: NextPageWithLayout = () => {
             </p>
           </button>
         </div>
-        <div className='mt-[22px] flex items-center gap-2'>
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>집</p>
-          <div className='flex h-[22px] items-center justify-center rounded-full bg-primary-90 px-2'>
-            <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-primary-60'>
-              기본배송지
+        {shippingAddress.length > 0 && (
+          <Fragment>
+            <div className='mt-[22px] flex items-center gap-2'>
+              <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                집
+              </p>
+              {shippingAddress[0].isDefault && (
+                <div className='flex h-[22px] items-center justify-center rounded-full bg-primary-90 px-2'>
+                  <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-primary-60'>
+                    기본배송지
+                  </p>
+                </div>
+              )}
+            </div>
+            <p className='mt-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+              {`${shippingAddress[0].name}, ${formatToPhone(shippingAddress[0].tel)}`}
             </p>
-          </div>
-        </div>
-        <p className='mt-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
-          홍길동, 010-1111-1111
-        </p>
-        <div className='my-2.5 h-[1px] bg-grey-90' />
-        <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
-          서울 강남구 강남대로 지하 396 (역삼동) 강남역, 지하 1층 강남역, 지하 1층 강남역, 지하 1층
-        </p>
-        <p className='mt-1 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
-          부재 시 연락주세요
-        </p>
+            <div className='my-2.5 h-[1px] bg-grey-90' />
+            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+              {/* 서울 강남구 강남대로 지하 396 (역삼동) 강남역, 지하 1층 강남역, 지하 1층 강남역, 지하 1층 */}
+              {`${shippingAddress[0].address} ${shippingAddress[0].addressDetail}`}
+            </p>
+            <p className='mt-1 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+              {/* 부재 시 연락주세요 */}
+              {shippingAddress[0].deliverMessage}
+            </p>
+          </Fragment>
+        )}
       </div>
       <div className='h-2 bg-grey-90' />
 
       {/* 주문 상품 */}
       <button
         className='flex h-[68px] w-full items-center gap-1.5 px-4'
-        onClick={() => {
-          //
-        }}
+        onClick={() => setIsOpenProduct(!isOpenProduct)}
       >
         <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           주문 상품
         </p>
         <p className='line-clamp-1 flex-1 text-end text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
-          목포 손질먹갈치 400g 외 1개
+          {/* {`${data?.data?.title}`}{`${product.length > 1 ? ' 외 1개' :''}`} */}
+          {`${selectedOption[0].productName}`}
         </p>
         <Image
           src='/assets/icons/common/chevron-mypage.svg'
           alt='chevron'
           width={24}
           height={24}
-          className='rotate-90'
+          className={cm(!isOpenProduct ? 'rotate-90' : 'rotate-[270deg]')}
         />
       </button>
+      {isOpenProduct &&
+        selectedOption.map((v, idx) => {
+          return (
+            <div key={`option${idx}`} className='px-4'>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-2'>
+                  <Image
+                    src={v.storeImage}
+                    alt=''
+                    width={28}
+                    height={28}
+                    className='h-7 w-7 rounded-full border border-grey-90 object-cover'
+                  />
+                  <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                    {v.storeName}
+                  </p>
+                </div>
+                <div className='flex items-center gap-1'>
+                  <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
+                    배송비
+                  </p>
+                  <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>{`${
+                    v.deliveryFee === 0 ? '무료' : formatToLocaleString(v.deliveryFee) + '원'
+                  }`}</p>
+                </div>
+              </div>
+              <div className='mt-[13px] flex items-center gap-3'>
+                <Image
+                  alt=''
+                  width={70}
+                  height={70}
+                  className='h-[70px] w-[70px] rounded object-cover'
+                  src={v.productImage}
+                />
+                <div className='flex flex-col gap-1'>
+                  <p className='text-[14px] font-medium leading-[22px] text-grey-10'>
+                    {v.productName}
+                  </p>
+                  <p className='text-[14px] font-medium leading-[22px] text-grey-40'>
+                    {v.name} : {v.amount}개
+                  </p>
+                </div>
+              </div>
+              <div className='mb-4 flex items-center justify-end'>
+                <p className='text-[16px] font-bold leading-[24px] text-grey-10'>
+                  {formatToLocaleString((v.price + v.additionalPrice) * v.amount)}원
+                </p>
+              </div>
+              {idx !== selectedOption.length - 1 && <div className='mb-4 h-[1px] bg-grey-90' />}
+            </div>
+          );
+        })}
       <div className='h-2 bg-grey-90' />
 
       {/* 쿠폰 */}
@@ -240,15 +387,15 @@ const Order: NextPageWithLayout = () => {
           결제수단
         </p>
         <p className='flex-1 text-end text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
-          네이버페이
+          신용카드
         </p>
-        <Image
+        {/* <Image
           src='/assets/icons/common/chevron-mypage.svg'
           alt='chevron'
           width={24}
           height={24}
           className='rotate-90'
-        />
+        /> */}
       </button>
       <div className='h-2 bg-grey-90' />
 
@@ -263,7 +410,7 @@ const Order: NextPageWithLayout = () => {
               주문금액
             </p>
             <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
-              36480,
+              totalPrice,
             )}원`}</p>
           </div>
           <div className='flex items-center justify-between'>
@@ -271,7 +418,7 @@ const Order: NextPageWithLayout = () => {
               배송비
             </p>
             <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`+${formatToLocaleString(
-              3000,
+              totalDelivery,
             )}원`}</p>
           </div>
           <div className='flex items-center justify-between'>
@@ -287,7 +434,7 @@ const Order: NextPageWithLayout = () => {
               적립금사용
             </p>
             <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`-${formatToLocaleString(
-              480,
+              0,
             )}원`}</p>
           </div>
         </div>
@@ -297,13 +444,13 @@ const Order: NextPageWithLayout = () => {
             최종 결제 금액
           </p>
           <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-            36000,
+            totalPrice + totalDelivery,
           )}원`}</p>
         </div>
       </div>
       <div className='h-2 bg-grey-90' />
 
-      {/* 결제 금액 */}
+      {/* 적립금 혜택 */}
       <div className='px-4 py-[22px]'>
         <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           적립금 혜택
@@ -314,7 +461,7 @@ const Order: NextPageWithLayout = () => {
           </p>
           <div className='flex flex-col items-end'>
             <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
-              360,
+              Math.floor(((totalPrice + totalDelivery) / 100) * 1),
             )}원`}</p>
             <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
               (멸치 등급 : 구매 적립 1%)
@@ -335,13 +482,44 @@ const Order: NextPageWithLayout = () => {
             예상 적립 금액
           </p>
           <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-primary-50'>{`${formatToLocaleString(
-            36000,
+            Math.floor(((totalPrice + totalDelivery) / 100) * 1) + 650,
           )}원`}</p>
         </div>
       </div>
       <div className='h-2 bg-grey-90' />
 
-      {/* 개인정보 수집 이용 동의 */}
+      {/* 개인정보 수집 이용 동의 -> (사업자 정보 임시) */}
+      <div className='px-4 py-[22px]'>
+        <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
+          (주) 맛신저 사업자정보
+        </p>
+        <div className='mt-[18px] flex flex-col gap-2'>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            COMPANY : 주식회사 맛신저 (matsinger inc.)
+          </p>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            CEO : 신용진
+          </p>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            ADDRESS : 서울특별시 서대문구 신촌로 25 2층, 2328호
+          </p>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            TEL : 1668-4591
+          </p>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            FAX : 0504-366-3633
+          </p>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            BUSINESS LICENCE : 380-88-02372
+          </p>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            ONLINE LICENCE : 2022-서울서대문-1579
+          </p>
+          <p className='leaidng-[16px] text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            PRIVACY OFFICER : 노승우 (help@barofish.com)
+          </p>
+        </div>
+      </div>
       <div className='py-[22px]'>
         <button
           className='flex w-full items-center gap-2 px-4'
@@ -383,19 +561,77 @@ const Order: NextPageWithLayout = () => {
             'flex h-[52px] w-full items-center justify-center rounded-lg bg-[#D4D5D8]',
             { 'bg-primary-50': isCheck },
           )}
-          onClick={() => {
+          onClick={async () => {
             if (isCheck) {
-              router.back();
+              console.log(
+                selectedOption.map(x => {
+                  return {
+                    productId: x.productId,
+                    optionId: x.optionId === -1 ? undefined : x.optionId,
+                    amount: x.amount,
+                  };
+                }),
+              );
+              orderProduct({
+                products: selectedOption.map(x => {
+                  return {
+                    productId: x.productId,
+                    optionId: x.optionId === -1 ? undefined : x.optionId,
+                    amount: x.amount,
+                  };
+                }),
+                name,
+                tel: phone,
+                // point,
+                deliverPlaceId: shippingAddress[0].id,
+                totalPrice: totalPrice + totalDelivery,
+              })
+                .then(res => {
+                  console.log(res.data);
+                  if (res.data.isSuccess) {
+                    const orderId = res.data.data?.id ?? '';
+                    onIamport({
+                      data: {
+                        pg: `${IamportPg.TosspayPayment}.${'iamporttest_3'}`,
+                        payMethod: IamportPayMethod.Card,
+                        merchantUid: orderId,
+                        mobileRedirectUrl: getMobileResultUrl(orderId),
+                        productName: selectedOption[0]?.productName ?? '',
+                        amount: totalPrice + totalDelivery,
+                        email: '',
+                        address: '',
+                        postcode: '',
+                        tel: phone,
+                        name,
+                      },
+                      onSuccess: () => onIamportResult(orderId, true),
+                      onFailure: () => onIamportResult(orderId, false),
+                    });
+                  } else {
+                    console.log(res.data);
+                    setAlert({ message: '2:' + res.data.errorMsg ?? '' });
+                    return false;
+                  }
+                })
+                .catch(err => {
+                  setAlert({ message: '1:' + err });
+                });
             }
           }}
         >
           <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
-            {`${formatToLocaleString(36000)}원 결제하기`}
+            {`${formatToLocaleString(totalPrice + totalDelivery)}원 결제하기`}
           </p>
         </button>
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
 };
 
 Order.getLayout = page => (

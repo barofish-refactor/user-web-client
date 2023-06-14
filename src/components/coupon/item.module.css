@@ -1,0 +1,23 @@
+.coupon {
+  --py: 16px;
+  --pl: 13px;
+  --p-block: var(--py);
+  --p-left: var(--pl);
+}
+
+.coupon[data-border='true'] {
+  --p: 1px;
+  background-image: linear-gradient(
+    279.34deg,
+    rgba(38, 89, 229, 0.6) -1.88%,
+    rgba(58, 208, 255, 0.6) 104.26%
+  );
+  padding: var(--p);
+  --p-block: calc(var(--py) - var(--p));
+  --p-left: calc(var(--pl) - var(--p));
+}
+
+.content {
+  padding-block: var(--p-block);
+  padding-left: var(--p-left);
+}

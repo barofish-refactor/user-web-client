@@ -1,7 +1,11 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import cm from 'src/utils/class-merge';
 
 /** 홈화면 - 푸터 (정보) */
 const Footer = () => {
+  const [showInfo, setShowInfo] = useState<boolean>(false);
   return (
     <div className='pt-[62px]'>
       <div className='h-2 bg-grey-90' />
@@ -10,46 +14,44 @@ const Footer = () => {
         거래정보 및 거래에 대하여 책임을 지지 않습니다.
       </p>
       <div className='px-[16px] pb-[118px] pt-[23px]'>
-        <button>
+        <button onClick={() => setShowInfo(!showInfo)}>
           <div className='flex items-center gap-[5px]'>
             <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
               (주) 맛신저 사업자정보
             </p>
-            <Image src='/assets/icons/common//chevron-footer.svg' alt='' width={13} height={8} />
+            <Image
+              src='/assets/icons/common/chevron-footer.svg'
+              alt=''
+              width={13}
+              height={8}
+              className={cm({ 'rotate-180': showInfo })}
+            />
           </div>
         </button>
-        <div className='mt-[18px] flex items-center gap-[3px]'>
-          <p className='text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>
-            Copyright
-          </p>
-          <p className='text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>
-            ©
-          </p>
-          <p className='text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>
-            바로피쉬.
-          </p>
-          <p className='ml-0.5 text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>
-            All rights reserved.
-          </p>
+        {showInfo && (
+          <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            <p>COMPANY : 주식회사 맛신저 (matsinger inc.)</p>
+            <p>CEO : 신용진</p>
+            <p>ADDRESS : 서울특별시 서대문구 신촌로 25 2층, 2328호</p>
+            <p>TEL : 1668-4591</p>
+            <p>FAX : 0504-366-3633</p>
+            <p>BUSINESS LICENCE : 380-88-02372</p>
+            <p>ONLINE LICENCE : 2022-서울서대문-1579</p>
+            <p>PRIVACY OFFICER : 노승우 (help@barofish.com)</p>
+          </div>
+        )}
+        <div className='mt-[18px] flex items-center gap-[3px] text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>
+          <p>Copyright</p>
+          <p>©</p>
+          <p>바로피쉬.</p>
+          <p>All rights reserved.</p>
         </div>
-        <div className='mt-2.5 flex items-center gap-[13px]'>
-          <button>
-            <p className='text-[12px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
-              이용약관
-            </p>
-          </button>
+        <div className='mt-2.5 flex items-center gap-3 text-[12px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
+          <Link href='/terms-of-service'>이용약관</Link>
           <div className='h-[14px] w-[1px] bg-[#E2E2E2]' />
-          <button>
-            <p className='mr-[3px] text-[12px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
-              개인정보처리방침
-            </p>
-          </button>
+          <Link href='/privacy'>개인정보처리방침</Link>
           <div className='h-[14px] w-[1px] bg-[#E2E2E2]' />
-          <button>
-            <p className='text-[12px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
-              사업자정보확인
-            </p>
-          </button>
+          <Link href='/marketing'>마케팅 수신 동의</Link>
         </div>
         <div className='mt-[7px] flex items-center gap-[7px]'>
           <p className='text-[12px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>

@@ -22,23 +22,16 @@ export function Header({ className, ...props }: HeaderProps) {
             검색어를 입력해주세요.
           </p>
         </Link>
-        <Link href='/notice'>
-          <Image
-            src='/assets/icons/common/notification-title.svg'
-            alt='notification'
-            width={22}
-            height={24}
-          />
-        </Link>
-        <Link href='/product/cart'>
-          <Image
-            src='/assets/icons/common/cart-title.svg'
-            alt='cart'
-            width={22}
-            height={23}
-            className='ml-[1px]'
-          />
-        </Link>
+        {/* 비교하기 */}
+        <Link
+          href='/compare/storage'
+          className='h-6 w-6 bg-[url(/assets/icons/common/bookmark-title.svg)] bg-cover'
+        />
+        {/* 장바구니 */}
+        <Link
+          href='/product/cart'
+          className='ml-[1px] h-[23px] w-[22px] bg-[url(/assets/icons/common/cart-title.svg)] bg-cover'
+        />
       </div>
     </header>
   );

@@ -2,13 +2,33 @@ import { ProductSmallSlideItem } from 'src/components/common';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { FreeMode } from 'swiper';
+import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
+import { client } from 'src/api/client';
+import { useMutation } from '@tanstack/react-query';
+import { useAlertStore } from 'src/store';
 
 interface Props {
-  data?: any[];
+  data: ProductListDto[];
 }
 
 /** 홈화면 - 큐레이션 (슬라이드 - 대) */
-const CurationLargeSlide = ({}: Props) => {
+const CurationLargeSlide = ({ data }: Props) => {
+  const { setAlert } = useAlertStore();
+
+  const { mutateAsync: addBasket, isLoading } = useMutation((args: AddBasketPayload) =>
+    client().addBasket(args),
+  );
+
+  const onMutate = (args: AddBasketPayload) => {
+    if (isLoading) return;
+    addBasket(args)
+      .then(res => {
+        if (res.data.isSuccess) {
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
   return (
     <Swiper
       freeMode
@@ -23,10 +43,10 @@ const CurationLargeSlide = ({}: Props) => {
         paddingRight: '16px',
       }}
     >
-      {[...Array(10)].map((v, idx) => {
+      {data.map((v, idx) => {
         return (
           <SwiperSlide key={`curation${idx}`} className=''>
-            <ProductSmallSlideItem type='LARGE' />
+            <ProductSmallSlideItem data={v} type='LARGE' onMutate={onMutate} />
           </SwiperSlide>
         );
       })}

@@ -1,5 +1,52 @@
+import { setCookie } from 'cookies-next';
 import { lightFormat } from 'date-fns';
+import { type Jwt } from 'src/api/swagger/data-contracts';
+import { VARIABLES } from 'src/variables';
 import { REG_EXP } from './regex';
+
+export function setToken(jwt: Jwt | undefined) {
+  const { ACCESS_TOKEN, REFRESH_TOKEN, TOKEN_MAX_AGE } = VARIABLES;
+
+  const option = { maxAge: TOKEN_MAX_AGE };
+  setCookie(ACCESS_TOKEN, jwt?.accessToken, option);
+  setCookie(REFRESH_TOKEN, jwt?.refreshToken, option);
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({
+        type: 'login',
+        accessToken: jwt?.accessToken,
+        refreshToken: jwt?.refreshToken,
+      }),
+    );
+  }
+}
+
+export const requestPermission = (type: string, value?: string) => {
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({
+        type,
+        value,
+      }),
+    );
+  }
+};
+
+export function maskingCardNumber(value: Nullish<string>) {
+  if (!value) return '';
+  return value
+    .replace(/-/g, '')
+    .replace(/(\d{6})(\d{6})(\d{4})/, '$1******$3')
+    .replace(/(.{15})(\d{1})/, '$1*');
+}
+
+/* HTTP Status 415 에러 헨들링 */
+export function formatToBlob<T>(value: T, toJson?: boolean) {
+  // @ts-ignore
+  return new Blob([toJson ? JSON.stringify(value) : value], {
+    type: 'application/json',
+  }) as unknown as T;
+}
 
 /** 문자열을 base64로 암호화 */
 export const atob = (str = ''): string => Buffer.from(str, 'base64').toString('binary');
@@ -54,6 +101,10 @@ export function formatToLocaleString(
 ): string {
   let result = value;
 
+  if (!result) {
+    return '0';
+  }
+
   if (typeof result === 'string' || typeof result === 'number') {
     if (Number.isNaN(result)) {
       result = '-';
@@ -105,4 +156,16 @@ export function off<T extends Window | Document | HTMLElement | EventTarget>(
   if (obj && obj.removeEventListener) {
     obj.removeEventListener(...(args as Parameters<HTMLElement['removeEventListener']>));
   }
+}
+
+/**
+ * 할인율 계산 처리 (10자리 반올림)
+ */
+export function calcDiscountPrice(
+  originPrice: number | undefined,
+  discountRate: number | undefined,
+): number {
+  return (
+    Math.round(((originPrice ?? 0) - (originPrice ?? 0) * ((discountRate ?? 0) / 100)) / 10) * 10
+  );
 }

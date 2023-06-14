@@ -1,10 +1,14 @@
+import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
+import { PatternFormat } from 'react-number-format';
+import { type DeliverPlace } from 'src/api/swagger/data-contracts';
 import { Selector } from 'src/components/common';
 import { type SelectorType } from 'src/components/common/selector';
 import cm from 'src/utils/class-merge';
 
 interface Props {
+  data: DeliverPlace[];
   setIsVisible: (value: boolean) => void;
 }
 
@@ -17,7 +21,7 @@ const messageList = [
   '직접입력',
 ];
 
-const ShippingAddress = ({ setIsVisible }: Props) => {
+const ShippingAddress = ({ data, setIsVisible }: Props) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [message, setMessage] = useState<SelectorType>();
 
@@ -26,6 +30,12 @@ const ShippingAddress = ({ setIsVisible }: Props) => {
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] w-full shrink-0 items-center justify-between gap-3.5 bg-white px-4'>
         <button
+          className={clsx(
+            'h-6 w-6 bg-cover',
+            isEdit
+              ? 'bg-[url(/assets/icons/common/close-base.svg)]'
+              : 'bg-[url(/assets/icons/common/arrow-back.svg)]',
+          )}
           onClick={() => {
             if (isEdit) {
               setIsEdit(false);
@@ -34,37 +44,30 @@ const ShippingAddress = ({ setIsVisible }: Props) => {
               setIsVisible(false);
             }
           }}
-        >
-          <Image
-            alt='back'
-            width={24}
-            height={24}
-            src={
-              isEdit ? '/assets/icons/common/close-base.svg' : '/assets/icons/common/arrow-back.svg'
-            }
-          />
-        </button>
+        />
         <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>
           {isEdit ? '배송지 입력' : '배송지 목록'}
         </p>
         <div className='w-6' />
       </div>
       {!isEdit ? (
-        <div className='scrollbar-hide w-full flex-1 overflow-auto'>
-          {[...Array(2)].map((v, idx) => {
+        <div className='w-full flex-1 overflow-auto scrollbar-hide'>
+          {data.map((v, idx) => {
             return (
               <div key={`shipping${idx}`} className=''>
                 <div className='px-4 py-[22px]'>
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-2'>
                       <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                        집
+                        {v.name}
                       </p>
-                      <div className='flex h-[22px] items-center justify-center rounded-full bg-primary-90 px-2'>
-                        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-primary-60'>
-                          기본배송지
-                        </p>
-                      </div>
+                      {v.isDefault && (
+                        <div className='flex h-[22px] items-center justify-center rounded-full bg-primary-90 px-2'>
+                          <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-primary-60'>
+                            기본배송지
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <button
                       className=''
@@ -83,11 +86,10 @@ const ShippingAddress = ({ setIsVisible }: Props) => {
                   <p className='mt-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>{`${'홍길동, 010-1111-1111'}`}</p>
                   <div className='my-2.5 h-[1px] bg-grey-90' />
                   <p className='text-[16px[ font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
-                    서울 강남구 강남대로 지하 396 (역삼동) 강남역, 지하 1층 강남역, 지하 1층 강남역,
-                    지하 1층
+                    {`${v.address} ${v.addressDetail}`}
                   </p>
                   <p className='mt-1 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
-                    부재시 연락주세요
+                    {v.deliverMessage}
                   </p>
                   <div className='flex items-center justify-end gap-[18px]'>
                     <button
@@ -119,7 +121,7 @@ const ShippingAddress = ({ setIsVisible }: Props) => {
           })}
         </div>
       ) : (
-        <div className='scrollbar-hide w-full flex-1 overflow-auto'>
+        <div className='w-full flex-1 overflow-auto scrollbar-hide'>
           <div className='flex flex-col gap-4 px-4 py-[22px]'>
             <div className='flex items-center'>
               <p className='w-[84px] text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
@@ -143,9 +145,14 @@ const ShippingAddress = ({ setIsVisible }: Props) => {
               <p className='w-[84px] text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
                 연락처
               </p>
-              <input
-                className='flex h-[44px] flex-1 items-center rounded-lg border border-grey-80 px-3 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+              <PatternFormat
+                format='###-####-####'
                 placeholder='휴대폰 번호를 입력해주세요'
+                inputMode='numeric'
+                spellCheck={false}
+                className='flex h-[44px] flex-1 items-center rounded-lg border border-grey-80 px-3 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+                // value={phone}
+                // onChange={e => setPhone(e.target.value)}
               />
             </div>
             <div className='flex flex-col gap-2'>

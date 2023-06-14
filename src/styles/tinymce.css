@@ -1,0 +1,36 @@
+.tinymce *:not(img) {
+  all: revert;
+}
+
+.tinymce img {
+  max-width: 100%;
+}
+
+.tinymce table[style*='border-width: 0px'],
+.tinymce table[style*='border-width: 0px'] caption,
+.tinymce table[style*='border-width: 0px'] td,
+.tinymce table[style*='border-width: 0px'] th {
+  border: 1px dashed #bbb;
+}
+
+.tinymce table {
+  border-collapse: collapse;
+}
+
+.tinymce table:not([cellpadding]) td,
+.tinymce table:not([cellpadding]) th {
+  padding: 0.4rem;
+}
+
+.tinymce table[border]:not([border='0']):not([style*='border-width']) td,
+.tinymce table[border]:not([border='0']):not([style*='border-width']) th {
+  border-width: 1px;
+}
+.tinymce table[border]:not([border='0']):not([style*='border-style']) td,
+.tinymce table[border]:not([border='0']):not([style*='border-style']) th {
+  border-style: solid;
+}
+.tinymce table[border]:not([border='0']):not([style*='border-color']) td,
+.tinymce table[border]:not([border='0']):not([style*='border-color']) th {
+  border-color: #ccc;
+}

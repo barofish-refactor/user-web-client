@@ -9,8 +9,9 @@ export const VARIABLES = {
     process.env.NEXT_PUBLIC_END_POINT.match(/https:\/\//) ? 's' : ''
   }://${process.env.NEXT_PUBLIC_END_POINT.replace(/https?:\/\//, '')}`,
   /** accessToken 이름 */
-  ACCESS_TOKEN: 'atk',
+  ACCESS_TOKEN: 'barofish-atk',
   /** refreshToken 이름 */
-  REFRESH_TOKEN: 'rtk',
+  REFRESH_TOKEN: 'barofish-rtk',
   TOKEN_MAX_AGE: 60 * 60 * 24 * 7, // 7 days
+  DAUM_POSTCODE_URL: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
 };

@@ -1,34 +1,40 @@
+import addDays from 'date-fns/addDays';
 import Image from 'next/image';
 import Link from 'next/link';
+// import Link from 'next/link';
+import { type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ChevronIcon } from 'src/components/icons';
-import { formatToLocaleString } from 'src/utils/functions';
+// import { ChevronIcon } from 'src/components/icons';
+import { calcDiscountPrice, formatToLocaleString, formatToUtc } from 'src/utils/functions';
 
 interface Props {
-  data?: any;
+  data?: SimpleProductDto;
 }
 
 /** 상품 상세 - 기본 정보 */
-const InformationDefault = ({}: Props) => {
+const InformationDefault = ({ data }: Props) => {
   return (
     <div className=''>
       <div className='px-4 pb-5 pt-[15px]'>
-        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>{`선어>갈치`}</p>
+        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>{`${data?.category?.parentCategoryName}>${data?.category?.name}`}</p>
         <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
-          [3차 세척, 스킨포장] 목포 손질 먹갈치 400~650g
+          {data?.title}
         </p>
         <p className='mt-[5px] text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'>
-          {`${formatToLocaleString(4923)}개의 후기`}
+          {`${formatToLocaleString((data?.reviews ?? []).length)}개의 후기`}
         </p>
         <div className='mt-3 flex items-center justify-between'>
           <div>
             <div className='flex items-center gap-0.5'>
-              <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-teritory'>{`${20}%`}</p>
+              <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-teritory'>{`${
+                data?.discountRate ?? 0
+              }%`}</p>
               <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-70 line-through'>{`${formatToLocaleString(
-                30000,
+                data?.originPrice,
               )}원`}</p>
             </div>
             <p className='-mt-[5px] text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-black'>{`${formatToLocaleString(
-              24000,
+              calcDiscountPrice(data?.originPrice, data?.discountRate),
             )}원`}</p>
           </div>
           {/* <button
@@ -57,19 +63,19 @@ const InformationDefault = ({}: Props) => {
         </p>
         <div className='mt-3 flex flex-col gap-3.5'>
           <div className='flex items-center gap-[26px]'>
-            <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+            <p className='whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               배송안내
             </p>
             <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
-              배송비 3,000원 (제주 및 산간 도서 지방 배송 불가)
+              {`${data?.deliveryInfo ?? ''}`}
             </p>
           </div>
           <div className='flex items-center gap-[26px]'>
-            <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+            <p className='whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               발송안내
             </p>
             <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
-              모레(토) 3/4 도착예정
+              {`${formatToUtc(addDays(new Date(), data?.expectedDeliverDay ?? 0), 'M/d')} 도착예정`}
             </p>
           </div>
         </div>
@@ -78,7 +84,7 @@ const InformationDefault = ({}: Props) => {
       {/* 스토어 */}
       <div className='flex items-center gap-[13px] px-4 pb-7 pt-[21px]'>
         <Image
-          src='/dummy/dummy-store-1.png'
+          src={data?.store?.profileImage ?? '/'}
           alt='store'
           width={40}
           height={40}
@@ -86,19 +92,19 @@ const InformationDefault = ({}: Props) => {
         />
         <div className='flex-1 flex-col gap-1'>
           <p className='text-[14px] font-bold leading-[22px] -tracking-[0.03em] text-grey-10'>
-            서준수산
+            {data?.store?.name ?? ''}
           </p>
           <div className='flex items-center gap-[5px]'>
             <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
-              전라남도 목포
+              {data?.store?.location ?? ''}
             </p>
             <div className='h-[11px] w-[1px] bg-grey-80' />
             <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>{`후기 개수 ${formatToLocaleString(
-              555,
+              0,
             )}`}</p>
           </div>
         </div>
-        <Link href={{ pathname: '/store/detail', query: { id: 1 } }}>
+        <Link href={{ pathname: '/store/detail', query: { id: data?.store?.storeId } }}>
           <div className='flex h-[34px] items-center justify-center rounded-lg bg-primary-90 px-2'>
             <p className='text-[12px] font-bold -tracking-[0.03em] text-primary-70'>스토어 보기</p>
             <ChevronIcon className='rotate-180' width={18} height={18} />
