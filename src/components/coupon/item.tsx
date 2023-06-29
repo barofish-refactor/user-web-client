@@ -2,15 +2,18 @@ import s from './item.module.css';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { type Coupon } from 'src/api/swagger/data-contracts';
+import cm from 'src/utils/class-merge';
 import { formatToLocaleString, formatToUtc } from 'src/utils/functions';
 
 export function CouponItem({
   item,
   isAvailable,
+  isOrder,
   onClick,
 }: {
   item: Coupon;
   isAvailable?: boolean;
+  isOrder?: boolean;
   onClick?: (item: Coupon) => void;
 }) {
   // const hasBorder = item.id % 2 === 0;
@@ -19,16 +22,19 @@ export function CouponItem({
   const onDownload = () => {
     if (onClick) onClick(item);
     else alert('다운로드');
-    // TODO 기능 구현 필요
   };
 
   return (
     <div
-      data-border={hasBorder} // TODO 보더 조건 파악 필요
-      className={clsx(
+      data-border={hasBorder}
+      className={cm(
         s.coupon,
         'h-[144px] overflow-hidden rounded-lg bg-white shadow-[0px_3px_6px_rgba(0,0,0,0.15)]',
+        { 'cursor-pointer': isOrder },
       )}
+      onClick={() => {
+        if (isOrder && onClick) onDownload();
+      }}
     >
       <div className='relative flex h-full overflow-hidden rounded-lg bg-white'>
         <LinearGradient />
@@ -49,7 +55,7 @@ export function CouponItem({
             </div>
             <div className='flex items-center gap-[7px]'>
               <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
-                {formatToUtc(item.startAt, 'MM.dd')} ~ {formatToUtc(item.endAt, 'MM.dd')}
+                {formatToUtc(item.startAt, 'yy.MM.dd')} ~ {formatToUtc(item.endAt, 'yy.MM.dd')}
               </span>
               <span className='text-[12px] leading-[18px] -tracking-[0.03em] text-grey-60'>
                 {`최소 ${formatToLocaleString(item.minPrice)}원 이상 구매 시`}
@@ -57,11 +63,11 @@ export function CouponItem({
             </div>
           </div>
           <button
-            disabled={!isAvailable}
+            disabled={!isAvailable && !isOrder}
             className='grid h-full basis-[67px] place-items-center border-l border-dashed border-primary-70'
             onClick={onDownload}
           >
-            {isAvailable && (
+            {isAvailable && !isOrder && (
               <Image
                 src='/assets/icons/coupon/download.svg'
                 width={24}

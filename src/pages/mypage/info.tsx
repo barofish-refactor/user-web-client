@@ -2,13 +2,13 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link, { type LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
-import { type MouseEventHandler, useEffect, useState } from 'react';
+import { type MouseEventHandler, useEffect, useState, Fragment } from 'react';
 import { client } from 'src/api/client';
 import { type UpdateUserPayload } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
 import { MyProfile, myProfileDefaultValue } from 'src/components/form';
 import { ProductShippingAddress } from 'src/components/product';
-import { BackButton } from 'src/components/ui';
+import { BackButton, Checkbox } from 'src/components/ui';
 import { type MypageEditType } from 'src/pages/mypage/edit/[type]';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
@@ -16,10 +16,6 @@ import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { formatToBlob, formatToPhone } from 'src/utils/functions';
 import useLogout from 'src/utils/use-logout';
-
-/* 
-  TODO 배송지 수정 연동 필요
-*/
 
 const getDynamicEditHref = (type: MypageEditType): LinkProps['href'] => ({
   pathname: '/mypage/edit/[type]',
@@ -48,20 +44,20 @@ const MypageInfo: NextPageWithLayout = () => {
     }
   });
 
-  const { mutateAsync: likeStoreByUser, isLoading } = useMutation((args: UpdateUserPayload) =>
+  const { mutateAsync: updateUser, isLoading } = useMutation((args: UpdateUserPayload) =>
     client().updateUser(args),
   );
 
   const onMutate = ({ data, profileImage }: UpdateUserPayload) => {
     if (isLoading) return;
-    likeStoreByUser({
+    updateUser({
       data: formatToBlob<UpdateUserPayload['data']>(data, true),
       profileImage,
     })
       .then(res => {
         if (res.data.isSuccess) {
-          setAlert({ message: '변경되었습니다.', type: 'success' });
           refetch();
+          setAlert({ message: '변경되었습니다.', type: 'success' });
         } else {
           setAlert({ message: res.data.errorMsg ?? '' });
         }
@@ -102,7 +98,7 @@ const MypageInfo: NextPageWithLayout = () => {
       <div className='sticky top-0 z-[100] w-full'>
         {isVisible && (
           <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
-            <ProductShippingAddress data={user?.deliverPlaces ?? []} setIsVisible={setIsVisible} />
+            <ProductShippingAddress setIsVisible={setIsVisible} />
           </div>
         )}
       </div>
@@ -125,8 +121,10 @@ const MypageInfo: NextPageWithLayout = () => {
           <div className='mt-10'>
             <Row label='이름' value={user?.name} />
             <Row label='닉네임' value={user?.nickname} href={getDynamicEditHref('nickname')} />
-            <Row label='이메일' value={user?.email} />
-            <Row label='비밀번호' value='변경하기' href={getDynamicEditHref('password')} />
+            <Row label='이메일' value={user?.email ? user.email : '소셜계정'} />
+            {user?.email && (
+              <Row label='비밀번호' value='변경하기' href={getDynamicEditHref('password')} />
+            )}
             <Row
               label='휴대폰 번호'
               value={formatToPhone(user?.phone)}
@@ -140,9 +138,40 @@ const MypageInfo: NextPageWithLayout = () => {
                 history.pushState(location.href, '', '');
               }}
             />
+            <div className='flex items-center justify-between border-b border-b-[#f2f2f2] py-5'>
+              <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+                마케팅 수신 동의
+              </span>
+              <div className='flex items-center gap-1.5'>
+                <Checkbox
+                  id='check'
+                  iconSize={18}
+                  checked={user?.isAgreeMarketing}
+                  onCheckedChange={checked => {
+                    if (typeof checked !== 'boolean') return;
+                    onMutate({
+                      data: {
+                        isAgreeMarketing: checked,
+                      },
+                    });
+                  }}
+                />
+                <div className='flex items-center'>
+                  <Link
+                    className='border-b border-b-grey-50 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'
+                    href='/marketing'
+                  >
+                    마케팅 수신
+                  </Link>
+                  <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
+                    에 동의합니다.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <nav className='flex items-center justify-center gap-4 text-[13px] leading-[20px] -tracking-[0.03em] text-grey-70'>
+        <nav className='mt-[30px] flex items-center justify-center gap-4 text-[13px] leading-[20px] -tracking-[0.03em] text-grey-70'>
           <button onClick={onLogout}>로그아웃</button>
           <div className='h-[14px] w-[1px] bg-grey-90' />
           <Link href='/mypage/withdrawal'>회원탈퇴</Link>

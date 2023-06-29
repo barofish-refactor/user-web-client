@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import Image from 'next/image';
 import { Banner } from 'src/api/swagger/data-contracts';
+import { useRouter } from 'next/router';
+import cm from 'src/utils/class-merge';
 
 interface Props {
   data: Banner[];
@@ -11,7 +13,14 @@ interface Props {
 
 /** 홈화면 - 배너 */
 const Banner = ({ data }: Props) => {
+  const router = useRouter();
   const [pageIndex, setPageIndex] = useState<number>(0);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setPageIndex(0);
+    }
+  }, [data]);
 
   return (
     <div className='relative'>
@@ -19,26 +28,64 @@ const Banner = ({ data }: Props) => {
         loop
         modules={[Autoplay]}
         spaceBetween={16}
-        className='aspect-[375/208]'
+        className='aspect-[375/270]'
         autoplay={{
           delay: 3000,
           disableOnInteraction: false,
         }}
-        onSlideChange={v => setPageIndex(v.realIndex)}
+        onSlideChange={v => setPageIndex(v.realIndex ?? 0)}
       >
         {data.map((v, idx) => {
           return (
-            <SwiperSlide key={`banner_${idx}`} className='aspect-[375/208] w-full'>
-              <Image fill priority src={v.image ?? ''} alt='banner' className='object-cover' />
+            <SwiperSlide key={`banner_${idx}`} className='aspect-[375/270] w-full'>
+              {v.image && (
+                <Image
+                  priority={idx === 0}
+                  src={v.image ?? ''}
+                  width={375}
+                  height={208}
+                  alt='banner'
+                  className={cm('aspect-[375/270] w-full object-cover', {
+                    'cursor-pointer': ['CURATION', 'CATEGORY', 'NOTICE'].includes(v.type ?? ''),
+                  })}
+                  onClick={() => {
+                    switch (v.type) {
+                      case 'CURATION':
+                        router.push({
+                          pathname: '/search/product-result',
+                          query: { type: 'curation', id: v.curationId, title: v.curation?.title },
+                        });
+                        break;
+                      case 'CATEGORY':
+                        router.push({
+                          pathname: '/search/product-result',
+                          query: {
+                            type: 'category',
+                            id: v.category?.categoryId,
+                            subItemId: v.categoryId,
+                            title: v.category?.name,
+                          },
+                        });
+                        break;
+                      case 'NOTICE':
+                        router.push({ pathname: '/mypage/notice/[id]', query: { id: v.noticeId } });
+                        break;
+                      default:
+                        break;
+                    }
+                  }}
+                />
+              )}
             </SwiperSlide>
           );
         })}
       </Swiper>
       <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[19.71px] w-[41px] items-center justify-center rounded-full bg-black/[.3] backdrop-blur-[5px]'>
-        <p className='whitespace-pre text-[12px] font-semibold tabular-nums text-white'>{`${
-          pageIndex + 1
-        } `}</p>
-        <p className='text-[12px] font-medium tabular-nums text-[#DDDDDD]'>{`/ ${data.length}`}</p>
+        <p>{}</p>
+        <p className='whitespace-pre text-[12px] font-semibold tabular-nums text-white'>
+          {data.length === 0 ? 0 : (isNaN(pageIndex) ? 0 : pageIndex) + 1}
+        </p>
+        <p className='whitespace-pre text-[12px] font-medium tabular-nums text-[#DDDDDD]'>{` / ${data.length}`}</p>
       </div>
     </div>
   );

@@ -38,6 +38,7 @@ const Footer = () => {
             <p>BUSINESS LICENCE : 380-88-02372</p>
             <p>ONLINE LICENCE : 2022-서울서대문-1579</p>
             <p>PRIVACY OFFICER : 노승우 (help@barofish.com)</p>
+            <p>운영 시간 : 9~18시 근무, 12~1시 점심시간</p>
           </div>
         )}
         <div className='mt-[18px] flex items-center gap-[3px] text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>

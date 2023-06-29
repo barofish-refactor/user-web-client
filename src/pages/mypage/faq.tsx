@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import { type Notice } from 'src/api/swagger/data-contracts';
-import Layout from 'src/components/common/layout';
 import { ChevronIcon } from 'src/components/icons';
-import { BackButton } from 'src/components/ui';
+import { FaqLayout } from 'src/components/mypage/faq';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
@@ -16,13 +16,13 @@ interface Props {
 
 const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
   const { setAlert } = useAlertStore();
+  const [content, setContent] = useState<string[]>([]);
 
   const { data } = useQuery(
     queryKey.faq.lists,
     async () => {
       const res = await client().selectNoticeList({ type: 'FAQ' });
       if (res.data.isSuccess) {
-        console.log(res.data);
         return res.data.data;
       } else {
         setAlert({ message: res.data.errorMsg ?? '' });
@@ -34,11 +34,26 @@ const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
+  useEffect(() => {
+    if (data) {
+      Promise.all(
+        data.map(x => {
+          return fetch(x.content ?? '')
+            .then(res => res.text())
+            .then(res => res.toString())
+            .catch(err => console.log(JSON.stringify(err)));
+        }),
+      ).then(res => {
+        setContent(res as string[]);
+      });
+    }
+  }, [data]);
+
   if (!data || data.length === 0) return <Empty />;
 
   return (
     <article className='pb-10 pt-2'>
-      {data.map(v => (
+      {data.map((v, i) => (
         <details key={v.id} className='group border-b border-b-grey-90'>
           <summary className='flex justify-between gap-2 p-4 text-[14px]'>
             <h3 className='line-clamp-1 flex-1 font-semibold leading-[22px] -tracking-[0.03em] text-grey-20 group-open:line-clamp-none'>
@@ -47,12 +62,12 @@ const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
             <ChevronIcon
               width={24}
               height={24}
-              className='rotate-90 self-start group-open:-rotate-90'
+              className='-rotate-90 self-start group-open:rotate-90'
             />
           </summary>
-          <p className='whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
-            {v.content}
-          </p>
+          <div className='whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+            {content[i] && <div dangerouslySetInnerHTML={{ __html: content[i] }} className='' />}
+          </div>
         </details>
       ))}
     </article>
@@ -72,18 +87,7 @@ function Empty() {
   );
 }
 
-MypageFaq.getLayout = page => (
-  <Layout headerProps={{ disable: true }} footerProps={{ disable: true }} className='flex flex-col'>
-    <div className='flex flex-1 flex-col'>
-      <header className='title-header'>
-        <BackButton />
-        <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>FAQ</h2>
-        <div className='h-6 w-6' />
-      </header>
-      {page}
-    </div>
-  </Layout>
-);
+MypageFaq.getLayout = page => <FaqLayout page={page} />;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const { selectNoticeList } = client();

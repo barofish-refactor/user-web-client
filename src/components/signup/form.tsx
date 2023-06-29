@@ -7,6 +7,7 @@ import { type JoinUserPayload } from 'src/api/swagger/data-contracts';
 import {
   AddressField,
   AgreementsField,
+  FormField,
   MyProfile,
   PasswordField,
   PhoneField,
@@ -15,7 +16,6 @@ import {
   type AddressFormType,
   type AgreementsFormType,
   type PhoneFormType,
-  FormField,
 } from 'src/components/form';
 import { useAlertStore } from 'src/store';
 import { formatToBlob } from 'src/utils/functions';
@@ -30,6 +30,7 @@ interface FormType extends PhoneFormType, AddressFormType, AgreementsFormType {
 
 export function SignupForm() {
   const router = useRouter();
+  // const { onCertification } = useIamport();
   const form = useForm<FormType>();
   const { handleSubmit, getValues, setError, setFocus } = form;
   const [profile, setProfile] = useState(myProfileDefaultValue);
@@ -46,10 +47,10 @@ export function SignupForm() {
       setFocus('verificationCode');
       return;
     }
-    if (!profile.file) {
-      setAlert({ message: '프로필 사진을 등록해주세요.' });
-      return;
-    }
+    // if (!profile.file) {
+    //   setAlert({ message: '프로필 사진을 등록해주세요.' });
+    //   return;
+    // }
 
     joinUser({
       data: formatToBlob<JoinUserPayload['data']>(
@@ -67,7 +68,7 @@ export function SignupForm() {
         },
         true,
       ),
-      profileImage: profile.file,
+      profileImage: profile.file ?? undefined,
     })
       .then(res => {
         if (res.data.isSuccess) {
@@ -87,6 +88,13 @@ export function SignupForm() {
       });
   });
 
+  // useEffect(() => {
+  //   const imp_uid = router.query.imp_uid;
+
+  //   if (!imp_uid) return;
+  //   client().verification({ impUid: imp_uid }})
+  // }, [router]);
+
   return (
     <FormProvider {...form}>
       <form autoComplete='new-password' className='pb-6' onSubmit={onSubmit}>
@@ -98,25 +106,30 @@ export function SignupForm() {
             fieldKey='email'
             label='이메일'
             placeholder='이메일을 입력해 주세요'
-            options={{ required: { value: true, message: '이메일을 입력해주세요' } }}
+            options={{ required: { value: true, message: '이메일을 입력해 주세요' } }}
           />
           <FormField
             label='이름'
             fieldKey='name'
             placeholder='이름을 입력해 주세요'
-            options={{ required: { value: true, message: '이름을 입력해주세요' } }}
+            options={{ required: { value: true, message: '이름을 입력해 주세요' } }}
           />
           <FormField
             fieldKey='nickname'
             label='닉네임'
             placeholder='닉네임을 입력해 주세요'
-            options={{ required: { value: true, message: '닉네임을 입력해주세요' } }}
+            options={{ required: { value: true, message: '닉네임을 입력해 주세요' } }}
           />
           <PasswordField
             label='비밀번호'
             fieldKey='password'
-            placeholder='비밀번호를 입력해 주세요'
-            options={{ required: { value: true, message: '비밀번호를 입력해 주세요' } }}
+            placeholder='영문,숫자,특수문자 8자리 이상'
+            options={{
+              required: {
+                value: true,
+                message: '비밀번호를 입력해 주세요 (영문,숫자,특수문자 8자리 이상)',
+              },
+            }}
           />
           <PasswordField
             label='비밀번호 확인'
@@ -127,6 +140,17 @@ export function SignupForm() {
               validate: v => v === getValues('password') || '동일한 비밀번호를 입력하세요.',
             }}
           />
+          {/* 본인인증시 필요 */}
+          {/* <div>
+            <label className={labelClassName}>본인 인증</label>
+            <button
+              type='button'
+              className='h-11 w-full rounded-lg border border-primary-50 text-[14px] font-bold leading-[22px] -tracking-[0.03em] text-primary-50 data-[invalid=true]:border-error data-[invalid=true]:text-error'
+              onClick={onCertification}
+            >
+              본인 인증
+            </button>
+          </div> */}
           <PhoneField />
           <AddressField />
         </div>

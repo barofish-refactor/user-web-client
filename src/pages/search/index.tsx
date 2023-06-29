@@ -1,16 +1,23 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type CustomResponseListSearchKeyword } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
-import { HomeProductList } from 'src/components/home';
+import { HomeCurationItem, HomeProductList } from 'src/components/home';
 import { PopularSearchTerms, RecentSearches } from 'src/components/search';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
+import { useAlertStore, type indexFilterType, useFilterStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
+import { aToB, bToA, type sortType } from 'src/utils/parse';
+import { REG_EXP } from 'src/utils/regex';
+
+const perView = 10;
 
 interface Props {
   initialData: CustomResponseListSearchKeyword;
@@ -19,10 +26,17 @@ interface Props {
 /** 검색 */
 const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
-  const { v = '' } = router.query;
+  const { v = '', f } = router.query;
   const [searchText, setSearchText] = useState<string>(v as string);
   const [searchState, setSearchState] = useState<'default' | 'searching' | 'result'>(); // 기본, 검색중, 결과
   const [recentData, setRecentData] = useState<string[]>([]); // 최근 검색어
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { filter, setFilter } = useFilterStore();
+  const { setAlert } = useAlertStore();
+
+  const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
+  const [savedFilter, setSavedFilter] = useState<number[]>([]);
+  const [sort, setSort] = useState<sortType>('RECOMMEND'); // default: 추천순
 
   const { data: rankData } = useQuery(
     queryKey.topSearchKeywords,
@@ -37,16 +51,43 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
-  const { data: searchData, isLoading } = useQuery(
-    queryKey.search.list(v),
-    async () => {
-      const { searchProduct } = client();
-      const res = await searchProduct({ keyword: v as string, page: 1, take: 10 });
+  const { data: mainData } = useQuery(queryKey.main, async () => {
+    const res = await client().selectMainItems();
+    if (res.data.isSuccess) {
       return res.data.data;
+    } else setAlert({ message: res.data.errorMsg ?? '' });
+  });
+
+  const {
+    data: searchData,
+    hasNextPage,
+    fetchNextPage,
+    isLoading,
+  } = useInfiniteQuery(
+    queryKey.search.list({
+      filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
+      sortby: sort,
+      keyword: v as string,
+    }),
+    async ({ pageParam = 1 }) => {
+      const res = await client().selectProductListByUser({
+        filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
+        sortby: sort,
+        page: pageParam,
+        take: perView,
+        keyword: v as string,
+      });
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else setAlert({ message: res.data.errorMsg ?? '' });
     },
     {
       enabled: v !== '',
       staleTime: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextId = allPages.length;
+        return nextId + 1;
+      },
     },
   );
 
@@ -55,7 +96,6 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     async () => {
       const { searchingProductDirect } = client();
       const res = await searchingProductDirect({ keyword: searchText as string });
-      console.log(res.data.data);
       return res.data.data;
     },
     {
@@ -69,6 +109,8 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       const result = localStorage.getItem('keywords') || '[]';
       setRecentData(JSON.parse(result));
     }
+
+    inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -104,6 +146,44 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     if (searchText.trim() === '') setSearchState('default');
   }, [searchText]);
 
+  useEffect(() => {
+    if (filter) {
+      setDummyFilter(filter);
+
+      router.replace({
+        pathname: '/search',
+        query: {
+          ...router.query,
+          f: aToB(JSON.stringify(filter.map(v => v.id))),
+        },
+      });
+      setFilter(null);
+    } else {
+      // setSavedFilter(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
+
+  useEffect(() => {
+    if (router.isReady && f) {
+      try {
+        setSavedFilter(JSON.parse(bToA(f as string)));
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setSavedFilter([]);
+    }
+  }, [f, router.isReady]);
+
+  const { ref } = useInView({
+    initialInView: false,
+    skip: !hasNextPage,
+    onChange: inView => {
+      if (inView) fetchNextPage();
+    },
+  });
+
   return (
     <div className='max-md:w-[100vw]'>
       {/* header */}
@@ -121,11 +201,13 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
             <Image src='/assets/icons/common/search.svg' alt='search' width={24} height={24} />
           </button>
           <input
+            ref={inputRef}
             className='flex-1 bg-grey-90 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
             placeholder='검색어를 입력해주세요.'
+            maxLength={50}
             value={searchText}
             onChange={e => {
-              const text = e.target.value;
+              const text = e.target.value.replaceAll(REG_EXP.emoji, '');
               setSearchText(text);
               if (text.trim() === '') setSearchState('default');
               else setSearchState('searching');
@@ -184,37 +266,51 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
             <div className='flex flex-col'>
               {(directData ?? []).map((v, idx) => {
                 return (
-                  <button
+                  <Link
                     key={`searching${idx}`}
                     className='flex h-[52px] items-end border-b border-b-grey-90 pb-3'
-                    onClick={() => {
-                      //
-                    }}
+                    href={{ pathname: '/product', query: { id: v.id } }}
                   >
                     <p className='line-clamp-1 text-start text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
                       {`${v.title}`}
                     </p>
-                  </button>
+                  </Link>
                 );
               })}
             </div>
           </div>
-        ) : isLoading ? null : searchData && searchData.length > 0 ? (
-          <HomeProductList className='p-0.5' data={searchData ?? []} dataDto={searchData ?? []} />
+        ) : isLoading ? null : searchData?.pages &&
+          searchData.pages.length > 0 &&
+          (searchData?.pages.filter(x => (x?.content ?? []).length > 0) ?? []).length > 0 ? (
+          <Fragment>
+            <HomeProductList
+              storeType='search'
+              storeId={undefined}
+              className='p-0.5'
+              dataDto={searchData?.pages ?? []}
+              filter={dummyFilter}
+              sort={sort}
+              setSort={setSort}
+            />
+            <div ref={ref} />
+          </Fragment>
         ) : (
           // 검색 결과 없을 경우
           <div className=''>
-            <div className='flex h-[176px] flex-col items-center justify-center gap-2'>
+            <div className='flex h-[176px] flex-col items-center justify-center gap-2 px-4'>
               <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
-              <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+              <p className='whitespace-pre-wrap break-all text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                 {`‘${v}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
               </p>
             </div>
-            <div className='mt-4 h-2 bg-[#F2F2F2]' />
-            {/* <HomeCurationItem
-              className='p-0'
-              data={[]}
-            /> */}
+            <div className='-mx-4 mt-4 h-2 bg-[#F2F2F2]' />
+            {mainData?.curations && mainData?.curations.length > 0 && (
+              <HomeCurationItem
+                className='mt-[30px] p-0'
+                data={mainData?.curations[0]}
+                showViewAll={false}
+              />
+            )}
           </div>
         )}
       </div>

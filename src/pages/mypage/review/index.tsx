@@ -1,48 +1,66 @@
-import Layout from 'src/components/common/layout';
-import { BackButton } from 'src/components/ui';
-import { type NextPageWithLayout } from 'src/types/common';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { type ReviewDto } from 'src/api/swagger/data-contracts';
-import { formatToLocaleString } from 'src/utils/functions';
+import { Fragment } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { client } from 'src/api/client';
+import Layout from 'src/components/common/layout';
 import { ReviewItem } from 'src/components/review';
+import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { type NextPageWithLayout } from 'src/types/common';
+import { formatToLocaleString } from 'src/utils/functions';
 
-/* 
-TODO Int 필요
-*/
-
-const dummyReviews: ReviewDto[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-}));
+const take = 10;
 
 /** 마이페이지/구매 후기 */
 const MypageReview: NextPageWithLayout = () => {
-  const isEmpty = false;
+  const { data, isLoading, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
+    queryKey.myReview,
+    async ({ pageParam = 1 }) => {
+      const res = await client().selectMyReviewList({ page: pageParam, take });
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+      }
+    },
+    {
+      getNextPageParam: (_lastPage, allPages) => {
+        const nextId = allPages.length;
+        return nextId + 1;
+      },
+    },
+  );
+
+  const { ref } = useInView({
+    initialInView: false,
+    skip: !hasNextPage,
+    onChange: inView => {
+      if (inView) fetchNextPage();
+    },
+  });
+
+  if (isLoading) return null;
+  if (data?.pages?.[0]?.empty) return <Empty />;
+
   return (
-    <div className='flex flex-1 flex-col'>
-      <header className='title-header'>
-        <BackButton />
-        <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>구매 후기</h2>
-        <div className='h-6 w-6' />
-      </header>
-      {isEmpty ? (
-        <Empty />
-      ) : (
-        <div>
-          <div className='flex items-center justify-between gap-2 px-4 py-2'>
-            <h3 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>
-              내가 쓴 후기
-            </h3>
-            <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
-              총 {formatToLocaleString(dummyReviews.length)}건
-            </span>
-          </div>
-          <article className='px-4'>
-            {dummyReviews.map(v => (
-              <ReviewItem key={v.id} isMine data={v} />
+    <div>
+      <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
+        <h3 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>내가 쓴 후기</h3>
+        <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
+          총 {formatToLocaleString(data?.pages?.[0]?.totalElements)}건
+        </span>
+      </div>
+      <article className='px-4'>
+        {data?.pages.map((v, i) => (
+          <Fragment key={i}>
+            {v?.content?.map((v, idx) => (
+              <ReviewItem key={`${idx}${v.id}`} isMine data={v} refetch={refetch} />
             ))}
-          </article>
-        </div>
-      )}
+          </Fragment>
+        ))}
+        <div ref={ref} />
+      </article>
     </div>
   );
 };
@@ -62,7 +80,14 @@ function Empty() {
 
 MypageReview.getLayout = page => (
   <Layout className='flex flex-col' headerProps={{ disable: true }} footerProps={{ disable: true }}>
-    {page}
+    <div className='flex flex-1 flex-col'>
+      <header className='title-header'>
+        <BackButton />
+        <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>구매 후기</h2>
+        <div className='h-6 w-6' />
+      </header>
+      {page}
+    </div>
   </Layout>
 );
 

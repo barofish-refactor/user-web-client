@@ -2,53 +2,36 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { client } from 'src/api/client';
-import {
-  type ProductLocation,
-  type Category,
-  type ProductType,
-  type ProductProcess,
-  type ProductUsage,
-  type ProductStorage,
-} from 'src/api/swagger/data-contracts';
 import { CheckIcon } from 'src/components/icons';
 import { queryKey } from 'src/query-key';
-import { useFilterStore } from 'src/store';
+import { type indexFilterType, useFilterStore, useAlertStore } from 'src/store';
 import cm from 'src/utils/class-merge';
 import useClickAway from 'src/utils/use-click-away';
+import { FreeMode } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-type FilterType =
-  | Category[]
-  | ProductType[]
-  | ProductLocation[]
-  | ProductProcess[]
-  | ProductUsage[]
-  | ProductStorage[];
-
-export interface filterType {
-  categoryIds?: string;
-  typeIds?: string;
-  locationIds?: string;
-  processIds?: string;
-  usageIds?: string;
-  storageIds?: string;
-}
+import 'swiper/css';
 
 /** 필터 BottomSheet */
 const BottomSheet = () => {
   const target = useRef<HTMLDivElement>(null);
   const [check, setCheck] = useState<boolean>(false);
-  const { filter, setFilter, isOpen, setIsOpen } = useFilterStore();
-  const [filterList, setFilterList] = useState<FilterType[]>([[], [], [], [], [], [], []]);
+  const { setAlert } = useAlertStore();
+  const { filter, type, setFilter, isOpen, setIsOpen } = useFilterStore();
 
-  const { data } = useQuery(
-    queryKey.filter,
+  const [selectedTab, setSelectedTab] = useState<number>(type.type === 'category' ? 1 : 0);
+  const [selectedItem, setSelectedItem] = useState<indexFilterType[]>([]);
+  const [savedFilter, setSavedFilter] = useState<number[]>();
+
+  const { data: filterData } = useQuery(
+    queryKey.filters.lists,
     async () => {
-      const res = await client().selectFilterList();
-
+      const res = await client().selectSearchFilterList();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
-        throw new Error(res.data.errorMsg);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        // throw new Error(res.data.errorMsg);
       }
     },
     {
@@ -57,24 +40,44 @@ const BottomSheet = () => {
     },
   );
 
-  const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [selectedItem, setSelectedItem] = useState<
-    { tabIndex: number; text: string; id: number }[]
-  >([]);
+  const { data: productCount } = useQuery(
+    queryKey.filterCount.list({
+      ...type,
+      ...{
+        filterFieldIds: savedFilter?.join(','),
+        categoryIds: type.type === 'category' ? type.id?.toString() : undefined,
+        storeId: type.type === 'store' ? type.id : undefined,
+        curationId: type.type === 'curation' ? type.id : undefined,
+      },
+    }),
+    async () => {
+      const res = await (type.type === 'topBar'
+        ? client().selectTopBarCount(type.id ?? 0, {
+            filterFieldIds: savedFilter?.join(','),
+          })
+        : client().selectProductCountByUser({
+            filterFieldIds: savedFilter?.join(','),
+            categoryIds: type.type === 'category' ? type.id?.toString() : undefined,
+            storeId: type.type === 'store' ? type.id : undefined,
+            curationId: type.type === 'curation' ? type.id : undefined,
+          }));
+
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      enabled: selectedItem.length > 0,
+      staleTime: 0,
+    },
+  );
 
   useEffect(() => {
-    if (data) {
-      setFilterList([
-        data.categories ?? [],
-        data.types ?? [],
-        data.locations ?? [],
-        data.processes ?? [],
-        data.usages ?? [],
-        data.storages ?? [],
-        [], // 가격
-      ]);
-    }
-  }, [data]);
+    if (selectedItem.length > 0) setSavedFilter(selectedItem.map(v => v.id));
+    else setSavedFilter(undefined);
+  }, [selectedItem]);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -91,18 +94,27 @@ const BottomSheet = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      setSelectedTab(type.type === 'category' ? 1 : 0);
     } else {
       document.body.style.overflow = 'overlay';
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   useEffect(() => {
     if (filter) {
-    } else {
+      setSelectedItem(filter);
+    } else if (!filter && !isOpen) {
       setSelectedItem([]);
       setSelectedTab(0);
     }
-  }, [filter]);
+  }, [filter, isOpen]);
+
+  useEffect(() => {
+    if (type.type === 'category') {
+      setSelectedTab(1);
+    }
+  }, [type]);
 
   return (
     <div role='navigation' className='sticky top-0 z-[150] w-full'>
@@ -110,7 +122,7 @@ const BottomSheet = () => {
         <div className='absolute top-0 z-[150] flex h-[100dvb] w-full flex-col justify-end bg-black/40'>
           <div
             ref={target}
-            className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-10'
+            className='flex w-full flex-col items-center overflow-hidden rounded-t-[16px] bg-white pb-10'
             onClick={e => {
               e.stopPropagation();
             }}
@@ -121,69 +133,76 @@ const BottomSheet = () => {
                 필터
               </p>
             </div>
-            <div className='mt-3 flex w-full items-center justify-between pl-4 pr-[27px]'>
-              {['카테고리', '구분', '지역', '가공', '용도', '보관', '가격'].map((v, idx) => {
+            <Swiper
+              freeMode
+              slidesPerView='auto'
+              modules={[FreeMode]}
+              className='mt-3'
+              pagination={false}
+              spaceBetween={12}
+              style={{
+                marginLeft: '-8px',
+                marginRight: '-8px',
+                paddingLeft: '16px',
+                paddingRight: '16px',
+              }}
+            >
+              {filterData?.map((v, idx) => {
                 const isActive = selectedTab === idx;
-
                 return (
-                  <button
-                    key={`filter${idx}`}
-                    className={cm(
-                      'border-b-2 py-1',
-                      v.length === 4 ? 'px-1' : 'px-2',
-                      isActive ? 'border-b-primary-50' : 'border-b-white',
-                    )}
-                    onClick={() => {
-                      setSelectedTab(idx);
-                    }}
-                  >
-                    <p
+                  <SwiperSlide key={`filter${idx}`} className='h-full !w-auto'>
+                    <button
                       className={cm(
-                        'text-[14px] leading-[22px] -tracking-[0.03em]',
-                        isActive ? 'font-semibold text-primary-50' : 'font-medium text-grey-50',
+                        'w-full border-b-2 px-2 py-1',
+                        isActive ? 'border-b-primary-50' : 'border-b-white',
                       )}
+                      onClick={() => {
+                        setSelectedTab(idx);
+                      }}
                     >
-                      {v}
-                    </p>
-                  </button>
+                      <p
+                        className={cm(
+                          'text-[14px] leading-[22px] -tracking-[0.03em]',
+                          isActive ? 'font-semibold text-primary-50' : 'font-medium text-grey-50',
+                        )}
+                      >
+                        {v.name}
+                      </p>
+                    </button>
+                  </SwiperSlide>
                 );
               })}
-            </div>
+            </Swiper>
             <div className='h-[1px] w-full bg-grey-90' />
             <div className='h-[250px] w-full overflow-y-auto'>
               <div className='flex flex-col items-start px-2 py-4'>
-                {filterList[selectedTab].map(v => {
-                  const isActive = selectedItem
-                    .map(x => x.tabIndex + '/' + x.id)
-                    .includes(selectedTab + '/' + v.id);
-                  const title = selectedTab === 0 ? (v as Category).name : (v as ProductType).field;
-
-                  return (
-                    <button
-                      key={`filterList${selectedTab}/${v.id}`}
-                      className='flex h-[38px] items-center justify-center gap-2 px-2'
-                      onClick={() => {
-                        const tmp = [...selectedItem];
-                        const findIndex = tmp.findIndex(
-                          x => x.id === v.id && x.tabIndex === selectedTab,
-                        );
-                        if (findIndex > -1) tmp.splice(findIndex, 1);
-                        else tmp.push({ tabIndex: selectedTab, id: v.id ?? -1, text: title ?? '' });
-                        setSelectedItem(tmp);
-                      }}
-                    >
-                      <CheckIcon isActive={isActive} />
-                      <p
-                        className={cm(
-                          'text-[14px] font-medium -tracking-[0.03em]',
-                          isActive ? 'text-grey-10' : 'text-grey-50',
-                        )}
+                {filterData &&
+                  filterData[selectedTab].searchFilterFields?.map(v => {
+                    const isActive = selectedItem.map(x => x.id).includes(v.id ?? -1);
+                    return (
+                      <button
+                        key={`filterList${selectedTab}/${v.id}`}
+                        className='flex h-[38px] items-center justify-center gap-2 px-2'
+                        onClick={() => {
+                          const tmp = [...selectedItem];
+                          const findIndex = tmp.findIndex(x => x.id === v.id);
+                          if (findIndex > -1) tmp.splice(findIndex, 1);
+                          else tmp.push({ id: v.id ?? -1, text: v.field ?? '' });
+                          setSelectedItem(tmp);
+                        }}
                       >
-                        {title}
-                      </p>
-                    </button>
-                  );
-                })}
+                        <CheckIcon isActive={isActive} />
+                        <p
+                          className={cm(
+                            'text-[14px] font-medium -tracking-[0.03em]',
+                            isActive ? 'text-grey-10' : 'text-grey-50',
+                          )}
+                        >
+                          {v.field}
+                        </p>
+                      </button>
+                    );
+                  })}
               </div>
             </div>
             {selectedItem.length > 0 && (
@@ -193,11 +212,7 @@ const BottomSheet = () => {
                     <button
                       key={`selected${idx}`}
                       className='flex items-center'
-                      onClick={() =>
-                        setSelectedItem(
-                          selectedItem.filter(x => !(x.id === v.id && x.tabIndex === v.tabIndex)),
-                        )
-                      }
+                      onClick={() => setSelectedItem(selectedItem.filter(x => !(x.id === v.id)))}
                     >
                       <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
                         {v.text}
@@ -238,8 +253,8 @@ const BottomSheet = () => {
                 }}
               >
                 <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
-                  {/* {`${selectedItem.length > 0 ? '0개의 ' : ''}상품보기`} */}
-                  상품보기
+                  {`${selectedItem.length > 0 ? `${productCount ?? 0}개의 ` : ''}상품보기`}
+                  {/* 상품보기 */}
                 </p>
               </button>
             </div>

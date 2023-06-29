@@ -19,28 +19,21 @@ interface Props {
 const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
+  const variables: { type?: 'COMPARE' | 'BUY_TIP' | 'NEW_ONE' } = {
+    type:
+      selectedIndex === 0
+        ? undefined
+        : selectedIndex === 1
+        ? 'COMPARE'
+        : selectedIndex === 2
+        ? 'BUY_TIP'
+        : 'NEW_ONE',
+  };
+
   const { data } = useQuery(
-    queryKey.tipList.list({
-      type:
-        selectedIndex === 0
-          ? undefined
-          : selectedIndex === 1
-          ? 'COMPARE'
-          : selectedIndex === 2
-          ? 'BUY_TIP'
-          : 'NEW_ONE',
-    }),
+    queryKey.tipList.list(variables),
     async () => {
-      const res = await client().selectTipList({
-        type:
-          selectedIndex === 0
-            ? undefined
-            : selectedIndex === 1
-            ? 'COMPARE'
-            : selectedIndex === 2
-            ? 'BUY_TIP'
-            : 'NEW_ONE',
-      });
+      const res = await client().selectTipList(variables);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -63,7 +56,7 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
         <p className='flex-1 whitespace-pre text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           알아두면 좋은 정보
         </p>
-        <Link href='/'>
+        <Link href='/compare/storage'>
           <Image src='/assets/icons/common/bookmark-title.svg' alt='cart' width={24} height={24} />
         </Link>
         <Link href='/product/cart'>
@@ -100,16 +93,18 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
       <div className='flex flex-col gap-6 px-[40px] pb-[67px] pt-4'>
         {data?.map((v, idx) => {
           return (
-            <div
+            <Link
               key={`tip${idx}`}
+              href={{ pathname: '/tip-detail', query: { id: v.id } }}
               className='relative aspect-[294/419] w-full overflow-hidden rounded-lg shadow-[0px_5px_10px_rgba(0,0,0,0.15)]'
             >
               <Image
-                fill
+                width={294}
+                height={419}
                 src={v.image ?? ''}
                 alt='tip'
                 draggable={false}
-                className='object-cover'
+                className='aspect-[294/419] w-full object-cover'
               />
               <div className='absolute inset-0 bg-[linear-gradient(180deg,rgba(111,111,111,0.9)0%,rgba(46,46,46,0.774)0.01%,rgba(67,67,67,0)59.58%)] px-5 py-6'>
                 <p className='whitespace-pre-wrap break-keep text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-white'>
@@ -119,7 +114,7 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
                   {v.description}
                 </p>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

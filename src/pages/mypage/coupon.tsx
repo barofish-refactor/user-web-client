@@ -4,19 +4,21 @@ import { CouponList, CouponNav, CouponTotalCount, type CouponNavType } from 'src
 import { BackButton } from 'src/components/ui';
 import { type NextPageWithLayout } from 'src/types/common';
 import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryKey } from 'src/query-key';
 import { client } from 'src/api/client';
+import { useAlertStore } from 'src/store';
+import { type Coupon } from 'src/api/swagger/data-contracts';
 
 const MypageCoupon: NextPageWithLayout = () => {
   const [navType, setNavType] = useState<CouponNavType>('holding');
+  const { setAlert } = useAlertStore();
 
   // 보유 쿠폰
-  const { data: downloadedCoupon } = useQuery(
+  const { data: downloadedCoupon, refetch: downloadedRefetch } = useQuery(
     queryKey.downloadedCoupon.lists,
     async () => {
       const res = await client().selectDownloadedCoupon();
-      console.log(res.data.data);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -27,11 +29,10 @@ const MypageCoupon: NextPageWithLayout = () => {
   );
 
   // 발급 가능한 쿠폰
-  const { data: canUseCoupon } = useQuery(
-    queryKey.canUseCoupon.lists,
+  const { data: canDownloadCoupon, refetch: canDownloadRefetch } = useQuery(
+    queryKey.canDownloadCoupon.lists,
     async () => {
-      const res = await client().selectCanUseCoupon();
-      console.log(res.data.data);
+      const res = await client().selectCanDownloadCoupon();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -41,7 +42,25 @@ const MypageCoupon: NextPageWithLayout = () => {
     { staleTime: 0 },
   );
 
-  const data = navType === 'holding' ? downloadedCoupon ?? [] : canUseCoupon ?? [];
+  // 발급 받기
+  const { mutateAsync: selectDownloadCoupon, isLoading: isAddLoading } = useMutation((id: number) =>
+    client().selectDownloadCoupon(id, {}),
+  );
+
+  const onSelectDownloadCouponMutate = ({ id }: { id: number }) => {
+    if (isAddLoading) return;
+    selectDownloadCoupon(id)
+      .then(res => {
+        if (res.data.isSuccess) {
+          setAlert({ message: '쿠폰을 발급받았습니다.', type: 'success' });
+          downloadedRefetch();
+          canDownloadRefetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
+  const data = navType === 'holding' ? downloadedCoupon ?? [] : canDownloadCoupon ?? [];
 
   return (
     <>
@@ -50,8 +69,17 @@ const MypageCoupon: NextPageWithLayout = () => {
         <Empty navType={navType} />
       ) : (
         <>
-          <CouponTotalCount className='mt-2' total={data.length} />
-          <CouponList className='p-4 pb-6' list={data} isAvailable={navType === 'available'} />
+          <CouponTotalCount className='mt-2' total={data.length} navType={navType} />
+          <CouponList
+            className='p-4 pb-6'
+            list={data}
+            isAvailable={navType === 'available'}
+            onDownload={(value: Coupon) => {
+              if (value.id && navType === 'available') {
+                onSelectDownloadCouponMutate({ id: value.id });
+              }
+            }}
+          />
         </>
       )}
     </>

@@ -4,7 +4,12 @@ import { Fragment, useState } from 'react';
 import Layout from 'src/components/common/layout';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { calcDiscountPrice, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import {
+  calcDiscountRate,
+  formatToBlob,
+  formatToLocaleString,
+  setSquareBrackets,
+} from 'src/utils/functions';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { FreeMode } from 'swiper';
@@ -21,23 +26,32 @@ import {
   type ProductListDto,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
+import { type GetServerSideProps } from 'next';
+import { VARIABLES } from 'src/variables';
+import { getCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
 
 /** 저장함 */
 const Storage: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
-  const { setBottomConfirm } = useBottomConfirmStore();
+  const router = useRouter();
+  const { bottomConfirm, setBottomConfirm } = useBottomConfirmStore();
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<ProductListDto[]>([]);
   const [selectedSet, setSelectedSet] = useState<CompareSetDto[]>([]);
 
-  const { data, refetch } = useQuery(queryKey.compare.lists, async () => {
-    const res = await client().selectSaveProductList();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else {
-      throw new Error(res.data.code + ': ' + res.data.errorMsg);
-    }
-  });
+  const { data, refetch } = useQuery(
+    queryKey.compare.lists,
+    async () => {
+      const res = await client().selectSaveProductList();
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+      }
+    },
+    { staleTime: 0 },
+  );
 
   const { data: set, refetch: setRefetch } = useQuery(queryKey.compareSet.lists, async () => {
     const res = await client().selectCompareSetList();
@@ -67,7 +81,8 @@ const Storage: NextPageWithLayout = () => {
     addCompareSet(formatToBlob(args, true))
       .then(res => {
         if (res.data.isSuccess) {
-          setAlert({ message: '보관함에 담았습니다.', type: 'success' });
+          router.push({ pathname: '/compare/[id]', query: { id: res.data.data?.id } });
+          setRefetch();
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => console.log(error));
@@ -100,7 +115,11 @@ const Storage: NextPageWithLayout = () => {
   };
 
   return (
-    <div className='pb-[250px] max-md:w-[100vw]'>
+    <div
+      className={cm('pb-6 max-md:w-[100vw]', {
+        'pb-[250px]': bottomConfirm || selectedItem.length > 0,
+      })}
+    >
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center bg-white pl-4 pr-[18px]'>
         <BackButton />
@@ -128,12 +147,14 @@ const Storage: NextPageWithLayout = () => {
                 setSelectedItem([]);
                 setSelectedSet([]);
                 setSelectedTab(idx);
+                refetch();
+                setRefetch();
               }}
             >
               <p
                 className={cm(
                   'w-[71px] text-[16px] leading-[24px] -tracking-[0.03em]',
-                  isActive ? 'font-semibold text-primary-50' : 'font-medium text-grey-50',
+                  isActive ? 'font-bold text-primary-50' : 'font-medium text-grey-50',
                 )}
               >
                 {v}
@@ -144,107 +165,132 @@ const Storage: NextPageWithLayout = () => {
       </div>
 
       {selectedTab === 0 ? (
-        <Fragment>
-          <div className='mt-6 flex items-center px-4'>
-            <p className='flex-1 text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-60'>
-              {`저장한 상품 ${formatToLocaleString(data?.length ?? 0)}`}
-            </p>
-            <button
-              className=''
-              onClick={() => {
-                if (selectedItem.length === 0) return setAlert({ message: '상품을 선택해주세요.' });
-                setBottomConfirm({
-                  title: '상품 삭제',
-                  content: '선택하신 상품을 정말 삭제하시겠습니까?',
-                  onClick: () => {
-                    onDeleteSaveProductsMutate({
-                      data: { productIds: selectedItem.map(x => x.id ?? -1) },
-                    });
-                  },
-                });
-              }}
-            >
-              <p
-                className={cm(
-                  'text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20',
-                  { 'text-primary-50': selectedItem.length > 0 },
-                )}
-              >
-                삭제
+        (data ?? []).length === 0 ? (
+          Empty('저장한 상품')
+        ) : (
+          <Fragment>
+            <div className='mt-6 flex items-center px-4'>
+              <p className='flex-1 text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-60'>
+                {`저장한 상품 ${formatToLocaleString(data?.length ?? 0)}`}
               </p>
-            </button>
-            {selectedItem.length > 0 && (
               <button
-                className='ml-10'
+                className=''
                 onClick={() => {
-                  setSelectedItem([]);
+                  if (selectedItem.length === 0)
+                    return setAlert({ message: '상품을 선택해주세요.' });
+                  setBottomConfirm({
+                    title: '상품 삭제',
+                    content: '선택하신 상품을 정말 삭제하시겠습니까?',
+                    onClick: () => {
+                      onDeleteSaveProductsMutate({
+                        data: { productIds: selectedItem.map(x => x.id ?? -1) },
+                      });
+                    },
+                  });
                 }}
               >
-                <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20'>
-                  취소
+                <p
+                  className={cm(
+                    'text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20',
+                    { 'text-primary-50': selectedItem.length > 0 },
+                  )}
+                >
+                  삭제
                 </p>
               </button>
-            )}
-          </div>
-          <div className='mt-2.5 grid grid-cols-3 gap-x-1.5 gap-y-[22px] px-4'>
-            {(data ?? []).map((v, idx) => {
-              return (
-                <Link key={`storage${idx}`} href={{ pathname: '/product', query: { id: v.id } }}>
-                  <div className='relative aspect-square'>
-                    <Image fill src={v.image ?? ''} alt='product' className='rounded-lg' />
-                    <button
-                      className='absolute left-2 top-2'
-                      onClick={e => {
-                        e.preventDefault();
-                        const tmp = [...selectedItem];
-                        const findIndex = tmp.findIndex(x => v.id === x.id);
-                        if (findIndex > -1) tmp.splice(findIndex, 1);
-                        else tmp.push(v);
-                        setSelectedItem(tmp);
-                      }}
-                    >
-                      <Image
-                        alt='check'
-                        width={24}
-                        height={24}
-                        src={
-                          selectedItem.map(x => x.id).includes(v.id)
-                            ? '/assets/icons/common/check-box-on.svg'
-                            : '/assets/icons/common/check-box-off-gray.svg'
-                        }
-                      />
-                    </button>
-                  </div>
-                  <p className='mt-2 line-clamp-1 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-                    [현대식 냉풍기계 건조] 목포 반건조 병어 37-~510g
-                  </p>
-                  <div className='mt-0.5 flex items-center gap-0.5'>
-                    <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${15}%`}</p>
-                    <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                      12300,
-                    )}원`}</p>
-                  </div>
-                  <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
-                    15000,
-                  )}원`}</p>
-                  <div className='mt-1 flex items-center gap-0.5'>
-                    <Image
-                      src='/assets/icons/common/speech-bubble.svg'
-                      alt='후기'
-                      width={16}
-                      height={16}
-                      draggable={false}
-                    />
-                    <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>
-                      후기
+              {selectedItem.length > 0 && (
+                <div className='flex items-center'>
+                  <div className='mx-5 h-[18px] w-[1px] bg-grey-90' />
+                  <button
+                    className=''
+                    onClick={() => {
+                      setSelectedItem([]);
+                    }}
+                  >
+                    <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20'>
+                      취소
                     </p>
-                    <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${0}+`}</p>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </Fragment>
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className='mt-2.5 grid grid-cols-3 gap-x-1.5 gap-y-[22px] px-4'>
+              {(data ?? []).map((v, idx) => {
+                return (
+                  <Link key={`storage${idx}`} href={{ pathname: '/product', query: { id: v.id } }}>
+                    <div className='relative aspect-square'>
+                      <Image
+                        width={110}
+                        height={110}
+                        src={v.image ?? ''}
+                        alt='product'
+                        className='aspect-square w-full rounded-lg object-cover'
+                      />
+                      <button
+                        className='absolute left-2 top-2'
+                        onClick={e => {
+                          e.preventDefault();
+                          const tmp = [...selectedItem];
+                          const findIndex = tmp.findIndex(x => v.id === x.id);
+                          if (findIndex > -1) tmp.splice(findIndex, 1);
+                          else tmp.push(v);
+                          setSelectedItem(tmp);
+                        }}
+                      >
+                        <Image
+                          alt='check'
+                          width={24}
+                          height={24}
+                          src={
+                            selectedItem.map(x => x.id).includes(v.id)
+                              ? '/assets/icons/common/check-box-on.svg'
+                              : '/assets/icons/common/check-box-off-gray.svg'
+                          }
+                        />
+                      </button>
+                    </div>
+                    <p className='mt-2 line-clamp-1 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+                      {`${setSquareBrackets(v.storeName)} ${v.title}`}
+                    </p>
+                    <div className='mt-0.5 flex items-center gap-0.5'>
+                      {(v.originPrice ?? 0) !== 0 && (
+                        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+                          v.originPrice,
+                          v.discountPrice,
+                        )}%`}</p>
+                      )}
+                      <p className='line-clamp-1 text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+                        v.discountPrice,
+                      )}원`}</p>
+                    </div>
+                    {(v.originPrice ?? 0) !== 0 && (
+                      <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
+                        v.originPrice,
+                      )}원`}</p>
+                    )}
+                    <div className='mt-1 flex items-center gap-0.5'>
+                      <Image
+                        src='/assets/icons/common/speech-bubble.svg'
+                        alt='후기'
+                        width={16}
+                        height={16}
+                        draggable={false}
+                      />
+                      <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>
+                        후기
+                      </p>
+                      <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${
+                        v.reviewCount ?? 0
+                      }`}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </Fragment>
+        )
+      ) : (set ?? []).length === 0 ? (
+        Empty('저장한 조합')
       ) : (
         <Fragment>
           <div className='mt-6 flex items-center px-4'>
@@ -336,17 +382,24 @@ const Storage: NextPageWithLayout = () => {
                           />
                           <div className=''>
                             <p className='line-clamp-1 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-                              {x.title ?? ''}
+                              {`${setSquareBrackets(x?.storeName)} ${x?.title}`}
                             </p>
                             <div className='mt-0.5 flex items-center gap-0.5'>
-                              <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${15}%`}</p>
+                              {(x.originPrice ?? 0) !== 0 && (
+                                <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+                                  x.originPrice,
+                                  x.discountPrice,
+                                )}%`}</p>
+                              )}
                               <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                                calcDiscountPrice(x.originPrice, x.discountRate),
+                                x.discountPrice,
                               )}원`}</p>
                             </div>
-                            <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
-                              x.originPrice,
-                            )}원`}</p>
+                            {(x.originPrice ?? 0) !== 0 && (
+                              <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
+                                x.originPrice,
+                              )}원`}</p>
+                            )}
                             <div className='mt-1 flex items-center gap-0.5'>
                               <Image
                                 src='/assets/icons/common/speech-bubble.svg'
@@ -366,7 +419,10 @@ const Storage: NextPageWithLayout = () => {
                         </div>
                       );
                     })}
-                    <Link href='/compare/detail' className='mt-1.5'>
+                    <Link
+                      href={{ pathname: '/compare/[id]', query: { id: v.compareSetId } }}
+                      className='mt-1.5'
+                    >
                       <div className='flex h-[42px] items-center justify-center rounded-lg border border-grey-70'>
                         <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>
                           비교 상세 보기
@@ -405,14 +461,21 @@ const Storage: NextPageWithLayout = () => {
               return (
                 <SwiperSlide key={`curation${idx}`} className=''>
                   <button
-                    className='relative aspect-square w-full overflow-hidden rounded-lg'
+                    className='relative overflow-hidden rounded-lg'
                     onClick={() => {
                       const tmp = [...selectedItem];
                       tmp.splice(idx, 1);
                       setSelectedItem(tmp);
                     }}
                   >
-                    <Image fill src={v.image ?? ''} alt='selected' draggable={false} />
+                    <Image
+                      width={70}
+                      height={70}
+                      src={v.image ?? ''}
+                      alt='selected'
+                      draggable={false}
+                      className='aspect-square h-[70px] w-[70px] object-cover'
+                    />
                     <Image
                       src='/assets/icons/compare/compare-delete.svg'
                       alt='delete'
@@ -430,6 +493,9 @@ const Storage: NextPageWithLayout = () => {
             onClick={() => {
               if (selectedItem.length !== 3)
                 return setAlert({ message: '상품 3개를 선택해주세요.' });
+              const list = new Set<number | undefined>(selectedItem.map(x => x.parentCategoryId));
+              if (Array.from(list).length > 1)
+                return setAlert({ message: '같은 카테고리의 상품끼리 비교 가능합니다.' });
               onAddCompareSetMutate(selectedItem.map(x => x.id ?? -1));
             }}
           >
@@ -443,10 +509,42 @@ const Storage: NextPageWithLayout = () => {
   );
 };
 
+function Empty(text: string) {
+  return (
+    <div className='h-[calc(100dvb-136px)]'>
+      <div className='grid h-full flex-1 place-items-center'>
+        <div className='flex flex-col items-center gap-2'>
+          <Image src='/assets/icons/common/error.svg' alt='error' width={40} height={40} />
+          <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
+            {`${text}이 없습니다.`}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 Storage.getLayout = page => (
   <Layout headerProps={{ disable: true }} footerProps={{ disable: true }}>
     {page}
   </Layout>
 );
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  if (!getCookie(VARIABLES.ACCESS_TOKEN, context)) {
+    {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/login',
+        },
+      };
+    }
+  } else {
+    return {
+      props: {},
+    };
+  }
+};
 
 export default Storage;

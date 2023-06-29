@@ -56,4 +56,10 @@ export const REG_EXP = {
     requireSpecialCharacter: true,
     requireUppercase: false,
   }),
+  emoji:
+    /(?![*#0-9]+)[\p{Emoji}\p{Emoji_Modifier}\p{Emoji_Component}\p{Emoji_Modifier_Base}\p{Emoji_Presentation}]/gu,
+  cardNo: /^\d{4}-?\d{4}-?\d{4}-?\d{4}$/,
+  expiryAt: /^(0[1-9]|1[0-2])\/\d{2}$/,
+  birth: /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/,
+  cardPassword: /^\d{2}$/,
 };

@@ -5,14 +5,19 @@ import Layout from 'src/components/common/layout';
 import { type NextPageWithLayout } from 'src/types/common';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import { FreeMode } from 'swiper';
-import { calcDiscountPrice, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import {
+  calcDiscountRate,
+  formatToBlob,
+  formatToLocaleString,
+  setSquareBrackets,
+} from 'src/utils/functions';
 import { CompareNewItem } from 'src/components/compare';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { queryKey } from 'src/query-key';
 import { client } from 'src/api/client';
 import { type GetServerSideProps } from 'next';
 import {
+  type DeleteSaveProductsPayload,
   type AddCompareSetPayload,
   type CompareMain,
   type SaveProductPayload,
@@ -21,6 +26,8 @@ import { useInView } from 'react-intersection-observer';
 import { useAlertStore, useToastStore } from 'src/store';
 import { ContentType } from 'src/api/swagger/http-client';
 import { useRouter } from 'next/router';
+import { getCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
 
 const perView = 10;
 
@@ -35,12 +42,11 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
   const { setToast } = useToastStore();
   const [refreshIndex, setRefreshIndex] = useState<number>(0);
 
-  const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
+  const { data, refetch, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.compareMain,
     async ({ pageParam = 1 }) => {
       const res = await client().selectMain({ page: pageParam, take: perView });
       if (res.data.isSuccess) {
-        console.log(res.data.data);
         return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -55,20 +61,37 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
     },
   );
 
-  const { mutateAsync: likeStoreByUser, isLoading } = useMutation((args: SaveProductPayload) =>
+  const { mutateAsync: saveProduct, isLoading } = useMutation((args: SaveProductPayload) =>
     client().saveProduct(args, { type: ContentType.FormData }),
   );
 
-  const onMutate = ({ data }: SaveProductPayload) => {
+  const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
+    (args: DeleteSaveProductsPayload) =>
+      client().deleteSaveProducts(args, { type: ContentType.FormData }),
+  );
+
+  const onMutate = ({ data }: SaveProductPayload, isRefetch = true) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
     if (isLoading) return;
-    likeStoreByUser({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
+    saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
           setToast({
-            text: '1개의 상품이 보관함에 담겼어요.',
+            text: '1개의 상품이 저장함에 담겼어요.',
             onClick: () => router.push('/compare/storage'),
           });
-          // refetch();
+          if (isRefetch) refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
+  const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
+    if (isDeleteLoading) return;
+    deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
+      .then(res => {
+        if (res.data.isSuccess) {
+          refetch();
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => console.log(error));
@@ -79,6 +102,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
   );
 
   const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
     if (isAddLoading) return;
     addCompareSet(formatToBlob(args, true))
       .then(res => {
@@ -138,9 +162,9 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
 
       <div className='mx-4'>
         <Swiper
-          freeMode
+          // freeMode
           slidesPerView={1.1}
-          modules={[FreeMode]}
+          // modules={[FreeMode]}
           spaceBetween={16}
           style={{
             marginLeft: '-16px',
@@ -154,8 +178,9 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
               <SwiperSlide key={`compare${idx}`} className='pt-2.5'>
                 {(set.products ?? []).map((v, i) => {
                   return (
-                    <div
+                    <Link
                       key={`product${i}`}
+                      href={{ pathname: '/product', query: { id: v.id } }}
                       className='flex items-center gap-2.5 border-b border-b-grey-90 py-5 last-of-type:border-b-0'
                     >
                       <div className='relative'>
@@ -164,33 +189,49 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                           alt='product'
                           width={110}
                           height={110}
-                          className='rounded-lg'
+                          className='aspect-square rounded-lg object-cover'
                         />
                         <button
                           className='absolute right-1 top-1.5'
-                          onClick={() => onMutate({ data: { productId: v.id } })}
+                          onClick={e => {
+                            e.preventDefault();
+                            if (v.isLike)
+                              onDeleteSaveProductsMutate({ data: { productIds: [v.id ?? -1] } });
+                            else onMutate({ data: { productId: v.id } });
+                          }}
                         >
                           <Image
-                            src='/assets/icons/compare/compare-bookmark.svg'
                             alt='bookmark'
                             width={24}
                             height={24}
+                            src={
+                              v.isLike
+                                ? '/assets/icons/compare/compare-bookmark-on.svg'
+                                : '/assets/icons/compare/compare-bookmark.svg'
+                            }
                           />
                         </button>
                       </div>
                       <div className='flex-1'>
                         <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-                          {v.title ?? ''}
+                          {`${setSquareBrackets(v.storeName)} ${v.title}`}
                         </p>
                         <div className='mt-0.5 flex items-center gap-0.5'>
-                          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${15}%`}</p>
+                          {(v.originPrice ?? 0) !== 0 && (
+                            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+                              v.originPrice,
+                              v.discountPrice,
+                            )}%`}</p>
+                          )}
                           <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                            calcDiscountPrice(v.originPrice, v.discountRate),
+                            v.discountPrice,
                           )}원`}</p>
                         </div>
-                        <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
-                          v.originPrice,
-                        )}원`}</p>
+                        {(v.originPrice ?? 0) !== 0 && (
+                          <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
+                            v.originPrice,
+                          )}원`}</p>
+                        )}
                         <div className='mt-1 flex items-center gap-0.5'>
                           <Image
                             src='/assets/icons/common/speech-bubble.svg'
@@ -207,7 +248,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                           }`}</p>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
                 <button
@@ -236,40 +277,63 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
               바로피쉬가 비교해보면 좋은 조합을 추천해드릴게요!
             </p>
             {/* 큰 상품 */}
-            <div className='relative mt-5 aspect-square'>
-              <Image
-                fill
-                src={data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.image ?? ''}
-                alt='product'
-                className='rounded-lg'
-              />
-              <button
-                className='absolute right-2 top-3'
-                onClick={() => {
-                  //
-                }}
-              >
+            <Link
+              href={{
+                pathname: '/product',
+                query: { id: data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.id },
+              }}
+            >
+              <div className='relative mt-5 aspect-square'>
                 <Image
-                  src='/assets/icons/compare/compare-bookmark.svg'
-                  alt='bookmark'
-                  width={24}
-                  height={24}
+                  fill
+                  alt='product'
+                  className='rounded-lg'
+                  src={
+                    data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.image ?? ''
+                  }
                 />
-              </button>
-            </div>
+                <button
+                  className='absolute right-2 top-3'
+                  onClick={() => {
+                    //
+                  }}
+                >
+                  <Image
+                    alt='bookmark'
+                    width={24}
+                    height={24}
+                    src={
+                      data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.isLike
+                        ? '/assets/icons/compare/compare-bookmark-on.svg'
+                        : '/assets/icons/compare/compare-bookmark.svg'
+                    }
+                  />
+                </button>
+              </div>
+            </Link>
             <p className='mt-2.5 text-[16px] font-normal leading-[24px] -tracking-[0.03em] text-grey-10'>
               {data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.title ?? ''}
+              {`${setSquareBrackets(
+                data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.storeName,
+              )} ${data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.title}`}
             </p>
             <div className='mt-0.5 flex items-center gap-0.5'>
-              <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-teritory'>{`${
-                data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.discountRate ?? 0
-              }%`}</p>
-              <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                calcDiscountPrice(
-                  data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice,
-                  data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.discountRate,
-                ),
-              )}원`}</p>
+              {(data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice ??
+                0) !== 0 && (
+                <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-teritory'>
+                  {calcDiscountRate(
+                    data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice,
+                    data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.discountPrice,
+                  )}
+                  %
+                </p>
+              )}
+              {(data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice ??
+                0) !== 0 && (
+                <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+                  data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.discountPrice,
+                )}원`}</p>
+              )}
             </div>
             <p className='-mt-0.5 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
               data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice ?? 0,
@@ -299,25 +363,39 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
               {(data.pages[0].recommendCompareProducts[refreshIndex].recommendProducts ?? []).map(
                 (v, idx) => {
                   return (
-                    <div
+                    <Link
                       key={`recommend${idx}`}
+                      href={{ pathname: '/product', query: { id: v.id } }}
                       className='relative aspect-square min-w-[calc((100%-12px)/3)]'
                     >
-                      <Image fill src={v.image ?? ''} alt='product' className='rounded-lg' />
+                      <Image
+                        width={110}
+                        height={110}
+                        src={v.image ?? ''}
+                        alt='product'
+                        className='aspect-square min-w-[calc((100%-12px)/3)] rounded-lg'
+                      />
                       <button
                         className='absolute right-1 top-1.5'
-                        onClick={() => {
-                          onMutate({ data: { productId: v.id } });
+                        onClick={e => {
+                          e.preventDefault();
+                          if (v.isLike)
+                            onDeleteSaveProductsMutate({ data: { productIds: [v.id ?? -1] } });
+                          else onMutate({ data: { productId: v.id } });
                         }}
                       >
                         <Image
-                          src='/assets/icons/compare/compare-bookmark.svg'
                           alt='bookmark'
                           width={24}
                           height={24}
+                          src={
+                            v.isLike
+                              ? '/assets/icons/compare/compare-bookmark-on.svg'
+                              : '/assets/icons/compare/compare-bookmark.svg'
+                          }
                         />
                       </button>
-                    </div>
+                    </Link>
                   );
                 },
               )}
@@ -360,7 +438,14 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
         </p>
         <div className='mt-5 grid grid-cols-2 gap-x-[11px] gap-y-5'>
           {(data?.pages[0]?.newCompareProduct?.products ?? []).map((v, idx) => {
-            return <CompareNewItem key={`new${idx}`} data={v} onMutate={onMutate} />;
+            return (
+              <CompareNewItem
+                key={`new${idx}`}
+                data={v}
+                onMutate={onMutate}
+                onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
+              />
+            );
           })}
         </div>
       </div>

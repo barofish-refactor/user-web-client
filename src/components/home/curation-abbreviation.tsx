@@ -28,7 +28,7 @@ const CurationAbbreviation = ({ data }: Props) => {
                 v.id !== -2
                   ? {
                       pathname: '/search/product-result',
-                      query: { title: v.shortName ?? '', type: 'curation', id: v.id },
+                      query: { type: 'curation', id: v.id, title: v.title },
                     }
                   : {
                       pathname: '/tip',

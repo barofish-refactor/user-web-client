@@ -22,7 +22,7 @@ export function AppleButton() {
   return (
     <AppleLogin
       usePopup
-      clientId={process.env.APPLE_KEY}
+      clientId={process.env.NEXT_PUBLIC_APPLE_KEY}
       redirectURI={redirectUrl}
       callback={res => {
         const jwt = decodeToken(res.authorization.id_token);
@@ -48,7 +48,7 @@ export function AppleButton() {
       render={({ onClick, disabled }) => (
         <button
           disabled={disabled}
-          className='h-[39px] w-[39px] bg-[url(/assets/icons/sign/apple.svg)] bg-cover'
+          className='h-[45px] w-[45px] bg-[url(/assets/icons/sign/apple.svg)] bg-cover'
           onClick={() => {
             if (window.ReactNativeWebView) requestPermission('socialLogin', 'apple');
             else {

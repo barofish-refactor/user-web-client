@@ -18,7 +18,7 @@ export function NaverButton() {
 
   function boostrapNaver() {
     const naver = new window.naver.LoginWithNaverId({
-      clientId: process.env.NAVER_KEY,
+      clientId: process.env.NEXT_PUBLIC_NAVER_KEY,
       callbackUrl: location.href,
       isPopup: false,
       loginButton: {},
@@ -31,7 +31,29 @@ export function NaverButton() {
         const token = location.hash.split('=')[1]?.split('&')[0];
         if (!token) return;
 
-        loginUser({ data: formatToBlob({ loginType: 'NAVER', loginId: naver.user.id }, true) })
+        const user: {
+          id: string;
+          age?: string;
+          mobile?: string;
+          gender?: string;
+          name?: string;
+          nickname?: string;
+          profile_image?: string;
+        } = naver.user;
+
+        loginUser({
+          data: formatToBlob(
+            {
+              loginType: 'NAVER',
+              loginId: naver.user.id,
+              phone: user.mobile ? user.mobile.replaceAll('-', '') : undefined,
+              profileImage: user.profile_image,
+              name: user.name,
+              nickname: user.nickname,
+            },
+            true,
+          ),
+        })
           .then(res => {
             if (res.data.isSuccess) {
               setToken(res.data.data);
@@ -65,7 +87,7 @@ export function NaverButton() {
       />
       <div ref={naverButtonRef} hidden id='naverIdLogin' />
       <button
-        className='h-[39px] w-[39px] bg-[url(/assets/icons/sign/naver.svg)] bg-cover'
+        className='h-[45px] w-[45px] bg-[url(/assets/icons/sign/naver.svg)] bg-cover'
         onClick={onClickNaver}
       />
     </>

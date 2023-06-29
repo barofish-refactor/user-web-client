@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { ProductItemDummy } from 'src/components/common';
 
 const Compare = () => {
   return (
@@ -12,8 +11,8 @@ const Compare = () => {
           <Image src='/assets/icons/product/compare.svg' alt='compare' width={16} height={16} />
         </div>
         <div className='grid grid-cols-2 gap-[11px] pt-[18px]'>
-          <ProductItemDummy />
-          <ProductItemDummy />
+          {/* <ProductItem />
+          <ProductItem /> */}
         </div>
       </div>
       <div className='h-2 bg-grey-90' />

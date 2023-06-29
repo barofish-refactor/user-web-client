@@ -1,10 +1,36 @@
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
 import { ReviewForm } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 
 const MypageReviewWrite: NextPageWithLayout = () => {
-  return <ReviewForm />;
+  const router = useRouter();
+  const { v, subId } = router.query;
+  const { setAlert } = useAlertStore();
+
+  const { data } = useQuery(
+    queryKey.order.detail(v as string),
+    async () => {
+      const res = await client().selectOrder(v as string);
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      enabled: !!v,
+      staleTime: 0,
+    },
+  );
+
+  return <ReviewForm order={data} subId={Number(subId)} />;
 };
 
 MypageReviewWrite.getLayout = page => (

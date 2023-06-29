@@ -24,14 +24,23 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
       >
         {image.map((v, idx) => {
           return (
-            <SwiperSlide key={`product${idx}`} className='aspect-square w-full'>
-              <Image fill priority src={v} alt='product' className='' />
+            <SwiperSlide key={`product${idx}`} className=''>
+              <Image
+                priority
+                width={375}
+                height={375}
+                src={v}
+                alt='product'
+                className='aspect-square w-full object-cover'
+              />
             </SwiperSlide>
           );
         })}
       </Swiper>
       <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[20px] w-10 items-center justify-center rounded-full bg-grey-10/[.6]'>
-        <p className='whitespace-pre text-[12px] font-semibold text-white'>{`${pageIndex + 1} `}</p>
+        <p className='whitespace-pre text-[12px] font-semibold text-white'>{`${
+          image.length === 0 ? 0 : (isNaN(pageIndex) ? 0 : pageIndex) + 1
+        } `}</p>
         <p className='text-[12px] font-medium  text-[#DDDDDD]'>{`/ ${image.length}`}</p>
       </div>
       {isShowArrow && (

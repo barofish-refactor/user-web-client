@@ -16,10 +16,10 @@ export function KakaoButton() {
 
   return (
     <KakaoLogin
-      token={process.env.KAKAO_KEY}
+      token={process.env.NEXT_PUBLIC_KAKAO_KEY}
       render={({ onClick }) => (
         <button
-          className='h-[39px] w-[39px] bg-[url(/assets/icons/sign/kakao.svg)] bg-cover'
+          className='h-[45px] w-[45px] bg-[url(/assets/icons/sign/kakao.svg)] bg-cover'
           onClick={() => {
             if (window.ReactNativeWebView) requestPermission('socialLogin', 'kakao');
             else onClick();
@@ -32,7 +32,22 @@ export function KakaoButton() {
         if (!response.profile) return;
 
         loginUser({
-          data: formatToBlob({ loginType: 'KAKAO', loginId: String(response.profile.id) }, true),
+          data: formatToBlob(
+            {
+              loginType: 'KAKAO',
+              loginId: String(response.profile.id),
+              profileImage: response.profile.kakao_account.profile.profile_image ?? undefined,
+              // email: response.profile.kakao_account.email ?? undefined,
+              name: response.profile.kakao_account.profile.nickname ?? undefined,
+              nickname: (response.profile.kakao_account as any).name ?? undefined,
+              phone: response.profile.kakao_account.phone_number
+                ? response.profile.kakao_account.phone_number
+                    .replace('+82 ', '0')
+                    .replaceAll('-', '')
+                : undefined,
+            },
+            true,
+          ),
         })
           .then(res => {
             if (res.data.isSuccess) {

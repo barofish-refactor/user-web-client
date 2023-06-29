@@ -60,6 +60,13 @@ export default function MyApp(props: CustomAppProps) {
                     ? 'NAVER'
                     : 'APPLE',
                 loginId: message.loginId,
+                profileImage: message.profileImage ?? undefined,
+                // email: message.email ?? undefined,
+                name: message.name ?? undefined,
+                nickname: message.nickname ?? undefined,
+                phone: message.phone
+                  ? String(message.phone).replace('+82 ', '0').replaceAll('-', '')
+                  : undefined,
               },
               true,
             ),

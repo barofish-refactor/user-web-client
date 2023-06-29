@@ -1,8 +1,10 @@
 import { setCookie } from 'cookies-next';
 import { lightFormat } from 'date-fns';
-import { type Jwt } from 'src/api/swagger/data-contracts';
+import { type BasketProductDto, type Jwt } from 'src/api/swagger/data-contracts';
 import { VARIABLES } from 'src/variables';
 import { REG_EXP } from './regex';
+import { type SectionoptionType, type SectionBasketType } from 'src/pages/product/cart';
+import { type optionState } from 'src/components/product/bottom-sheet';
 
 export function setToken(jwt: Jwt | undefined) {
   const { ACCESS_TOKEN, REFRESH_TOKEN, TOKEN_MAX_AGE } = VARIABLES;
@@ -169,3 +171,111 @@ export function calcDiscountPrice(
     Math.round(((originPrice ?? 0) - (originPrice ?? 0) * ((discountRate ?? 0) / 100)) / 10) * 10
   );
 }
+
+/**
+ * 100 - ((97 / 100) * 100)
+ * 할인율 비율 계산 (올림)
+ */
+export function calcDiscountRate(
+  originPrice: number | undefined,
+  discountPrice: number | undefined,
+): number {
+  if (!discountPrice || !originPrice) return 0;
+  return Math.ceil(100 - (discountPrice / originPrice) * 100);
+}
+
+/** string undfined */
+export const emptyToUndefined = (value: string) => {
+  return value === '' ? undefined : value;
+};
+
+export function distanceFromNow(date: Date | string) {
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffS = Math.floor(diffMs / 1000);
+  if (diffS < 60) {
+    return `${diffS}초 전`;
+  }
+  const diffM = Math.floor(diffS / 60);
+  if (diffM < 60) {
+    return `${diffM}분 전`;
+  }
+  const diffH = Math.floor(diffM / 60);
+  if (diffH < 24) {
+    return `${diffH}시간 전`;
+  }
+  const diffD = Math.floor(diffH / 24);
+  if (diffD < 5) {
+    return `${diffD}일 전`;
+  }
+  return `${formatToUtc(date, 'M월 d일')}`;
+}
+
+/** 이름 마스킹 */
+export function maskingName(name: string) {
+  if (name.length > 2) {
+    const originName = name.split('');
+    originName.forEach(function (splitName, i) {
+      if (i === 0 || i === originName.length - 1) return;
+      originName[i] = '*';
+    });
+    const joinName = originName.join();
+    return joinName.replace(/,/g, '');
+  } else {
+    const pattern = /.$/;
+    return name.replace(pattern, '*');
+  }
+}
+
+/** 장바구니 타입 변경 */
+export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketType[] => {
+  let idx = 0;
+  const result = value.reduce((acc, cur) => {
+    const ownerId = cur.store?.storeId;
+
+    const index = acc.findIndex(v => v.store?.storeId === ownerId);
+
+    if (index === -1) {
+      acc.push({ data: [cur], store: cur.store, index: idx });
+      idx++;
+    } else {
+      acc[index].data.push(cur);
+    }
+    return acc;
+  }, [] as SectionBasketType[]);
+  return result;
+};
+
+/** 장바구니 타입 변경 */
+export const changeSectionOption = (value: optionState[]): SectionoptionType[] => {
+  let idx = 0;
+  const result = value.reduce((acc, cur) => {
+    const ownerId = cur.storeId;
+
+    const index = acc.findIndex(v => v.storeId === ownerId);
+
+    if (index === -1) {
+      acc.push({
+        data: [cur],
+        storeId: cur.storeId,
+        storeImage: cur.storeImage,
+        storeName: cur.storeName,
+        index: idx,
+      });
+      idx++;
+    } else {
+      acc[index].data.push(cur);
+    }
+    return acc;
+  }, [] as SectionoptionType[]);
+  return result;
+};
+
+/** 대괄호 씌워주기 */
+export const setSquareBrackets = (value: Nullish<string>) => {
+  if (value) return '[' + value + ']';
+  else return '';
+};

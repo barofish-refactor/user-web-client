@@ -15,7 +15,7 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
   return (
     <Link
       href={{ pathname: '/store/detail', query: { id: data?.storeId ?? -1 } }}
-      className='w-full overflow-hidden rounded-lg border border-grey-80 px-4 pb-[19px] pt-[26px]'
+      className='w-full overflow-hidden rounded-lg border border-grey-90 px-4 pb-[19px] pt-[26px]'
     >
       <div className='flex items-start justify-between'>
         <div className='flex flex-1 items-center gap-3'>
@@ -24,7 +24,7 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
             alt='partner'
             width={83}
             height={83}
-            className='rounded-full border border-grey-90'
+            className='h-[83px] w-[83px] rounded-full border border-grey-90 object-cover'
           />
           <div className=''>
             <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
@@ -68,7 +68,8 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
       </div>
       <div className='my-4 h-[1px] bg-grey-90' />
       <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-        {data?.reviews && data.reviews.length > 0 ? data.reviews[0].content : ''}
+        {/* {data?.reviews && data.reviews.length > 0 ? data.reviews[0].content : ''} */}
+        {data?.oneLineDescription ?? ''}
       </p>
     </Link>
   );

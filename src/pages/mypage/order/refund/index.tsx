@@ -1,33 +1,54 @@
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
-import { MypageOrderListItem, MypageOrderStatistics } from 'src/components/mypage/order';
+import { MypageOrderListItem } from 'src/components/mypage/order';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
 
-/** 마이페이지/주문 내역 */
+/** 마이페이지 - 취소/환불/교환 내역 */
 const MypageOrder: NextPageWithLayout = () => {
-  const { data } = useQuery(queryKey.order.lists, () => client().selectOrderList());
+  const { data } = useQuery(queryKey.order.list('canceled'), async () => {
+    const res = await client().selectCanceledOrderList();
+    if (res.data.isSuccess) {
+      return res.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
 
   return (
     <section className='pb-6'>
-      <MypageOrderStatistics totalCount={0} deliveryDoneCount={0} cancelRefundCount={0} />
       <hr className='border-t-8 border-grey-90' />
       <article className='divide-y-8 divide-grey-90'>
-        {data?.data.data?.map(v => (
-          <MypageOrderListItem
-            key={v.id}
-            id={v.id}
-            orderedAt={v.orderedAt}
-            orderProducts={v.productInfos}
-            totalPrice={0}
-          />
-        ))}
+        {data?.data && data.data.length === 0 ? (
+          <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>{Empty()}</div>
+        ) : (
+          data?.data?.map(v => (
+            <MypageOrderListItem
+              key={v.id}
+              id={v.id}
+              orderedAt={v.orderedAt}
+              orderProducts={v.productInfos}
+            />
+          ))
+        )}
       </article>
     </section>
   );
 };
+
+function Empty() {
+  return (
+    <div className='flex flex-col items-center gap-2'>
+      <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+      <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+        취소/환불/교환 내역이 없습니다.
+      </p>
+    </div>
+  );
+}
 
 MypageOrder.getLayout = page => (
   <Layout footerProps={{ disable: true }} headerProps={{ disable: true }}>

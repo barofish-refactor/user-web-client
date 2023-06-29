@@ -1,15 +1,14 @@
-import Layout from 'src/components/common/layout';
-import { BackButton } from 'src/components/ui';
-import { type NextPageWithLayout } from 'src/types/common';
+import { useQuery } from '@tanstack/react-query';
+import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatToUtc } from 'src/utils/functions';
-import { useAlertStore } from 'src/store';
-import { useQuery } from '@tanstack/react-query';
-import { queryKey } from 'src/query-key';
 import { client } from 'src/api/client';
-import { type GetServerSideProps } from 'next';
 import { type Notice } from 'src/api/swagger/data-contracts';
+import { NoticeLayout } from 'src/components/mypage/notice';
+import { queryKey } from 'src/query-key';
+import { useAlertStore } from 'src/store';
+import { type NextPageWithLayout } from 'src/types/common';
+import { formatToUtc } from 'src/utils/functions';
 
 interface Props {
   initialData: Notice[];
@@ -23,7 +22,6 @@ const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
     async () => {
       const res = await client().selectNoticeList({ type: 'NOTICE' });
       if (res.data.isSuccess) {
-        console.log(res.data);
         return res.data.data;
       } else {
         setAlert({ message: res.data.errorMsg ?? '' });
@@ -54,9 +52,9 @@ const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
                 {formatToUtc(v.createdAt, 'yyyy.MM.dd')}
               </time>
             </div>
-            <p className='line-clamp-2 whitespace-pre-line text-[14px] leading-[22px] -tracking-[0.03em] text-grey-10'>
+            {/* <p className='line-clamp-2 whitespace-pre-line text-[14px] leading-[22px] -tracking-[0.03em] text-grey-10'>
               {v.content}
-            </p>
+            </p> */}
           </Link>
         );
       })}
@@ -77,18 +75,7 @@ function Empty() {
   );
 }
 
-MypageNotices.getLayout = page => (
-  <Layout className='flex flex-col' footerProps={{ disable: true }} headerProps={{ disable: true }}>
-    <div className='flex flex-1 flex-col'>
-      <header className='title-header'>
-        <BackButton />
-        <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>공지사항</h2>
-        <div className='h-6 w-6' />
-      </header>
-      {page}
-    </div>
-  </Layout>
-);
+MypageNotices.getLayout = page => <NoticeLayout page={page} />;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const { selectNoticeList } = client();

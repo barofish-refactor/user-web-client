@@ -5,36 +5,42 @@
 
 import clsx from 'clsx';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { inputClassName, submitButtonClassName } from 'src/components/form';
 import { type FileType } from 'src/types/common';
-import { formatToLocaleString } from 'src/utils/functions';
+import {
+  calcDiscountRate,
+  formatToBlob,
+  formatToLocaleString,
+  setSquareBrackets,
+} from 'src/utils/functions';
 import { asyncUploads } from 'src/utils/upload';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
+import {
+  type OrderDto,
+  type OrderProductDto,
+  type AddReviewByUserPayload,
+} from 'src/api/swagger/data-contracts';
+import { useMutation } from '@tanstack/react-query';
+import { client } from 'src/api/client';
+import { ContentType } from 'src/api/swagger/http-client';
+import { useAlertStore } from 'src/store';
+import { useRouter } from 'next/router';
 
 const IMAGE_MAX_COUNT = 10;
 
 const keywords = [
-  { icon: '/assets/icons/emoji/thumbs-up.svg', text: '맛이 만족스러워요', value: 'a' },
-  { icon: '/assets/icons/emoji/droplet.svg', text: '신선도가 좋아요', value: 'b' },
-  { icon: '/assets/icons/emoji/money-wing.svg', text: '가격이 합리적이에요', value: 'c' },
-  { icon: '/assets/icons/emoji/gift.svg', text: '포장이 꼼꼼해요', value: 'd' },
-  { icon: '/assets/icons/emoji/dolphin.svg', text: '크기가 사진과 같아요', value: 'e' },
+  { icon: '/assets/icons/emoji/thumbs-up.svg', text: '맛이 만족스러워요', value: 'TASTE' },
+  { icon: '/assets/icons/emoji/droplet.svg', text: '신선도가 좋아요', value: 'FRESH' },
+  { icon: '/assets/icons/emoji/money-wing.svg', text: '가격이 합리적이에요', value: 'PRICE' },
+  { icon: '/assets/icons/emoji/gift.svg', text: '포장이 꼼꼼해요', value: 'PACKAGING' },
+  { icon: '/assets/icons/emoji/dolphin.svg', text: '크기가 사진과 같아요', value: 'SIZE' },
 ];
-
-const dummyProduct = {
-  id: 1,
-  img: 'https://picsum.photos/72',
-  name: '서준수산',
-  description: '[3차 세척,스킨포장] 최고 품질의 멸치 5kg',
-  price: 10000,
-  discountRate: 40,
-};
 
 type FormType = {
   selectKeywords: string[];
@@ -42,21 +48,64 @@ type FormType = {
   description: string;
 };
 
-export function ReviewForm() {
+export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number }) {
   const form = useForm<FormType>({
     defaultValues: { description: '', images: [], selectKeywords: [] },
   });
   const { handleSubmit, register } = form;
+  const { setAlert } = useAlertStore();
+  const router = useRouter();
+  const [productInfo, setProductInfo] = useState<OrderProductDto>();
+
+  const { mutateAsync: addReviewByUser, isLoading } = useMutation((args: AddReviewByUserPayload) =>
+    client().addReviewByUser(args, { type: ContentType.FormData }),
+  );
+
+  const onMutate = ({ data, images }: AddReviewByUserPayload) => {
+    if (isLoading) return;
+    addReviewByUser({
+      data: formatToBlob<AddReviewByUserPayload['data']>(data, true),
+      images,
+    })
+      .then(res => {
+        if (res.data.isSuccess) {
+          setAlert({
+            message: '리뷰를 등록했습니다.',
+            onClick: () => router.back(),
+          });
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
 
   const onSubmit = handleSubmit(data => {
-    console.log(data);
+    if (data.description.trim().length === 0) return setAlert({ message: '내용을 입력해 주세요' });
+    if (data.images.length === 0) return setAlert({ message: '사진을 등록해 주세요' });
+    onMutate({
+      data: {
+        orderId: order?.id,
+        content: data.description,
+        evaluations: data.selectKeywords as ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[],
+        userId: order?.user?.userId,
+        productId: order?.productInfos?.[0].product?.id,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      images: data.images.map(x => x.file!),
+    });
   });
+
+  useEffect(() => {
+    if (order && subId) {
+      const tmp = order.productInfos?.filter(v => v.id === Number(subId));
+      if (tmp && tmp.length > 0) setProductInfo(tmp[0]);
+    }
+  }, [order, subId]);
 
   return (
     <FormProvider {...form}>
       <form className='flex flex-1 flex-col justify-between' onSubmit={onSubmit}>
         <div>
-          <Product />
+          <Product data={productInfo ?? order?.productInfos?.[0] ?? undefined} />
           <SelectKeywords />
           <div className='pt-8'>
             <h3 className='px-4 font-bold leading-[24px] -tracking-[0.03em]'>리뷰를 남겨주세요</h3>
@@ -68,7 +117,7 @@ export function ReviewForm() {
               <textarea
                 {...register('description')}
                 className={clsx(inputClassName, '[&]:h-[212px] [&]:p-3')}
-                placeholder='취소/환불 사유를 작성 해 주세요'
+                placeholder='리뷰를 작성해 주세요'
                 spellCheck={false}
               />
             </div>
@@ -76,7 +125,7 @@ export function ReviewForm() {
         </div>
         <div className='px-4 pb-6 pt-2'>
           <button type='submit' className={submitButtonClassName}>
-            수정하기
+            {`${true ? '등록하기' : '수정하기'}`}
           </button>
         </div>
       </form>
@@ -84,31 +133,36 @@ export function ReviewForm() {
   );
 }
 
-function Product() {
+function Product({ data }: { data?: OrderProductDto }) {
   return (
     <div className='p-4'>
       <div className='flex items-center gap-[13px] rounded-lg bg-grey-90 p-2'>
-        <Image
-          priority
-          src={dummyProduct.img}
-          alt={dummyProduct.name}
-          width={72}
-          height={72}
-          className='aspect-square rounded-lg object-cover'
-        />
+        {data?.product?.image && (
+          <Image
+            priority
+            src={data?.product?.image}
+            alt='product'
+            width={72}
+            height={72}
+            className='aspect-square rounded-lg object-cover'
+          />
+        )}
         <div className='flex-1'>
           <h4 className='line-clamp-1 text-[13px] font-bold leading-[16px] -tracking-[0.05em]'>
-            {dummyProduct.name}
+            {`${setSquareBrackets(data?.product?.storeName)} ${data?.product?.title}`}
+            {/* {data?.product?.title ?? ''} */}
           </h4>
           <p className='mt-0.5 line-clamp-1 text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
-            {dummyProduct.description}
+            {data?.optionName ?? '기본'} {data?.amount ?? 0}개
           </p>
           <div className='flex items-center gap-0.5'>
-            <strong className='font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>
-              {formatToLocaleString(dummyProduct.discountRate, { suffix: '%' })}
-            </strong>
+            {(data?.product?.originPrice ?? 0) !== 0 && (
+              <strong className='font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>
+                {calcDiscountRate(data?.product?.originPrice, data?.product?.discountPrice)}%
+              </strong>
+            )}
             <strong className='font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>
-              {formatToLocaleString(dummyProduct.price, { suffix: '원' })}
+              {formatToLocaleString(data?.product?.discountPrice, { suffix: '원' })}
             </strong>
           </div>
         </div>

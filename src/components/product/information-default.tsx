@@ -1,11 +1,12 @@
 import addDays from 'date-fns/addDays';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Fragment } from 'react';
 // import Link from 'next/link';
 import { type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ChevronIcon } from 'src/components/icons';
 // import { ChevronIcon } from 'src/components/icons';
-import { calcDiscountPrice, formatToLocaleString, formatToUtc } from 'src/utils/functions';
+import { calcDiscountRate, formatToLocaleString, formatToUtc } from 'src/utils/functions';
 
 interface Props {
   data?: SimpleProductDto;
@@ -26,15 +27,20 @@ const InformationDefault = ({ data }: Props) => {
         <div className='mt-3 flex items-center justify-between'>
           <div>
             <div className='flex items-center gap-0.5'>
-              <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-teritory'>{`${
-                data?.discountRate ?? 0
-              }%`}</p>
-              <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-70 line-through'>{`${formatToLocaleString(
-                data?.originPrice,
-              )}원`}</p>
+              {(data?.originPrice ?? 0) !== 0 && (
+                <Fragment>
+                  <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+                    data?.originPrice,
+                    data?.discountPrice,
+                  )}%`}</p>
+                  <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-70 line-through'>{`${formatToLocaleString(
+                    data?.originPrice,
+                  )}원`}</p>
+                </Fragment>
+              )}
             </div>
             <p className='-mt-[5px] text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-black'>{`${formatToLocaleString(
-              calcDiscountPrice(data?.originPrice, data?.discountRate),
+              data?.discountPrice,
             )}원`}</p>
           </div>
           {/* <button

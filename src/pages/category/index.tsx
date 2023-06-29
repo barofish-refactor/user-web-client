@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { type GetServerSideProps } from 'next';
+import { type GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -21,8 +21,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.category,
     async () => {
-      const { selectCategories } = client();
-      const res = await selectCategories();
+      const res = await client().selectCategories();
       return res.data;
     },
     { initialData },
@@ -105,10 +104,11 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
 
 Category.getLayout = page => <Layout>{page}</Layout>;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const { selectCategories } = client();
   return {
     props: { initialData: (await selectCategories()).data },
+    revalidate: 60,
   };
 };
 

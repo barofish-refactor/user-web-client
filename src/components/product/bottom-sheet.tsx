@@ -1,19 +1,23 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { client } from 'src/api/client';
 import { type AddBasketPayload, type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
+import { HomeSmallSlideCuration } from 'src/components/home';
 import { ProductSelector } from 'src/components/product';
 import { type ProductSelectorType } from 'src/components/product/selector';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
-import { calcDiscountPrice, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
+import { VARIABLES } from 'src/variables';
 
 export interface optionState {
+  isNeeded: boolean;
   optionId: number;
   productId: number;
   name: string;
@@ -21,11 +25,22 @@ export interface optionState {
   price: number;
   additionalPrice: number;
   deliveryFee: number;
+  deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverBoxPerAmount: number;
+  minOrderPrice: number;
   stock: number;
+  maxAvailableStock: number;
   productName: string;
   productImage: string;
+  storeId: number;
   storeImage: string;
   storeName: string;
+}
+
+export interface optionSelectorType {
+  id: number;
+  isNeeded: boolean;
+  options: ProductSelectorType[];
 }
 
 interface Props {
@@ -36,6 +51,7 @@ interface Props {
 /** 옵션 선택 BottomSheet */
 const BottomSheet = ({ data, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
@@ -48,6 +64,21 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+
+  const { data: selectProductOtherCustomerBuy } = useQuery(
+    queryKey.orderRecommend.list(data?.id),
+    async () => {
+      const res = await client().selectProductOtherCustomerBuy({ ids: data?.id?.toString() ?? '' });
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+      }
+    },
+    {
+      enabled: !!data?.id,
+    },
+  );
 
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
     (args: AddBasketPayload) => client().addBasket(args, { type: ContentType.FormData }),
@@ -67,41 +98,32 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   const [selectedOption, setSelectedOption] = useState<optionState[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  const [options, setOptions] = useState<ProductSelectorType[]>([
-    {
-      // id: -1,
-      productId: -1,
-      optionId: -1,
-      option: '기본',
-      price: calcDiscountPrice(data?.originPrice, data?.discountRate),
-      value: '-1',
-      amount: -1,
-      additionalPrice: 0,
-    },
-  ]);
+  const [options, setOptions] = useState<optionSelectorType[]>([]);
 
   useEffect(() => {
     if (!isLoading && optionData) {
-      if (
-        optionData.length > 0 &&
-        optionData[0].isNeeded &&
-        optionData[0].optionItems &&
-        optionData[0].optionItems.length > 0
-      ) {
-        setOptions(
-          optionData[0].optionItems.map(v => {
-            return {
-              optionId: v.id ?? -1,
-              productId: data?.id ?? -1,
-              option: v.name ?? '',
-              price: calcDiscountPrice(data?.originPrice, data?.discountRate),
-              value: v.id?.toString() ?? '',
-              amount: v.amount ?? 0,
-              additionalPrice: v.price ?? 0,
-            };
-          }),
-        );
-      }
+      setOptions(
+        optionData.map(v => {
+          return {
+            id: v.id ?? -1,
+            isNeeded: v.isNeeded ?? false,
+            options: (v.optionItems ?? []).map(x => {
+              return {
+                optionId: x.id ?? -1,
+                productId: data?.id ?? -1,
+                option: x.name ?? '',
+                price: data?.discountPrice ?? 0,
+                value: x.id?.toString() ?? '',
+                amount: x.amount ?? 0,
+                additionalPrice: (x.discountPrice ?? 0) - (data?.discountPrice ?? 0),
+                stock: x.amount ?? 999,
+                maxAvailableStock: x.maxAvailableAmount ?? 999,
+                deliverBoxPerAmount: x.deliverBoxPerAmount ?? 999,
+              };
+            }),
+          };
+        }),
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [optionData, isLoading]);
@@ -128,6 +150,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
     const objIndex = tmp.findIndex(obj => obj.name === item.name);
 
     if (item.stock === amount) return;
+    if (item.maxAvailableStock === amount) return;
 
     tmp[objIndex].amount = amount + 1;
     setSelectedOption(tmp);
@@ -166,37 +189,52 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
           <p className='self-center text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
             옵션 선택
           </p>
-          <div className='min-h-[280px] px-4 pt-3.5'>
-            <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'>
-              필수옵션
-            </p>
-            <ProductSelector
-              list={options}
-              className='mt-1.5'
-              placeHolder='옵션을 선택해주세요'
-              setValue={value => {
-                const tmp = [...selectedOption];
-                const objIndex = tmp.findIndex(obj => obj.optionId === value.optionId);
-                if (objIndex === -1) {
-                  tmp.push({
-                    optionId: value.optionId,
-                    productId: value.productId,
-                    name: value.option,
-                    amount: 1,
-                    price: value.price,
-                    additionalPrice: value.additionalPrice,
-                    deliveryFee: data?.deliveryFee ?? 0,
-                    stock: value.amount,
-                    productImage:
-                      data && data.images && data.images.length > 0 ? data.images[0] : '',
-                    productName: data?.title ?? '',
-                    storeImage: data?.store?.profileImage ?? '',
-                    storeName: data?.store?.name ?? '',
-                  });
-                  setSelectedOption(tmp);
-                }
-              }}
-            />
+          <div className='max-h-[560px] min-h-[280px]  overflow-y-scroll px-4 scrollbar-hide'>
+            <div className='mb-3.5 min-h-[120px]'>
+              {options.map((v, i) => {
+                return (
+                  <div key={`${v.id}`} className='pt-3.5'>
+                    <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'>
+                      {`${v.isNeeded ? '필수옵션' : '추가옵션'}`}
+                    </p>
+                    <ProductSelector
+                      index={i}
+                      list={v.options}
+                      className='mt-1.5'
+                      placeHolder='옵션을 선택해주세요'
+                      setValue={value => {
+                        const tmp = [...selectedOption];
+                        const objIndex = tmp.findIndex(obj => obj.optionId === value.optionId);
+                        if (objIndex === -1) {
+                          tmp.push({
+                            isNeeded: v.isNeeded ?? false,
+                            optionId: value.optionId,
+                            productId: value.productId,
+                            name: value.option,
+                            amount: 1,
+                            price: value.price,
+                            additionalPrice: value.additionalPrice,
+                            deliveryFee: data?.store?.deliverFee ?? 0,
+                            deliverFeeType: data?.store?.deliverFeeType ?? 'FREE',
+                            deliverBoxPerAmount: value.deliverBoxPerAmount,
+                            minOrderPrice: data?.store?.minOrderPrice ?? 0,
+                            stock: value.amount,
+                            maxAvailableStock: value.maxAvailableStock,
+                            productImage:
+                              data && data.images && data.images.length > 0 ? data.images[0] : '',
+                            productName: data?.title ?? '',
+                            storeId: data?.store?.storeId ?? -1,
+                            storeImage: data?.store?.profileImage ?? '',
+                            storeName: data?.store?.name ?? '',
+                          });
+                          setSelectedOption(tmp);
+                        }
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
             <div className='flex max-h-[280px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[15px] scrollbar-hide'>
               {selectedOption.map((v, idx) => {
                 return (
@@ -254,49 +292,60 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 );
               })}
             </div>
-            {selectedOption.length > 0 && (
-              <div className=''>
-                <div className='h-[1px] bg-grey-90' />
-                <div className='mt-[10.5px] flex items-center justify-between'>
-                  <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-40'>{`${selectedOption.length}개 상품`}</p>
-                  <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`총 ${formatToLocaleString(
-                    totalPrice,
-                  )}원`}</p>
-                </div>
-                <div className='mt-[30px] flex items-center gap-[7px]'>
-                  <button
-                    className='h-[52px] flex-1 rounded-lg border border-primary-50'
-                    onClick={() => {
-                      onMutate({
-                        data: {
-                          productId: data?.id,
-                          options: selectedOption.map(x => {
-                            return {
-                              optionId: x.optionId === -1 ? undefined : x.optionId,
-                              amount: x.amount,
-                            };
-                          }),
-                        },
-                      });
-                    }}
-                  >
-                    <p className='text-[16px] font-bold -tracking-[0.03em] text-primary-50'>
-                      장바구니
-                    </p>
-                  </button>
-                  <Link
-                    className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
-                    href={{
+          </div>
+          {selectedOption.length > 0 && (
+            <div className='z-[200] px-4'>
+              <div className='h-[1px] bg-grey-90' />
+              <div className='mt-[10.5px] flex items-center justify-between'>
+                <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-40'>{`${selectedOption.length}개 상품`}</p>
+                <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`총 ${formatToLocaleString(
+                  totalPrice,
+                )}원`}</p>
+              </div>
+              <div className='mt-[30px] flex items-center gap-[7px]'>
+                <button
+                  className='h-[52px] flex-1 rounded-lg border border-primary-50'
+                  onClick={() => {
+                    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                      setIsVisible(false);
+                      router.push('/login');
+                      return;
+                    }
+                    if (selectedOption.filter(v => v.isNeeded === false).length > 0)
+                      return setAlert({ message: '필수옵션만 선택해주세요.' });
+                    onMutate({
+                      data: {
+                        productId: data?.id,
+                        options: selectedOption.map(x => {
+                          return {
+                            optionId: x.optionId === -1 ? undefined : x.optionId,
+                            amount: x.amount,
+                          };
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  <p className='text-[16px] font-bold -tracking-[0.03em] text-primary-50'>
+                    장바구니
+                  </p>
+                </button>
+                <button
+                  className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+                  onClick={() => {
+                    if (selectedOption.filter(v => v.isNeeded === true).length === 0)
+                      return setAlert({ message: '필수옵션을 1개 이상 선택해주세요.' });
+                    router.push({
                       pathname: '/product/order',
                       query: { id: data?.id, options: aToB(JSON.stringify(selectedOption)) },
-                    }}
-                  >
-                    <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>바로 구매</p>
-                  </Link>
-                </div>
+                    });
+                  }}
+                >
+                  <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>바로 구매</p>
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className='flex w-full flex-col px-4 pb-9'>
@@ -316,6 +365,20 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
           <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             다른 고객이 함께 구매한 상품
           </p>
+          {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
+            <HomeSmallSlideCuration
+              className='mt-4'
+              data={selectProductOtherCustomerBuy ?? []}
+              onClick={() => setIsVisible(false)}
+            />
+          ) : (
+            <div className='flex h-[252px] flex-col items-center justify-center'>
+              <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+              <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                상품이 존재하지 않습니다.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

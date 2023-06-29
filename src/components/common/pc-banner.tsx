@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
+import cm from 'src/utils/class-merge';
 
 const PcBanner = () => {
   const { data } = useQuery(
@@ -28,8 +29,13 @@ const PcBanner = () => {
             priority
             src={data.image}
             alt='banner'
-            className='!relative h-auto object-contain'
+            className={cm('!relative h-auto object-contain', { 'cursor-pointer': !!data.link })}
             draggable={false}
+            onClick={() => {
+              if (data.link) {
+                window.open(data.link);
+              }
+            }}
           />
         )}
       </div>

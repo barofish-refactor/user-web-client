@@ -2,6 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
@@ -18,7 +19,7 @@ const ReviewAll: NextPageWithLayout = () => {
 
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.review.list({ id, type }),
-    async ({ pageParam = 1 }) => {
+    async ({ pageParam = 0 }) => {
       const res = await (type === 'product'
         ? client().selectReviewListWithProductId(Number(id), {
             page: pageParam,
@@ -29,7 +30,6 @@ const ReviewAll: NextPageWithLayout = () => {
             take: perView,
           }));
       if (res.data.isSuccess) {
-        console.log('review:', res.data);
         return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -63,27 +63,54 @@ const ReviewAll: NextPageWithLayout = () => {
       </div>
 
       {/* content */}
-      <div className='grid grid-cols-3 gap-[5px] p-4'>
-        {(data?.pages ?? []).map(x =>
-          (x?.content ?? []).map(v => {
-            return (
-              <Link
-                key={`review${v.id}`}
-                href={{ pathname: '/store/review', query: { id: 1 } }}
-                className=''
-              >
-                <div className='relative aspect-square w-full overflow-hidden rounded-lg'>
-                  <Image fill src={v.images?.[0] ?? ''} alt='review' draggable={false} />
-                </div>
-              </Link>
-            );
-          }),
-        )}
-        <div ref={ref} />
-      </div>
+      {(data?.pages ?? []).filter(x => (x?.content ?? []).length > 0).map(x => x?.content)
+        .length === 0 ? (
+        Empty()
+      ) : (
+        <div className='grid grid-cols-3 gap-[5px] p-4'>
+          <Fragment>
+            {(data?.pages ?? []).map(x =>
+              (x?.content ?? []).map(v => {
+                return (
+                  <Link
+                    key={`review${v.id}`}
+                    href={{ pathname: '/store/review', query: { id: v.id } }}
+                    className=''
+                  >
+                    <Image
+                      width={110}
+                      height={110}
+                      src={v.images?.[0] ?? ''}
+                      alt='review'
+                      draggable={false}
+                      className='aspect-square w-full overflow-hidden rounded-lg object-cover'
+                    />
+                  </Link>
+                );
+              }),
+            )}
+            <div ref={ref} />
+          </Fragment>
+        </div>
+      )}
     </div>
   );
 };
+
+function Empty() {
+  return (
+    <div className='flex h-[100dvb] items-center justify-center'>
+      <div className='mb-[100px] grid flex-1 place-items-center'>
+        <div className='flex flex-col items-center gap-2'>
+          <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+          <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+            후기가 없습니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 ReviewAll.getLayout = page => (
   <Layout headerProps={{ disable: true }} footerProps={{ disable: true }}>

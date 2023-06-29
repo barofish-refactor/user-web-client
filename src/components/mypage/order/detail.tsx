@@ -1,59 +1,69 @@
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { client } from 'src/api/client';
 import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { useAlertStore } from 'src/store';
 import { formatToLocaleString, formatToPhone } from 'src/utils/functions';
 
 const headingClassName = 'font-bold leading-[24px] -tracking-[0.03em] text-grey-10';
 const labelClassName = 'font-medium leading-[24px] -tracking-[0.03em] text-grey-50';
 const subValueClassName = 'font-medium leading-[24px] -tracking-[0.03em] text-grey-20';
 
-export function MypageOrderDetail() {
-  const orderInfo = {
-    name: '김바로',
-    phone: '010-1234-5678',
-  };
-  const shippingAddressInfo = {
-    name: '집',
-    receiverName: '홍길동',
-    phone: '010-1234-5678',
-    address: '서울특별시 강남구 테헤란로 427 위워크타워 10층',
-    addressDetail: '위워크타워 10층',
-    memo: '부재 시 경비실에 맡겨주세요.',
-  };
-  const orderProducts = Array.from({ length: 2 }, (_, i) => ({
-    id: i + 1,
-    product: {
-      id: i + 1,
-      title: '[3차 세척, 스킨포장] 목포 손질 먹갈치400~650g',
-      option: '중 1팩(4토막) 400g 내외',
-      price: 12300,
-      img: 'https://picsum.photos/70/70',
-      shippingFee: 2500,
+interface Props {
+  id: string;
+}
+
+export function MypageOrderDetail({ id }: Props) {
+  const { setAlert } = useAlertStore();
+
+  const paymentMethod = '카드결제';
+  const { data } = useQuery(
+    queryKey.order.detail(id),
+    async () => {
+      const res = await client().selectOrder(id);
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        throw new Error(res.data.errorMsg);
+      }
     },
-    seller: {
-      id: i + 1,
-      profile: 'https://picsum.photos/28/28',
-      name: '서준수산',
+    {
+      // initialData,
+      staleTime: 0,
     },
-  }));
-  const paymentMethod = '네이버페이';
-  const paymentAmountInfo = {
-    orderPrice: 36480,
-    shippingFee: 3000,
-    discount: 0,
-    useReward: 480,
-    get total() {
-      return this.orderPrice + this.shippingFee - this.discount - this.useReward;
-    },
-  };
-  const rewardInfo = {
-    /** 구매적립 */
-    purchase: 360,
-    review: 650,
-    get total() {
-      return this.purchase + this.review;
-    },
-  };
+  );
+  const sectionDeliverFee = data?.productInfos
+    ?.map(
+      v =>
+        Math.ceil((v.amount ?? 0) / (v.optionItem?.maxAvailableAmount ?? 0)) *
+        ((v.deliverFee ?? 0) + (v.optionItem?.deliveryFee ?? 0)),
+    )
+    .reduce((a, b) => a + b, 0);
+  const totalDeliverFee = data?.productInfos
+    ?.map(v =>
+      v.deliverFeeType === 'FREE'
+        ? 0
+        : v.deliverFeeType === 'FIX'
+        ? sectionDeliverFee
+        : (v.price ?? 0) >= (v.minOrderPrice ?? 0)
+        ? 0
+        : sectionDeliverFee,
+    )
+    .reduce((a, b) => (a ?? 0) + (b ?? 0), 0);
+
+  const { data: pointData } = useQuery(queryKey.pointRule, async () => {
+    const res = await client().selectPointRule();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.errorMsg);
+    }
+  });
+
   return (
     <div>
       <header className='title-header'>
@@ -69,13 +79,13 @@ export function MypageOrderDetail() {
               이름
             </span>
             <span className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-50'>
-              {orderInfo.name}
+              {data?.ordererName ?? ''}
             </span>
             <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
               연락처
             </span>
             <span className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-50'>
-              {formatToPhone(orderInfo.phone)}
+              {formatToPhone(data?.ordererTel)}
             </span>
           </div>
         </div>
@@ -83,72 +93,107 @@ export function MypageOrderDetail() {
         <div className='px-4 py-[22px]'>
           <h3 className={headingClassName}>배송지</h3>
           <div className='pt-[22px]'>
-            <h4 className={headingClassName}>{shippingAddressInfo.name}</h4>
+            <h4 className={headingClassName}>{data?.deliverPlace?.name ?? ''}</h4>
             <p className='mt-1 font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
-              {shippingAddressInfo.receiverName},{formatToPhone(shippingAddressInfo.phone)}
+              {data?.deliverPlace?.receiverName ?? ''},{formatToPhone(data?.deliverPlace?.tel)}
             </p>
             <hr className='my-2.5 border-grey-90' />
             <p className='font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
-              {shippingAddressInfo.address}, {shippingAddressInfo.addressDetail}
+              {data?.deliverPlace?.address ?? ''}, {data?.deliverPlace?.addressDetail ?? ''}
             </p>
             <p className='mt-1 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
-              {shippingAddressInfo.memo}
+              {data?.deliverPlace?.deliverMessage ?? ''}
             </p>
           </div>
         </div>
         <hr className='border-t-8 border-grey-90' />
         <div className='px-4 py-[22px]'>
-          <h3 className={headingClassName}>주문 상품</h3>
-          <article className='space-y-4 pt-[22px]'>
-            {orderProducts.map(v => (
-              <div key={v.id} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
-                <div className='flex items-center justify-between'>
-                  <Link href='#' className='flex items-center gap-2'>
-                    <Image
-                      className='aspect-square h-7 w-7 rounded-full border border-grey-90 object-cover'
-                      width={28}
-                      height={28}
-                      alt='스토어'
-                      src={v.seller.profile}
-                    />
-                    <span className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                      {v.seller.name}
-                    </span>
-                  </Link>
-                  <div className='flex items-center gap-1'>
-                    <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
-                      배송비
-                    </span>
-                    <span className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                      {formatToLocaleString(v.product.shippingFee, { suffix: '원' })}
-                    </span>
-                  </div>
+          <details open className='group'>
+            <summary className='flex items-center justify-between gap-3'>
+              <h3 className={headingClassName}>주문 상품</h3>
+              <div className='flex flex-1 items-center gap-1.5'>
+                <div className='flex flex-1 font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                  <p className='line-clamp-1 flex-1'>{data?.productInfos?.[0]?.product?.title}</p>
+                  {(data?.productInfos?.length ?? 0) > 1 &&
+                    `외 ${(data?.productInfos?.length ?? 0) - 1}건`}
                 </div>
-                <div className='flex items-center gap-2.5 pt-3'>
-                  <Link href='#'>
-                    <Image
-                      src={v.product.img}
-                      width={70}
-                      height={70}
-                      alt='product'
-                      className='aspect-square h-[70px] w-[70px] rounded object-cover'
-                    />
-                  </Link>
-                  <div className='flex flex-1 flex-col justify-center gap-1'>
-                    <h4 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
-                      {v.product.title}
-                    </h4>
-                    <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
-                      {v.product.option}
+                <Image
+                  src='/assets/icons/common/chevron-mypage.svg'
+                  width={24}
+                  height={24}
+                  alt=''
+                  className='rotate-90 group-open:-rotate-90'
+                />
+              </div>
+            </summary>
+            <article className='space-y-4 pt-[22px]'>
+              {(data?.productInfos ?? []).map((v, idx) => {
+                const sectionDeliverFee =
+                  Math.ceil((v.amount ?? 0) / (v.optionItem?.maxAvailableAmount ?? 0)) *
+                  ((v.deliverFee ?? 0) + (v.optionItem?.deliveryFee ?? 0));
+                return (
+                  <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
+                    <div className='flex items-center justify-between'>
+                      <Link href='#' className='flex items-center gap-2'>
+                        <Image
+                          className='aspect-square h-7 w-7 rounded-full border border-grey-90 object-cover'
+                          width={28}
+                          height={28}
+                          alt='스토어'
+                          src={v.storeProfile ?? ''}
+                        />
+                        <span className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                          {v.storeName ?? ''}
+                        </span>
+                      </Link>
+                      <div className='flex items-center gap-1'>
+                        <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
+                          배송비
+                        </span>
+                        <span className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+                          {v.deliverFeeType === 'FREE'
+                            ? '무료'
+                            : v.deliverFeeType === 'FIX'
+                            ? formatToLocaleString(sectionDeliverFee) + '원'
+                            : (v.price ?? 0) >= (v.minOrderPrice ?? 0)
+                            ? '무료'
+                            : formatToLocaleString(sectionDeliverFee) + '원'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className='flex items-center gap-2.5 pt-3'>
+                      <Link href='#'>
+                        <Image
+                          src={v.product?.image ?? ''}
+                          width={70}
+                          height={70}
+                          alt='product'
+                          className='aspect-square h-[70px] w-[70px] rounded object-cover'
+                        />
+                      </Link>
+                      <div className='flex flex-1 flex-col justify-center gap-1'>
+                        <h4 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+                          {v.product?.title ?? ''}
+                        </h4>
+                        <div className='flex items-center'>
+                          <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                            {v.amount ?? 0}개
+                          </p>
+                          <div className='mx-1.5 h-[14px] w-[1px] bg-[#E2E2E2]' />
+                          <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                            {v.optionName ?? '기본'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <p className='text-right font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                      {formatToLocaleString(v.price, { suffix: '원' })}
                     </p>
                   </div>
-                </div>
-                <p className='text-right font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                  {formatToLocaleString(v.product.price, { suffix: '원' })}
-                </p>
-              </div>
-            ))}
-          </article>
+                );
+              })}
+            </article>
+          </details>
         </div>
         <hr className='border-t-8 border-grey-90' />
         <div className='flex items-center justify-between px-4 py-[22px]'>
@@ -164,25 +209,25 @@ export function MypageOrderDetail() {
             <div className='flex items-center justify-between'>
               <span className={labelClassName}>주문금액</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(paymentAmountInfo.orderPrice, { suffix: '원' })}
+                {formatToLocaleString(data?.totalAmount, { suffix: '원' })}
               </span>
             </div>
             <div className='flex items-center justify-between'>
               <span className={labelClassName}>배송비</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(paymentAmountInfo.shippingFee, { prefix: '+', suffix: '원' })}
+                {formatToLocaleString(totalDeliverFee, { prefix: '+' })}원
               </span>
             </div>
             <div className='flex items-center justify-between'>
               <span className={labelClassName}>쿠폰할인</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(paymentAmountInfo.discount, { prefix: '-', suffix: '원' })}
+                {formatToLocaleString(data?.couponDiscount, { prefix: '-' })}원
               </span>
             </div>
             <div className='flex items-center justify-between'>
               <span className={labelClassName}>적립금사용</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(paymentAmountInfo.discount, { prefix: '-', suffix: '원' })}
+                {formatToLocaleString(data?.usePoint, { prefix: '-' })}원
               </span>
             </div>
           </div>
@@ -190,7 +235,7 @@ export function MypageOrderDetail() {
           <div className='mt-4 flex items-center justify-between'>
             <h4 className={headingClassName}>최종 결제 금액</h4>
             <strong className='text-[20px] leading-[30px] -tracking-[0.03em] text-grey-10'>
-              {formatToLocaleString(paymentAmountInfo.total, { suffix: '원' })}
+              {formatToLocaleString(data?.totalAmount, { suffix: '원' })}
             </strong>
           </div>
         </div>
@@ -202,17 +247,22 @@ export function MypageOrderDetail() {
               <span className={labelClassName}>구매적립</span>
               <div className='text-right'>
                 <span className={subValueClassName}>
-                  {formatToLocaleString(rewardInfo.purchase, { prefix: '최대 ', suffix: '원' })}
+                  {formatToLocaleString(
+                    Math.floor(((data?.totalAmount ?? 0) / 100) * (pointData?.pointRate ?? 1)),
+                    { prefix: '', suffix: '원' },
+                  )}
                 </span>
                 <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-60'>
-                  (멸치 등급 : 구매 적립 1%)
+                  {`(${data?.user?.grade?.name ?? ''} 등급 : 구매 적립 ${
+                    data?.user?.grade?.pointRate ?? 0
+                  }%)`}
                 </p>
               </div>
             </div>
             <div className='flex justify-between'>
               <span className={labelClassName}>후기작성</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(rewardInfo.review, { prefix: '최대 ', suffix: '원' })}
+                {formatToLocaleString(pointData?.maxReviewPoint, { prefix: '최대 ', suffix: '원' })}
               </span>
             </div>
           </div>
@@ -220,7 +270,11 @@ export function MypageOrderDetail() {
           <div className='flex items-center justify-between pt-[22px]'>
             <h4 className={headingClassName}>적립 금액</h4>
             <strong className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-primary-50'>
-              {formatToLocaleString(rewardInfo.total, { prefix: '최대 ', suffix: '원' })}
+              {formatToLocaleString(
+                Math.floor(((data?.totalAmount ?? 0) / 100) * (pointData?.pointRate ?? 1)) +
+                  (pointData?.maxReviewPoint ?? 0),
+                { prefix: '최대 ', suffix: '원' },
+              )}
             </strong>
           </div>
         </div>

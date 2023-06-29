@@ -1,39 +1,74 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { client } from 'src/api/client';
+import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
 import { submitButtonClassName } from 'src/components/form';
 import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { useAlertStore, useConfirmStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { maskingCardNumber } from 'src/utils/functions';
-
-/* 
-  TODO Int 필요
-*/
-
-const dummyPayMethods = Array.from({ length: 3 }, (_, i) => ({
-  id: i + 1,
-  name: '신한카드',
-  number: '1234-1234-1234-1234',
-}));
+import { setSquareBrackets } from 'src/utils/functions';
 
 const MypagePayMethod: NextPageWithLayout = () => {
-  const isEmpty = false;
+  const { setAlert } = useAlertStore();
+  const { setConfirm } = useConfirmStore();
+  // const isEmpty = false;
 
-  if (isEmpty) return <Empty />;
+  const { data, refetch } = useQuery(queryKey.paymentMethod, async () => {
+    const res = await client().selectPaymentMethodList();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.errorMsg);
+    }
+  });
+
+  const { mutateAsync: deletePaymentMethod, isLoading: isDeleteLoading } = useMutation(
+    (id: number) => client().deletePaymentMethod(id, { type: ContentType.FormData }),
+  );
+
+  const onDeletePaymentMethod = (id: number) => {
+    if (isDeleteLoading) return;
+    deletePaymentMethod(id)
+      .then(res => {
+        if (res.data.isSuccess) {
+          setAlert({ message: '삭제되었습니다.', type: 'success' });
+          refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
+  if (!data || data.length === 0) return <Empty />;
 
   return (
     <article className='flex-1'>
       <ul>
-        {dummyPayMethods.map(v => (
+        {data.map(v => (
           <li
             key={v.id}
-            className='flex items-center justify-between border-b border-b-[#f2f2f2] p-4'
+            className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] p-4'
           >
-            <div className='font-medium leading-[24px] -tracking-[0.03em]'>
-              <h3 className='mb-1.5 text-grey-20'>{v.name}</h3>
-              <span className='text-grey-50'>{maskingCardNumber(v.number)}</span>
+            <div className='flex-1 font-medium leading-[24px] -tracking-[0.03em]'>
+              <h3 className='mb-1.5 text-grey-20'>{`${setSquareBrackets(v.cardName)} ${
+                v.name
+              }`}</h3>
+              <span className='break-all text-grey-50'>{v.cardNo}</span>
             </div>
-            <button className='h-[32px] w-[55px] rounded-sm border border-[#e2e2e2] text-[13px] leading-[20px] -tracking-[0.03em] text-grey-30'>
+            <button
+              className='h-[32px] w-[55px] rounded-sm border border-[#e2e2e2] text-[13px] leading-[20px] -tracking-[0.03em] text-grey-30'
+              onClick={() => {
+                setConfirm({
+                  message: '결제 정보를 삭제하시겠습니까?',
+                  onClick: () => {
+                    v.id && onDeletePaymentMethod(v.id);
+                  },
+                });
+              }}
+            >
               삭제
             </button>
           </li>

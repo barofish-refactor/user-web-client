@@ -1,5 +1,6 @@
 @import url(./tinymce.css);
 @import url(./swiper.css);
+@import url(./product.css);
 
 @tailwind base;
 @tailwind components;

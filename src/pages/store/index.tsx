@@ -14,6 +14,9 @@ import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
 import { useInView } from 'react-intersection-observer';
 import { useAlertStore, useBottomConfirmStore } from 'src/store';
+import { getCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
+import { useRouter } from 'next/router';
 
 const perView = 10;
 
@@ -22,6 +25,7 @@ const sortlist: sortType[] = ['RECENT', 'BOOKMARK', 'ORDER', 'REVIEW'];
 
 /** 스토어 */
 const Store: NextPageWithLayout = () => {
+  const router = useRouter();
   const { setAlert } = useAlertStore();
   const { setBottomConfirm } = useBottomConfirmStore();
   const [selectedTab, setSelectedTab] = useState<number>(0);
@@ -29,15 +33,16 @@ const Store: NextPageWithLayout = () => {
   const [selectedSort, setSelectedSort] = useState<number>(0);
   const [selectedLiked, setSelectedLiked] = useState<number[]>([]);
 
+  const variables = {
+    type: sortlist[selectedSort],
+    keyword: searchText.trim() !== '' ? searchText : undefined,
+  };
+
   const { data, refetch, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    queryKey.store.list({
-      type: sortlist[selectedSort],
-      keyword: searchText.trim() !== '' ? searchText : undefined,
-    }),
+    queryKey.store.list(variables),
     async ({ pageParam = 1 }) => {
       const res = await client().selectRecommendStoreList({
-        type: sortlist[selectedSort],
-        keyword: searchText.trim() !== '' ? searchText : undefined,
+        ...variables,
         page: pageParam,
         take: perView,
       });
@@ -78,12 +83,12 @@ const Store: NextPageWithLayout = () => {
   );
 
   const onMutate = ({ storeId, type }: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
     likeStoreByUser({
       storeId,
       type,
     })
       .then(res => {
-        console.log(res);
         if (res.data.isSuccess) {
           refetch();
           likedRefecth();
@@ -139,6 +144,7 @@ const Store: NextPageWithLayout = () => {
                 idx === 0 ? 'px-[43.5px]' : 'px-[30px] ',
               )}
               onClick={() => {
+                if (idx === 1 && !getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
                 setSelectedTab(idx);
               }}
             >

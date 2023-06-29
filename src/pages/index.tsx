@@ -1,9 +1,10 @@
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { client } from 'src/api/client';
+import { type Curation } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
-import { type NextPageWithLayout } from 'src/types/common';
-import cm from 'src/utils/class-merge';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import { FreeMode } from 'swiper';
 import {
   HomeAbbreviationCuration,
   HomeBanner,
@@ -12,47 +13,43 @@ import {
   HomeFooter,
   HomePartner,
   HomeProductList,
+  HomeSubBanner,
 } from 'src/components/home';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-// import { type GetServerSideProps } from 'next';
-import { type Main, type Curation } from 'src/api/swagger/data-contracts';
 import { queryKey } from 'src/query-key';
-import { client } from 'src/api/client';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import { useInView } from 'react-intersection-observer';
-import { useFilterStore } from 'src/store';
-import { useEffect, useState } from 'react';
-import { type filterType } from 'src/components/common/bottom-sheet';
+import { type indexFilterType, useAlertStore, useFilterStore } from 'src/store';
 import { aToB, bToA } from 'src/utils/parse';
-import { type GetServerSideProps } from 'next';
+import { FreeMode } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { type NextPageWithLayout } from 'src/types/common';
+import cm from 'src/utils/class-merge';
+
+import 'swiper/css';
 
 const perView = 10;
 
-interface Props {
-  initialData: Main;
-}
+// interface Props {
+//   initialData: Main;
+// }
 
 /** 홈화면 */
-const Home: NextPageWithLayout<Props> = ({ initialData }) => {
+const Home: NextPageWithLayout = () => {
   const router = useRouter();
   const { tab = 0, f } = router.query;
+  const { setAlert } = useAlertStore();
 
-  const { filter, clearFilter } = useFilterStore();
-  const [savedFilter, setSavedFilter] = useState<filterType>();
+  const { filter, setFilter, clearFilter } = useFilterStore();
+  const [savedFilter, setSavedFilter] = useState<number[]>([]);
+  const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
 
-  const { data, refetch } = useQuery(
+  const { data, isLoading, refetch } = useQuery(
     queryKey.main,
     async () => {
       const res = await client().selectMainItems();
       if (res.data.isSuccess) {
         return res.data.data;
-      } else {
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
-      }
+      } else setAlert({ message: res.data.errorMsg ?? '' });
     },
     {
-      initialData,
       staleTime: 0,
     },
   );
@@ -62,10 +59,13 @@ const Home: NextPageWithLayout<Props> = ({ initialData }) => {
     hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery(
-    queryKey.topBar.detail({ id: Number(tab), ...savedFilter }),
+    queryKey.topBar.detail({
+      id: Number(tab),
+      filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
+    }),
     async ({ pageParam = 1 }) => {
       const res = await client().selectTopBar(Number(tab), {
-        ...savedFilter,
+        filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         page: pageParam,
         take: perView,
       });
@@ -78,60 +78,27 @@ const Home: NextPageWithLayout<Props> = ({ initialData }) => {
     {
       enabled: Number(tab) !== 0,
       // staleTime: 0,
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (_lastPage, allPages) => {
         const nextId = allPages.length;
         return nextId + 1;
       },
     },
   );
 
-  const emptyToUndefined = (value: string) => {
-    return value === '' ? undefined : value;
-  };
-
   useEffect(() => {
     if (filter) {
-      const categoryIds = filter
-        .filter(v => v.tabIndex === 0)
-        .map(v => v.id)
-        .join(',');
-      const typeIds = filter
-        .filter(v => v.tabIndex === 1)
-        .map(v => v.id)
-        .join(',');
-      const locationIds = filter
-        .filter(v => v.tabIndex === 2)
-        .map(v => v.id)
-        .join(',');
-      const processIds = filter
-        .filter(v => v.tabIndex === 3)
-        .map(v => v.id)
-        .join(',');
-      const usageIds = filter
-        .filter(v => v.tabIndex === 4)
-        .map(v => v.id)
-        .join(',');
-      const storageIds = filter
-        .filter(v => v.tabIndex === 5)
-        .map(v => v.id)
-        .join(',');
+      setDummyFilter(filter);
 
       router.replace({
         pathname: '/',
         query: {
-          tab,
-          f: aToB(
-            JSON.stringify({
-              categoryIds: emptyToUndefined(categoryIds),
-              typeIds: emptyToUndefined(typeIds),
-              locationIds: emptyToUndefined(locationIds),
-              processIds: emptyToUndefined(processIds),
-              usageIds: emptyToUndefined(usageIds),
-              storageIds: emptyToUndefined(storageIds),
-            }),
-          ),
+          ...router.query,
+          f: aToB(JSON.stringify(filter.map(v => v.id))),
         },
       });
+      setFilter(null);
+    } else {
+      // setSavedFilter(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
@@ -144,7 +111,7 @@ const Home: NextPageWithLayout<Props> = ({ initialData }) => {
         console.log(error);
       }
     } else {
-      setSavedFilter(undefined);
+      setSavedFilter([]);
     }
   }, [f, router.isReady]);
 
@@ -194,52 +161,56 @@ const Home: NextPageWithLayout<Props> = ({ initialData }) => {
       {/* Content - 바로추천 */}
       {tab === 0 ? (
         <>
-          <HomeBanner data={data?.banners ?? []} />
+          <HomeBanner data={data?.banners ? data.banners.filter(x => x.state === 'ACTIVE') : []} />
           <HomeAbbreviationCuration
             data={[
               { id: -2, image: '/dummy/dummy-curation-1.png', shortName: '해산물꿀팁' } as Curation,
             ].concat(data?.curations ?? [])}
           />
           <div className='h-[1px] bg-[#F4F4F4]' />
-          {data?.curations?.map((v, idx) => {
-            return (
-              <div key={`homeCuration${idx}`}>
-                <HomeCurationItem data={v} />
-                {idx === 0 && (
-                  <>
-                    {/* SubBanner */}
-                    {data?.subBanner && (
-                      <div
-                        className='relative mx-4 my-[30px] aspect-[343/96] cursor-pointer overflow-hidden rounded'
-                        onClick={() => {
-                          //
-                        }}
-                      >
-                        <Image
-                          fill
-                          src={data.subBanner.image ?? ''}
-                          alt='subBanner'
-                          className='object-cover'
-                        />
-                      </div>
+          {isLoading ? (
+            <div className='h-[50vh]' />
+          ) : (
+            <>
+              {data?.curations?.map((v, idx) => {
+                return (
+                  <div key={v.id}>
+                    <HomeCurationItem data={v} />
+                    {idx === 0 && (
+                      <>
+                        {/* SubBanner */}
+                        {data.subBanner && (
+                          <div className='mx-4 my-[30px]'>
+                            <HomeSubBanner
+                              data={
+                                data.subBanner
+                                  ? data.subBanner.filter(x => x.state === 'ACTIVE')
+                                  : []
+                              }
+                            />
+                          </div>
+                        )}
+                        {/* Partner */}
+                        {data?.store && <HomePartner data={data?.store} refetch={refetch} />}
+                      </>
                     )}
-                    {/* Partner */}
-                    {data?.store && <HomePartner data={data?.store} refetch={refetch} />}
-                  </>
-                )}
-              </div>
-            );
-          })}
+                  </div>
+                );
+              })}
+            </>
+          )}
           {/* 알아두면 좋은 정보 */}
-          <HomeCurationTip data={data?.tips ?? []} />
+          <HomeCurationTip />
         </>
       ) : (
-        <div className=''>
+        <div>
           <div className='h-[1px] bg-grey-90' />
           <HomeProductList
-            type={data?.topBars ? data?.topBars[Number(tab) - 1].name : '-'}
-            data={[]}
-            dataDto={Array.prototype.concat.apply([], topBarData?.pages ?? [])}
+            storeType='topBar'
+            storeId={Number(tab)}
+            type={data?.topBars ? data?.topBars[Number(tab) - 1]?.name : '-'}
+            dataDto={topBarData?.pages ?? []}
+            filter={dummyFilter}
           />
           <div ref={ref} />
         </div>
@@ -257,11 +228,5 @@ Home.getLayout = page => <Layout>{page}</Layout>;
 //     props: { initialData: (await selectMainItems()).data.data },
 //   };
 // };
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {},
-  };
-};
 
 export default Home;

@@ -1,13 +1,18 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import { Controller, useForm } from 'react-hook-form';
 import { NumberFormatBase, PatternFormat } from 'react-number-format';
+import { client } from 'src/api/client';
+import { type AddPaymentMethodPayload } from 'src/api/swagger/data-contracts';
+import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
 import { inputClassName, labelClassName, submitButtonClassName } from 'src/components/form';
 import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-
-/* 
-  TODO Int 필요
-*/
+import { formatToBlob } from 'src/utils/functions';
+import { REG_EXP } from 'src/utils/regex';
 
 function formatShortBirth(value: string) {
   if (!value) return '';
@@ -58,6 +63,7 @@ function formatCardExpiration(value: string) {
 }
 
 type FormType = {
+  name: string;
   cardNumber: string;
   cardExpiration: string;
   cardPassword: string;
@@ -65,11 +71,67 @@ type FormType = {
 };
 
 const MypagePayMethodCreate: NextPageWithLayout = () => {
-  const { control } = useForm<FormType>({ mode: 'onBlur' });
+  const router = useRouter();
+  const { setAlert } = useAlertStore();
+  const queryClient = useQueryClient();
+  const { control, handleSubmit, register } = useForm<FormType>({ mode: 'onBlur' });
+
+  const { mutateAsync: addPaymentMethod, isLoading } = useMutation(
+    (args: AddPaymentMethodPayload) =>
+      client().addPaymentMethod(args, { type: ContentType.FormData }),
+  );
+
+  const onMutate = ({ data }: AddPaymentMethodPayload) => {
+    if (isLoading) return;
+    addPaymentMethod({ data: formatToBlob<AddPaymentMethodPayload['data']>(data, true) })
+      .then(res => {
+        if (res.data.isSuccess) {
+          queryClient.invalidateQueries(queryKey.paymentMethod);
+          setAlert({
+            message: '결제 정보가 저장되었습니다.',
+            type: 'success',
+            onClick: () => router.back(),
+          });
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
+  const onSubmit = handleSubmit(data => {
+    if (data.name.trim().length === 0) return setAlert({ message: '카드별칭을 입력해주세요.' });
+    if (!REG_EXP.cardNo.test(data.cardNumber))
+      return setAlert({ message: '잘못된 카드번호입니다.' });
+    if (!REG_EXP.expiryAt.test(data.cardExpiration))
+      return setAlert({ message: '잘못된 유효기간입니다.' });
+    if (!REG_EXP.birth.test(data.birth)) return setAlert({ message: '잘못된 생년월일입니다.' });
+    if (!REG_EXP.cardPassword.test(data.cardPassword))
+      return setAlert({ message: '잘못된 비밀번호입니다.' });
+
+    onMutate({
+      data: {
+        name: data.name,
+        cardNo: data.cardNumber,
+        expiryAt: data.cardExpiration,
+        birth: data.birth,
+        passwordTwoDigit: data.cardPassword,
+      },
+    });
+  });
 
   return (
-    <form className='flex flex-1 flex-col justify-between p-4 py-6'>
+    <form className='flex flex-1 flex-col justify-between p-4 py-6' onSubmit={onSubmit}>
       <div className='space-y-4'>
+        <div>
+          <label htmlFor='0' className={labelClassName}>
+            카드별칭
+          </label>
+          <input
+            {...register('name', { required: true })}
+            maxLength={20}
+            placeholder='카드별칭을 입력해주세요'
+            className={inputClassName}
+          />
+        </div>
         <div>
           <label htmlFor='1' className={labelClassName}>
             카드번호
@@ -143,6 +205,7 @@ const MypagePayMethodCreate: NextPageWithLayout = () => {
                 {...props}
                 format='##'
                 id='4'
+                type='password'
                 className={inputClassName}
                 spellCheck={false}
                 placeholder='앞 두자리 입력'

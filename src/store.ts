@@ -1,17 +1,5 @@
-import { type CookieValueTypes } from 'cookies-next';
+import { type ProductListDto } from 'src/api/swagger/data-contracts';
 import { create } from 'zustand';
-
-interface TokenStore {
-  token: CookieValueTypes;
-  setToken: (token: TokenStore['token']) => void;
-  clearToken: () => void;
-}
-
-export const useTokenStore = create<TokenStore>()(set => ({
-  token: null,
-  setToken: token => set({ token }),
-  clearToken: () => set({ token: null }),
-}));
 
 interface AlertStore {
   alert: {
@@ -30,20 +18,35 @@ export const useAlertStore = create<AlertStore>()(set => ({
   clearAlert: () => set({ alert: null }),
 }));
 
+export interface indexFilterType {
+  // tabIndex: number;
+  text: string;
+  id: number;
+}
 interface FilterStore {
-  filter: { tabIndex: number; text: string; id: number }[] | null;
+  filter: indexFilterType[] | null;
   isOpen: boolean;
+  type: {
+    type: 'category' | 'topBar' | 'curation' | 'store' | 'search';
+    id?: number;
+  };
   setFilter: (value: FilterStore['filter']) => void;
   setIsOpen: (value: boolean) => void;
+  setType: (value: {
+    type: 'category' | 'topBar' | 'curation' | 'store' | 'search';
+    id?: number;
+  }) => void;
   clearFilter: () => void;
 }
 
 export const useFilterStore = create<FilterStore>()(set => ({
   filter: null,
   isOpen: false,
+  type: { type: 'category' },
   setFilter: filter => set({ filter }),
   setIsOpen: isOpen => set({ isOpen }),
-  clearFilter: () => set({ filter: null, isOpen: false }),
+  setType: type => set({ type }),
+  clearFilter: () => set({ filter: null, type: { type: 'category' }, isOpen: false }),
 }));
 
 interface ConfirmStore {
@@ -98,6 +101,7 @@ export const useBottomConfirmStore = create<BottomConfirmStore>()(set => ({
 interface ToastStore {
   toast: {
     text: string;
+    buttonText?: string;
     onClick: () => void;
   } | null;
   setToast: (toast: ToastStore['toast']) => void;
@@ -108,4 +112,18 @@ export const useToastStore = create<ToastStore>()(set => ({
   toast: null,
   setToast: toast => set({ toast }),
   clearToast: () => set({ toast: null }),
+}));
+
+interface ProductOptionStore {
+  productOption: {
+    data?: ProductListDto;
+  } | null;
+  setProductOption: (productOption: ProductOptionStore['productOption']) => void;
+  clearProductOption: () => void;
+}
+
+export const useProductOptionStore = create<ProductOptionStore>()(set => ({
+  productOption: null,
+  setProductOption: productOption => set({ productOption }),
+  clearProductOption: () => set({ productOption: null }),
 }));

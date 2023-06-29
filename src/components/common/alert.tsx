@@ -54,7 +54,7 @@ const Alert = () => {
                   />
                 </div>
               )}
-              <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='break-all text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
                 {alert.message}
               </p>
             </div>

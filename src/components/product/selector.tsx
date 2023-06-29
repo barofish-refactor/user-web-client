@@ -12,9 +12,13 @@ export interface ProductSelectorType {
   value: string;
   additionalPrice: number;
   amount: number;
+  deliverBoxPerAmount: number;
+  stock: number;
+  maxAvailableStock: number;
 }
 
 interface Props {
+  index: number;
   list: ProductSelectorType[];
   placeHolder?: string;
   className?: string;
@@ -22,7 +26,7 @@ interface Props {
 }
 
 /** 상품 옵션 선택 Selector */
-const Selector = ({ list, placeHolder, className, setValue }: Props) => {
+const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
@@ -52,24 +56,42 @@ const Selector = ({ list, placeHolder, className, setValue }: Props) => {
         />
       </button>
       {isOpen && (
-        <div className='absolute left-0 right-0 flex max-h-[calc(68px*2.5)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40 scrollbar-hide'>
+        <div
+          className='absolute left-0 right-0 flex max-h-[calc(68px*2.5)] flex-col items-start overflow-hidden overflow-y-scroll overscroll-y-none rounded-b-lg border border-t-0 border-grey-40 scrollbar-hide'
+          style={{ zIndex: 999 - index }}
+        >
           {list.map((v, idx) => {
+            const isSoldOut = v.stock === 0;
             return (
               <button
                 key={`selector${idx}`}
-                className='flex h-[68px] w-full shrink-0 flex-col justify-center gap-1 border-b border-b-grey-90 bg-white px-3 last-of-type:border-b-0'
+                className={cm(
+                  'flex h-[68px] w-full shrink-0 flex-col justify-center gap-1 border-b border-b-grey-90 bg-white px-3 last-of-type:border-b-0',
+                )}
                 onClick={() => {
+                  if (isSoldOut) return;
                   setIsOpen(false);
                   setValue && setValue(v);
                 }}
               >
-                <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-30'>
+                <p
+                  className={cm(
+                    'text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-30',
+                    { 'opacity-70': isSoldOut },
+                  )}
+                >
                   {`${v.option}`}{' '}
                   {v.additionalPrice !== 0 && `(+${formatToLocaleString(v.additionalPrice)}원)`}
+                  {`${isSoldOut ? '(품절)' : ''}`}
                 </p>
-                <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                  v.price + v.additionalPrice,
-                )}원`}</p>
+                <p
+                  className={cm(
+                    'text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10',
+                    { 'opacity-70': isSoldOut },
+                  )}
+                >
+                  {`${formatToLocaleString(v.price + v.additionalPrice)}원`}
+                </p>
               </button>
             );
           })}

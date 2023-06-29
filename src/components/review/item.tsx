@@ -3,46 +3,95 @@ import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { type ReviewDto } from 'src/api/swagger/data-contracts';
-import { ReviewDots } from 'src/components/review';
-import { calcDiscountPrice, formatToLocaleString, formatToUtc } from 'src/utils/functions';
+// import { ReviewDots } from 'src/components/review';
+import {
+  calcDiscountRate,
+  formatToLocaleString,
+  formatToUtc,
+  setSquareBrackets,
+} from 'src/utils/functions';
 
 import 'swiper/css';
 import { useRouter } from 'next/router';
-
-/* 
-  TODO 신고하기 페이지 작업 필요
-*/
+import { useMutation } from '@tanstack/react-query';
+import { client } from 'src/api/client';
+import { getCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
+import { useAlertStore } from 'src/store';
 
 interface Props {
   data: ReviewDto;
   isMine?: boolean;
+  showInfo?: boolean;
+  refetch: () => void;
 }
 
 /** 구매후기 */
-export function ReviewItem({ data, isMine }: Props) {
+export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const router = useRouter();
+  const { setAlert } = useAlertStore();
+
+  const { mutateAsync: likeReviewByUser, isLoading } = useMutation((id: number) =>
+    client().likeReviewByUser(id),
+  );
+
+  const { mutateAsync: unlikeReviewByUser, isLoading: isUnlikeLoading } = useMutation(
+    (id: number) => client().unlikeReviewByUser(id),
+  );
+
+  const onLikeMutate = ({ id }: { id: number }) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (isLoading) return;
+    likeReviewByUser(id)
+      .then(res => {
+        if (res.data.isSuccess) {
+          refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
+  const onUnlikeMutate = ({ id }: { id: number }) => {
+    if (isUnlikeLoading) return;
+    unlikeReviewByUser(id)
+      .then(res => {
+        if (res.data.isSuccess) {
+          refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
 
   return (
     <div className='py-4'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-1'>
           <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
-            닉네임
+            {data.user?.nickname ?? ''}
           </p>
           <div className='flex h-[22px] items-center justify-center rounded border border-[#6085EC] px-2'>
-            <p className='text-[12px] font-medium -tracking-[0.03em] text-primary-50'>멸치</p>
+            <p className='text-[12px] font-medium -tracking-[0.03em] text-primary-50'>
+              {data.user?.grade?.name ?? ''}
+            </p>
           </div>
         </div>
         {isMine ? (
-          <ReviewDots />
+          // <ReviewDots onUpdate={() => { router.push({ pathname: '/mypage/review/[id]', query: { id: data.id } }) }} />
+          <></>
         ) : (
-          <button className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>
+          <button
+            className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'
+            onClick={() => {
+              router.push({ pathname: '/mypage/review/report', query: { v: data.id } });
+            }}
+          >
             신고하기
           </button>
         )}
       </div>
       <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
-        {`옵션 : ${'TextTextTextTextTextTextTextTextTextTextTextTextTextText'}`}
+        {/* {`옵션 : ${'멸치 5kg'}`} */}
+        {data?.simpleProduct?.title ?? ''}
       </p>
       <Swiper
         freeMode
@@ -60,8 +109,15 @@ export function ReviewItem({ data, isMine }: Props) {
         {(data.images ?? []).map((v, idx) => {
           return (
             <SwiperSlide key={`curation${idx}`} className=''>
-              <div className='relative aspect-square w-full overflow-hidden rounded-lg'>
-                <Image fill src={v} alt='review' draggable={false} />
+              <div className='relative overflow-hidden rounded-lg'>
+                <Image
+                  width={150}
+                  height={150}
+                  src={v}
+                  alt='review'
+                  draggable={false}
+                  className=' aspect-square w-full object-cover'
+                />
               </div>
             </SwiperSlide>
           );
@@ -70,36 +126,43 @@ export function ReviewItem({ data, isMine }: Props) {
       <p className='mt-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
         {data.content ?? ''}
       </p>
-      <button
-        className='my-[18px] flex w-full items-center gap-[13px] rounded-lg bg-grey-90 p-2'
-        onClick={() => {
-          router.push({ pathname: '/product', query: { id: data.simpleProduct?.id } });
-        }}
-      >
-        <Image
-          src={data.simpleProduct?.image ?? ''}
-          alt='product'
-          className='rounded-lg'
-          width={72}
-          height={72}
-        />
-        <div className='flex flex-1 flex-col truncate text-start'>
-          <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
-            {data.store?.name ?? ''}
-          </p>
-          <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
-            {data.simpleProduct?.title ?? ''}
-          </p>
-          <div className='flex items-center gap-0.5'>
-            <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${
-              data.simpleProduct?.discountRate ?? 0
-            }%`}</p>
-            <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>{`${formatToLocaleString(
-              calcDiscountPrice(data.simpleProduct?.originPrice, data.simpleProduct?.discountRate),
-            )}원`}</p>
+      {showInfo && (
+        <button
+          className='my-[18px] flex w-full items-center gap-[13px] rounded-lg bg-grey-90 p-2'
+          onClick={() => {
+            router.push({ pathname: '/product', query: { id: data.simpleProduct?.id } });
+          }}
+        >
+          {data.simpleProduct?.image && (
+            <Image
+              src={data.simpleProduct?.image}
+              alt='product'
+              className='rounded-lg'
+              width={72}
+              height={72}
+            />
+          )}
+          <div className='flex flex-1 flex-col truncate text-start'>
+            <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
+              {data.store?.name ?? ''}
+            </p>
+            <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
+              {`${setSquareBrackets(data.simpleProduct?.storeName)} ${data.simpleProduct?.title}`}
+            </p>
+            <div className='flex items-center gap-0.5'>
+              {(data.simpleProduct?.originPrice ?? 0) !== 0 && (
+                <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${calcDiscountRate(
+                  data?.simpleProduct?.originPrice,
+                  data?.simpleProduct?.discountPrice,
+                )}%`}</p>
+              )}
+              <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>
+                {`${formatToLocaleString(data.simpleProduct?.discountPrice)}원`}
+              </p>
+            </div>
           </div>
-        </div>
-      </button>
+        </button>
+      )}
       <div className='flex items-center justify-between'>
         <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-70'>{`${formatToUtc(
           data.createdAt,
@@ -108,13 +171,15 @@ export function ReviewItem({ data, isMine }: Props) {
         <button
           className='flex h-8 items-center gap-1.5 rounded-full border border-grey-80 px-3.5'
           onClick={() => {
-            //
+            if (!data.id) return;
+            if (data.isLike) onUnlikeMutate({ id: data.id });
+            else onLikeMutate({ id: data.id });
           }}
         >
           <Image src='/assets/icons/product/review-like.svg' alt='like' width={12} height={13} />
           <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>도움돼요</p>
           <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>{`${formatToLocaleString(
-            0,
+            data.likeCount ?? 0,
           )}`}</p>
         </button>
       </div>

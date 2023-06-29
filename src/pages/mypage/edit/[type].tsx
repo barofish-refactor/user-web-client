@@ -15,10 +15,6 @@ import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob } from 'src/utils/functions';
 
-/* 
-  TODO Int 필요
-*/
-
 export type MypageEditType = 'nickname' | 'password' | 'phone';
 
 interface Props {
@@ -40,13 +36,13 @@ const MypageEditDynamic: NextPageWithLayout<Props> = ({ type }) => {
     }
   });
 
-  const { mutateAsync: likeStoreByUser, isLoading } = useMutation((args: UpdateUserPayload) =>
+  const { mutateAsync: updateUser, isLoading } = useMutation((args: UpdateUserPayload) =>
     client().updateUser(args),
   );
 
   const onMutate = ({ data }: UpdateUserPayload) => {
     if (isLoading) return;
-    likeStoreByUser({
+    updateUser({
       data: formatToBlob<UpdateUserPayload['data']>(data, true),
       // profileImage:
     })

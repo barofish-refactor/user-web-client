@@ -4,65 +4,6 @@ import { VARIABLES } from 'src/variables';
 
 export const impSuccessKey = 'imp_success';
 
-/** 아임포트 pg사 종류 */
-export enum IamportPg {
-  /** 이니시스웹표준 */
-  Html5Inicis = 'html5_inicis',
-  /** 이니시스ActiveX결제창 */
-  Inicis = 'inicis',
-  /** NHN KCP */
-  Kcp = 'kcp',
-  /** NHN KCP 정기결제 */
-  KcpBilling = 'kcp_billing',
-  /** 토스페이먼츠(구 LG U+) */
-  Uplus = 'uplus',
-  /** 나이스페이 */
-  Nice = 'nice',
-  /** JTNet */
-  Jtnet = 'jtnet',
-  /** 한국정보통신 */
-  Kicc = 'kicc',
-  /** 블루월넛 */
-  Bluewalnut = 'bluewalnut',
-  /** 카카오페이 */
-  Kakaopay = 'kakaopay',
-  /** 다날휴대폰소액결제 */
-  Danal = 'danal',
-  /** 다날일반결제 */
-  DanalTpay = 'danal_tpay',
-  /** 모빌리언스 휴대폰소액결제 */
-  Mobilians = 'mobilians',
-  /** 차이 간편결제 */
-  Chai = 'chai',
-  /** 시럽페이 */
-  Syrup = 'syrup',
-  /** 페이코 */
-  Payco = 'payco',
-  /** 페이팔 */
-  Paypal = 'paypal',
-  /** 엑심베이 */
-  Eximbay = 'eximbay',
-  /** 네이버페이-결제형 */
-  Naverpay = 'naverpay',
-  /** 네이버페이-주문형 */
-  Naverco = 'naverco',
-  /** 스마일페이 */
-  Smilepay = 'smilepay',
-  /** 알리페이 */
-  Alipay = 'alipay',
-  /** 페이먼트월 */
-  Paymentwall = 'paymentwall',
-  /** 페이플 */
-  Payple = 'payple',
-  /** 토스간편결제 */
-  Tosspay = 'tosspay',
-  /** 스마트로 */
-  Smartro = 'smartro',
-  /** 세틀뱅크 */
-  Settle = 'settle',
-  TosspayPayment = 'tosspayments',
-}
-
 /** 아임포트 결제수단 */
 export enum IamportPayMethod {
   /** 신용카드 */
@@ -73,44 +14,14 @@ export enum IamportPayMethod {
   Vbank = 'vbank',
   /** 휴대폰소액결제 */
   Phone = 'phone',
-  /** 삼성페이 / 이니시스, KCP 전용 */
-  Samsung = 'samsung',
-  /** KPay앱 직접호출 / 이니시스 전용 */
-  Kpay = 'kpay',
-  /** 카카오페이 직접호출 / 이니시스, KCP, 나이스페이먼츠 전용 */
+  /** 카카오페이 */
   Kakaopay = 'kakaopay',
-  /** 페이코 직접호출 / 이니시스, KCP 전용 */
-  Payco = 'payco',
-  /** LPAY 직접호출 / 이니시스 전용 */
-  Lpay = 'lpay',
-  /** SSG페이 직접호출 / 이니시스 전용 */
-  Ssgpay = 'ssgpay',
-  /** 토스간편결제 직접호출 / 이니시스 전용 */
-  Tosspay = 'tosspay',
-  /** 문화상품권 / 이니시스, 토스페이먼츠(구 LG U+), KCP 전용 */
-  Cultureland = 'cultureland',
-  /** 스마트문상 / 이니시스, 토스페이먼츠(구 LG U+), KCP 전용 */
-  Smartculture = 'smartculture',
-  /** 해피머니 / 이니시스, KCP 전용 */
-  Happymoney = 'happymoney',
-  /** 도서문화상품권 / 토스페이먼츠(구 LG U+), KCP 전용 */
-  Booknlife = 'booknlife',
-  /** 베네피아 포인트 등 포인트 결제 / KCP 전용 */
-  Point = 'point',
-  /** 위쳇페이 / 엑심베이 전용 */
-  Wechat = 'wechat',
-  /** 알리페이 / 엑심베이 전용 */
-  Alipay = 'alipay',
-  /** 유니온페이 / 엑심베이 전용 */
-  Unionpay = 'unionpay',
-  /** 텐페이 / 엑심베이 전용 */
-  Tenpay = 'tenpay',
+  /** 네이버페이 */
+  Naverpay = 'naverpay',
 }
 
 /** 아임포트 결제정보 */
 export type IamportData = {
-  /** pg사 종류 */
-  pg?: IamportPg | any;
   /** 결제수단 */
   payMethod?: IamportPayMethod;
   /** 주문번호 */
@@ -155,8 +66,21 @@ export const useIamport = () => {
 
     IMP.init(process.env.NEXT_PUBLIC_IAMPORT_KEY);
 
+    const suffix =
+      p.data.payMethod === IamportPayMethod.Naverpay
+        ? process.env.NEXT_NAVER_PG_MID
+        : p.data.payMethod === IamportPayMethod.Kakaopay
+        ? process.env.NEXT_KAKAO_PG_MID
+        : process.env.NEXT_PUBLIC_PG_MID;
+
     const value = {
-      pg: p.data.pg ?? IamportPg.Html5Inicis,
+      pg: `${
+        [IamportPayMethod.Naverpay, IamportPayMethod.Kakaopay].includes(
+          p.data.payMethod ?? IamportPayMethod.Card,
+        )
+          ? p.data.payMethod
+          : 'tosspayments'
+      }.${suffix}`,
       pay_method: p.data.payMethod ?? IamportPayMethod.Card,
       merchant_uid: p.data.merchantUid,
       name: p.data.productName,
@@ -169,7 +93,6 @@ export const useIamport = () => {
       vbank_due: format(add(new Date(), { hours: p.data.vbankDueHour ?? 24 }), 'yyyyMMddHHmm'),
       m_redirect_url: p.data.mobileRedirectUrl,
       notice_url: VARIABLES.END_POINT + '/callback/iamport_pay_result',
-      // notice_url: 'http://43.201.240.47:8080/callback/iamport_pay_result',
     };
 
     const callback = (response: any) => {
@@ -184,5 +107,24 @@ export const useIamport = () => {
     IMP.request_pay(value, callback);
   };
 
-  return onIamport;
+  const onCertification = () => {
+    const { IMP } = window;
+    IMP.init(process.env.NEXT_PUBLIC_IAMPORT_KEY);
+    IMP.certification(
+      {
+        pg: `html5_inicis.MIIiasTest`,
+        merchant_uid: `mid_${new Date().getTime()}`,
+        m_redirect_url: location.href,
+      },
+      response => {
+        if (response.success) {
+          console.log(response);
+        } else {
+          console.log(response);
+        }
+      },
+    );
+  };
+
+  return { onIamport, onCertification };
 };

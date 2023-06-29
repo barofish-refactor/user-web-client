@@ -1,9 +1,33 @@
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
 import { ReviewForm } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
 
 const MypageReviewModify: NextPageWithLayout = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const { data } = useQuery(
+    queryKey.review.detail(id),
+    async () => {
+      const res = await client().selectReview(Number(id));
+
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      enabled: !!id,
+      staleTime: 0,
+    },
+  );
+
   return <ReviewForm />;
 };
 

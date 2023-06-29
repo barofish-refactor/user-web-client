@@ -5,7 +5,11 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
-import { type SimpleProductDto } from 'src/api/swagger/data-contracts';
+import {
+  type DeleteSaveProductsPayload,
+  type SaveProductPayload,
+  type SimpleProductDto,
+} from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
 import {
   ProductBanner,
@@ -14,6 +18,7 @@ import {
   ProductInformationDefault,
   ProductInquiry,
   ProductTab,
+  ShareButton,
 } from 'src/components/product';
 import { BackButton } from 'src/components/ui';
 import { type NextPageWithLayout } from 'src/types/common';
@@ -21,7 +26,9 @@ import { getCookie } from 'cookies-next';
 import { VARIABLES } from 'src/variables';
 import { queryKey } from 'src/query-key';
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
-import { useAlertStore } from 'src/store';
+import { useAlertStore, useToastStore } from 'src/store';
+import { ContentType } from 'src/api/swagger/http-client';
+import { formatToBlob } from 'src/utils/functions';
 
 interface Props {
   initialData: SimpleProductDto;
@@ -32,8 +39,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { id, openState } = router.query;
   const { setAlert } = useAlertStore();
+  const { setToast } = useToastStore();
 
-  const { data } = useQuery(
+  const { data, refetch } = useQuery(
     queryKey.product.detail(id),
     async () => {
       const res = await client().selectProduct(Number(id));
@@ -50,9 +58,54 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
-  const { mutateAsync: likeProductByUser, isLoading } = useMutation(
-    (args: { productId: number; type: 'LIKE' | 'UNLIKE' }) => client().likeProductByUser(args),
+  const { data: deliverInfo } = useQuery(queryKey.deliverInfo, async () => {
+    const res = await client().selectSiteInfo('HTML_DELIVER_INFO');
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
+
+  // const { mutateAsync: likeProductByUser, isLoading } = useMutation(
+  //   (args: { productId: number; type: 'LIKE' | 'UNLIKE' }) => client().likeProductByUser(args),
+  // );
+
+  const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
+    (args: SaveProductPayload) => client().saveProduct(args, { type: ContentType.FormData }),
   );
+
+  const onSaveMutate = ({ data }: SaveProductPayload) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (isSaveLoading) return;
+    saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
+      .then(res => {
+        if (res.data.isSuccess) {
+          setToast({
+            text: '1개의 상품이 저장함에 담겼어요.',
+            onClick: () => router.push('/compare/storage'),
+          });
+          refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
+  const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
+    (args: DeleteSaveProductsPayload) =>
+      client().deleteSaveProducts(args, { type: ContentType.FormData }),
+  );
+
+  const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
+    if (isDeleteLoading) return;
+    deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
+      .then(res => {
+        if (res.data.isSuccess) {
+          refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
 
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
@@ -63,39 +116,39 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setIsLiked(data.isLike ?? false);
       if (data.description) {
         fetch(data.description)
-          .then(res => {
-            res.text().then(res => {
-              setDescription(res);
-            });
-          })
-          .catch(err => {
-            console.log(JSON.stringify(err));
-          });
+          .then(res => res.text())
+          .then(setDescription)
+          .catch(err => console.log(JSON.stringify(err)));
       }
     }
   }, [data]);
 
   useEffect(() => {
-    fetch('/HTML_delivery.html')
-      .then(res => {
-        res.text().then(res => {
-          setContent(res);
-        });
-      })
-      .catch(err => {
-        console.log(JSON.stringify(err));
-      });
-  }, []);
+    if (deliverInfo && deliverInfo.content) {
+      fetch(deliverInfo.content)
+        .then(res => res.text())
+        .then(setContent)
+        .catch(err => console.log(JSON.stringify(err)));
+    }
+  }, [deliverInfo]);
 
   useEffect(() => {
     if (openState === 'open') {
       setIsVisible(true);
     }
   }, [openState]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const result = localStorage.getItem('product') || '[]';
+      const list: number[] = JSON.parse(result);
+      const list2 = new Set<number>([Number(id)].concat(list));
+      localStorage.setItem('product', JSON.stringify(Array.from(list2)));
+    }
+  }, [id]);
 
   return (
     <div className='pb-[80px] max-md:w-[100vw]'>
@@ -115,13 +168,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           <Link href='/product/cart'>
             <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
           </Link>
-          <button
-            onClick={() => {
-              //
-            }}
-          >
-            <Image src='/assets/icons/common/share.svg' alt='share' width={18} height={19} />
-          </button>
+          <ShareButton />
         </div>
       </div>
 
@@ -138,7 +185,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       />
       <div className='min-h-[calc(100dvb-180px)]'>
         {selectedTab === 0 ? (
-          <div dangerouslySetInnerHTML={{ __html: description }} className='mt-5' />
+          <div dangerouslySetInnerHTML={{ __html: description }} className='' />
         ) : // <Image
         //   width='0'
         //   height='0'
@@ -168,7 +215,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         ) : selectedTab === 2 ? (
           <ProductInquiry productId={Number(id)} data={data?.inquiries ?? []} />
         ) : (
-          <div dangerouslySetInnerHTML={{ __html: content }} className='mt-5 px-4' />
+          <div
+            dangerouslySetInnerHTML={{ __html: content }}
+            className='product-delivery-description mt-5 px-4'
+          />
         )}
       </div>
 
@@ -177,27 +227,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <button
           className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
           onClick={() => {
-            if (isLoading) return;
-            const value = !isLiked;
-            likeProductByUser({
-              productId: Number(id),
-              type: value ? 'UNLIKE' : 'LIKE',
-            })
-              .then(res => {
-                if (res.data.isSuccess) {
-                  setIsLiked(value);
-                } else {
-                  setAlert({
-                    message: res.data.errorMsg ?? '',
-                    onClick: () => {
-                      //
-                    },
-                  });
-                }
-              })
-              .catch(error => {
-                console.error(error);
-              });
+            if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+            if (data?.isLike) onDeleteSaveProductsMutate({ data: { productIds: [Number(id)] } });
+            else onSaveMutate({ data: { productId: Number(id) } });
           }}
         >
           {isLiked ? (

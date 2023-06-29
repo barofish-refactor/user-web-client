@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -15,7 +16,8 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { calcDiscountPrice, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import { calcDiscountRate, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import { VARIABLES } from 'src/variables';
 
 export type inquiryType = 'PRODUCT' | 'DELIVERY' | 'CANCEL' | 'ETC'; // 상품문의, 배송문의, 반품/취소, 기타
 
@@ -117,12 +119,18 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
               {data?.store?.name ?? ''}
             </p>
             <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
-              {data?.title ?? ''}
+              {/* {`${setSquareBrackets(data?.storeName)} ${data?.title}`} */}
+              {data?.title}
             </p>
             <div className='flex items-center gap-0.5'>
-              <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${data?.discountRate}%`}</p>
+              {(data?.originPrice ?? 0) !== 0 && (
+                <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${calcDiscountRate(
+                  data?.originPrice,
+                  data?.discountPrice,
+                )}%`}</p>
+              )}
               <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>{`${formatToLocaleString(
-                calcDiscountPrice(data?.originPrice, data?.discountRate),
+                data?.discountPrice,
               )}원`}</p>
             </div>
           </div>
@@ -185,9 +193,20 @@ Inquiry.getLayout = page => (
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
   const { selectProduct } = client();
-  return {
-    props: { initialData: (await selectProduct(Number(id))).data.data },
-  };
+  if (!getCookie(VARIABLES.ACCESS_TOKEN, context)) {
+    {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/login',
+        },
+      };
+    }
+  } else {
+    return {
+      props: { initialData: (await selectProduct(Number(id))).data.data },
+    };
+  }
 };
 
 export default Inquiry;

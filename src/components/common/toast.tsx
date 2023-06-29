@@ -45,7 +45,7 @@ const Toast = () => {
                 }}
               >
                 <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-primary-80'>
-                  저장함에서 비교하기
+                  {toast.buttonText ? toast.buttonText : '저장함에서 비교하기'}
                 </p>
               </button>
             </div>

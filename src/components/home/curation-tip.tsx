@@ -1,20 +1,39 @@
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+import { useInView } from 'react-intersection-observer';
+import { client } from 'src/api/client';
+import { queryKey } from 'src/query-key';
 import { FreeMode } from 'swiper';
-import { type Tip } from 'src/api/swagger/data-contracts';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-interface Props {
-  data: Tip[];
-}
+import 'swiper/css';
 
 /** 홈화면 - 알아두면 좋은 정보 */
-const CurationTip = ({ data }: Props) => {
+const CurationTip = () => {
+  const { ref, inView } = useInView({ initialInView: false, triggerOnce: true });
+  const { data } = useQuery(
+    queryKey.tipList.list({ type: undefined }),
+    async () => {
+      const res = await client().selectTipList();
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+      }
+    },
+    {
+      enabled: inView,
+    },
+  );
+
   return (
     <div className='px-4 pt-[30px]'>
       <div className='flex items-center justify-between'>
-        <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+        <p
+          ref={ref}
+          className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'
+        >
           알아두면 좋은 정보 💡
         </p>
         <Link href='/tip' className=''>
@@ -41,26 +60,29 @@ const CurationTip = ({ data }: Props) => {
           paddingRight: '16px',
         }}
       >
-        {data.map((v, idx) => {
+        {data?.map(v => {
           return (
-            <SwiperSlide key={`tip${idx}`} className='pb-[30px] pt-[20px]'>
-              <div className='relative aspect-[294/419] w-full overflow-hidden rounded-lg shadow-[0px_5px_10px_rgba(0,0,0,0.15)]'>
-                <Image
-                  fill
-                  src={v.image ?? ''}
-                  alt='tip'
-                  draggable={false}
-                  className='object-cover'
-                />
-                <div className='absolute inset-0 bg-[linear-gradient(180deg,rgba(111,111,111,0.9)0%,rgba(46,46,46,0.774)0.01%,rgba(67,67,67,0)59.58%)] px-5 py-6'>
-                  <p className='whitespace-pre-wrap break-keep text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-white'>
-                    {v.title}
-                  </p>
-                  <p className='mt-[5px] whitespace-pre-wrap break-keep text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-white'>
-                    {v.description}
-                  </p>
+            <SwiperSlide key={v.id} className='pb-[30px] pt-[20px]'>
+              <Link href={{ pathname: '/tip-detail', query: { id: v.id } }}>
+                <div className='relative aspect-[294/419] w-full overflow-hidden rounded-lg shadow-[0px_5px_10px_rgba(0,0,0,0.15)]'>
+                  <Image
+                    width={294}
+                    height={419}
+                    src={v.image ?? ''}
+                    alt='tip'
+                    draggable={false}
+                    className='aspect-[294/419] w-full object-cover'
+                  />
+                  <div className='absolute inset-0 bg-[linear-gradient(180deg,rgba(111,111,111,0.9)0%,rgba(46,46,46,0.774)0.01%,rgba(67,67,67,0)59.58%)] px-5 py-6'>
+                    <p className='whitespace-pre-wrap break-keep text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-white'>
+                      {v.title}
+                    </p>
+                    <p className='mt-[5px] whitespace-pre-wrap break-keep text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-white'>
+                      {v.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           );
         })}

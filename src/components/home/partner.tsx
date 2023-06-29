@@ -3,6 +3,9 @@ import { type SimpleStore } from 'src/api/swagger/data-contracts';
 import { useMutation } from '@tanstack/react-query';
 import { client } from 'src/api/client';
 import { useAlertStore } from 'src/store';
+import { getCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
+import { useRouter } from 'next/router';
 
 interface Props {
   data?: SimpleStore;
@@ -11,6 +14,7 @@ interface Props {
 
 /** 홈화면 - 파트너 부분 */
 const Partner = ({ data, refetch }: Props) => {
+  const router = useRouter();
   const { setAlert } = useAlertStore();
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(
@@ -18,8 +22,8 @@ const Partner = ({ data, refetch }: Props) => {
   );
 
   const onMutate = ({ storeId, type }: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
     if (isLoading) return;
-    console.log(storeId, type);
     likeStoreByUser({
       storeId,
       type,

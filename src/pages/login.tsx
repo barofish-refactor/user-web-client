@@ -45,7 +45,20 @@ const Login: NextPageWithLayout = () => {
 
   return (
     <div className='flex flex-1 flex-col justify-between pb-6 pt-[45px]'>
-      <div className='px-6'>
+      <div className='relative px-6'>
+        <button
+          className='absolute -top-[38px] right-4'
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <Image
+            src='/assets/icons/common/close-small-grey.svg'
+            alt='close'
+            width={38}
+            height={38}
+          />
+        </button>
         <Image
           className='mx-auto'
           src='/assets/icons/sign/logo.svg'
@@ -75,33 +88,33 @@ const Login: NextPageWithLayout = () => {
             </button>
           </form>
         </FormProvider>
-        <nav className='flex items-center justify-center gap-5 pt-5 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
+        <nav className='flex items-center justify-center gap-5 py-8 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
           <Link href='/contact'>문의하기</Link>
           <div className='h-[14px] w-[1px] bg-[#f2f2f2]' />
           <Link href='/signup'>회원가입</Link>
         </nav>
-        <div className='flex items-center justify-center gap-1 pt-10 text-[12px] font-medium leading-[18px] -tracking-[0.03em]'>
-          <span className='text-grey-60'>비밀번호를 잊으셨나요?</span>
-          <Link href='/reset-password' className='text-grey-20 underline underline-offset-2'>
-            비밀번호 초기화
-          </Link>
+        <div className='px-4'>
+          <div className='relative flex justify-center'>
+            <h3 className='z-[1] bg-white px-[14px] text-center text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-30'>
+              SNS 계정으로 로그인
+            </h3>
+            <hr className='absolute left-0 top-1/2 w-full -translate-y-1/2 border-[#f1f1f1]' />
+          </div>
+          <div className='flex justify-center gap-4 pt-6'>
+            <NaverButton />
+            <KakaoButton />
+            {
+              // android 일 때 숨김
+              isIos && <AppleButton />
+            }
+          </div>
         </div>
       </div>
-      <div className='px-4'>
-        <div className='relative flex justify-center'>
-          <h3 className='z-[1] bg-white px-[14px] text-center text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-30'>
-            SNS 계정으로 로그인
-          </h3>
-          <hr className='absolute left-0 top-1/2 w-full -translate-y-1/2 border-[#f1f1f1]' />
-        </div>
-        <div className='flex justify-center gap-5 pt-6'>
-          <NaverButton />
-          <KakaoButton />
-          {
-            // android 일 때 숨김
-            isIos && <AppleButton />
-          }
-        </div>
+      <div className='flex items-center justify-center gap-1 pt-10 text-[12px] font-medium leading-[18px] -tracking-[0.03em]'>
+        <span className='text-grey-60'>비밀번호를 잊으셨나요?</span>
+        <Link href='/reset-password' className='text-grey-20 underline underline-offset-2'>
+          비밀번호 초기화
+        </Link>
       </div>
     </div>
   );

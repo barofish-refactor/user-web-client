@@ -23,9 +23,9 @@ interface Props {
 export function ReviewPhoto({ id, type }: Props) {
   const [selectedSort, setSelectedSort] = useState<number>(0); // 베스트순, 최신순
 
-  const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
+  const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.review.list({ id, type }),
-    async ({ pageParam = 1 }) => {
+    async ({ pageParam = 0 }) => {
       const res = await (type === 'product'
         ? client().selectReviewListWithProductId(id, {
             page: pageParam,
@@ -36,7 +36,6 @@ export function ReviewPhoto({ id, type }: Props) {
             take: perView,
           }));
       if (res.data.isSuccess) {
-        console.log('review:', res.data);
         return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -88,14 +87,19 @@ export function ReviewPhoto({ id, type }: Props) {
             paddingRight: '16px',
           }}
         >
-          {(data?.pages ?? []).map(x =>
-            (x?.content ?? []).map(v => {
+          {(data?.pages ?? []).map((x, i) =>
+            (x?.content ?? []).map((v, idx) => {
               return (
-                <SwiperSlide key={`reviews${v.id}`} className=''>
+                <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
                   <Link href={{ pathname: '/store/review', query: { id: 1 } }}>
-                    <div className='relative aspect-square w-full overflow-hidden rounded-lg'>
-                      <Image fill src={v.images?.[0] ?? ''} alt='review' draggable={false} />
-                    </div>
+                    <Image
+                      width={100}
+                      height={100}
+                      src={v.images?.[0] ?? ''}
+                      alt='review'
+                      draggable={false}
+                      className='aspect-square w-full rounded-lg object-cover'
+                    />
                   </Link>
                 </SwiperSlide>
               );
@@ -110,7 +114,7 @@ export function ReviewPhoto({ id, type }: Props) {
           data?.pages[0]?.totalPages ?? 0,
         )}개`}</p>
         <div className='flex items-center gap-[9px]'>
-          <button className='' onClick={() => setSelectedSort(0)}>
+          <button onClick={() => setSelectedSort(0)}>
             <p
               className={cm(
                 'text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
@@ -123,7 +127,7 @@ export function ReviewPhoto({ id, type }: Props) {
             </p>
           </button>
           <div className='h-5 w-[1px] bg-grey-80' />
-          <button className='' onClick={() => setSelectedSort(1)}>
+          <button onClick={() => setSelectedSort(1)}>
             <p
               className={cm(
                 'text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
@@ -138,11 +142,32 @@ export function ReviewPhoto({ id, type }: Props) {
         </div>
       </div>
       <div className='h-[1px] bg-[#E2E2E2]' />
-      <div className='pb-[100px] pl-[17px] pr-[15px]'>
-        {(data?.pages ?? []).map(x =>
-          (x?.content ?? []).map(v => <ReviewItem key={v.id} data={v} />),
-        )}
-        <div ref={ref} />
+
+      {(data?.pages ?? []).filter(x => (x?.content ?? []).length > 0).map(x => x?.content)
+        .length === 0 ? (
+        Empty()
+      ) : (
+        <div className='pb-[100px] pl-[17px] pr-[15px]'>
+          {(data?.pages ?? []).map((x, i) =>
+            (x?.content ?? []).map((v, idx) => (
+              <ReviewItem key={`${i}${idx}${v.id}`} data={v} showInfo={false} refetch={refetch} />
+            )),
+          )}
+          <div ref={ref} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Empty() {
+  return (
+    <div className='my-[100px] grid flex-1 place-items-center'>
+      <div className='flex flex-col items-center gap-2'>
+        <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+        <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+          후기가 없습니다.
+        </p>
       </div>
     </div>
   );

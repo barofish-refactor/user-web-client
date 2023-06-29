@@ -11,10 +11,11 @@ import { useAlertStore } from 'src/store';
 interface Props {
   data: ProductListDto[];
   className?: string;
+  onClick?: () => void;
 }
 
 /** 홈화면 - 큐레이션 (슬라이드 - 소) */
-const CurationSmallSlide = ({ data, className }: Props) => {
+const CurationSmallSlide = ({ data, className, onClick }: Props) => {
   const { setAlert } = useAlertStore();
 
   const { mutateAsync: addBasket, isLoading } = useMutation((args: AddBasketPayload) =>
@@ -48,7 +49,7 @@ const CurationSmallSlide = ({ data, className }: Props) => {
       {data.map((v, idx) => {
         return (
           <SwiperSlide key={`curation${idx}`} className=''>
-            <ProductSmallSlideItem data={v} type='SMALL' onMutate={onMutate} />
+            <ProductSmallSlideItem data={v} type='SMALL' onMutate={onMutate} onClick={onClick} />
           </SwiperSlide>
         );
       })}

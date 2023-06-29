@@ -1,5 +1,12 @@
 import { type ComponentProps } from 'react';
-import { Alert, BottomConfirm, BottomSheet, Confirm, PcBanner } from 'src/components/common';
+import {
+  Alert,
+  BottomConfirm,
+  BottomSheet,
+  Confirm,
+  OptionBottomSheet,
+  PcBanner,
+} from 'src/components/common';
 
 import { Footer, type FooterProps } from 'src/components/common/footer';
 import { Header, type HeaderProps } from 'src/components/common/header';
@@ -36,6 +43,8 @@ export default function Layout({
         <PhotoSheet />
         {/* bottomSheet */}
         <BottomSheet />
+        {/* bottomSheet */}
+        <OptionBottomSheet />
         {/* Toast */}
         <Toast />
         {!headerDisable && <Header {...headerArgs} />}

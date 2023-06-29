@@ -1,7 +1,11 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
+import { client } from 'src/api/client';
 import { type OrderProductDto } from 'src/api/swagger/data-contracts';
+import { queryKey } from 'src/query-key';
+import { useAlertStore, useConfirmStore } from 'src/store';
 import { formatToLocaleString } from 'src/utils/functions';
 import { parseProductInfoState } from 'src/utils/parse';
 
@@ -11,15 +15,71 @@ import { parseProductInfoState } from 'src/utils/parse';
 */
 
 const buttonClassName =
-  'rounded-sm border border-[#f2f2f2] text-[13px] leading-[20px] -tracking-[0.03em] text-grey-30';
+  'rounded-sm border border-[#f2f2f2] text-[13px] leading-[20px] -tracking-[0.03em] text-grey-30 flex items-center justify-center';
 
 interface Props {
-  totalPrice: number | undefined;
+  id: string | undefined;
   item: OrderProductDto;
 }
 
-export function MypageOrderProductItem({ item, totalPrice }: Props) {
+export function MypageOrderProductItem({ id, item }: Props) {
+  const queryClient = useQueryClient();
+  const { setAlert } = useAlertStore();
+  const { setConfirm } = useConfirmStore();
+
   const hasButtons = true;
+  let buttonList: number[] = []; // 취소환불, 교환요청, 구매확정, 배송조회, 후기작성, 재구매
+  switch (item.state) {
+    case 'WAIT_DEPOSIT':
+    case 'PAYMENT_DONE':
+    case 'DELIVERY_READY':
+    case 'ON_DELIVERY':
+      buttonList = [0];
+      break;
+    case 'DELIVERY_DONE':
+      buttonList = [0, 1, 2, 3];
+      break;
+    case 'FINAL_CONFIRM':
+      buttonList = [4, 5];
+      break;
+    case 'CANCELED':
+    case 'CANCEL_REQUEST':
+    case 'EXCHANGE_REQUEST':
+    case 'EXCHANGE_ACCEPT':
+    case 'REFUND_REQUEST':
+    case 'REFUND_ACCEPT':
+    case 'REFUND_DONE':
+      break;
+    default:
+      buttonList = [0, 1, 2, 3, 4, 5];
+      break;
+  }
+
+  const { mutateAsync: confirmOrderProduct, isLoading: isConfirmLoading } = useMutation(
+    ({ orderProductInfoId }: { orderProductInfoId: number }) =>
+      client().confirmOrderProduct(orderProductInfoId),
+  );
+
+  const onConfirmMutate = ({ orderProductInfoId }: { orderProductInfoId: number }) => {
+    if (isConfirmLoading) return;
+    setConfirm({
+      message: '구매확정하시겠습니까?',
+      onClick: () => {
+        confirmOrderProduct({ orderProductInfoId })
+          .then(res => {
+            if (res.data.isSuccess) {
+              setAlert({
+                message: '구매확정 되었습니다.',
+                type: 'success',
+                onClick: () => queryClient.invalidateQueries(queryKey.order.lists),
+              });
+            } else setAlert({ message: res.data.errorMsg ?? '' });
+          })
+          .catch(error => console.log(error));
+      },
+    });
+  };
+
   return (
     <div className={clsx('last:pb-0', hasButtons ? 'pb-5' : 'pb-0')}>
       <p
@@ -32,7 +92,7 @@ export function MypageOrderProductItem({ item, totalPrice }: Props) {
         <Link href={{ pathname: '/product', query: { id: item.product?.id } }}>
           <Image
             priority
-            src='https://picsum.photos/70/70'
+            src={item.product?.image ?? ''}
             alt='product'
             width={70}
             height={70}
@@ -51,27 +111,62 @@ export function MypageOrderProductItem({ item, totalPrice }: Props) {
               {formatToLocaleString(item.amount, { suffix: '개' })}
             </span>
             <strong className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>
-              {formatToLocaleString(totalPrice, { suffix: '원' })}
+              {formatToLocaleString(item.price, { suffix: '원' })}
             </strong>
           </div>
         </div>
       </div>
-      {hasButtons && (
+      {buttonList.length > 0 && (
         <nav className='mt-3 grid h-8 grid-flow-col gap-x-1.5'>
-          <Link href='#' className={buttonClassName}>
-            취소/환불
-          </Link>
-          <Link href='#' className={buttonClassName}>
-            교환 요청
-          </Link>
-          <button className={buttonClassName}>구매 확정</button>
-          <button className={buttonClassName}>배송 조회</button>
-          <Link href='#' className={buttonClassName}>
-            후기 작성
-          </Link>
-          <Link href='#' className={buttonClassName}>
-            재구매
-          </Link>
+          {buttonList.includes(0) && (
+            <Link
+              className={buttonClassName}
+              href={{
+                pathname: '/mypage/order/refund/action',
+                query: { id, subId: item.id, type: 'refund', state: item.state },
+              }}
+            >
+              취소/환불
+            </Link>
+          )}
+          {buttonList.includes(1) && (
+            <Link
+              className={buttonClassName}
+              href={{
+                pathname: '/mypage/order/refund/action',
+                query: { id, subId: item.id, type: 'change' },
+              }}
+            >
+              교환 요청
+            </Link>
+          )}
+          {buttonList.includes(2) && (
+            <button
+              className={buttonClassName}
+              onClick={() => {
+                if (item.id) onConfirmMutate({ orderProductInfoId: item.id });
+              }}
+            >
+              구매 확정
+            </button>
+          )}
+          {buttonList.includes(3) && <button className={buttonClassName}>배송 조회</button>}
+          {buttonList.includes(4) && !item.isReviewWritten && (
+            <Link
+              href={{ pathname: '/mypage/review/write', query: { v: id, subId: item.id } }}
+              className={buttonClassName}
+            >
+              후기 작성
+            </Link>
+          )}
+          {buttonList.includes(5) && (
+            <Link
+              href={{ pathname: '/product', query: { id: item.product?.id } }}
+              className={buttonClassName}
+            >
+              재구매
+            </Link>
+          )}
         </nav>
       )}
     </div>

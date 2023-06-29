@@ -1,18 +1,30 @@
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Inquiry } from 'src/api/swagger/data-contracts';
+import { client } from 'src/api/client';
+import { type InquiryDto } from 'src/api/swagger/data-contracts';
+import { queryKey } from 'src/query-key';
 import cm from 'src/utils/class-merge';
-import { formatToUtc } from 'src/utils/functions';
+import { formatToUtc, maskingName, setSquareBrackets } from 'src/utils/functions';
 import { parseInquiryState } from 'src/utils/parse';
 
 interface Props {
   productId: number;
-  data: Inquiry[];
+  data: InquiryDto[];
 }
 
 const Inquiry = ({ productId, data }: Props) => {
   const [openIndex, setOpenIndex] = useState<number>();
+
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await client().selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.errorMsg);
+    }
+  });
 
   return (
     <div className=''>
@@ -32,6 +44,7 @@ const Inquiry = ({ productId, data }: Props) => {
               <button
                 className='flex w-full items-end justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px]'
                 onClick={() => {
+                  if (v.isSecret && v.user?.userId !== user?.userId) return;
                   setOpenIndex(openIndex === idx ? undefined : idx);
                 }}
               >
@@ -43,7 +56,7 @@ const Inquiry = ({ productId, data }: Props) => {
                         { 'text-grey-70': v.isSecret },
                       )}
                     >
-                      {`[${parseInquiryState(v.type)}]`}
+                      {`${setSquareBrackets(parseInquiryState(v.type))}`}
                     </p>
                     <p
                       className={cm(
@@ -65,7 +78,7 @@ const Inquiry = ({ productId, data }: Props) => {
                     </p>
                     <div className='h-2.5 w-[1px] bg-grey-80' />
                     <p className='text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-30'>
-                      {v.id}
+                      {maskingName(v.user?.nickname ?? '*')}
                     </p>
                     <div className='h-2.5 w-[1px] bg-grey-80' />
                     <p className='text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-30'>{`${formatToUtc(
@@ -89,7 +102,7 @@ const Inquiry = ({ productId, data }: Props) => {
                     <div className='flex h-[26px] w-[26px] items-center justify-center rounded-full bg-primary-70'>
                       <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-90'>Q</p>
                     </div>
-                    <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20'>
+                    <p className='flex-1 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20'>
                       {v.content}
                     </p>
                   </div>
@@ -97,8 +110,8 @@ const Inquiry = ({ productId, data }: Props) => {
                     <div className='flex h-[26px] w-[26px] items-center justify-center rounded-full bg-primary-50'>
                       <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-90'>A</p>
                     </div>
-                    <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20'>
-                      {v.answer}
+                    <p className='flex-1 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20'>
+                      {v.answer ?? '-'}
                     </p>
                   </div>
                 </div>

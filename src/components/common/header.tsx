@@ -30,7 +30,7 @@ export function Header({ className, ...props }: HeaderProps) {
         {/* 장바구니 */}
         <Link
           href='/product/cart'
-          className='ml-[1px] h-[23px] w-[22px] bg-[url(/assets/icons/common/cart-title.svg)] bg-cover'
+          className='ml-[2px] h-[23px] w-[22px] bg-[url(/assets/icons/common/cart-title.svg)] bg-cover'
         />
       </div>
     </header>

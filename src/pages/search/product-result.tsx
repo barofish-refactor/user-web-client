@@ -1,9 +1,8 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type Category, type CustomResponseListCategory } from 'src/api/swagger/data-contracts';
@@ -11,8 +10,10 @@ import Layout from 'src/components/common/layout';
 import { HomeProductList } from 'src/components/home';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
+import { type indexFilterType, useFilterStore, useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
+import { aToB, bToA, type sortType } from 'src/utils/parse';
 import { FreeMode } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide, type SwiperRef } from 'swiper/react';
@@ -25,10 +26,15 @@ interface Props {
 /** 검색 (카테고리, 큐레이션) */
 const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
-  const { id, title, subItemId, type } = router.query;
+  const { filter, setFilter } = useFilterStore();
+  const { setAlert } = useAlertStore();
+  const { id, title, subItemId, type, f } = router.query;
   const refSwiper = useRef<SwiperRef>(null);
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>();
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(-1);
+  const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
+  const [savedFilter, setSavedFilter] = useState<number[]>([]);
+  const [sort, setSort] = useState<sortType>('RECOMMEND'); // default: 추천순
 
   const { data } = useQuery(
     queryKey.category,
@@ -40,42 +46,38 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
     { initialData },
   );
 
-  const { data: curationData } = useQuery(
-    queryKey.curationList,
-    async () => {
-      const { selectCuration } = client();
-      const res = await selectCuration(Number(id));
-      return res.data;
-    },
-    {
-      enabled: !!id && type === 'curation',
-      staleTime: 0,
-    },
-  );
-
   const {
     data: productData,
     hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery(
     queryKey.productList.list({
-      categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
+      filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
+      ...{
+        categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
+        curationId: type === 'curation' ? Number(id) : undefined,
+      },
+      sortby: sort,
     }),
     async ({ pageParam = 1 }) => {
       const res = await client().selectProductListByUser({
-        categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
+        filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
+        ...{
+          categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
+          curationId: type === 'curation' ? Number(id) : undefined,
+        },
+        sortby: sort,
         page: pageParam,
         take: perView,
       });
       if (res.data.isSuccess) {
         return res.data.data;
-      } else {
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
-      }
+      } else setAlert({ message: res.data.errorMsg ?? '' });
     },
     {
-      enabled: (!!id && type === 'category') || !!selectedCategoryId,
-      // staleTime: 0,
+      // enabled: !!id || !!selectedCategoryId,
+      enabled: !!id && !!selectedCategoryId,
+      staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return nextId + 1;
@@ -98,15 +100,47 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
   }, [id, subItemId, data]);
 
   useEffect(() => {
-    if (selectedTabIndex) {
-      const list = data.data?.filter(x => x.id === Number(id))[0].categoryList ?? [];
-      if (list.length > 0) {
-        setSelectedCategoryId(list[selectedTabIndex - 1].id ?? -1);
+    if (type === 'category') {
+      if (selectedTabIndex) {
+        const list = data.data?.filter(x => x.id === Number(id))[0].categoryList ?? [];
+        if (list.length > 0) {
+          setSelectedCategoryId(list[selectedTabIndex - 1].id ?? -1);
+        }
+      } else {
+        setSelectedCategoryId(Number(id));
+      }
+    }
+  }, [data.data, id, selectedTabIndex, type]);
+
+  useEffect(() => {
+    if (filter) {
+      setDummyFilter(filter);
+
+      router.replace({
+        pathname: '/search/product-result',
+        query: {
+          ...router.query,
+          f: aToB(JSON.stringify(filter.map(v => v.id))),
+        },
+      });
+      setFilter(null);
+    } else {
+      // setSavedFilter(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter]);
+
+  useEffect(() => {
+    if (router.isReady && f) {
+      try {
+        setSavedFilter(JSON.parse(bToA(f as string)));
+      } catch (error) {
+        console.log(error);
       }
     } else {
-      setSelectedCategoryId(Number(id));
+      setSavedFilter([]);
     }
-  }, [data.data, id, selectedTabIndex]);
+  }, [f, router.isReady]);
 
   const { ref } = useInView({
     initialInView: false,
@@ -118,14 +152,15 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
 
   return (
     <div className='max-md:w-[100vw]'>
-      <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
+      <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'>
         <BackButton />
-        <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='line-clamp-1 flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           {title}
         </p>
-        <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
-        </Link>
+        <Link
+          href='/product/cart'
+          className='h-[23px] w-[22px] bg-[url(/assets/icons/common/cart-title.svg)] bg-cover'
+        />
       </div>
       {type === 'category' ? (
         <Swiper ref={refSwiper} freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
@@ -154,17 +189,15 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
             })}
         </Swiper>
       ) : null}
-      {type === 'curation' ? (
-        <HomeProductList dataDto={curationData?.data?.products ?? []} data={[]} />
-      ) : (
-        <Fragment>
-          <HomeProductList
-            dataDto={Array.prototype.concat.apply([], productData?.pages ?? [])}
-            data={[]}
-          />
-          <div ref={ref} />
-        </Fragment>
-      )}
+      <HomeProductList
+        storeType={type === 'curation' ? 'curation' : 'category'}
+        storeId={type === 'curation' ? Number(id) : selectedCategoryId}
+        dataDto={productData?.pages ?? []}
+        filter={dummyFilter}
+        sort={sort}
+        setSort={setSort}
+      />
+      <div ref={ref} />
     </div>
   );
 };

@@ -29,6 +29,7 @@ type Daum = {
 type IMP = {
   init: (key: string) => void;
   request_pay: (props: any, callback: (response: any) => void) => void;
+  certification(props: any, callback: (response: any) => void): void;
 };
 
 type ReactNativeWebView = any;

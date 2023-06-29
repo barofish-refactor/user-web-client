@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import { type Notice } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
-import { ChevronIcon } from 'src/components/icons';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
@@ -20,12 +19,12 @@ const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { setAlert } = useAlertStore();
   const { id } = router.query;
+  const [content, setContent] = useState<string>('');
 
   const { data } = useQuery(
     queryKey.notice.detail(Number(id)),
     async () => {
       const res = await client().selectNotice(Number(id));
-      console.log(res);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -38,6 +37,15 @@ const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
+  useEffect(() => {
+    if (data && data.content) {
+      fetch(data.content)
+        .then(res => res.text())
+        .then(setContent)
+        .catch(err => console.log(JSON.stringify(err)));
+    }
+  }, [data]);
+
   return (
     <div className='flex flex-1 flex-col justify-between pb-10 pt-4'>
       <div className='space-y-3'>
@@ -49,51 +57,18 @@ const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
             {formatToUtc(data?.createdAt, 'yyyy.MM.dd')}
           </time>
         </div>
-        <details open>
-          <summary className='line-clamp-2 whitespace-pre-line px-4 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-10'>
+        <div>
+          {/* <h4 className='line-clamp-2 whitespace-pre-line px-4 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-10'>
             {data?.content}
-          </summary>
-          <p className='mt-3 whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+          </h4> */}
+          {/* <p className='mt-3 whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
             {data?.content}
-          </p>
-        </details>
+          </p> */}
+          <div className='mt-3 whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+            <div dangerouslySetInnerHTML={{ __html: content }} className='' />
+          </div>
+        </div>
       </div>
-      <nav className='grid grid-cols-[1fr,auto,1fr,auto,1fr] items-center justify-between px-4'>
-        {/* {prev ? (
-          <Link
-            href='#'
-            // TODO 작업 필요
-            className='flex items-center gap-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'
-          >
-            <ChevronIcon width={24} height={24} />
-            이전글
-          </Link>
-        ) : (
-          <div />
-        )} */}
-        {/* TODO 일단 숨김 */}
-        <div />
-        <div className='h-[14px] w-[1px] bg-[#e2e2e2]' />
-        <Link
-          href='/mypage/notice'
-          className='text-center text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'
-        >
-          목록
-        </Link>
-        <div className='h-[14px] w-[1px] bg-[#e2e2e2]' />
-        {/* {next && (
-          <Link
-            href='#'
-            // TODO 작업 필요
-            className='flex items-center justify-end gap-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'
-          >
-            다음글
-            <ChevronIcon width={24} height={24} className='rotate-180' />
-          </Link>
-        )} */}
-        {/* TODO 일단 숨김 */}
-        <div />
-      </nav>
     </div>
   );
 };

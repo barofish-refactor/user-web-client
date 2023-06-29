@@ -10,7 +10,7 @@ const CurationTable = ({ data }: Props) => {
   return (
     <div className='mt-5 grid grid-cols-2 gap-x-[11px] gap-y-5'>
       {data.slice(0, 4).map((v, idx) => {
-        return <ProductItem key={`curation${idx}`} data={v} dataDto={v} />;
+        return <ProductItem key={`curation${idx}`} dataDto={v} />;
       })}
     </div>
   );

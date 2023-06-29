@@ -63,7 +63,7 @@ const PopularSearchTerms = ({ data, setSearchText }: Props) => {
               >
                 {rank}
               </p>
-              <p className='flex-1 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+              <p className='line-clamp-1 flex-1 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
                 {v.keyword}
               </p>
               {parseRankState(rankState)}

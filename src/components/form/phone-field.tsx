@@ -49,16 +49,18 @@ export function PhoneField() {
     await trigger(PHONE_KEY).then(async isValid => {
       if (!isValid) return;
 
+      setAlert({ message: '인증번호를 전송했습니다.' });
+
       await requestCodeVerification({ target: getValues(PHONE_KEY) })
         .then(res => {
           if (res.data.isSuccess) {
-            // setTimer(INITIAL_TIMER);
-            // setValue('verificationId', 0); // 재인증시 초기화
-            // clearValidation();
+            setTimer(INITIAL_TIMER);
+            setValue('verificationId', 0); // 재인증시 초기화
+            clearValidation();
           } else {
-            setTimer(INITIAL_TIMER); // Toast 연동시 제거
-            setValue('verificationId', 0); // Toast 연동시 제거
-            clearValidation(); // Toast 연동시 제거
+            // setTimer(INITIAL_TIMER); // Toast 연동시 제거
+            // setValue('verificationId', 0); // Toast 연동시 제거
+            // clearValidation(); // Toast 연동시 제거
             setAlert({
               message: res.data.errorMsg ?? '',
               onClick: () => {
@@ -146,6 +148,7 @@ export function PhoneField() {
                     format='###-####-####'
                     placeholder='휴대폰 번호를 입력해 주세요'
                     inputMode='numeric'
+                    readOnly={!!verificationId}
                     spellCheck={false}
                     data-invalid={!!phoneError}
                     className={clsx(inputClassName, '[&]:pr-10')}

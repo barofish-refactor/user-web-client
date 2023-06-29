@@ -9,6 +9,7 @@ import { submitButtonClassName } from 'src/components/form';
 import { BackButton, Checkbox } from 'src/components/ui';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
+import { requestPermission } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 
 const MypageWithdrawal: NextPageWithLayout = () => {
@@ -33,6 +34,7 @@ const MypageWithdrawal: NextPageWithLayout = () => {
               deleteCookie(VARIABLES.REFRESH_TOKEN);
               queryClient.clear();
               router.replace('/login');
+              requestPermission('withdraw', '');
             },
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });

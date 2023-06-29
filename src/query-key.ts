@@ -47,10 +47,16 @@ export const queryKey = {
   curationList: ['curationList'],
   /** 주문 */
   order: getOrderKey(),
+  /** 적립금 혜택 정보 */
+  pointRule: ['pointRule'],
   /** 내 정보 */
   user: ['user'],
   /** 필터 */
   filter: ['filter'],
+  /** 필터 */
+  filters: getQueryKeys('filters'),
+  /** 필터 카운트 */
+  filterCount: getQueryKeys('filterCount'),
   /** 스토어 */
   store: getQueryKeys('store'),
   /** 즐겨찾기 스토어 */
@@ -59,6 +65,8 @@ export const queryKey = {
   product: getQueryKeys('product'),
   /** PC 배너 */
   pcBanner: ['PcBanner'],
+  /** 배너 */
+  banner: ['banner'],
   /** TopBar */
   topBar: getQueryKeys('topBar'),
   /** 상품 옵션 */
@@ -66,7 +74,7 @@ export const queryKey = {
   /** 가진 쿠폰 */
   downloadedCoupon: getQueryKeys('downloadedCoupon'),
   /** 다운 가능한 쿠폰 */
-  canUseCoupon: getQueryKeys('canUseCoupon'),
+  canDownloadCoupon: getQueryKeys('canDownloadCoupon'),
   /** 공지사항 */
   notice: getQueryKeys('notice'),
   /** faq */
@@ -83,4 +91,18 @@ export const queryKey = {
   productList: getQueryKeys('productList'),
   /** 리뷰 */
   review: getQueryKeys('review'),
+  /** 내가 쓴 후기 */
+  myReview: ['myReview'],
+  /** 알림 */
+  notification: ['notification'],
+  /** 배송 */
+  deliverPlace: ['deliverPlace'],
+  /** 다른고객이 함께 구매한 상품 */
+  orderRecommend: getQueryKeys('orderRecommend'),
+  /** 최근 본 상품 */
+  recent: getQueryKeys('recent'),
+  /** 배송 */
+  deliverInfo: ['deliverInfo'],
+  /** 결제수단 */
+  paymentMethod: ['paymentMethod'],
 };

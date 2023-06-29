@@ -1,21 +1,36 @@
 import Image from 'next/image';
-import { useEffect } from 'react';
-import { type ProductListDto, type Product } from 'src/api/swagger/data-contracts';
+import { useEffect, useState } from 'react';
+import { type PageProductListDto } from 'src/api/swagger/data-contracts';
 import { ProductItem } from 'src/components/common';
-import { useFilterStore } from 'src/store';
+import { type indexFilterType, useFilterStore } from 'src/store';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString } from 'src/utils/functions';
+import { parseSort, type sortType } from 'src/utils/parse';
 
 interface Props {
+  storeType: 'category' | 'topBar' | 'curation' | 'store' | 'search';
+  storeId?: number;
   type?: string; // 신상품, 인기상품, 특가할인 등등...
-  data: Product[];
-  dataDto?: ProductListDto[];
+  dataDto: (PageProductListDto | undefined)[];
   className?: string;
+  filter?: indexFilterType[];
+  sort?: sortType;
+  setSort?: (value: sortType) => void;
 }
 
 /** 홈화면 - 상품 리스트 (신상품, 인기상품, ...) */
-const ProductList = ({ type, data, dataDto, className }: Props) => {
-  const { setIsOpen, clearFilter } = useFilterStore();
+const ProductList = ({
+  storeType,
+  storeId,
+  type,
+  dataDto,
+  className,
+  filter,
+  sort,
+  setSort,
+}: Props) => {
+  const { setFilter, setType, setIsOpen, clearFilter } = useFilterStore();
+  const [isShowSort, setIsShowSort] = useState<boolean>();
 
   useEffect(() => {
     clearFilter();
@@ -25,46 +40,115 @@ const ProductList = ({ type, data, dataDto, className }: Props) => {
     <div className={cm('px-4 py-[16px]', className)} id='test'>
       <div className='flex items-center justify-between'>
         <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-black'>{`총 ${formatToLocaleString(
-          dataDto ? dataDto.length : data.length,
+          dataDto[0]?.totalElements ?? 0,
         )}건`}</p>
         <div className='flex items-center gap-[19px]'>
           {!type && (
-            <button
-              className='flex items-center gap-[7px]'
-              onClick={() => {
-                //
-              }}
-            >
-              <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-                추천순
-              </p>
-              <Image
-                src='/assets/icons/common/chevron-filter.svg'
-                alt='chevron'
-                width={8}
-                height={5}
-              />
-            </button>
+            <div className='relative h-[22px] overflow-visible'>
+              <button
+                className='flex h-[22px] items-center gap-[7px]'
+                onClick={() => setIsShowSort(!isShowSort)}
+              >
+                <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+                  {parseSort(sort)}
+                </p>
+                <Image
+                  src='/assets/icons/common/chevron-filter.svg'
+                  alt='chevron'
+                  width={8}
+                  height={5}
+                  className={cm({ 'rotate-180': isShowSort })}
+                />
+              </button>
+              {isShowSort && (
+                <div className='absolute right-0 z-50 mt-1.5 flex w-[104px] flex-col items-start gap-[18px] rounded-lg bg-white py-3 pl-4 shadow-[0px_5px_10px_0px_rgba(0,0,0,0.15)]'>
+                  {(
+                    [
+                      { value: 'RECOMMEND' },
+                      { value: 'NEW' },
+                      { value: 'SALES' },
+                      { value: 'REVIEW' },
+                      { value: 'LIKE' },
+                      { value: 'LOW_PRICE' },
+                      { value: 'HIGH_PRICE' },
+                    ] as { value: sortType }[]
+                  ).map((v, idx) => {
+                    return (
+                      <button
+                        key={`sort${idx}`}
+                        onClick={() => {
+                          setSort && setSort(v.value);
+                          setIsShowSort(false);
+                        }}
+                      >
+                        <p
+                          className={cm(
+                            'text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20',
+                            { 'font-semibold text-primary-50': sort === v.value },
+                          )}
+                        >
+                          {parseSort(v.value)}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           )}
-          <button className='flex items-center gap-1' onClick={() => setIsOpen(true)}>
-            <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+          <button
+            className='flex items-center gap-1'
+            onClick={() => {
+              if (filter) setFilter(filter);
+              setType({
+                type: storeType,
+                id: storeId,
+              });
+              setIsOpen(true);
+            }}
+          >
+            <p
+              className={cm(
+                'text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10',
+                { 'text-primary-50': filter && filter.length > 0 },
+              )}
+            >
               필터
             </p>
-            <Image src='/assets/icons/common/filter.svg' alt='filter' width={15} height={10} />
+            {filter && filter.length > 0 ? (
+              <Image src='/assets/icons/common/filter-on.svg' alt='filter' width={15} height={10} />
+            ) : (
+              <Image src='/assets/icons/common/filter.svg' alt='filter' width={15} height={10} />
+            )}
           </button>
         </div>
       </div>
       <div className='mt-5 grid grid-cols-2 gap-x-3 gap-y-5'>
-        {dataDto
-          ? dataDto.map((v, idx) => {
-              return <ProductItem key={`curation${idx}`} data={v} dataDto={v} />;
-            })
-          : data.map((v, idx) => {
-              return <ProductItem key={`curation${idx}`} data={v} />;
-            })}
+        {(dataDto[0]?.totalElements ?? 0) > 0
+          ? dataDto.map(x =>
+              (x?.content ?? []).map((v, idx) => {
+                return <ProductItem key={`curation${idx}`} dataDto={v} />;
+              }),
+            )
+          : Empty()}
       </div>
     </div>
   );
 };
+
+function Empty() {
+  return (
+    <div className='col-span-2 h-[calc(100dvb-170px)]'>
+      <div className='grid h-full flex-1 place-items-center'>
+        <div className='flex flex-col items-center gap-2'>
+          <Image src='/assets/icons/common/error.svg' alt='error' width={40} height={40} />
+          <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
+            상품이 없습니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default ProductList;

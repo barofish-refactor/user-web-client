@@ -11,15 +11,13 @@ export default function useLogout() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { setConfirm } = useConfirmStore();
-  // const clearToken = useTokenStore(state => state.clearToken);
   const onLogout = async () => {
     setConfirm({
       message: '로그아웃 하시겠습니까?',
       onClick: async () => {
-        await router.push('/login').then(() => {
+        await router.push('/').then(() => {
           deleteCookie(ACCESS_TOKEN);
           deleteCookie(REFRESH_TOKEN);
-          // clearToken();
           queryClient.clear();
           requestPermission('logout', '');
         });

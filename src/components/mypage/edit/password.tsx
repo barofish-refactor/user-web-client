@@ -18,7 +18,6 @@ export function MypageEditPassword({ onMutate }: Props) {
   const { handleSubmit, setError } = form;
 
   const onSubmit = handleSubmit(data => {
-    console.log(data);
     if (data.newPassword !== data.newPasswordCheck) {
       setError('newPasswordCheck', { message: '비밀번호를 확인해 주세요.' });
       return;
@@ -40,8 +39,13 @@ export function MypageEditPassword({ onMutate }: Props) {
             <PasswordField
               fieldKey='newPassword'
               label='변경할 비밀번호'
-              placeholder='새 비밀번호'
-              options={{ required: { value: true, message: '새 비밀번호를 입력해 주세요' } }}
+              placeholder='영문,숫자,특수문자 8자리 이상'
+              options={{
+                required: {
+                  value: true,
+                  message: '새 비밀번호를 입력해 주세요 (영문,숫자,특수문자 8자리 이상)',
+                },
+              }}
             />
             <PasswordField
               fieldKey='newPasswordCheck'
