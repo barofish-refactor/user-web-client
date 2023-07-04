@@ -68,7 +68,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }: ApiConfig<SecurityDataType> = {}) {
     this.instance = axios.create({
       ...axiosConfig,
-      baseURL: axiosConfig.baseURL || 'http://192.168.0.39:8082',
+      baseURL: axiosConfig.baseURL || 'http://dev.api.barofish.com',
     });
     this.secure = secure;
     this.format = format;

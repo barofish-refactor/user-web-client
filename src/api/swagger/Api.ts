@@ -178,6 +178,7 @@ import {
   SelectCurationListByAdminData,
   SelectCurationListData,
   SelectCurationProductsData,
+  SelectDashBoardData,
   SelectDeliverCompanyListData,
   SelectDeliverPlaceData,
   SelectDownloadCouponData,
@@ -192,6 +193,7 @@ import {
   SelectMainData,
   SelectMainItemsData,
   SelectMainStoreData,
+  SelectMyPageBannerData,
   SelectMyReviewListData,
   SelectNoticeData,
   SelectNoticeListByAdminData,
@@ -254,6 +256,8 @@ import {
   SelectUserSelfInfoData,
   SetMainPartnerByAdminData,
   SetMainPartnerByAdminPayload,
+  SortCuration1Data,
+  SortCuration1Payload,
   SortCurationData,
   SortCurationPayload,
   Test1Data,
@@ -1830,6 +1834,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   updateBannerState = (data: UpdateBannerStatePayload, params: RequestParams = {}) =>
     this.request<UpdateBannerStateData, any>({
       path: `/api/v1/banner/update/state`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags banner-controller
+   * @name SortCuration1
+   * @request POST:/api/v1/banner/sort-banner
+   * @response `200` `SortCuration1Data` OK
+   */
+  sortCuration1 = (data: SortCuration1Payload, params: RequestParams = {}) =>
+    this.request<SortCuration1Data, any>({
+      path: `/api/v1/banner/sort-banner`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -3731,6 +3751,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags dash-board-controller
+   * @name SelectDashBoard
+   * @request GET:/api/v1/dashboard
+   * @response `200` `SelectDashBoardData` OK
+   */
+  selectDashBoard = (params: RequestParams = {}) =>
+    this.request<SelectDashBoardData, any>({
+      path: `/api/v1/dashboard`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags curation-controller
    * @name SelectCuration
    * @request GET:/api/v1/curation/{id}
@@ -4195,6 +4229,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags banner-controller
+   * @name SelectMyPageBanner
+   * @request GET:/api/v1/banner/my-page
+   * @response `200` `SelectMyPageBannerData` OK
+   */
+  selectMyPageBanner = (params: RequestParams = {}) =>
+    this.request<SelectMyPageBannerData, any>({
+      path: `/api/v1/banner/my-page`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags banner-controller
    * @name SelectBannerListByAdmin
    * @request GET:/api/v1/banner/management
    * @response `200` `SelectBannerListByAdminData` OK
@@ -4211,8 +4259,9 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
        * @default 10
        */
       take?: number;
+      types?: string;
       /** @default "id" */
-      orderby?: 'id' | 'type' | 'curationId' | 'noticeId' | 'categoryId';
+      orderby?: 'id' | 'type' | 'curationId' | 'noticeId' | 'categoryId' | 'sortNo';
       /** @default "DESC" */
       orderType?: 'ASC' | 'DESC';
     },
