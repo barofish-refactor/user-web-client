@@ -8,28 +8,23 @@ import Layout from 'src/components/common/layout';
 import {
   HomeAbbreviationCuration,
   HomeBanner,
-  HomeCurationItem,
+  HomeCurationList,
   HomeCurationTip,
   HomeFooter,
-  HomePartner,
   HomeProductList,
-  HomeSubBanner,
+  HomeTab,
 } from 'src/components/home';
 import { queryKey } from 'src/query-key';
-import { type indexFilterType, useAlertStore, useFilterStore } from 'src/store';
-import { aToB, bToA } from 'src/utils/parse';
-import { FreeMode } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import cm from 'src/utils/class-merge';
+import { aToB, bToA } from 'src/utils/parse';
 
 import 'swiper/css';
 
 const perView = 10;
-
-// interface Props {
-//   initialData: Main;
-// }
+const defaultCurationAbbreviation: Curation[] = [
+  { id: -2, image: '/dummy/dummy-curation-1.png', shortName: '해산물꿀팁' },
+];
 
 /** 홈화면 */
 const Home: NextPageWithLayout = () => {
@@ -37,14 +32,14 @@ const Home: NextPageWithLayout = () => {
   const { tab = 0, f } = router.query;
   const { setAlert } = useAlertStore();
 
-  const { filter, setFilter, clearFilter } = useFilterStore();
+  const { filter, setFilter } = useFilterStore();
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
 
   const { data, isLoading, refetch } = useQuery(
     queryKey.main,
     async () => {
-      const res = await client().selectMainItems();
+      const res = await (await client()).selectMainItems();
       if (res.data.isSuccess) {
         return res.data.data;
       } else setAlert({ message: res.data.errorMsg ?? '' });
@@ -64,7 +59,10 @@ const Home: NextPageWithLayout = () => {
       filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
     }),
     async ({ pageParam = 1 }) => {
-      const res = await client().selectTopBar(Number(tab), {
+      if (pageParam === -1) return;
+      const res = await (
+        await client()
+      ).selectTopBar(Number(tab), {
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         page: pageParam,
         take: perView,
@@ -78,9 +76,9 @@ const Home: NextPageWithLayout = () => {
     {
       enabled: Number(tab) !== 0,
       // staleTime: 0,
-      getNextPageParam: (_lastPage, allPages) => {
+      getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
       },
     },
   );
@@ -106,7 +104,7 @@ const Home: NextPageWithLayout = () => {
   useEffect(() => {
     if (router.isReady && f) {
       try {
-        setSavedFilter(JSON.parse(bToA(f as string)));
+        if (typeof f === 'string') setSavedFilter(JSON.parse(bToA(f)));
       } catch (error) {
         console.log(error);
       }
@@ -126,78 +124,33 @@ const Home: NextPageWithLayout = () => {
   return (
     <div className='max-md:w-[100vw]'>
       {/* Tab */}
-      <Swiper freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
-        {[{ id: 0, name: '바로추천' }, ...(data?.topBars ?? [])].map((v, idx) => {
-          const isSelected = Number(tab) === idx;
-          return (
-            <SwiperSlide key={`mainTab${idx}`} className='h-full !w-1/4'>
-              <button
-                className='w-full'
-                onClick={() => {
-                  clearFilter();
-                  router.replace({ pathname: '/', query: idx === 0 ? undefined : { tab: idx } });
-                }}
-              >
-                <div className='flex h-full w-full flex-col justify-between'>
-                  <p
-                    className={cm(
-                      'text-center text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
-                      { 'font-semibold text-primary-50': isSelected },
-                    )}
-                  >
-                    {v.name}
-                  </p>
-                  <div
-                    className={cm('mt-[3.5px] h-[2.5px]', {
-                      'bg-primary-50': isSelected,
-                    })}
-                  />
-                </div>
-              </button>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+      <HomeTab mainData={data} />
       {/* Content - 바로추천 */}
       {tab === 0 ? (
         <>
-          <HomeBanner data={data?.banners ? data.banners.filter(x => x.state === 'ACTIVE') : []} />
+          <HomeBanner
+            data={
+              data?.banners
+                ? data.banners
+                    .filter(x => x.state === 'ACTIVE')
+                    .sort((a, b) => {
+                      if ((a.sortNo ?? -1) > (b.sortNo ?? -1)) return 1;
+                      else if ((a.sortNo ?? -1) < (b.sortNo ?? -1)) return -1;
+                      else return 0;
+                    })
+                : []
+            }
+          />
           <HomeAbbreviationCuration
-            data={[
-              { id: -2, image: '/dummy/dummy-curation-1.png', shortName: '해산물꿀팁' } as Curation,
-            ].concat(data?.curations ?? [])}
+            data={defaultCurationAbbreviation.concat(
+              (data?.curations ?? []).filter(x => x.shortName && x.shortName.length > 0),
+            )}
           />
           <div className='h-[1px] bg-[#F4F4F4]' />
           {isLoading ? (
             <div className='h-[50vh]' />
           ) : (
-            <>
-              {data?.curations?.map((v, idx) => {
-                return (
-                  <div key={v.id}>
-                    <HomeCurationItem data={v} />
-                    {idx === 0 && (
-                      <>
-                        {/* SubBanner */}
-                        {data.subBanner && (
-                          <div className='mx-4 my-[30px]'>
-                            <HomeSubBanner
-                              data={
-                                data.subBanner
-                                  ? data.subBanner.filter(x => x.state === 'ACTIVE')
-                                  : []
-                              }
-                            />
-                          </div>
-                        )}
-                        {/* Partner */}
-                        {data?.store && <HomePartner data={data?.store} refetch={refetch} />}
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-            </>
+            <HomeCurationList mainData={data} mainRefetch={refetch} />
           )}
           {/* 알아두면 좋은 정보 */}
           <HomeCurationTip />
@@ -221,12 +174,5 @@ const Home: NextPageWithLayout = () => {
 };
 
 Home.getLayout = page => <Layout>{page}</Layout>;
-
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const { selectMainItems } = client();
-//   return {
-//     props: { initialData: (await selectMainItems()).data.data },
-//   };
-// };
 
 export default Home;

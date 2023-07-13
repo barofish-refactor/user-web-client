@@ -23,13 +23,12 @@ const Payment: NextPageWithLayout = () => {
   const [limit, setLimit] = useState<number>(10); // 확인할 반복 횟수 (3 * 10 -> 30초동안 반복)
   const [isPurchaseCheck, setIsPurchaseCheck] = useState<boolean>(false);
 
-  const onCountDown = useCallback(() => {
+  const onCountDown = useCallback(async () => {
     if (timer > 0) {
       setTimer(timer - 1);
     } else if (timer === 0) {
-      client()
-        .checkPaymentDone(orderId as string)
-        .then(res => {
+      if (typeof orderId === 'string') {
+        await (await client()).checkPaymentDone(orderId).then(res => {
           setLimit(limit - 1);
           if (res) {
             // 결제 성공
@@ -56,6 +55,7 @@ const Payment: NextPageWithLayout = () => {
             setTimer(interval);
           }
         });
+      }
     }
   }, [limit, orderId, router, setAlert, timer]);
 

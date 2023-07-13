@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
@@ -12,20 +13,14 @@ import { distanceFromNow } from 'src/utils/functions';
 const perView = 10;
 
 const Notice: NextPageWithLayout = () => {
-  // const { data, isLoading } = useQuery(queryKey.notification, async () => {
-  //   const res = await client().selectNotification();
-  //   if (res.data.isSuccess) {
-  //     console.log(res.data.data);
-  //     return res.data.data;
-  //   } else {
-  //     throw new Error(res.data.code + ': ' + res.data.errorMsg);
-  //   }
-  // });
-
+  const router = useRouter();
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.notification,
     async ({ pageParam = 0 }) => {
-      const res = await client().selectNotification({
+      if (pageParam === -1) return;
+      const res = await (
+        await client()
+      ).selectNotification({
         page: pageParam,
         take: perView,
       });
@@ -37,9 +32,9 @@ const Notice: NextPageWithLayout = () => {
     },
     {
       // staleTime: 0,
-      getNextPageParam: (_lastPage, allPages) => {
+      getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId : -1;
       },
     },
   );
@@ -72,12 +67,27 @@ const Notice: NextPageWithLayout = () => {
                 key={v.id}
                 className='text-start'
                 onClick={() => {
-                  //
+                  switch (v.type) {
+                    case 'ADMIN':
+                      break;
+                    case 'COUPON':
+                      router.push('/mypage/coupon');
+                      break;
+                    case 'DELIVERY':
+                    case 'ORDER':
+                      router.push('/mypage/order');
+                      break;
+                    case 'REVIEW':
+                      router.push('/mypage/review');
+                      break;
+                    default:
+                      break;
+                  }
                 }}
               >
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
-                    <Image src={icon} alt='' width={24} height={24} />
+                    <Image unoptimized src={icon} alt='' width={24} height={24} />
                     <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
                       {v.title}
                     </p>
@@ -105,7 +115,13 @@ function Empty() {
   return (
     <div className='grid flex-1 place-items-center'>
       <div className='flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/common/error.svg' alt='error' width={40} height={40} />
+        <Image
+          unoptimized
+          src='/assets/icons/common/error.svg'
+          alt='error'
+          width={40}
+          height={40}
+        />
         <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
           {`등록된 알림이 없습니다.\n알림이 오면 빠르게 알려드리겠습니다 :)`}
         </p>

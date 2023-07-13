@@ -30,6 +30,7 @@ export function MyProfile({ defaultValue: defaultProp, onChange, readonly, value
   const imgElement = (
     <Image
       priority
+      unoptimized
       src={innerValue?.previewUrl || myProfileDefaultValue.previewUrl}
       alt='profile'
       width={90}
@@ -66,6 +67,7 @@ export function MyProfile({ defaultValue: defaultProp, onChange, readonly, value
       <button type='button' className='relative inline-flex' onClick={onClickProfile}>
         {imgElement}
         <Image
+          unoptimized
           src='/assets/icons/common/edit.svg'
           width={32}
           height={32}

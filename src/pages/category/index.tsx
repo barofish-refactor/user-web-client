@@ -10,6 +10,8 @@ import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 
+const defaultCategoryList: Category[] = [{ id: -1, name: '전체보기' }];
+
 interface Props {
   initialData: CustomResponseListCategory;
 }
@@ -21,14 +23,14 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.category,
     async () => {
-      const res = await client().selectCategories();
+      const res = await (await client()).selectCategories();
       return res.data;
     },
     { initialData },
   );
 
   return (
-    <div className='max-md:w-[100vw]'>
+    <div className='pb-6 max-md:w-[100vw]'>
       <p className='px-4 pb-4 pt-[25px] text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
         카테고리
       </p>
@@ -46,6 +48,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
                 }}
               >
                 <Image
+                  unoptimized
                   src={v.image ?? ''}
                   alt={v.name ?? ''}
                   width={30}
@@ -57,6 +60,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
                   {v.name}
                 </p>
                 <Image
+                  unoptimized
                   src='/assets/icons/common/chevron-category.svg'
                   alt='chevron'
                   width={23.5}
@@ -68,31 +72,28 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
               <div className='h-[1px] bg-grey-90' />
               {selectedId === v.id && (
                 <div className='grid grid-cols-2 gap-y-0.5 bg-grey-90'>
-                  {[{ id: -1, name: '전체보기' } as Category]
-                    .concat(v.categoryList ?? [])
-                    .map((subItem, idx) => {
-                      return (
-                        <Link
-                          key={`subItem${subItem.id}`}
-                          href={{
-                            pathname: '/search/product-result',
-                            query: {
-                              id: v.id,
-                              title: v.name,
-                              subItemId: subItem.id,
-                              type: 'category',
-                            },
-                          }}
-                          className={cm('ml-[50px] flex h-[38px] items-center pl-4', {
-                            'ml-[14px] mr-[36px]': idx % 2 === 1,
-                          })}
-                        >
-                          <p className='text-[14px] font-normal -tracking-[0.03em] text-grey-20'>
-                            {subItem.name ?? ''}
-                          </p>
-                        </Link>
-                      );
-                    })}
+                  {defaultCategoryList.concat(v.categoryList ?? []).map((subItem, idx) => {
+                    return (
+                      <Link
+                        key={`subItem${subItem.id}`}
+                        href={{
+                          pathname: '/search/product-result',
+                          query: {
+                            id: v.id,
+                            subItemId: subItem.id,
+                            type: 'category',
+                          },
+                        }}
+                        className={cm('ml-[50px] flex h-[38px] items-center pl-4', {
+                          'ml-[14px] mr-[36px]': idx % 2 === 1,
+                        })}
+                      >
+                        <p className='text-[14px] font-normal -tracking-[0.03em] text-grey-20'>
+                          {subItem.name ?? ''}
+                        </p>
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -105,7 +106,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
 Category.getLayout = page => <Layout>{page}</Layout>;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { selectCategories } = client();
+  const { selectCategories } = await client();
   return {
     props: { initialData: (await selectCategories()).data },
     revalidate: 60,

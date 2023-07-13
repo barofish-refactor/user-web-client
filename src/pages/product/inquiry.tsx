@@ -45,7 +45,7 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.product.detail(id),
     async () => {
-      const res = await client().selectProduct(Number(id));
+      const res = await (await client()).selectProduct(Number(id));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -57,8 +57,9 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
-  const { mutateAsync: addInquiry, isLoading } = useMutation((args: AddInquiryPayload) =>
-    client().addInquiry(args, { type: ContentType.FormData }),
+  const { mutateAsync: addInquiry, isLoading } = useMutation(
+    async (args: AddInquiryPayload) =>
+      await (await client()).addInquiry(args, { type: ContentType.FormData }),
   );
 
   const onMutate = () => {
@@ -108,6 +109,7 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
         {/* Product */}
         <div className='flex w-full items-center gap-[13px] rounded-lg bg-grey-90 p-2'>
           <Image
+            unoptimized
             src={data?.images?.[0] ?? '/'}
             alt='product'
             className='rounded-lg'
@@ -192,7 +194,7 @@ Inquiry.getLayout = page => (
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
-  const { selectProduct } = client();
+  const { selectProduct } = await client();
   if (!getCookie(VARIABLES.ACCESS_TOKEN, context)) {
     {
       return {

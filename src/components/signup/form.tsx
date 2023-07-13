@@ -30,12 +30,11 @@ interface FormType extends PhoneFormType, AddressFormType, AgreementsFormType {
 
 export function SignupForm() {
   const router = useRouter();
-  // const { onCertification } = useIamport();
   const form = useForm<FormType>();
   const { handleSubmit, getValues, setError, setFocus } = form;
   const [profile, setProfile] = useState(myProfileDefaultValue);
-  const { mutateAsync: joinUser, isLoading } = useMutation((args: JoinUserPayload) =>
-    client().joinUser(args),
+  const { mutateAsync: joinUser, isLoading } = useMutation(
+    async (args: JoinUserPayload) => await (await client()).joinUser(args),
   );
   const { setAlert } = useAlertStore();
 
@@ -47,10 +46,6 @@ export function SignupForm() {
       setFocus('verificationCode');
       return;
     }
-    // if (!profile.file) {
-    //   setAlert({ message: '프로필 사진을 등록해주세요.' });
-    //   return;
-    // }
 
     joinUser({
       data: formatToBlob<JoinUserPayload['data']>(

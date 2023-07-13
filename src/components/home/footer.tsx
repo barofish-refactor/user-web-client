@@ -1,11 +1,24 @@
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { client } from 'src/api/client';
+import { queryKey } from 'src/query-key';
 import cm from 'src/utils/class-merge';
 
 /** 홈화면 - 푸터 (정보) */
 const Footer = () => {
   const [showInfo, setShowInfo] = useState<boolean>(false);
+
+  const { data: info } = useQuery(queryKey.footer, async () => {
+    const res = await (await client()).selectSiteInfo('TC_FOOTER');
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
+
   return (
     <div className='pt-[62px]'>
       <div className='h-2 bg-grey-90' />
@@ -20,6 +33,7 @@ const Footer = () => {
               (주) 맛신저 사업자정보
             </p>
             <Image
+              unoptimized
               src='/assets/icons/common/chevron-footer.svg'
               alt=''
               width={13}
@@ -28,17 +42,11 @@ const Footer = () => {
             />
           </div>
         </button>
-        {showInfo && (
+        {showInfo && info?.tcContent && (
           <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
-            <p>COMPANY : 주식회사 맛신저 (matsinger inc.)</p>
-            <p>CEO : 신용진</p>
-            <p>ADDRESS : 서울특별시 서대문구 신촌로 25 2층, 2328호</p>
-            <p>TEL : 1668-4591</p>
-            <p>FAX : 0504-366-3633</p>
-            <p>BUSINESS LICENCE : 380-88-02372</p>
-            <p>ONLINE LICENCE : 2022-서울서대문-1579</p>
-            <p>PRIVACY OFFICER : 노승우 (help@barofish.com)</p>
-            <p>운영 시간 : 9~18시 근무, 12~1시 점심시간</p>
+            {info.tcContent.map((v, i) => {
+              return <p key={i}>{`${v.title} : ${v.content}`}</p>;
+            })}
           </div>
         )}
         <div className='mt-[18px] flex items-center gap-[3px] text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>

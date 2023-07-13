@@ -17,7 +17,7 @@ const MypagePayMethod: NextPageWithLayout = () => {
   // const isEmpty = false;
 
   const { data, refetch } = useQuery(queryKey.paymentMethod, async () => {
-    const res = await client().selectPaymentMethodList();
+    const res = await (await client()).selectPaymentMethodList();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -27,7 +27,8 @@ const MypagePayMethod: NextPageWithLayout = () => {
   });
 
   const { mutateAsync: deletePaymentMethod, isLoading: isDeleteLoading } = useMutation(
-    (id: number) => client().deletePaymentMethod(id, { type: ContentType.FormData }),
+    async (id: number) =>
+      await (await client()).deletePaymentMethod(id, { type: ContentType.FormData }),
   );
 
   const onDeletePaymentMethod = (id: number) => {
@@ -82,7 +83,13 @@ function Empty() {
   return (
     <div className='grid flex-1 place-items-center'>
       <div className='flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/search/search-error.svg' alt='Empty' width={40} height={40} />
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='Empty'
+          width={40}
+          height={40}
+        />
         <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           {`둥록된 결제수단이 없습니다.\n결제수단을 추가해주세요.`}
         </p>

@@ -1,22 +1,22 @@
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
+import { StoreItem } from 'src/components/store';
+import { queryKey } from 'src/query-key';
+import { useAlertStore, useBottomConfirmStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import { FreeMode } from 'swiper';
-import { StoreItem } from 'src/components/store';
 import { formatToLocaleString } from 'src/utils/functions';
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
-import { client } from 'src/api/client';
-import { queryKey } from 'src/query-key';
-import { useInView } from 'react-intersection-observer';
-import { useAlertStore, useBottomConfirmStore } from 'src/store';
-import { getCookie } from 'cookies-next';
 import { VARIABLES } from 'src/variables';
-import { useRouter } from 'next/router';
+import { FreeMode } from 'swiper';
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const perView = 10;
 
@@ -41,7 +41,10 @@ const Store: NextPageWithLayout = () => {
   const { data, refetch, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.store.list(variables),
     async ({ pageParam = 1 }) => {
-      const res = await client().selectRecommendStoreList({
+      if (pageParam === -1) return;
+      const res = await (
+        await client()
+      ).selectRecommendStoreList({
         ...variables,
         page: pageParam,
         take: perView,
@@ -57,7 +60,7 @@ const Store: NextPageWithLayout = () => {
       staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.length !== 0 ? nextId + 1 : -1;
       },
     },
   );
@@ -65,7 +68,7 @@ const Store: NextPageWithLayout = () => {
   const { data: likedData, refetch: likedRefecth } = useQuery(
     queryKey.scrapedStore,
     async () => {
-      const res = await client().selectScrapedStore();
+      const res = await (await client()).selectScrapedStore();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -79,7 +82,8 @@ const Store: NextPageWithLayout = () => {
   );
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(
-    (args: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => client().likeStoreByUser(args),
+    async (args: { storeId: number; type: 'LIKE' | 'UNLIKE' }) =>
+      await (await client()).likeStoreByUser(args),
   );
 
   const onMutate = ({ storeId, type }: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => {
@@ -119,6 +123,7 @@ const Store: NextPageWithLayout = () => {
         </p>
         <Link href='/compare/storage'>
           <Image
+            unoptimized
             src='/assets/icons/common/bookmark-title.svg'
             alt='bookmark'
             width={24}
@@ -126,7 +131,13 @@ const Store: NextPageWithLayout = () => {
           />
         </Link>
         <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/cart-title.svg'
+            alt='cart'
+            width={22}
+            height={23}
+          />
         </Link>
       </div>
 
@@ -166,14 +177,19 @@ const Store: NextPageWithLayout = () => {
           <div className='px-4 pt-[30px]'>
             <div className='flex h-10 items-center gap-2 rounded-lg bg-grey-90 px-3'>
               <button
-                className=''
-                // onClick={() => {
-                //   if (searchText.trim() === '') return;
-                //   setSearchState('result');
-                //   handleAddKeyword(searchText);
-                // }}
+              // onClick={() => {
+              //   if (searchText.trim() === '') return;
+              //   setSearchState('result');
+              //   handleAddKeyword(searchText);
+              // }}
               >
-                <Image src='/assets/icons/common/search.svg' alt='search' width={24} height={24} />
+                <Image
+                  unoptimized
+                  src='/assets/icons/common/search.svg'
+                  alt='search'
+                  width={24}
+                  height={24}
+                />
               </button>
               <input
                 className='flex-1 bg-grey-90 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-70'

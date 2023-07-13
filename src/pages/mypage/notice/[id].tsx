@@ -24,7 +24,7 @@ const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.notice.detail(Number(id)),
     async () => {
-      const res = await client().selectNotice(Number(id));
+      const res = await (await client()).selectNotice(Number(id));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -88,7 +88,7 @@ MypageNotice.getLayout = page => (
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
-  const { selectNotice } = client();
+  const { selectNotice } = await client();
   return {
     props: { initialData: (await selectNotice(Number(id))).data.data },
   };

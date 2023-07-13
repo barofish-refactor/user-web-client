@@ -2,14 +2,19 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { client } from 'src/api/client';
+import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { formatToLocaleString, formatToPhone } from 'src/utils/functions';
+import { parsePaymentWay2 } from 'src/utils/parse';
 
 const headingClassName = 'font-bold leading-[24px] -tracking-[0.03em] text-grey-10';
 const labelClassName = 'font-medium leading-[24px] -tracking-[0.03em] text-grey-50';
 const subValueClassName = 'font-medium leading-[24px] -tracking-[0.03em] text-grey-20';
+
+const getDeliverFee = (v: OrderProductDto) =>
+  Math.ceil((v.amount ?? 0) / (v.optionItem?.maxAvailableAmount ?? 1)) * (v.deliverFee ?? 0);
 
 interface Props {
   id: string;
@@ -18,11 +23,11 @@ interface Props {
 export function MypageOrderDetail({ id }: Props) {
   const { setAlert } = useAlertStore();
 
-  const paymentMethod = '카드결제';
+  // const paymentMethod = '카드결제';
   const { data } = useQuery(
     queryKey.order.detail(id),
     async () => {
-      const res = await client().selectOrder(id);
+      const res = await (await client()).selectOrder(id);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -35,13 +40,10 @@ export function MypageOrderDetail({ id }: Props) {
       staleTime: 0,
     },
   );
-  const sectionDeliverFee = data?.productInfos
-    ?.map(
-      v =>
-        Math.ceil((v.amount ?? 0) / (v.optionItem?.maxAvailableAmount ?? 0)) *
-        ((v.deliverFee ?? 0) + (v.optionItem?.deliveryFee ?? 0)),
-    )
-    .reduce((a, b) => a + b, 0);
+
+  const totalProductPrice = data?.productInfos?.map(v => v.price ?? 0).reduce((a, b) => a + b, 0);
+
+  const sectionDeliverFee = data?.productInfos?.map(getDeliverFee).reduce((a, b) => a + b, 0);
   const totalDeliverFee = data?.productInfos
     ?.map(v =>
       v.deliverFeeType === 'FREE'
@@ -55,7 +57,7 @@ export function MypageOrderDetail({ id }: Props) {
     .reduce((a, b) => (a ?? 0) + (b ?? 0), 0);
 
   const { data: pointData } = useQuery(queryKey.pointRule, async () => {
-    const res = await client().selectPointRule();
+    const res = await (await client()).selectPointRule();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -118,6 +120,7 @@ export function MypageOrderDetail({ id }: Props) {
                     `외 ${(data?.productInfos?.length ?? 0) - 1}건`}
                 </div>
                 <Image
+                  unoptimized
                   src='/assets/icons/common/chevron-mypage.svg'
                   width={24}
                   height={24}
@@ -128,14 +131,16 @@ export function MypageOrderDetail({ id }: Props) {
             </summary>
             <article className='space-y-4 pt-[22px]'>
               {(data?.productInfos ?? []).map((v, idx) => {
-                const sectionDeliverFee =
-                  Math.ceil((v.amount ?? 0) / (v.optionItem?.maxAvailableAmount ?? 0)) *
-                  ((v.deliverFee ?? 0) + (v.optionItem?.deliveryFee ?? 0));
+                const sectionDeliverFee = getDeliverFee(v);
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
                     <div className='flex items-center justify-between'>
-                      <Link href='#' className='flex items-center gap-2'>
+                      <Link
+                        href={{ pathname: '/store/detail', query: { id: v.storeId } }}
+                        className='flex items-center gap-2'
+                      >
                         <Image
+                          unoptimized
                           className='aspect-square h-7 w-7 rounded-full border border-grey-90 object-cover'
                           width={28}
                           height={28}
@@ -162,8 +167,9 @@ export function MypageOrderDetail({ id }: Props) {
                       </div>
                     </div>
                     <div className='flex items-center gap-2.5 pt-3'>
-                      <Link href='#'>
+                      <Link href={{ pathname: '/product', query: { id: v.product?.id } }}>
                         <Image
+                          unoptimized
                           src={v.product?.image ?? ''}
                           width={70}
                           height={70}
@@ -199,7 +205,7 @@ export function MypageOrderDetail({ id }: Props) {
         <div className='flex items-center justify-between px-4 py-[22px]'>
           <h3 className={headingClassName}>결제 수단</h3>
           <p className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
-            {paymentMethod}
+            {parsePaymentWay2(data?.paymentWay)}
           </p>
         </div>
         <hr className='border-t-8 border-grey-90' />
@@ -209,7 +215,7 @@ export function MypageOrderDetail({ id }: Props) {
             <div className='flex items-center justify-between'>
               <span className={labelClassName}>주문금액</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(data?.totalAmount, { suffix: '원' })}
+                {formatToLocaleString(totalProductPrice, { suffix: '원' })}
               </span>
             </div>
             <div className='flex items-center justify-between'>

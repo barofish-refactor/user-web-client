@@ -20,7 +20,7 @@ const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.notice.lists,
     async () => {
-      const res = await client().selectNoticeList({ type: 'NOTICE' });
+      const res = await (await client()).selectNoticeList({ type: 'NOTICE' });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -66,7 +66,13 @@ function Empty() {
   return (
     <div className='grid flex-1 place-items-center'>
       <div className='flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='up'
+          width={40}
+          height={40}
+        />
         <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           {`등록된 공지사항이 없습니다.\n공지가 오면 빠르게 알려드리겠습니다. :)`}
         </p>
@@ -78,7 +84,7 @@ function Empty() {
 MypageNotices.getLayout = page => <NoticeLayout page={page} />;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectNoticeList } = client();
+  const { selectNoticeList } = await client();
   return {
     props: { initialData: (await selectNoticeList({ type: 'NOTICE' })).data.data },
   };

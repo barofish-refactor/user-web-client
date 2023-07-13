@@ -9,7 +9,13 @@ const Wating = ({ title }: Props) => {
   return (
     <div className='flex h-[calc(100dvb-112px)] items-center justify-center bg-grey-90'>
       <div className='mt-2 flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/common/alert-wating.svg' alt='' width={48} height={48} />
+        <Image
+          unoptimized
+          src='/assets/icons/common/alert-wating.svg'
+          alt=''
+          width={48}
+          height={48}
+        />
         <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
           {`${title}가 준비중입니다.`}
         </p>

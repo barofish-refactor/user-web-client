@@ -39,6 +39,7 @@ const Alert = () => {
                     }}
                   >
                     <Image
+                      unoptimized
                       src='/assets/icons/common/alert-close.svg'
                       alt='close'
                       width={30}
@@ -46,6 +47,7 @@ const Alert = () => {
                     />
                   </button>
                   <Image
+                    unoptimized
                     src='/assets/icons/common/alert-check-box.svg'
                     alt='check'
                     width={60}

@@ -1,33 +1,33 @@
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
+import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { client } from 'src/api/client';
+import {
+  type AddCompareSetPayload,
+  type CompareMain,
+  type DeleteSaveProductsPayload,
+  type SaveProductPayload,
+} from 'src/api/swagger/data-contracts';
+import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
+import { CompareNewItem } from 'src/components/compare';
+import { queryKey } from 'src/query-key';
+import { useAlertStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
 import {
   calcDiscountRate,
   formatToBlob,
   formatToLocaleString,
   setSquareBrackets,
 } from 'src/utils/functions';
-import { CompareNewItem } from 'src/components/compare';
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { queryKey } from 'src/query-key';
-import { client } from 'src/api/client';
-import { type GetServerSideProps } from 'next';
-import {
-  type DeleteSaveProductsPayload,
-  type AddCompareSetPayload,
-  type CompareMain,
-  type SaveProductPayload,
-} from 'src/api/swagger/data-contracts';
-import { useInView } from 'react-intersection-observer';
-import { useAlertStore, useToastStore } from 'src/store';
-import { ContentType } from 'src/api/swagger/http-client';
-import { useRouter } from 'next/router';
-import { getCookie } from 'cookies-next';
 import { VARIABLES } from 'src/variables';
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const perView = 10;
 
@@ -45,7 +45,8 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
   const { data, refetch, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.compareMain,
     async ({ pageParam = 1 }) => {
-      const res = await client().selectMain({ page: pageParam, take: perView });
+      if (pageParam === -1) return;
+      const res = await (await client()).selectMain({ page: pageParam, take: perView });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -56,18 +57,19 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
       // staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.newCompareProduct?.products?.length !== 0 ? nextId + 1 : -1;
       },
     },
   );
 
-  const { mutateAsync: saveProduct, isLoading } = useMutation((args: SaveProductPayload) =>
-    client().saveProduct(args, { type: ContentType.FormData }),
+  const { mutateAsync: saveProduct, isLoading } = useMutation(
+    async (args: SaveProductPayload) =>
+      await (await client()).saveProduct(args, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
-    (args: DeleteSaveProductsPayload) =>
-      client().deleteSaveProducts(args, { type: ContentType.FormData }),
+    async (args: DeleteSaveProductsPayload) =>
+      await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: SaveProductPayload, isRefetch = true) => {
@@ -98,7 +100,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
   };
 
   const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
-    (args: AddCompareSetPayload) => client().addCompareSet(args, {}),
+    async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args, {}),
   );
 
   const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
@@ -130,6 +132,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
         </p>
         <Link href='/compare/storage'>
           <Image
+            unoptimized
             src='/assets/icons/common/bookmark-title.svg'
             alt='bookmark'
             width={24}
@@ -137,7 +140,13 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
           />
         </Link>
         <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/cart-title.svg'
+            alt='cart'
+            width={22}
+            height={23}
+          />
         </Link>
       </div>
       <div className='px-4 pt-2.5'>
@@ -185,6 +194,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                     >
                       <div className='relative'>
                         <Image
+                          unoptimized
                           src={v.image ?? ''}
                           alt='product'
                           width={110}
@@ -201,6 +211,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                           }}
                         >
                           <Image
+                            unoptimized
                             alt='bookmark'
                             width={24}
                             height={24}
@@ -234,6 +245,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                         )}
                         <div className='mt-1 flex items-center gap-0.5'>
                           <Image
+                            unoptimized
                             src='/assets/icons/common/speech-bubble.svg'
                             alt='후기'
                             width={16}
@@ -285,6 +297,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
             >
               <div className='relative mt-5 aspect-square'>
                 <Image
+                  unoptimized
                   fill
                   alt='product'
                   className='rounded-lg'
@@ -294,11 +307,17 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                 />
                 <button
                   className='absolute right-2 top-3'
-                  onClick={() => {
-                    //
+                  onClick={e => {
+                    e.preventDefault();
+                    const mainData =
+                      data?.pages[0]?.recommendCompareProducts?.[refreshIndex].mainProduct;
+                    if (mainData?.isLike)
+                      onDeleteSaveProductsMutate({ data: { productIds: [mainData?.id ?? -1] } });
+                    else onMutate({ data: { productId: mainData?.id } });
                   }}
                 >
                   <Image
+                    unoptimized
                     alt='bookmark'
                     width={24}
                     height={24}
@@ -312,7 +331,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
               </div>
             </Link>
             <p className='mt-2.5 text-[16px] font-normal leading-[24px] -tracking-[0.03em] text-grey-10'>
-              {data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.title ?? ''}
+              {/* {data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.title ?? ''} */}
               {`${setSquareBrackets(
                 data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.storeName,
               )} ${data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.title}`}
@@ -328,18 +347,19 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                   %
                 </p>
               )}
-              {(data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice ??
-                0) !== 0 && (
-                <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                  data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.discountPrice,
-                )}원`}</p>
-              )}
+              <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+                data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.discountPrice,
+              )}원`}</p>
             </div>
-            <p className='-mt-0.5 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
-              data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice ?? 0,
-            )}원`}</p>
+            {(data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice ??
+              0) !== 0 && (
+              <p className='-mt-0.5 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
+                data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.originPrice ?? 0,
+              )}원`}</p>
+            )}
             <div className='mt-1 flex items-center gap-0.5'>
               <Image
+                unoptimized
                 src='/assets/icons/common/speech-bubble.svg'
                 alt='후기'
                 width={16}
@@ -369,8 +389,8 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                       className='relative aspect-square min-w-[calc((100%-12px)/3)]'
                     >
                       <Image
-                        width={110}
-                        height={110}
+                        unoptimized
+                        fill
                         src={v.image ?? ''}
                         alt='product'
                         className='aspect-square min-w-[calc((100%-12px)/3)] rounded-lg'
@@ -385,6 +405,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                         }}
                       >
                         <Image
+                          unoptimized
                           alt='bookmark'
                           width={24}
                           height={24}
@@ -404,10 +425,13 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
               className='mt-[30px] flex h-[42px] w-full items-center justify-center gap-1 rounded-lg border border-grey-70'
               onClick={() => {
                 const next = refreshIndex + 1;
-                setRefreshIndex(next === 5 ? 0 : next);
+                setRefreshIndex(
+                  next === data.pages[0]?.recommendCompareProducts?.length ? 0 : next,
+                );
               }}
             >
               <Image
+                unoptimized
                 src='/assets/icons/common/refresh-24.svg'
                 alt='refresh'
                 width={24}
@@ -421,7 +445,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                   {refreshIndex + 1}
                 </p>
                 <p className='text-[14px] font-semibold tabular-nums -tracking-[0.03em] text-grey-70'>
-                  /5
+                  {`/${data.pages[0].recommendCompareProducts.length}`}
                 </p>
               </div>
             </button>
@@ -457,7 +481,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
 Compare.getLayout = page => <Layout headerProps={{ disable: true }}>{page}</Layout>;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectMain } = client();
+  const { selectMain } = await client();
   return {
     props: { initialData: (await selectMain({ page: 1, take: perView })).data.data },
   };

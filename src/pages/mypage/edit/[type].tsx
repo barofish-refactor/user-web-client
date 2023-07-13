@@ -27,7 +27,7 @@ const MypageEditDynamic: NextPageWithLayout<Props> = ({ type }) => {
   const { setAlert } = useAlertStore();
 
   const { data: user } = useQuery(queryKey.user, async () => {
-    const res = await client().selectUserSelfInfo();
+    const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -36,8 +36,8 @@ const MypageEditDynamic: NextPageWithLayout<Props> = ({ type }) => {
     }
   });
 
-  const { mutateAsync: updateUser, isLoading } = useMutation((args: UpdateUserPayload) =>
-    client().updateUser(args),
+  const { mutateAsync: updateUser, isLoading } = useMutation(
+    async (args: UpdateUserPayload) => await (await client()).updateUser(args),
   );
 
   const onMutate = ({ data }: UpdateUserPayload) => {

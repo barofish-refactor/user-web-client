@@ -6,7 +6,7 @@ type Id = 'HTML_MARKETING' | 'HTML_PRIVACY' | 'HTML_TERM_OF_SERVICE';
 export const getServerSidePolicy = (id: Id) => {
   const getServerSideProps: GetServerSideProps = async () => {
     try {
-      const res = await client().selectSiteInfo(id);
+      const res = await (await client()).selectSiteInfo(id);
       if (res.data.isSuccess) {
         const file = res.data.data?.content;
         let content = '';

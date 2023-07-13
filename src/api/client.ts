@@ -1,11 +1,11 @@
 import { getCookie } from 'cookies-next';
 import { type OptionsType } from 'cookies-next/lib/types';
-import { Api } from 'src/api/swagger/Api';
 import { VARIABLES } from 'src/variables';
 
-export function client(args?: OptionsType & { token?: string }) {
+export async function client(args?: OptionsType & { token?: string }) {
+  const { Api } = await import('src/api/swagger/Api');
   const accessToken = getCookie(VARIABLES.ACCESS_TOKEN, args);
-  // console.log('accessToken:', accessToken);
+
   return new Api(
     accessToken
       ? {

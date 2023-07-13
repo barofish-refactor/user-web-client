@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { client } from 'src/api/client';
 import { type AddReportPayload } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
@@ -29,8 +29,9 @@ const ReviewReport: NextPageWithLayout = () => {
   const [selectedItem, setSelectedItem] = useState<number>(0);
   const [content, setContent] = useState<string>('');
 
-  const { mutateAsync: addReport, isLoading } = useMutation((args: AddReportPayload) =>
-    client().addReport(args, { type: ContentType.FormData }),
+  const { mutateAsync: addReport, isLoading } = useMutation(
+    async (args: AddReportPayload) =>
+      await (await client()).addReport(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: AddReportPayload) => {
@@ -38,6 +39,11 @@ const ReviewReport: NextPageWithLayout = () => {
     addReport({ data: formatToBlob<AddReportPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
+          setAlert({
+            message: '신고가 접수되었습니다.',
+            type: 'success',
+            onClick: () => router.back(),
+          });
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => console.log(error));

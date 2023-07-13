@@ -43,22 +43,6 @@ const InformationDefault = ({ data }: Props) => {
               data?.discountPrice,
             )}원`}</p>
           </div>
-          {/* <button
-            className='flex h-[34px] items-center justify-center rounded-lg border border-grey-80 pl-[11px] pr-[6.5px]'
-            onClick={() => {
-              //
-            }}
-          >
-            <p className='-mr-0.5 text-[12px] font-bold -tracking-[0.03em] text-grey-60'>
-              비교하기
-            </p>
-            <Image
-              src='/assets/icons/common/plus-small.svg'
-              alt='plus'
-              width={23.5}
-              height={23.5}
-            />
-          </button> */}
         </div>
       </div>
       <div className='h-[1px] bg-grey-90' />
@@ -89,13 +73,18 @@ const InformationDefault = ({ data }: Props) => {
       <div className='h-2 bg-grey-90' />
       {/* 스토어 */}
       <div className='flex items-center gap-[13px] px-4 pb-7 pt-[21px]'>
-        <Image
-          src={data?.store?.profileImage ?? '/'}
-          alt='store'
-          width={40}
-          height={40}
-          className='mb-[1px] rounded-full'
-        />
+        {data?.store?.profileImage && (
+          <Image
+            unoptimized
+            src={data?.store?.profileImage}
+            alt='store'
+            draggable={false}
+            width={40}
+            height={40}
+            className='mb-[1px] rounded-full object-cover'
+            style={{ width: '40px', height: '40px' }}
+          />
+        )}
         <div className='flex-1 flex-col gap-1'>
           <p className='text-[14px] font-bold leading-[22px] -tracking-[0.03em] text-grey-10'>
             {data?.store?.name ?? ''}

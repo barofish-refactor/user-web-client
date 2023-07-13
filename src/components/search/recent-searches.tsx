@@ -44,6 +44,7 @@ const RecentSearches = ({
                 {v}
               </p>
               <Image
+                unoptimized
                 src='/assets/icons/common/close-small.svg'
                 alt='delete'
                 width={19}

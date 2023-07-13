@@ -20,15 +20,14 @@ const ReviewAll: NextPageWithLayout = () => {
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.review.list({ id, type }),
     async ({ pageParam = 0 }) => {
+      if (pageParam === -1) return;
+      const query = {
+        page: pageParam,
+        take: perView,
+      };
       const res = await (type === 'product'
-        ? client().selectReviewListWithProductId(Number(id), {
-            page: pageParam,
-            take: perView,
-          })
-        : client().selectReviewListWithStoreId1(Number(id), {
-            page: pageParam,
-            take: perView,
-          }));
+        ? (await client()).selectReviewListWithProductId(Number(id), query)
+        : (await client()).selectReviewListWithStoreId1(Number(id), query));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -39,7 +38,7 @@ const ReviewAll: NextPageWithLayout = () => {
       // staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId : -1;
       },
     },
   );
@@ -63,31 +62,36 @@ const ReviewAll: NextPageWithLayout = () => {
       </div>
 
       {/* content */}
-      {(data?.pages ?? []).filter(x => (x?.content ?? []).length > 0).map(x => x?.content)
-        .length === 0 ? (
+      {data?.pages
+        .map(x => x?.content?.filter(v => v.images?.[0] !== ''))
+        .map(x => x?.length ?? 0)
+        .reduce((a, b) => a + b) === 0 ? (
         Empty()
       ) : (
         <div className='grid grid-cols-3 gap-[5px] p-4'>
           <Fragment>
-            {(data?.pages ?? []).map(x =>
-              (x?.content ?? []).map(v => {
-                return (
-                  <Link
-                    key={`review${v.id}`}
-                    href={{ pathname: '/store/review', query: { id: v.id } }}
-                    className=''
-                  >
-                    <Image
-                      width={110}
-                      height={110}
-                      src={v.images?.[0] ?? ''}
-                      alt='review'
-                      draggable={false}
-                      className='aspect-square w-full overflow-hidden rounded-lg object-cover'
-                    />
-                  </Link>
-                );
-              }),
+            {data?.pages?.map(x =>
+              x?.content
+                ?.filter(v => v.images?.[0] !== '')
+                .map(v => {
+                  return (
+                    <Link
+                      key={`review${v.id}`}
+                      href={{ pathname: '/store/review', query: { id: v.id } }}
+                      className=''
+                    >
+                      <Image
+                        unoptimized
+                        width={110}
+                        height={110}
+                        src={v.images?.[0] ?? ''}
+                        alt='review'
+                        draggable={false}
+                        className='aspect-square w-full overflow-hidden rounded-lg object-cover'
+                      />
+                    </Link>
+                  );
+                }),
             )}
             <div ref={ref} />
           </Fragment>
@@ -102,9 +106,15 @@ function Empty() {
     <div className='flex h-[100dvb] items-center justify-center'>
       <div className='mb-[100px] grid flex-1 place-items-center'>
         <div className='flex flex-col items-center gap-2'>
-          <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+          <Image
+            unoptimized
+            src='/assets/icons/search/search-error.svg'
+            alt='up'
+            width={40}
+            height={40}
+          />
           <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-            후기가 없습니다.
+            사진 후기가 없습니다.
           </p>
         </div>
       </div>

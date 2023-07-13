@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
+import { type Api } from 'src/api/swagger/Api';
 import { ReviewItem } from 'src/components/review';
 import { queryKey } from 'src/query-key';
 import cm from 'src/utils/class-merge';
@@ -11,6 +12,10 @@ import { formatToLocaleString } from 'src/utils/functions';
 import { FreeMode } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
+
+type Instance = InstanceType<typeof Api>;
+type RequestInstance = Instance['selectReviewListWithProductId'];
+type Variables = NonNullable<Parameters<RequestInstance>>;
 
 const perView = 10;
 
@@ -21,20 +26,24 @@ interface Props {
 
 /** 사진 후기 */
 export function ReviewPhoto({ id, type }: Props) {
+  // const queryClient = useQueryClient();
   const [selectedSort, setSelectedSort] = useState<number>(0); // 베스트순, 최신순
 
   const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.review.list({ id, type }),
     async ({ pageParam = 0 }) => {
+      if (pageParam === -1) return;
+      const variables: Variables = [
+        id,
+        {
+          page: pageParam,
+          take: perView,
+          orderType: selectedSort === 0 ? 'BEST' : 'RECENT',
+        },
+      ];
       const res = await (type === 'product'
-        ? client().selectReviewListWithProductId(id, {
-            page: pageParam,
-            take: perView,
-          })
-        : client().selectReviewListWithStoreId1(id, {
-            page: pageParam,
-            take: perView,
-          }));
+        ? (await client()).selectReviewListWithProductId(...variables)
+        : (await client()).selectReviewListWithStoreId1(...variables));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -42,10 +51,10 @@ export function ReviewPhoto({ id, type }: Props) {
       }
     },
     {
-      // staleTime: 0,
+      staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId : -1;
       },
     },
   );
@@ -70,7 +79,13 @@ export function ReviewPhoto({ id, type }: Props) {
               <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
                 전체보기
               </p>
-              <Image src='/assets/icons/common/chevron.svg' alt='chevron' width={12} height={12} />
+              <Image
+                unoptimized
+                src='/assets/icons/common/chevron.svg'
+                alt='chevron'
+                width={12}
+                height={12}
+              />
             </div>
           </Link>
         </div>
@@ -87,23 +102,26 @@ export function ReviewPhoto({ id, type }: Props) {
             paddingRight: '16px',
           }}
         >
-          {(data?.pages ?? []).map((x, i) =>
-            (x?.content ?? []).map((v, idx) => {
-              return (
-                <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
-                  <Link href={{ pathname: '/store/review', query: { id: 1 } }}>
-                    <Image
-                      width={100}
-                      height={100}
-                      src={v.images?.[0] ?? ''}
-                      alt='review'
-                      draggable={false}
-                      className='aspect-square w-full rounded-lg object-cover'
-                    />
-                  </Link>
-                </SwiperSlide>
-              );
-            }),
+          {data?.pages?.map((x, i) =>
+            x?.content
+              ?.filter(v => v.images?.[0] !== '')
+              .map((v, idx) => {
+                return (
+                  <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
+                    <Link href={{ pathname: '/store/review', query: { id: v.id } }}>
+                      <Image
+                        unoptimized
+                        width={100}
+                        height={100}
+                        src={v.images?.[0] ?? ''}
+                        alt='review'
+                        draggable={false}
+                        className='aspect-square w-full rounded-lg object-cover'
+                      />
+                    </Link>
+                  </SwiperSlide>
+                );
+              }),
           )}
         </Swiper>
       </div>
@@ -111,7 +129,7 @@ export function ReviewPhoto({ id, type }: Props) {
       {/* 후기 리스트 */}
       <div className='flex flex-col gap-[29px] px-[17px] py-5'>
         <p className='text-[14px] font-bold leading-[20px] -tracking-[0.05em] text-grey-10'>{`후기 ${formatToLocaleString(
-          data?.pages[0]?.totalPages ?? 0,
+          data?.pages[0]?.totalElements ?? 0,
         )}개`}</p>
         <div className='flex items-center gap-[9px]'>
           <button onClick={() => setSelectedSort(0)}>
@@ -164,7 +182,13 @@ function Empty() {
   return (
     <div className='my-[100px] grid flex-1 place-items-center'>
       <div className='flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='up'
+          width={40}
+          height={40}
+        />
         <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           후기가 없습니다.
         </p>

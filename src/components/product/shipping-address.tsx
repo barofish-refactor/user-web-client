@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { PatternFormat } from 'react-number-format';
 import { client } from 'src/api/client';
 import {
-  type UpdateDeliverPlacePayload,
   type AddDeliverPlacePayload,
   type AddDeliverPlaceReq,
   type DeliverPlace,
+  type UpdateDeliverPlacePayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
 import { Selector } from 'src/components/common';
@@ -40,7 +40,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
   const { setAlert } = useAlertStore();
 
   const { data: deliverPlace, refetch } = useQuery(queryKey.deliverPlace, async () => {
-    const res = await client().selectDeliverPlace();
+    const res = await (await client()).selectDeliverPlace();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -49,17 +49,19 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
     }
   });
 
-  const { mutateAsync: addDeliverPlace, isLoading } = useMutation((args: AddDeliverPlacePayload) =>
-    client().addDeliverPlace(args, { type: ContentType.FormData }),
+  const { mutateAsync: addDeliverPlace, isLoading } = useMutation(
+    async (args: AddDeliverPlacePayload) =>
+      await (await client()).addDeliverPlace(args, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: updateDeliverPlace, isLoading: isUpdateLoading } = useMutation(
-    ({ id, args }: { id: number; args: UpdateDeliverPlacePayload }) =>
-      client().updateDeliverPlace(id, args, { type: ContentType.FormData }),
+    async ({ id, args }: { id: number; args: UpdateDeliverPlacePayload }) =>
+      await (await client()).updateDeliverPlace(id, args, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: deleteDeliverPlace, isLoading: isDeleteLoading } = useMutation(
-    (args: number) => client().deleteDeliverPlace(args, { type: ContentType.FormData }),
+    async (args: number) =>
+      await (await client()).deleteDeliverPlace(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: AddDeliverPlacePayload) => {
@@ -195,6 +197,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
                         }}
                       >
                         <Image
+                          unoptimized
                           alt='check'
                           width={24}
                           height={24}
@@ -369,6 +372,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
                 }}
               >
                 <Image
+                  unoptimized
                   alt='check'
                   width={24}
                   height={24}

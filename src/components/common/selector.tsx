@@ -35,11 +35,12 @@ const Selector = ({ list, placeHolder, className, value, setValue }: Props) => {
           {value && !isOpen ? value.label : placeHolder}
         </p>
         <Image
+          unoptimized
           src='/assets/icons/common/chevron-category.svg'
           alt='chevron'
           width={23.5}
           height={24.5}
-          className={cm('', { 'rotate-180': !isOpen })}
+          className={cm({ 'rotate-180': !isOpen })}
           draggable={false}
         />
       </button>

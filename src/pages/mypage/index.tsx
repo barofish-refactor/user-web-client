@@ -10,6 +10,7 @@ import Layout from 'src/components/common/layout';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
+import cm from 'src/utils/class-merge';
 import { formatToLocaleString } from 'src/utils/functions';
 
 /** 마이페이지 */
@@ -21,7 +22,7 @@ const MyPage: NextPageWithLayout = () => {
   const { data: user } = useQuery(
     queryKey.user,
     async () => {
-      const res = await client().selectUserSelfInfo();
+      const res = await (await client()).selectUserSelfInfo();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -41,9 +42,9 @@ const MyPage: NextPageWithLayout = () => {
   const { data: banner } = useQuery(
     queryKey.banner,
     async () => {
-      const res = await client().selectBannerList();
+      const res = await (await client()).selectMyPageBanner();
       if (res.data.isSuccess) {
-        return res.data.data?.filter(x => x.type === 'MY_PAGE');
+        return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
       }
@@ -63,7 +64,7 @@ const MyPage: NextPageWithLayout = () => {
   return (
     <div className='max-md:w-[100vw]'>
       <div className='flex items-center justify-between px-4 pt-6'>
-        <div className='flex flex-col gap-1'>
+        <div className='flex flex-col items-start gap-1'>
           <Link href='/mypage/info' className='flex items-center'>
             <span
               className={clsx(
@@ -82,6 +83,7 @@ const MyPage: NextPageWithLayout = () => {
               {user?.nickname}
             </p>
             <Image
+              unoptimized
               src='/assets/icons/common/chevron-category.svg'
               alt='chevron'
               width={24}
@@ -99,6 +101,7 @@ const MyPage: NextPageWithLayout = () => {
           </div>
         </div>
         <Image
+          unoptimized
           alt='profile'
           width={54}
           height={54}
@@ -141,42 +144,29 @@ const MyPage: NextPageWithLayout = () => {
       {banner && banner.length > 0 && (
         <div className='p-4'>
           <button
-            className='relative flex h-[140px] w-full flex-col items-start justify-between overflow-hidden rounded-lg bg-grey-10 px-4 pb-4 pt-6 text-start shadow-[0px_4px_10px_rgba(0,0,0,0.08)]'
-            onClick={() => {
-              switch (banner[0].type) {
-                case 'CURATION':
-                  router.push({
-                    pathname: '/search/product-result',
-                    query: {
-                      type: 'curation',
-                      id: banner[0].curationId,
-                      title: banner[0].curationName,
-                    },
-                  });
-                  break;
-                // case 'CATEGORY':
-                //   router.push({
-                //     pathname: '/search/product-result',
-                //     query: {
-                //       type: 'category',
-                //       id: banner[0].categoryId,
-                //       subItemId: banner[0].categoryId,
-                //       // title: banner[0].category?.name,
-                //     },
-                //   });
-                //   break;
-                case 'NOTICE':
-                  router.push({
-                    pathname: '/mypage/notice/[id]',
-                    query: { id: banner[0].noticeId },
-                  });
-                  break;
-                default:
-                  break;
+            className={cm(
+              'relative flex h-[140px] w-full flex-col items-start justify-between overflow-hidden rounded-lg px-4 pb-4 pt-6 text-start shadow-[0px_4px_10px_rgba(0,0,0,0.08)]',
+              banner[0].link && banner[0].link.length > 0 ? 'cursor-pointer' : 'cursor-default',
+            )}
+            onClick={e => {
+              if (banner[0].link && banner[0].link.length > 0) {
+                if (window.ReactNativeWebView) {
+                  e.preventDefault();
+                  window.ReactNativeWebView.postMessage(
+                    JSON.stringify({ type: 'link', url: `${banner[0].link}` }),
+                  );
+                } else {
+                  return window.open(`${banner[0].link}`, '_blank');
+                }
+                return;
               }
             }}
           >
             <Image
+              unoptimized
+              fill
+              priority
+              draggable={false}
               src={banner[0].image ?? ''}
               alt=''
               className='aspect-[343/140] w-full object-cover'
@@ -219,7 +209,13 @@ function NavLink({ href, children }: { href?: LinkProps['href']; children?: Reac
   const innerElement = (
     <>
       {children}
-      <Image src='/assets/icons/common/chevron-mypage.svg' alt='chevron' width={24} height={24} />
+      <Image
+        unoptimized
+        src='/assets/icons/common/chevron-mypage.svg'
+        alt='chevron'
+        width={24}
+        height={24}
+      />
     </>
   );
 

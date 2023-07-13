@@ -30,7 +30,7 @@ const BottomSheet = ({}: Props) => {
   const { data: optionData, isLoading } = useQuery(
     queryKey.option.list(productOption?.data?.id),
     async () => {
-      const res = await client().selectProductOptionList(productOption?.data?.id ?? -1);
+      const res = await (await client()).selectProductOptionList(productOption?.data?.id ?? -1);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -45,7 +45,9 @@ const BottomSheet = ({}: Props) => {
   const { data: selectProductOtherCustomerBuy } = useQuery(
     queryKey.orderRecommend.list(productOption?.data?.id),
     async () => {
-      const res = await client().selectProductOtherCustomerBuy({
+      const res = await (
+        await client()
+      ).selectProductOtherCustomerBuy({
         ids: productOption?.data?.id?.toString() ?? '',
       });
       if (res.data.isSuccess) {
@@ -60,7 +62,8 @@ const BottomSheet = ({}: Props) => {
   );
 
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
-    (args: AddBasketPayload) => client().addBasket(args, { type: ContentType.FormData }),
+    async (args: AddBasketPayload) =>
+      await (await client()).addBasket(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: AddBasketPayload) => {
@@ -258,7 +261,9 @@ const BottomSheet = ({}: Props) => {
                             <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                               {`${v.name}`}{' '}
                               {v.additionalPrice !== 0 &&
-                                `(+${formatToLocaleString(v.additionalPrice)}원)`}
+                                `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
+                                  v.additionalPrice,
+                                )}원)`}
                             </p>
                             <button
                               className=''
@@ -267,6 +272,7 @@ const BottomSheet = ({}: Props) => {
                               }}
                             >
                               <Image
+                                unoptimized
                                 src='/assets/icons/common/close-small-grey.svg'
                                 alt='close'
                                 width={19}
@@ -278,6 +284,7 @@ const BottomSheet = ({}: Props) => {
                             <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
                               <button className='' onClick={() => onPressMinus(v)}>
                                 <Image
+                                  unoptimized
                                   src='/assets/icons/product/product-minus.svg'
                                   alt='minus'
                                   width={24}
@@ -289,6 +296,7 @@ const BottomSheet = ({}: Props) => {
                               </p>
                               <button className='' onClick={() => onPressPlus(v)}>
                                 <Image
+                                  unoptimized
                                   src='/assets/icons/product/product-plus.svg'
                                   alt='minus'
                                   width={24}
@@ -350,6 +358,7 @@ const BottomSheet = ({}: Props) => {
               <div className='flex w-full flex-col px-4 pb-9'>
                 <div className='flex items-center gap-3'>
                   <Image
+                    unoptimized
                     src={productOption.data?.image ?? ''}
                     alt='image'
                     width={50}
@@ -373,6 +382,7 @@ const BottomSheet = ({}: Props) => {
                 ) : (
                   <div className='flex h-[252px] flex-col items-center justify-center'>
                     <Image
+                      unoptimized
                       src='/assets/icons/search/search-error.svg'
                       alt='up'
                       width={40}

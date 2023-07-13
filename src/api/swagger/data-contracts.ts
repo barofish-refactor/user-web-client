@@ -333,6 +333,8 @@ export interface Product {
   descriptionImages?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
+  /** @format float */
+  pointRate?: number;
   /** @format int32 */
   representOptionItemId?: number;
   /** @format int32 */
@@ -341,45 +343,10 @@ export interface Product {
   /** @format date-time */
   createdAt?: string;
   reviews?: Review[];
-  productType?: ProductType;
   /** @format int32 */
   deliveryFee?: number;
-  productLocation?: ProductLocation;
-  productProcess?: ProductProcess;
-  productUsage?: ProductUsage;
-  productStorage?: ProductStorage;
   /** @format int32 */
   categoryId?: number;
-}
-
-export interface ProductLocation {
-  /** @format int32 */
-  id?: number;
-  field?: string;
-}
-
-export interface ProductProcess {
-  /** @format int32 */
-  id?: number;
-  field?: string;
-}
-
-export interface ProductStorage {
-  /** @format int32 */
-  id?: number;
-  field?: string;
-}
-
-export interface ProductType {
-  /** @format int32 */
-  id?: number;
-  field?: string;
-}
-
-export interface ProductUsage {
-  /** @format int32 */
-  id?: number;
-  field?: string;
 }
 
 export interface Review {
@@ -394,8 +361,9 @@ export interface Review {
   /** @format int32 */
   userId?: number;
   user?: User;
-  order?: Orders;
-  orderId?: string;
+  orderProductInfo?: OrderProductInfo;
+  /** @format int32 */
+  orderProductInfoId?: number;
   images?: string;
   content?: string;
   /** @format date-time */
@@ -633,19 +601,26 @@ export interface SetMainPartnerReq {
 
 export interface SiteInfoReq {
   content?: string;
+  tcContent?: TitleContentReq[];
 }
 
-export interface CustomResponseSiteInformation {
+export interface TitleContentReq {
+  title?: string;
+  content?: string;
+}
+
+export interface CustomResponseSiteInfoDto {
   isSuccess?: boolean;
   code?: string;
-  data?: SiteInformation;
+  data?: SiteInfoDto;
   errorMsg?: string;
 }
 
-export interface SiteInformation {
+export interface SiteInfoDto {
   id?: string;
   description?: string;
   content?: string;
+  tcContent?: TitleContentReq[];
 }
 
 export interface ProcessSettleReq {
@@ -797,7 +772,8 @@ export interface ReviewAddReq {
   productId?: number;
   /** @format int32 */
   userId?: number;
-  orderId?: string;
+  /** @format int32 */
+  orderProductInfoId?: number;
   evaluations?: ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[];
   content?: string;
 }
@@ -974,11 +950,6 @@ export interface SimpleProductDto {
   descriptionImages?: string[];
   /** @format int32 */
   expectedDeliverDay?: number;
-  type?: ProductType;
-  location?: ProductLocation;
-  process?: ProductProcess;
-  usage?: ProductUsage;
-  storage?: ProductStorage;
   /** @format int32 */
   representOptionItemId?: number;
   needTaxation?: boolean;
@@ -993,6 +964,11 @@ export interface SimpleProductDto {
   /** @format int32 */
   reviewCount?: number;
   inquiries?: InquiryDto[];
+}
+
+export interface UpdateStateProductsReq {
+  productIds?: number[];
+  isActive?: boolean;
 }
 
 export interface OptionAddReq {
@@ -1038,45 +1014,6 @@ export interface ProductAddReq {
   searchFilterFieldIds?: number[];
   options?: OptionAddReq[];
   filterValues?: ProductFilterValueReq[];
-}
-
-export interface AddProductInfoReq {
-  field?: string;
-}
-
-export interface CustomResponseProductUsage {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductUsage;
-  errorMsg?: string;
-}
-
-export interface CustomResponseProductType {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductType;
-  errorMsg?: string;
-}
-
-export interface CustomResponseProductStorage {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductStorage;
-  errorMsg?: string;
-}
-
-export interface CustomResponseProductProcess {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductProcess;
-  errorMsg?: string;
-}
-
-export interface CustomResponseProductLocation {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductLocation;
-  errorMsg?: string;
 }
 
 export interface OrderProductReq {
@@ -1212,6 +1149,10 @@ export interface OrderProductDto {
   price?: number;
   /** @format int32 */
   amount?: number;
+  deliverCompany?: string;
+  invoiceCode?: string;
+  cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
+  cancelReasonContent?: string;
   isReviewWritten?: boolean;
 }
 
@@ -1298,8 +1239,6 @@ export interface Inquiry {
   answer?: string;
   /** @format date-time */
   answeredAt?: string;
-  /** @format date-time */
-  answetedAt?: string;
 }
 
 export interface AddGradeReq {
@@ -1564,6 +1503,67 @@ export interface CustomResponseListBannerDto {
   errorMsg?: string;
 }
 
+export interface UpdateAdminReq {
+  password?: string;
+  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
+  name?: string;
+  tel?: string;
+  accessUser?: boolean;
+  accessProduct?: boolean;
+  accessOrder?: boolean;
+  accessSettlement?: boolean;
+  accessBoard?: boolean;
+  accessPromotion?: boolean;
+  accessSetting?: boolean;
+}
+
+export interface Admin {
+  /** @format int32 */
+  id?: number;
+  loginId?: string;
+  password?: string;
+  authority?: 'MASTER' | 'MANAGER';
+  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
+  name?: string;
+  tel?: string;
+  /** @format date-time */
+  createdAt?: string;
+  adminAuth?: AdminAuth;
+}
+
+export interface AdminAuth {
+  /** @format int32 */
+  adminId?: number;
+  accessUser?: boolean;
+  accessProduct?: boolean;
+  accessOrder?: boolean;
+  accessSettlement?: boolean;
+  accessBoard?: boolean;
+  accessPromotion?: boolean;
+  accessSetting?: boolean;
+}
+
+export interface CustomResponseAdmin {
+  isSuccess?: boolean;
+  code?: string;
+  data?: Admin;
+  errorMsg?: string;
+}
+
+export interface AddAdminReq {
+  loginId?: string;
+  password?: string;
+  name?: string;
+  tel?: string;
+  accessUser?: boolean;
+  accessProduct?: boolean;
+  accessOrder?: boolean;
+  accessSettlement?: boolean;
+  accessBoard?: boolean;
+  accessPromotion?: boolean;
+  accessSetting?: boolean;
+}
+
 export interface CustomResponseString {
   isSuccess?: boolean;
   code?: string;
@@ -1663,13 +1663,6 @@ export interface CustomResponseLong {
   errorMsg?: string;
 }
 
-export interface CustomResponseListInteger {
-  isSuccess?: boolean;
-  code?: string;
-  data?: number[];
-  errorMsg?: string;
-}
-
 export interface CustomResponseListTip {
   isSuccess?: boolean;
   code?: string;
@@ -1750,10 +1743,10 @@ export interface PageStoreDto {
   empty?: boolean;
 }
 
-export interface CustomResponseListSiteInformation {
+export interface CustomResponseListSiteInfoDto {
   isSuccess?: boolean;
   code?: string;
-  data?: SiteInformation[];
+  data?: SiteInfoDto[];
   errorMsg?: string;
 }
 
@@ -2018,41 +2011,6 @@ export interface PageSimpleProductDto {
   empty?: boolean;
 }
 
-export interface CustomResponseListProductUsage {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductUsage[];
-  errorMsg?: string;
-}
-
-export interface CustomResponseListProductType {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductType[];
-  errorMsg?: string;
-}
-
-export interface CustomResponseListProductStorage {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductStorage[];
-  errorMsg?: string;
-}
-
-export interface CustomResponseListProductProcess {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductProcess[];
-  errorMsg?: string;
-}
-
-export interface CustomResponseListProductLocation {
-  isSuccess?: boolean;
-  code?: string;
-  data?: ProductLocation[];
-  errorMsg?: string;
-}
-
 export interface CustomResponsePointRuleRes {
   isSuccess?: boolean;
   code?: string;
@@ -2255,11 +2213,6 @@ export interface CustomResponseFilter {
 
 export interface Filter {
   categories?: Category[];
-  types?: ProductType[];
-  locations?: ProductLocation[];
-  processes?: ProductProcess[];
-  storages?: ProductStorage[];
-  usages?: ProductUsage[];
 }
 
 export interface CustomResponseListDeliverPlace {
@@ -2415,19 +2368,6 @@ export interface CustomResponseListCoupon {
   errorMsg?: string;
 }
 
-export interface CompareSetDto {
-  /** @format int32 */
-  compareSetId?: number;
-  products?: ProductListDto[];
-}
-
-export interface CustomResponseListCompareSetDto {
-  isSuccess?: boolean;
-  code?: string;
-  data?: CompareSetDto[];
-  errorMsg?: string;
-}
-
 export interface CompareProductDto {
   /** @format int32 */
   id?: number;
@@ -2437,7 +2377,7 @@ export interface CompareProductDto {
   /** @format int32 */
   originPrice?: number;
   /** @format int32 */
-  discountRate?: number;
+  discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
   compareFilters?: CompareFilterDto[];
@@ -2453,6 +2393,19 @@ export interface CustomResponseListCompareProductDto {
   isSuccess?: boolean;
   code?: string;
   data?: CompareProductDto[];
+  errorMsg?: string;
+}
+
+export interface CompareSetDto {
+  /** @format int32 */
+  compareSetId?: number;
+  products?: ProductListDto[];
+}
+
+export interface CustomResponseListCompareSetDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: CompareSetDto[];
   errorMsg?: string;
 }
 
@@ -2552,19 +2505,34 @@ export interface PageBannerDto {
   empty?: boolean;
 }
 
-export interface CustomResponseObject {
+export interface CustomResponsePageAdmin {
   isSuccess?: boolean;
   code?: string;
-  data?: object;
+  data?: PageAdmin;
   errorMsg?: string;
+}
+
+export interface PageAdmin {
+  /** @format int32 */
+  totalPages?: number;
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  size?: number;
+  content?: Admin[];
+  /** @format int32 */
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
+  empty?: boolean;
 }
 
 export interface DeleteReportReq {
   reportIds?: number[];
-}
-
-export interface DeleteProductInfoReq {
-  ids?: number[];
 }
 
 export interface CurationDeleteProductReq {
@@ -2785,7 +2753,7 @@ export interface UpdateSiteInfoPayload {
   data: SiteInfoReq;
 }
 
-export type UpdateSiteInfoData = CustomResponseSiteInformation;
+export type UpdateSiteInfoData = CustomResponseSiteInfoDto;
 
 export interface ProcessSettleByAdminPayload {
   data: ProcessSettleReq;
@@ -2837,7 +2805,7 @@ export type LikeReviewByUserData = CustomResponseBoolean;
 
 export interface AddReviewByUserPayload {
   data: ReviewAddReq;
-  images: File[];
+  images?: File[];
 }
 
 export type AddReviewByUserData = CustomResponseReviewDto;
@@ -2862,6 +2830,12 @@ export interface UpdateProductPayload {
 
 export type UpdateProductData = CustomResponseSimpleProductDto;
 
+export interface UpdateStateProductsPayload {
+  data: UpdateStateProductsReq;
+}
+
+export type UpdateStateProductsData = CustomResponseBoolean;
+
 export type LikeProductByUserData = CustomResponseBoolean;
 
 export interface AddProductPayload {
@@ -2870,66 +2844,6 @@ export interface AddProductPayload {
 }
 
 export type AddProductData = CustomResponseSimpleProductDto;
-
-export interface UpdateProductUsagePayload {
-  data: AddProductInfoReq;
-}
-
-export type UpdateProductUsageData = CustomResponseProductUsage;
-
-export interface AddProductUsagePayload {
-  data: AddProductInfoReq;
-}
-
-export type AddProductUsageData = CustomResponseProductUsage;
-
-export interface UpdateProductTypePayload {
-  data: AddProductInfoReq;
-}
-
-export type UpdateProductTypeData = CustomResponseProductType;
-
-export interface AddProductTypePayload {
-  data: AddProductInfoReq;
-}
-
-export type AddProductTypeData = CustomResponseProductType;
-
-export interface UpdateProductStoragePayload {
-  data: AddProductInfoReq;
-}
-
-export type UpdateProductStorageData = CustomResponseProductStorage;
-
-export interface AddProductStoragePayload {
-  data: AddProductInfoReq;
-}
-
-export type AddProductStorageData = CustomResponseProductStorage;
-
-export interface UpdateProductProcessPayload {
-  data: AddProductInfoReq;
-}
-
-export type UpdateProductProcessData = CustomResponseProductProcess;
-
-export interface AddProductProcessPayload {
-  data: AddProductInfoReq;
-}
-
-export type AddProductProcessData = CustomResponseProductProcess;
-
-export interface UpdateProductLocationPayload {
-  data: AddProductInfoReq;
-}
-
-export type UpdateProductLocationData = CustomResponseProductLocation;
-
-export interface AddProductLocationPayload {
-  data: AddProductInfoReq;
-}
-
-export type AddProductLocationData = CustomResponseProductLocation;
 
 export type CancelOrderData = CustomResponseBoolean;
 
@@ -2952,6 +2866,8 @@ export type ProcessDeliverStartData = CustomResponseBoolean;
 export type DeliverReadyData = CustomResponseBoolean;
 
 export type ConfirmOrderProductData = CustomResponseBoolean;
+
+export type ConfirmDepositData = CustomResponseBoolean;
 
 export interface RequestChangeProductPayload {
   data: RequestChangeProduct;
@@ -3011,6 +2927,31 @@ export interface AddGradePayload {
 
 export type AddGradeData = CustomResponseGrade;
 
+export type GithubWebhookCallbackPayload = string;
+
+export type GithubWebhookCallbackData = boolean;
+
+export interface UploadProductExcelPayload {
+  /** @format binary */
+  file: File;
+}
+
+export type UploadProductExcelData = CustomResponseBoolean;
+
+export interface UploadPartnerExcelPayload {
+  /** @format binary */
+  file: File;
+}
+
+export type UploadPartnerExcelData = CustomResponseBoolean;
+
+export interface TestPayload {
+  /** @format binary */
+  file?: File;
+}
+
+export type TestData = CustomResponseBoolean;
+
 export interface UpdateDeliverPlacePayload {
   data: AddDeliverPlaceReq;
 }
@@ -3048,11 +2989,11 @@ export type SortCurationData = CustomResponseListCurationDto;
 
 export interface CreateCurationPayload {
   /** @format binary */
-  image: File;
-  shortName: string;
-  title: string;
-  description: string;
-  type: 'SQUARE' | 'S_SLIDER' | 'L_SLIDER';
+  image?: File;
+  shortName?: string;
+  title?: string;
+  description?: string;
+  type?: 'SQUARE' | 'S_SLIDER' | 'L_SLIDER';
 }
 
 export type CreateCurationData = CustomResponseCuration;
@@ -3173,6 +3114,12 @@ export interface CreateBannerPayload {
 
 export type CreateBannerData = CustomResponseBannerDto;
 
+export interface UpdateAdminByMasterPayload {
+  data: UpdateAdminReq;
+}
+
+export type UpdateAdminByMasterData = CustomResponseAdmin;
+
 export interface LoginAdminPayload {
   loginId: string;
   password: string;
@@ -3180,11 +3127,17 @@ export interface LoginAdminPayload {
 
 export type LoginAdminData = CustomResponseJwt;
 
+export interface AddAdminByMasterPayload {
+  data: AddAdminReq;
+}
+
+export type AddAdminByMasterData = CustomResponseAdmin;
+
 export type VerifyCodeWithImpUidData = CustomResponseString;
 
 export type WhoamiData = CustomResponseString;
 
-export type TestData = CustomResponsePageUserInfoDto;
+export type Test1Data = CustomResponsePageUserInfoDto;
 
 export type SelectPaymentMethodListData = CustomResponseListPaymentMethodDto;
 
@@ -3206,13 +3159,11 @@ export type DeleteTopBarData = CustomResponseBoolean;
 
 export type SelectTopBarCountData = CustomResponseLong;
 
-export type Test1Data = CustomResponseListInteger;
-
 export type SelectTipListData = CustomResponseListTip;
 
 export type SelectTipData = CustomResponseTip;
 
-export type DeleteTipData = CustomResponseObject;
+export type DeleteTipData = CustomResponseBoolean;
 
 export type SelectTipList1Data = CustomResponsePageTip;
 
@@ -3232,9 +3183,9 @@ export type SelectStoreByAdmin1Data = CustomResponseStoreDto;
 
 export type SelectMainStoreData = CustomResponseStoreDto;
 
-export type SelectSiteInfoData = CustomResponseSiteInformation;
+export type SelectSiteInfoData = CustomResponseSiteInfoDto;
 
-export type SelectSiteInfoListData = CustomResponseListSiteInformation;
+export type SelectSiteInfoListData = CustomResponseListSiteInfoDto;
 
 export type SelectSettlementOrderListData = CustomResponsePageOrderProductInfoDto;
 
@@ -3288,18 +3239,6 @@ export type SelectProductCountByUserData = CustomResponseLong;
 
 export type SelectProductListData = CustomResponsePageSimpleProductDto;
 
-export type SelectUsageListData = CustomResponseListProductUsage;
-
-export type SelectTypeListData = CustomResponseListProductType;
-
-export type SelectStorageListData = CustomResponseListProductStorage;
-
-export type SelectProcessListData = CustomResponseListProductProcess;
-
-export type SelectLocationListData = CustomResponseListProductLocation;
-
-export type PaymentTestData = CustomResponseBoolean;
-
 export type SelectOrderData = CustomResponseOrderDto;
 
 export type SelectProductOtherCustomerBuyData = CustomResponseListProductListDto;
@@ -3327,6 +3266,8 @@ export type SelectNoticeListByAdminData = CustomResponsePageNotice;
 export type SelectNoticeListData = CustomResponseListNotice;
 
 export type SelectMainItemsData = CustomResponseMain;
+
+export type SelectMainCurationListData = CustomResponseListCurationDto;
 
 export type SelectInquiryData = CustomResponseInquiryDto;
 
@@ -3362,8 +3303,6 @@ export type SelectCouponData = CustomResponseCoupon;
 
 export type DeleteCouponData = CustomResponseBoolean;
 
-export type TestCouponData = CustomResponseBoolean;
-
 export type SelectCouponListByAdminData = CustomResponsePageCoupon;
 
 export type SelectDownloadedCouponData = CustomResponseListCoupon;
@@ -3372,7 +3311,7 @@ export type SelectCanUseCouponData = CustomResponseListCoupon;
 
 export type SelectCanDownloadCouponData = CustomResponseListCoupon;
 
-export type Test2Data = CustomResponseListCompareSetDto;
+export type Test2Data = CustomResponseBoolean;
 
 export type SelectCompareSetData = CustomResponseListCompareProductDto;
 
@@ -3416,6 +3355,12 @@ export type SelectBannerListByAdminData = CustomResponsePageBannerDto;
 
 export type SelectBannerListData = CustomResponseListBannerDto;
 
+export type SelectAdminData = CustomResponseAdmin;
+
+export type SelectAdminMyInfoData = CustomResponseAdmin;
+
+export type SelectAdminListData = CustomResponsePageAdmin;
+
 export type DeleteSearchFilterFieldData = CustomResponseBoolean;
 
 export interface DeleteReportsPayload {
@@ -3423,36 +3368,6 @@ export interface DeleteReportsPayload {
 }
 
 export type DeleteReportsData = CustomResponseBoolean;
-
-export interface DeleteProductUsagesPayload {
-  data: DeleteProductInfoReq;
-}
-
-export type DeleteProductUsagesData = CustomResponseBoolean;
-
-export interface DeleteProductTypesPayload {
-  data: DeleteProductInfoReq;
-}
-
-export type DeleteProductTypesData = CustomResponseBoolean;
-
-export interface DeleteProductStoragesPayload {
-  data: DeleteProductInfoReq;
-}
-
-export type DeleteProductStoragesData = CustomResponseBoolean;
-
-export interface DeleteProductProcesssPayload {
-  data: DeleteProductInfoReq;
-}
-
-export type DeleteProductProcesssData = CustomResponseBoolean;
-
-export interface DeleteProductLocationsPayload {
-  data: DeleteProductInfoReq;
-}
-
-export type DeleteProductLocationsData = CustomResponseBoolean;
 
 export type DeleteDeliverPlaceData = CustomResponseBoolean;
 

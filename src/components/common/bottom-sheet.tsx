@@ -9,8 +9,17 @@ import cm from 'src/utils/class-merge';
 import useClickAway from 'src/utils/use-click-away';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { type Api } from 'src/api/swagger/Api';
 
 import 'swiper/css';
+
+type Instance = InstanceType<typeof Api>;
+type selectProductCountByUserRequestInstance = Instance['selectProductCountByUser'];
+type selectTopBarCountRequestInstance = Instance['selectTopBarCount'];
+type selectProductCountByUserVariables = NonNullable<
+  Parameters<selectProductCountByUserRequestInstance>
+>;
+type selectTopBarCountVariables = NonNullable<Parameters<selectTopBarCountRequestInstance>>;
 
 /** 필터 BottomSheet */
 const BottomSheet = () => {
@@ -19,14 +28,14 @@ const BottomSheet = () => {
   const { setAlert } = useAlertStore();
   const { filter, type, setFilter, isOpen, setIsOpen } = useFilterStore();
 
-  const [selectedTab, setSelectedTab] = useState<number>(type.type === 'category' ? 1 : 0);
+  const [selectedTab, setSelectedTab] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<indexFilterType[]>([]);
   const [savedFilter, setSavedFilter] = useState<number[]>();
 
   const { data: filterData } = useQuery(
     queryKey.filters.lists,
     async () => {
-      const res = await client().selectSearchFilterList();
+      const res = await (await client()).selectSearchFilterList();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -40,27 +49,24 @@ const BottomSheet = () => {
     },
   );
 
+  const variables: selectProductCountByUserVariables | selectTopBarCountVariables = [
+    {
+      filterFieldIds: savedFilter?.join(','),
+      categoryIds: type.type === 'category' ? type.id?.toString() : undefined,
+      storeId: type.type === 'store' ? type.id : undefined,
+      curationId: type.type === 'curation' ? type.id : undefined,
+    },
+  ];
+
   const { data: productCount } = useQuery(
     queryKey.filterCount.list({
       ...type,
-      ...{
-        filterFieldIds: savedFilter?.join(','),
-        categoryIds: type.type === 'category' ? type.id?.toString() : undefined,
-        storeId: type.type === 'store' ? type.id : undefined,
-        curationId: type.type === 'curation' ? type.id : undefined,
-      },
+      ...variables,
     }),
     async () => {
       const res = await (type.type === 'topBar'
-        ? client().selectTopBarCount(type.id ?? 0, {
-            filterFieldIds: savedFilter?.join(','),
-          })
-        : client().selectProductCountByUser({
-            filterFieldIds: savedFilter?.join(','),
-            categoryIds: type.type === 'category' ? type.id?.toString() : undefined,
-            storeId: type.type === 'store' ? type.id : undefined,
-            curationId: type.type === 'curation' ? type.id : undefined,
-          }));
+        ? (await client()).selectTopBarCount(type.id ?? 0, ...variables)
+        : (await client()).selectProductCountByUser(...variables));
 
       if (res.data.isSuccess) {
         return res.data.data;
@@ -94,7 +100,7 @@ const BottomSheet = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      setSelectedTab(type.type === 'category' ? 1 : 0);
+      setSelectedTab(0);
     } else {
       document.body.style.overflow = 'overlay';
     }
@@ -109,12 +115,6 @@ const BottomSheet = () => {
       setSelectedTab(0);
     }
   }, [filter, isOpen]);
-
-  useEffect(() => {
-    if (type.type === 'category') {
-      setSelectedTab(1);
-    }
-  }, [type]);
 
   return (
     <div role='navigation' className='sticky top-0 z-[150] w-full'>
@@ -218,6 +218,7 @@ const BottomSheet = () => {
                         {v.text}
                       </p>
                       <Image
+                        unoptimized
                         src='/assets/icons/common/close-small.svg'
                         alt='delete'
                         width={19}
@@ -236,6 +237,7 @@ const BottomSheet = () => {
                 }}
               >
                 <Image
+                  unoptimized
                   src='/assets/icons/common/refresh.svg'
                   alt='refresh'
                   width={15}

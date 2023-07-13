@@ -35,6 +35,8 @@ const getOrderKey = () => {
 export const queryKey = {
   /** 메인 */
   main: ['main'],
+  /** 메인/큐레이션 */
+  mainCuration: ['mainCuration'],
   /** 카테고리 */
   category: ['category'],
   /** 알아두면 좋은 정보 */
@@ -45,6 +47,8 @@ export const queryKey = {
   search: getQueryKeys('search'),
   /** 큐레이션 */
   curationList: ['curationList'],
+  /** 큐레이션 */
+  curation: getQueryKeys('curation'),
   /** 주문 */
   order: getOrderKey(),
   /** 적립금 혜택 정보 */
@@ -103,6 +107,10 @@ export const queryKey = {
   recent: getQueryKeys('recent'),
   /** 배송 */
   deliverInfo: ['deliverInfo'],
+  /** 카카오 문의 */
+  kakao: ['kakao'],
+  /** 푸터 정보 */
+  footer: ['footer'],
   /** 결제수단 */
   paymentMethod: ['paymentMethod'],
 };

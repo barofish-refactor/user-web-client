@@ -27,14 +27,20 @@ const CurationItem = ({ data, className, showViewAll = true }: Props) => {
             className=''
             href={{
               pathname: '/search/product-result',
-              query: { type: 'curation', id: data.id, title: data.title },
+              query: { type: 'curation', id: data.id },
             }}
           >
             <div className='flex h-[30px] items-center gap-1'>
               <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
                 전체보기
               </p>
-              <Image src='/assets/icons/common/chevron.svg' alt='chevron' width={12} height={12} />
+              <Image
+                unoptimized
+                src='/assets/icons/common/chevron.svg'
+                alt='chevron'
+                width={12}
+                height={12}
+              />
             </div>
           </Link>
         )}
@@ -43,11 +49,11 @@ const CurationItem = ({ data, className, showViewAll = true }: Props) => {
         {data.description}
       </p>
       {data.type === 'SQUARE' ? (
-        <HomeTableCuration data={data.products ?? []} />
+        <HomeTableCuration data={data.products?.filter(x => x.state === 'ACTIVE') ?? []} />
       ) : data.type === 'S_SLIDER' ? (
-        <HomeSmallSlideCuration data={data.products ?? []} />
+        <HomeSmallSlideCuration data={data.products?.filter(x => x.state === 'ACTIVE') ?? []} />
       ) : (
-        <HomeLargeSlideCuration data={data.products ?? []} />
+        <HomeLargeSlideCuration data={data.products?.filter(x => x.state === 'ACTIVE') ?? []} />
       )}
     </div>
   );

@@ -2,9 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
-import { type CompareProductDto } from 'src/api/swagger/data-contracts';
+import { type CompareFilterDto, type CompareProductDto } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -13,8 +13,6 @@ import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { calcDiscountRate, formatToLocaleString } from 'src/utils/functions';
 
-const compareList = ['구분', '지역', '가공', '용도', '보관'];
-
 /** 비교하기 상세 */
 const CompareDetail: NextPageWithLayout = () => {
   const router = useRouter();
@@ -22,10 +20,13 @@ const CompareDetail: NextPageWithLayout = () => {
   // const { setAlert } = useAlertStore();
   const [selectedTag, setSelectedTag] = useState<number[]>([]);
 
-  const { data: set } = useQuery(
+  // const compareList = ['구분', '지역', '가공', '용도', '보관'];
+  const [compareList, setCompareList] = useState<CompareFilterDto[]>([]);
+
+  const { data: set, isLoading } = useQuery(
     queryKey.compareSet.detail(Number(id)),
     async () => {
-      const res = await client().selectCompareSet(Number(id));
+      const res = await (await client()).selectCompareSet(Number(id));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -37,6 +38,12 @@ const CompareDetail: NextPageWithLayout = () => {
     },
   );
 
+  useEffect(() => {
+    if (!isLoading && set) {
+      setCompareList(set[0].compareFilters ?? []);
+    }
+  }, [set, isLoading]);
+
   return (
     <div className='pb-[50px] max-md:w-[100vw]'>
       {/* header */}
@@ -46,7 +53,13 @@ const CompareDetail: NextPageWithLayout = () => {
           비교하기
         </p>
         <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/cart-title.svg'
+            alt='cart'
+            width={22}
+            height={23}
+          />
         </Link>
       </div>
 
@@ -71,6 +84,7 @@ const CompareDetail: NextPageWithLayout = () => {
               >
                 <div className='relative h-[104px] w-[104px] overflow-hidden rounded-lg'>
                   <Image
+                    unoptimized
                     width={104}
                     height={104}
                     src={v.image ?? ''}
@@ -94,16 +108,17 @@ const CompareDetail: NextPageWithLayout = () => {
                       {(v.originPrice ?? 0) !== 0 && (
                         <p className='text-[16px] font-bold leading-[20px] -tracking-[0.05em] text-[#FF4A09]'>{`${calcDiscountRate(
                           v.originPrice,
-                          v.discountRate,
+                          v.discountPrice,
                         )}%`}</p>
                       )}
                       <p className='text-[16px] font-bold leading-[20px] -tracking-[0.05em] text-[#333]'>{`${formatToLocaleString(
-                        v.discountRate,
+                        v.discountPrice,
                       )}원`}</p>
                     </div>
                   </div>
                   <div className='self-end'>
                     <Image
+                      unoptimized
                       src='/assets/icons/common/chevron-compare.svg'
                       alt='chevron'
                       width={24}
@@ -147,7 +162,7 @@ const CompareDetail: NextPageWithLayout = () => {
                   'text-secondary-50': selectedTag.includes(idx),
                 })}
               >
-                {v}
+                {v.name ?? ''}
               </p>
             </button>
           );
@@ -157,7 +172,7 @@ const CompareDetail: NextPageWithLayout = () => {
         {[-2, -1].concat(selectedTag).map((x, i) =>
           ([{}] as CompareProductDto[]).concat(set ?? []).map((v, idx) => {
             if (idx === 0) {
-              const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x];
+              const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
               return (
                 <div
                   key={`grid${i}/${idx}`}
@@ -170,6 +185,10 @@ const CompareDetail: NextPageWithLayout = () => {
                 </div>
               );
             }
+
+            const compareValue =
+              i > 1 ? v.filterValues?.filter(w => w.compareFilterId === compareList[x].id) : [];
+
             return (
               <div
                 key={`grid${i}/${idx}`}
@@ -190,16 +209,8 @@ const CompareDetail: NextPageWithLayout = () => {
                   <p className='line-clamp-1 text-[13px] font-medium -tracking-[0.05em] text-[#797979]'>
                     {i === 1
                       ? v.storeName ?? ''
-                      : i === 2
-                      ? v.type ?? ''
-                      : i === 3
-                      ? v.location ?? ''
-                      : i === 4
-                      ? v.process ?? ''
-                      : i === 5
-                      ? v.usage ?? ''
-                      : i === 6
-                      ? v.storage ?? ''
+                      : (compareValue ?? []).length > 0
+                      ? compareValue?.[0].value ?? ''
                       : ''}
                   </p>
                 )}

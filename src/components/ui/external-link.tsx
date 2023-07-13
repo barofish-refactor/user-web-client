@@ -16,7 +16,6 @@ export function ExternalLink({
       onClick={e => {
         if (window.ReactNativeWebView) {
           e.preventDefault();
-          if (!window.ReactNativeWebView) return;
           window.ReactNativeWebView.postMessage(
             JSON.stringify({ type: 'link', url: `${location.origin}${href}` }),
           );

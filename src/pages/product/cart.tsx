@@ -24,6 +24,16 @@ import { VARIABLES } from 'src/variables';
 import { getCookie } from 'cookies-next';
 import Link from 'next/link';
 
+const getSectionDeliverFee = (data: BasketProductDto[], store: SimpleStore | undefined) =>
+  data
+    .map(
+      v =>
+        Math.ceil(
+          v.option?.maxAvailableAmount ? (v.amount ?? 0) / v.option?.maxAvailableAmount : 1,
+        ) * (store?.deliverFee ?? 0),
+    )
+    .reduce((a, b) => a + b, 0);
+
 export interface SectionBasketType {
   index: number;
   store?: SimpleStore;
@@ -51,7 +61,7 @@ const Cart: NextPageWithLayout = () => {
   const { data, refetch, isLoading } = useQuery(
     queryKey.cart.lists,
     async () => {
-      const res = await client().selectBasket();
+      const res = await (await client()).selectBasket();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -67,7 +77,9 @@ const Cart: NextPageWithLayout = () => {
   const { data: selectProductOtherCustomerBuy } = useQuery(
     queryKey.orderRecommend.list(data?.map(x => x.product?.id).join(',')),
     async () => {
-      const res = await client().selectProductOtherCustomerBuy({
+      const res = await (
+        await client()
+      ).selectProductOtherCustomerBuy({
         ids: data?.map(x => x.product?.id).join(',') ?? '',
       });
       if (res.data.isSuccess) {
@@ -82,12 +94,13 @@ const Cart: NextPageWithLayout = () => {
   );
 
   const { mutateAsync: deleteBasket, isLoading: isDeleteLoading } = useMutation(
-    (args: DeleteBasketPayload) => client().deleteBasket(args, { type: ContentType.FormData }),
+    async (args: DeleteBasketPayload) =>
+      await (await client()).deleteBasket(args, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: updateBasket, isLoading: isUpdateLoading } = useMutation(
-    ({ id, query }: { id: number; query: { amount: number } }) =>
-      client().updateBasket(id, query, { type: ContentType.FormData }),
+    async ({ id, query }: { id: number; query: { amount: number } }) =>
+      await (await client()).updateBasket(id, query, { type: ContentType.FormData }),
   );
 
   const onDelete = ({ data }: DeleteBasketPayload) => {
@@ -175,15 +188,9 @@ const Cart: NextPageWithLayout = () => {
                 (v.amount ?? 0),
             )
             .reduce((a, b) => a + b, 0);
-          // const sectionDeliverFee =
-          //   (x.store?.deliverFee ?? 0) * x.data.map(v => v.amount ?? 0).reduce((a, b) => a + b, 0);
-          const sectionDeliverFee = x.data
-            .map(
-              v =>
-                Math.ceil((v.amount ?? 0) / (v.option?.maxAvailableAmount ?? 0)) *
-                ((x.store?.deliverFee ?? 0) + (v.deliveryFee ?? 0)),
-            )
-            .reduce((a, b) => a + b, 0);
+
+          const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
+
           return x.store?.deliverFeeType === 'FREE'
             ? 0
             : x.store?.deliverFeeType === 'FIX'
@@ -210,8 +217,14 @@ const Cart: NextPageWithLayout = () => {
     <div className='pb-[100px] max-md:w-[100vw]'>
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
-        <button onClick={() => router.back()}>
-          <Image src='/assets/icons/common/close-base.svg' alt='close' width={24} height={24} />
+        <button onClick={router.back}>
+          <Image
+            unoptimized
+            src='/assets/icons/common/close-base.svg'
+            alt='close'
+            width={24}
+            height={24}
+          />
         </button>
         <p className='text-[16px] font-semibold -tracking-[0.03em] text-grey-10'>장바구니</p>
         <div className='w-6' />
@@ -268,20 +281,14 @@ const Cart: NextPageWithLayout = () => {
                   (v.amount ?? 0),
               )
               .reduce((a, b) => a + b, 0);
-            // const sectionDeliverFee =
-            //   (x.store?.deliverFee ?? 0) *
-            //   x.data.map(v => v.amount ?? 0).reduce((a, b) => a + b, 0);
-            const sectionDeliverFee = x.data
-              .map(
-                v =>
-                  Math.ceil((v.amount ?? 0) / (v.option?.maxAvailableAmount ?? 0)) *
-                  ((x.store?.deliverFee ?? 0) + (v.deliveryFee ?? 0)),
-              )
-              .reduce((a, b) => a + b, 0);
+
+            const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
+
             return (
               <div key={x.index}>
                 <div className='flex h-[56px] items-center gap-2 px-4'>
                   <Image
+                    unoptimized
                     src={x.store?.profileImage ?? ''}
                     alt='store'
                     width={28}
@@ -315,6 +322,7 @@ const Cart: NextPageWithLayout = () => {
                               className='flex flex-1 items-start gap-3'
                             >
                               <Image
+                                unoptimized
                                 src={v.product?.image ?? ''}
                                 alt=''
                                 width={70}
@@ -347,6 +355,7 @@ const Cart: NextPageWithLayout = () => {
                               }}
                             >
                               <Image
+                                unoptimized
                                 src='/assets/icons/common/close-small.svg'
                                 alt='delete'
                                 width={24}
@@ -357,8 +366,9 @@ const Cart: NextPageWithLayout = () => {
                           </div>
                           <div className='mt-6 flex items-center justify-between'>
                             <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
-                              <button className='' onClick={() => onPressMinus(v)}>
+                              <button onClick={() => onPressMinus(v)}>
                                 <Image
+                                  unoptimized
                                   src='/assets/icons/product/product-minus.svg'
                                   alt='minus'
                                   width={24}
@@ -368,8 +378,9 @@ const Cart: NextPageWithLayout = () => {
                               <p className='min-w-[30px] text-center text-[16px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
                                 {v.amount}
                               </p>
-                              <button className='' onClick={() => onPressPlus(v)}>
+                              <button onClick={() => onPressPlus(v)}>
                                 <Image
+                                  unoptimized
                                   src='/assets/icons/product/product-plus.svg'
                                   alt='minus'
                                   width={24}
@@ -455,6 +466,7 @@ const Cart: NextPageWithLayout = () => {
             ) : (
               <div className='flex h-[200px] flex-col items-center justify-center'>
                 <Image
+                  unoptimized
                   src='/assets/icons/search/search-error.svg'
                   alt='up'
                   width={40}
@@ -471,7 +483,13 @@ const Cart: NextPageWithLayout = () => {
         <div className='h-[calc(100dvb-160px)]'>
           <div className='grid h-full flex-1 place-items-center'>
             <div className='flex flex-col items-center gap-2'>
-              <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+              <Image
+                unoptimized
+                src='/assets/icons/search/search-error.svg'
+                alt='up'
+                width={40}
+                height={40}
+              />
               <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                 장바구니에 담긴 상품이 없습니다
               </p>

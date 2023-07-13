@@ -19,8 +19,9 @@ const ResetPassword: NextPageWithLayout = () => {
 
   const isVerified = !!watch('verificationId');
 
-  const { mutateAsync: resetPassword, isLoading } = useMutation((args: ResetPasswordPayload) =>
-    client().resetPassword(args, { type: ContentType.FormData }),
+  const { mutateAsync: resetPassword, isLoading } = useMutation(
+    async (args: ResetPasswordPayload) =>
+      await (await client()).resetPassword(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: ResetPasswordPayload) => {

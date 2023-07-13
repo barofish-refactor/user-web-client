@@ -24,7 +24,9 @@ const Login: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
   const form = useForm<FormType>();
   const { handleSubmit } = form;
-  const { mutateAsync: loginUser } = useMutation((args: UserLoginReq) => client().loginUser(args));
+  const { mutateAsync: loginUser } = useMutation(
+    async (args: UserLoginReq) => await (await client()).loginUser(args),
+  );
 
   const onSubmit = handleSubmit(data => {
     loginUser({ loginType: 'IDPW', loginId: data.email, password: data.password })
@@ -53,6 +55,7 @@ const Login: NextPageWithLayout = () => {
           }}
         >
           <Image
+            unoptimized
             src='/assets/icons/common/close-small-grey.svg'
             alt='close'
             width={38}
@@ -60,6 +63,7 @@ const Login: NextPageWithLayout = () => {
           />
         </button>
         <Image
+          unoptimized
           className='mx-auto'
           src='/assets/icons/sign/logo.svg'
           width={60}

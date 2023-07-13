@@ -10,8 +10,9 @@ import { decodeToken, formatToBlob, requestPermission, setToken } from 'src/util
 
 export function AppleButton() {
   const { setAlert } = useAlertStore();
-  const { mutateAsync: loginUser } = useMutation((args: JoinSnsUserPayload) =>
-    client().joinSnsUser(args, { type: ContentType.FormData }),
+  const { mutateAsync: loginUser } = useMutation(
+    async (args: JoinSnsUserPayload) =>
+      await (await client()).joinSnsUser(args, { type: ContentType.FormData }),
   );
   const [redirectUrl, setRedirectUrl] = useState('');
 

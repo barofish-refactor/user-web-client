@@ -57,7 +57,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   const { setAlert } = useAlertStore();
 
   const { data: optionData, isLoading } = useQuery(queryKey.option.list(data?.id), async () => {
-    const res = await client().selectProductOptionList(data?.id ?? -1);
+    const res = await (await client()).selectProductOptionList(data?.id ?? -1);
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -68,7 +68,9 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   const { data: selectProductOtherCustomerBuy } = useQuery(
     queryKey.orderRecommend.list(data?.id),
     async () => {
-      const res = await client().selectProductOtherCustomerBuy({ ids: data?.id?.toString() ?? '' });
+      const res = await (
+        await client()
+      ).selectProductOtherCustomerBuy({ ids: data?.id?.toString() ?? '' });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -81,7 +83,8 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   );
 
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
-    (args: AddBasketPayload) => client().addBasket(args, { type: ContentType.FormData }),
+    async (args: AddBasketPayload) =>
+      await (await client()).addBasket(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: AddBasketPayload) => {
@@ -246,7 +249,9 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                         {`${v.name}`}{' '}
                         {v.additionalPrice !== 0 &&
-                          `(+${formatToLocaleString(v.additionalPrice)}원)`}
+                          `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
+                            v.additionalPrice,
+                          )}원)`}
                       </p>
                       <button
                         className=''
@@ -255,6 +260,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                         }}
                       >
                         <Image
+                          unoptimized
                           src='/assets/icons/common/close-small-grey.svg'
                           alt='close'
                           width={19}
@@ -266,6 +272,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
                         <button className='' onClick={() => onPressMinus(v)}>
                           <Image
+                            unoptimized
                             src='/assets/icons/product/product-minus.svg'
                             alt='minus'
                             width={24}
@@ -277,6 +284,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                         </p>
                         <button className='' onClick={() => onPressPlus(v)}>
                           <Image
+                            unoptimized
                             src='/assets/icons/product/product-plus.svg'
                             alt='minus'
                             width={24}
@@ -351,6 +359,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
         <div className='flex w-full flex-col px-4 pb-9'>
           <div className='flex items-center gap-3'>
             <Image
+              unoptimized
               src={data?.images?.[0] ?? '/'}
               alt='image'
               width={50}
@@ -373,7 +382,13 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
             />
           ) : (
             <div className='flex h-[252px] flex-col items-center justify-center'>
-              <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+              <Image
+                unoptimized
+                src='/assets/icons/search/search-error.svg'
+                alt='up'
+                width={40}
+                height={40}
+              />
               <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                 상품이 존재하지 않습니다.
               </p>

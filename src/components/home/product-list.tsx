@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { type PageProductListDto } from 'src/api/swagger/data-contracts';
 import { ProductItem } from 'src/components/common';
-import { type indexFilterType, useFilterStore } from 'src/store';
+import { useFilterStore, type indexFilterType } from 'src/store';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString } from 'src/utils/functions';
 import { parseSort, type sortType } from 'src/utils/parse';
@@ -53,6 +53,7 @@ const ProductList = ({
                   {parseSort(sort)}
                 </p>
                 <Image
+                  unoptimized
                   src='/assets/icons/common/chevron-filter.svg'
                   alt='chevron'
                   width={8}
@@ -115,11 +116,17 @@ const ProductList = ({
             >
               필터
             </p>
-            {filter && filter.length > 0 ? (
-              <Image src='/assets/icons/common/filter-on.svg' alt='filter' width={15} height={10} />
-            ) : (
-              <Image src='/assets/icons/common/filter.svg' alt='filter' width={15} height={10} />
-            )}
+            <Image
+              unoptimized
+              alt='filter'
+              width={15}
+              height={10}
+              src={
+                filter && filter.length > 0
+                  ? '/assets/icons/common/filter-on.svg'
+                  : '/assets/icons/common/filter.svg'
+              }
+            />
           </button>
         </div>
       </div>
@@ -141,7 +148,13 @@ function Empty() {
     <div className='col-span-2 h-[calc(100dvb-170px)]'>
       <div className='grid h-full flex-1 place-items-center'>
         <div className='flex flex-col items-center gap-2'>
-          <Image src='/assets/icons/common/error.svg' alt='error' width={40} height={40} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/error.svg'
+            alt='error'
+            width={40}
+            height={40}
+          />
           <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
             상품이 없습니다.
           </p>

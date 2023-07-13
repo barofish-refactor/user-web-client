@@ -1,7 +1,23 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
+import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
+import { client } from 'src/api/client';
+import {
+  type AddCompareSetPayload,
+  type CompareSetDto,
+  type DeleteCompareSetPayload,
+  type DeleteSaveProductsPayload,
+  type ProductListDto,
+} from 'src/api/swagger/data-contracts';
+import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
+import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { useAlertStore, useBottomConfirmStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import {
@@ -10,26 +26,10 @@ import {
   formatToLocaleString,
   setSquareBrackets,
 } from 'src/utils/functions';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import { FreeMode } from 'swiper';
-import { BackButton } from 'src/components/ui';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { client } from 'src/api/client';
-import { queryKey } from 'src/query-key';
-import { useAlertStore, useBottomConfirmStore } from 'src/store';
-import {
-  type DeleteCompareSetPayload,
-  type AddCompareSetPayload,
-  type DeleteSaveProductsPayload,
-  type CompareSetDto,
-  type ProductListDto,
-} from 'src/api/swagger/data-contracts';
-import { ContentType } from 'src/api/swagger/http-client';
-import { type GetServerSideProps } from 'next';
 import { VARIABLES } from 'src/variables';
-import { getCookie } from 'cookies-next';
-import { useRouter } from 'next/router';
+import { FreeMode } from 'swiper';
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 /** 저장함 */
 const Storage: NextPageWithLayout = () => {
@@ -43,7 +43,7 @@ const Storage: NextPageWithLayout = () => {
   const { data, refetch } = useQuery(
     queryKey.compare.lists,
     async () => {
-      const res = await client().selectSaveProductList();
+      const res = await (await client()).selectSaveProductList();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -54,7 +54,7 @@ const Storage: NextPageWithLayout = () => {
   );
 
   const { data: set, refetch: setRefetch } = useQuery(queryKey.compareSet.lists, async () => {
-    const res = await client().selectCompareSetList();
+    const res = await (await client()).selectCompareSetList();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -63,17 +63,17 @@ const Storage: NextPageWithLayout = () => {
   });
 
   const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
-    (args: AddCompareSetPayload) => client().addCompareSet(args),
+    async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
   );
 
   const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
-    (args: DeleteSaveProductsPayload) =>
-      client().deleteSaveProducts(args, { type: ContentType.FormData }),
+    async (args: DeleteSaveProductsPayload) =>
+      await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: deleteCompareSet, isLoading: isDeleteSetLoading } = useMutation(
-    (args: DeleteCompareSetPayload) =>
-      client().deleteCompareSet(args, { type: ContentType.FormData }),
+    async (args: DeleteCompareSetPayload) =>
+      await (await client()).deleteCompareSet(args, { type: ContentType.FormData }),
   );
 
   const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
@@ -127,7 +127,13 @@ const Storage: NextPageWithLayout = () => {
           저장함
         </p>
         <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/cart-title.svg'
+            alt='cart'
+            width={22}
+            height={23}
+          />
         </Link>
       </div>
 
@@ -220,6 +226,7 @@ const Storage: NextPageWithLayout = () => {
                   <Link key={`storage${idx}`} href={{ pathname: '/product', query: { id: v.id } }}>
                     <div className='relative aspect-square'>
                       <Image
+                        unoptimized
                         width={110}
                         height={110}
                         src={v.image ?? ''}
@@ -238,6 +245,7 @@ const Storage: NextPageWithLayout = () => {
                         }}
                       >
                         <Image
+                          unoptimized
                           alt='check'
                           width={24}
                           height={24}
@@ -270,6 +278,7 @@ const Storage: NextPageWithLayout = () => {
                     )}
                     <div className='mt-1 flex items-center gap-0.5'>
                       <Image
+                        unoptimized
                         src='/assets/icons/common/speech-bubble.svg'
                         alt='후기'
                         width={16}
@@ -355,6 +364,7 @@ const Storage: NextPageWithLayout = () => {
                       }}
                     >
                       <Image
+                        unoptimized
                         alt='check'
                         width={24}
                         height={24}
@@ -373,6 +383,7 @@ const Storage: NextPageWithLayout = () => {
                       return (
                         <div key={`${v.compareSetId}/${x.id}`} className='flex items-center gap-2'>
                           <Image
+                            unoptimized
                             src={image?.[0] ?? '/'}
                             alt='product'
                             className='rounded-lg'
@@ -402,6 +413,7 @@ const Storage: NextPageWithLayout = () => {
                             )}
                             <div className='mt-1 flex items-center gap-0.5'>
                               <Image
+                                unoptimized
                                 src='/assets/icons/common/speech-bubble.svg'
                                 alt='후기'
                                 width={16}
@@ -469,6 +481,7 @@ const Storage: NextPageWithLayout = () => {
                     }}
                   >
                     <Image
+                      unoptimized
                       width={70}
                       height={70}
                       src={v.image ?? ''}
@@ -477,6 +490,7 @@ const Storage: NextPageWithLayout = () => {
                       className='aspect-square h-[70px] w-[70px] object-cover'
                     />
                     <Image
+                      unoptimized
                       src='/assets/icons/compare/compare-delete.svg'
                       alt='delete'
                       width={18}
@@ -514,7 +528,13 @@ function Empty(text: string) {
     <div className='h-[calc(100dvb-136px)]'>
       <div className='grid h-full flex-1 place-items-center'>
         <div className='flex flex-col items-center gap-2'>
-          <Image src='/assets/icons/common/error.svg' alt='error' width={40} height={40} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/error.svg'
+            alt='error'
+            width={40}
+            height={40}
+          />
           <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
             {`${text}이 없습니다.`}
           </p>

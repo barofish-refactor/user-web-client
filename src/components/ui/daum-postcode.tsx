@@ -3,29 +3,29 @@ import Script from 'next/script';
 import { useEffect, useRef, useState } from 'react';
 import { VARIABLES } from 'src/variables';
 
-interface Postcode {
-  open(openOptions?: OpenOptions): void;
-  embed(element: HTMLElement, embedOptions?: EmbedOptions): void;
-}
+// interface Postcode {
+//   open(openOptions?: OpenOptions): void;
+//   embed(element: HTMLElement, embedOptions?: EmbedOptions): void;
+// }
 
-interface EmbedOptions {
-  q?: string;
-  autoClose?: boolean;
-}
+// interface EmbedOptions {
+//   q?: string;
+//   autoClose?: boolean;
+// }
 
-interface OpenOptions {
-  q?: string;
-  left?: number | string;
-  top?: number | string;
-  popupTitle?: string;
-  popupKey?: string;
-  autoClose?: boolean;
-}
+// interface OpenOptions {
+//   q?: string;
+//   left?: number | string;
+//   top?: number | string;
+//   popupTitle?: string;
+//   popupKey?: string;
+//   autoClose?: boolean;
+// }
 
-interface Size {
-  width: number;
-  height: number;
-}
+// interface Size {
+//   width: number;
+//   height: number;
+// }
 
 interface Address {
   /**
@@ -89,49 +89,49 @@ interface Address {
   query: string;
 }
 
-type State = 'FORCE_CLOSE' | 'COMPLETE_CLOSE';
+// type State = 'FORCE_CLOSE' | 'COMPLETE_CLOSE';
 
-interface Search {
-  q: string;
-  count: number;
-}
+// interface Search {
+//   q: string;
+//   count: number;
+// }
 
-interface Theme {
-  bgColor?: string;
-  searchBgColor?: string;
-  contentBgColor?: string;
-  pageBgColor?: string;
-  textColor?: string;
-  queryTextColor?: string;
-  postcodeTextColor?: string;
-  emphTextColor?: string;
-  outlineColor?: string;
-}
+// interface Theme {
+//   bgColor?: string;
+//   searchBgColor?: string;
+//   contentBgColor?: string;
+//   pageBgColor?: string;
+//   textColor?: string;
+//   queryTextColor?: string;
+//   postcodeTextColor?: string;
+//   emphTextColor?: string;
+//   outlineColor?: string;
+// }
 
-interface PostcodeOptions {
-  oncomplete?: (address: Address) => void;
-  onresize?: (size: Size) => void;
-  onclose?: (state: State) => void;
-  onsearch?: (search: Search) => void;
-  width?: string | number;
-  height?: string | number;
-  animation?: boolean;
-  focusInput?: boolean;
-  focusContent?: boolean;
-  autoMapping?: boolean;
-  shorthand?: boolean;
-  pleaseReadGuide?: number;
-  pleaseReadGuideTimer?: number;
-  maxSuggestItems?: number;
-  showMoreHName?: boolean;
-  hideMapBtn?: boolean;
-  hideEngBtn?: boolean;
-  alwaysShowEngAddr?: boolean;
-  submitMode?: boolean;
-  useBannerLink?: boolean;
-  theme?: Theme;
-  useSuggest?: boolean;
-}
+// interface PostcodeOptions {
+//   oncomplete?: (address: Address) => void;
+//   onresize?: (size: Size) => void;
+//   onclose?: (state: State) => void;
+//   onsearch?: (search: Search) => void;
+//   width?: string | number;
+//   height?: string | number;
+//   animation?: boolean;
+//   focusInput?: boolean;
+//   focusContent?: boolean;
+//   autoMapping?: boolean;
+//   shorthand?: boolean;
+//   pleaseReadGuide?: number;
+//   pleaseReadGuideTimer?: number;
+//   maxSuggestItems?: number;
+//   showMoreHName?: boolean;
+//   hideMapBtn?: boolean;
+//   hideEngBtn?: boolean;
+//   alwaysShowEngAddr?: boolean;
+//   submitMode?: boolean;
+//   useBannerLink?: boolean;
+//   theme?: Theme;
+//   useSuggest?: boolean;
+// }
 
 interface DaumEmbedProps {
   onComplete: (address: Address) => void;

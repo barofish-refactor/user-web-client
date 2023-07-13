@@ -6,9 +6,10 @@ import { calcDiscountRate, formatToLocaleString, setSquareBrackets } from 'src/u
 
 interface Props {
   dataDto?: ProductListDto;
+  imageOptimize?: boolean;
 }
 
-const ProductItem = ({ dataDto }: Props) => {
+const ProductItem = ({ dataDto, imageOptimize }: Props) => {
   const { setProductOption } = useProductOptionStore();
 
   return (
@@ -17,7 +18,15 @@ const ProductItem = ({ dataDto }: Props) => {
       className='flex w-full flex-col text-start'
     >
       <div className='relative aspect-square w-full overflow-hidden rounded-lg'>
-        <Image fill src={dataDto?.image ?? '/'} alt='image' draggable={false} />
+        <Image
+          width={260}
+          height={260}
+          className='aspect-square w-full object-cover'
+          unoptimized={!imageOptimize}
+          src={dataDto?.image ?? '/'}
+          alt='image'
+          draggable={false}
+        />
         <button
           className='product-cart'
           onClick={e => {
@@ -52,6 +61,7 @@ const ProductItem = ({ dataDto }: Props) => {
       )}
       <div className='mt-1 flex items-center gap-0.5'>
         <Image
+          unoptimized
           src='/assets/icons/common/speech-bubble.svg'
           alt='후기'
           width={16}

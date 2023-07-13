@@ -1,11 +1,11 @@
-import { ProductSmallSlideItem } from 'src/components/common';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import { FreeMode } from 'swiper';
-import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
-import { client } from 'src/api/client';
 import { useMutation } from '@tanstack/react-query';
+import { client } from 'src/api/client';
+import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
+import { ProductSmallSlideItem } from 'src/components/common';
 import { useAlertStore } from 'src/store';
+import { FreeMode } from 'swiper';
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 interface Props {
   data: ProductListDto[];
@@ -15,8 +15,8 @@ interface Props {
 const CurationLargeSlide = ({ data }: Props) => {
   const { setAlert } = useAlertStore();
 
-  const { mutateAsync: addBasket, isLoading } = useMutation((args: AddBasketPayload) =>
-    client().addBasket(args),
+  const { mutateAsync: addBasket, isLoading } = useMutation(
+    async (args: AddBasketPayload) => await (await client()).addBasket(args),
   );
 
   const onMutate = (args: AddBasketPayload) => {
@@ -45,8 +45,8 @@ const CurationLargeSlide = ({ data }: Props) => {
     >
       {data.map((v, idx) => {
         return (
-          <SwiperSlide key={`curation${idx}`} className=''>
-            <ProductSmallSlideItem data={v} type='LARGE' onMutate={onMutate} />
+          <SwiperSlide key={idx} className=''>
+            <ProductSmallSlideItem imageOptimize data={v} type='LARGE' onMutate={onMutate} />
           </SwiperSlide>
         );
       })}

@@ -19,18 +19,19 @@ import { asyncUploads } from 'src/utils/upload';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import 'swiper/css';
-import 'swiper/css/free-mode';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { client } from 'src/api/client';
 import {
+  type AddReviewByUserPayload,
   type OrderDto,
   type OrderProductDto,
-  type AddReviewByUserPayload,
 } from 'src/api/swagger/data-contracts';
-import { useMutation } from '@tanstack/react-query';
-import { client } from 'src/api/client';
 import { ContentType } from 'src/api/swagger/http-client';
+import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
-import { useRouter } from 'next/router';
+import 'swiper/css';
+import 'swiper/css/free-mode';
 
 const IMAGE_MAX_COUNT = 10;
 
@@ -49,6 +50,7 @@ type FormType = {
 };
 
 export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number }) {
+  const queryClient = useQueryClient();
   const form = useForm<FormType>({
     defaultValues: { description: '', images: [], selectKeywords: [] },
   });
@@ -57,8 +59,9 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
   const router = useRouter();
   const [productInfo, setProductInfo] = useState<OrderProductDto>();
 
-  const { mutateAsync: addReviewByUser, isLoading } = useMutation((args: AddReviewByUserPayload) =>
-    client().addReviewByUser(args, { type: ContentType.FormData }),
+  const { mutateAsync: addReviewByUser, isLoading } = useMutation(
+    async (args: AddReviewByUserPayload) =>
+      await (await client()).addReviewByUser(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data, images }: AddReviewByUserPayload) => {
@@ -69,6 +72,8 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
     })
       .then(res => {
         if (res.data.isSuccess) {
+          queryClient.invalidateQueries(queryKey.order.lists);
+          queryClient.invalidateQueries(queryKey.myReview);
           setAlert({
             message: '리뷰를 등록했습니다.',
             onClick: () => router.back(),
@@ -80,10 +85,10 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
 
   const onSubmit = handleSubmit(data => {
     if (data.description.trim().length === 0) return setAlert({ message: '내용을 입력해 주세요' });
-    if (data.images.length === 0) return setAlert({ message: '사진을 등록해 주세요' });
+    // if (data.images.length === 0) return setAlert({ message: '사진을 등록해 주세요' });
     onMutate({
       data: {
-        orderId: order?.id,
+        orderProductInfoId: productInfo ? productInfo.id : order?.productInfos?.[0].id,
         content: data.description,
         evaluations: data.selectKeywords as ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[],
         userId: order?.user?.userId,
@@ -139,6 +144,7 @@ function Product({ data }: { data?: OrderProductDto }) {
       <div className='flex items-center gap-[13px] rounded-lg bg-grey-90 p-2'>
         {data?.product?.image && (
           <Image
+            unoptimized
             priority
             src={data?.product?.image}
             alt='product'
@@ -205,7 +211,7 @@ function SelectKeywords() {
                       }
                     }}
                   >
-                    <Image src={v.icon} width={16} height={16} alt='' />
+                    <Image unoptimized src={v.icon} width={16} height={16} alt='' />
                     <span>{v.text}</span>
                   </button>
                 );
@@ -261,7 +267,7 @@ function Images() {
                 )
               }
             />
-            <Image fill src={v.previewUrl} alt='' className='object-cover' />
+            <Image unoptimized fill src={v.previewUrl} alt='' className='object-cover' />
           </SwiperSlide>
         ))}
         {images.length < IMAGE_MAX_COUNT && (

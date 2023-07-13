@@ -12,7 +12,7 @@ import { HomeCurationItem, HomeProductList } from 'src/components/home';
 import { PopularSearchTerms, RecentSearches } from 'src/components/search';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, type indexFilterType, useFilterStore } from 'src/store';
+import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, type sortType } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
@@ -41,7 +41,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data: rankData } = useQuery(
     queryKey.topSearchKeywords,
     async () => {
-      const { selectTopSearchKeywords } = client();
+      const { selectTopSearchKeywords } = await client();
       const res = await selectTopSearchKeywords();
       return res.data;
     },
@@ -52,7 +52,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   );
 
   const { data: mainData } = useQuery(queryKey.main, async () => {
-    const res = await client().selectMainItems();
+    const res = await (await client()).selectMainItems();
     if (res.data.isSuccess) {
       return res.data.data;
     } else setAlert({ message: res.data.errorMsg ?? '' });
@@ -70,7 +70,10 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       keyword: v as string,
     }),
     async ({ pageParam = 1 }) => {
-      const res = await client().selectProductListByUser({
+      if (pageParam === -1) return;
+      const res = await (
+        await client()
+      ).selectProductListByUser({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         sortby: sort,
         page: pageParam,
@@ -86,7 +89,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
       },
     },
   );
@@ -94,7 +97,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data: directData } = useQuery(
     queryKey.search.list(searchText),
     async () => {
-      const { searchingProductDirect } = client();
+      const { searchingProductDirect } = await client();
       const res = await searchingProductDirect({ keyword: searchText as string });
       return res.data.data;
     },
@@ -191,14 +194,19 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
         <BackButton />
         <div className='ite ms-center flex h-[40px] flex-1 gap-2 rounded-md bg-grey-90 pl-3'>
           <button
-            className=''
             onClick={() => {
               if (searchText.trim() === '') return;
               setSearchState('result');
               handleAddKeyword(searchText);
             }}
           >
-            <Image src='/assets/icons/common/search.svg' alt='search' width={24} height={24} />
+            <Image
+              unoptimized
+              src='/assets/icons/common/search.svg'
+              alt='search'
+              width={24}
+              height={24}
+            />
           </button>
           <input
             ref={inputRef}
@@ -236,6 +244,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
             }}
           >
             <Image
+              unoptimized
               src='/assets/icons/search/close-search.svg'
               alt='delete'
               width={16}
@@ -298,7 +307,13 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
           // 검색 결과 없을 경우
           <div className=''>
             <div className='flex h-[176px] flex-col items-center justify-center gap-2 px-4'>
-              <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+              <Image
+                unoptimized
+                src='/assets/icons/search/search-error.svg'
+                alt='up'
+                width={40}
+                height={40}
+              />
               <p className='whitespace-pre-wrap break-all text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                 {`‘${v}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
               </p>
@@ -325,7 +340,7 @@ Search.getLayout = page => (
 );
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectTopSearchKeywords } = client();
+  const { selectTopSearchKeywords } = await client();
   return {
     props: { initialData: (await selectTopSearchKeywords()).data },
   };

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
 import Image from 'next/image';
 import { Banner } from 'src/api/swagger/data-contracts';
 import { useRouter } from 'next/router';
 import cm from 'src/utils/class-merge';
+
+import 'swiper/css';
 
 interface Props {
   data: Banner[];
@@ -37,45 +38,54 @@ const Banner = ({ data }: Props) => {
       >
         {data.map((v, idx) => {
           return (
-            <SwiperSlide key={`banner_${idx}`} className='aspect-[375/270] w-full'>
-              {v.image && (
-                <Image
-                  priority={idx === 0}
-                  src={v.image ?? ''}
-                  width={375}
-                  height={208}
-                  alt='banner'
-                  className={cm('aspect-[375/270] w-full object-cover', {
-                    'cursor-pointer': ['CURATION', 'CATEGORY', 'NOTICE'].includes(v.type ?? ''),
-                  })}
-                  onClick={() => {
-                    switch (v.type) {
-                      case 'CURATION':
-                        router.push({
-                          pathname: '/search/product-result',
-                          query: { type: 'curation', id: v.curationId, title: v.curation?.title },
-                        });
-                        break;
-                      case 'CATEGORY':
-                        router.push({
-                          pathname: '/search/product-result',
-                          query: {
-                            type: 'category',
-                            id: v.category?.categoryId,
-                            subItemId: v.categoryId,
-                            title: v.category?.name,
-                          },
-                        });
-                        break;
-                      case 'NOTICE':
-                        router.push({ pathname: '/mypage/notice/[id]', query: { id: v.noticeId } });
-                        break;
-                      default:
-                        break;
+            <SwiperSlide key={v.id} className='aspect-[375/270] w-full'>
+              <Image
+                priority={idx === 0}
+                src={v.image ?? ''}
+                width={375}
+                height={208}
+                alt='banner'
+                className={cm('aspect-[375/270] w-full object-cover', {
+                  'cursor-pointer':
+                    ['CURATION', 'CATEGORY', 'NOTICE'].includes(v.type ?? '') || v.link,
+                })}
+                onClick={e => {
+                  if (v.link) {
+                    if (window.ReactNativeWebView) {
+                      e.preventDefault();
+                      window.ReactNativeWebView.postMessage(
+                        JSON.stringify({ type: 'link', url: `${v.link}` }),
+                      );
+                    } else {
+                      return window.open(`${v.link}`, '_blank');
                     }
-                  }}
-                />
-              )}
+                    return;
+                  }
+                  switch (v.type) {
+                    case 'CURATION':
+                      router.push({
+                        pathname: '/search/product-result',
+                        query: { type: 'curation', id: v.curationId },
+                      });
+                      break;
+                    case 'CATEGORY':
+                      router.push({
+                        pathname: '/search/product-result',
+                        query: {
+                          type: 'category',
+                          id: v.category?.categoryId,
+                          subItemId: v.categoryId,
+                        },
+                      });
+                      break;
+                    case 'NOTICE':
+                      router.push({ pathname: '/mypage/notice/[id]', query: { id: v.noticeId } });
+                      break;
+                    default:
+                      break;
+                  }
+                }}
+              />
             </SwiperSlide>
           );
         })}

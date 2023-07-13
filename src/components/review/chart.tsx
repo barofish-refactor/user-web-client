@@ -26,6 +26,7 @@ export function ReviewChart({ data }: Props) {
       </p>
       <div className='mt-2.5 flex items-center py-[3px]'>
         <Image
+          unoptimized
           src='/assets/icons/product/check-real-review.svg'
           alt='check'
           width={14}
@@ -54,6 +55,7 @@ export function ReviewChart({ data }: Props) {
           <div className='absolute top-0 flex h-8 w-full items-center justify-between px-2'>
             <div className='flex items-center gap-2'>
               <Image
+                unoptimized
                 src='/assets/icons/product/real-review-taste.svg'
                 alt='taste'
                 width={16}
@@ -82,6 +84,7 @@ export function ReviewChart({ data }: Props) {
           <div className='absolute top-0 flex h-8 w-full items-center justify-between px-2'>
             <div className='flex items-center gap-2'>
               <Image
+                unoptimized
                 src='/assets/icons/product/real-review-freshness.svg'
                 alt='taste'
                 width={16}
@@ -108,6 +111,7 @@ export function ReviewChart({ data }: Props) {
           <div className='absolute top-0 flex h-8 w-full items-center justify-between px-2'>
             <div className='flex items-center gap-2'>
               <Image
+                unoptimized
                 src='/assets/icons/product/real-review-price.svg'
                 alt='taste'
                 width={16}
@@ -136,6 +140,7 @@ export function ReviewChart({ data }: Props) {
           <div className='absolute top-0 flex h-8 w-full items-center justify-between px-2'>
             <div className='flex items-center gap-2'>
               <Image
+                unoptimized
                 src='/assets/icons/product/real-review-packaging.svg'
                 alt='taste'
                 width={16}
@@ -162,6 +167,7 @@ export function ReviewChart({ data }: Props) {
           <div className='absolute top-0 flex h-8 w-full items-center justify-between px-2'>
             <div className='flex items-center gap-2'>
               <Image
+                unoptimized
                 src='/assets/icons/product/real-review-size.svg'
                 alt='taste'
                 width={16}

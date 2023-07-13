@@ -10,6 +10,8 @@
  */
 
 import {
+  AddAdminByMasterData,
+  AddAdminByMasterPayload,
   AddBasketData,
   AddBasketPayload,
   AddCategoryCompareFilterData,
@@ -36,21 +38,11 @@ import {
   AddPaymentMethodData,
   AddPaymentMethodPayload,
   AddProductData,
-  AddProductLocationData,
-  AddProductLocationPayload,
   AddProductPayload,
-  AddProductProcessData,
-  AddProductProcessPayload,
-  AddProductStorageData,
-  AddProductStoragePayload,
   AddProductToCurationData,
   AddProductToCurationPayload,
   AddProductToTopBarData,
   AddProductToTopBarPayload,
-  AddProductTypeData,
-  AddProductTypePayload,
-  AddProductUsageData,
-  AddProductUsagePayload,
   AddRecommendCompareSetData,
   AddRecommendCompareSetPayload,
   AddReportData,
@@ -80,6 +72,7 @@ import {
   CheckPaymentDoneData,
   ConfirmCancelOrderData,
   ConfirmChangeProductData,
+  ConfirmDepositData,
   ConfirmOrderProductData,
   ConfirmRefundOrderProductData,
   ConfirmReportsData,
@@ -103,16 +96,6 @@ import {
   DeleteProductData,
   DeleteProductListData,
   DeleteProductListPayload,
-  DeleteProductLocationsData,
-  DeleteProductLocationsPayload,
-  DeleteProductProcesssData,
-  DeleteProductProcesssPayload,
-  DeleteProductStoragesData,
-  DeleteProductStoragesPayload,
-  DeleteProductTypesData,
-  DeleteProductTypesPayload,
-  DeleteProductUsagesData,
-  DeleteProductUsagesPayload,
   DeleteRecommendCompareSetData,
   DeleteReportsData,
   DeleteReportsPayload,
@@ -125,6 +108,8 @@ import {
   DeleteTopBarData,
   DeliverReadyData,
   DoneRefundOrderProductData,
+  GithubWebhookCallbackData,
+  GithubWebhookCallbackPayload,
   JoinSnsUserData,
   JoinSnsUserPayload,
   JoinUserData,
@@ -139,7 +124,6 @@ import {
   LoginUserData,
   OrderProductData,
   OrderReq,
-  PaymentTestData,
   ProcessDeliverStartData,
   ProcessDeliverStartPayload,
   ProcessSettleByAdminData,
@@ -158,6 +142,9 @@ import {
   SaveProductPayload,
   SearchingProductDirectData,
   SearchProductData,
+  SelectAdminData,
+  SelectAdminListData,
+  SelectAdminMyInfoData,
   SelectAllReviewListByAdminData,
   SelectBannerData,
   SelectBannerListByAdminData,
@@ -189,7 +176,7 @@ import {
   SelectInquiryData,
   SelectInquiryListByAdminData,
   SelectInquiryListWithProductData,
-  SelectLocationListData,
+  SelectMainCurationListData,
   SelectMainData,
   SelectMainItemsData,
   SelectMainStoreData,
@@ -207,7 +194,6 @@ import {
   SelectPaymentMethodListData,
   SelectPcWebBannerData,
   SelectPointRuleData,
-  SelectProcessListData,
   SelectProductCountByUserData,
   SelectProductData,
   SelectProductListByUserData,
@@ -235,7 +221,6 @@ import {
   SelectSettlementOrderListData,
   SelectSiteInfoData,
   SelectSiteInfoListData,
-  SelectStorageListData,
   SelectStoreByAdmin1Data,
   SelectStoreByAdminData,
   SelectStoreData,
@@ -249,8 +234,6 @@ import {
   SelectTopBarListData,
   SelectTopSearchKeywordsData,
   SelectTrackingInfoData,
-  SelectTypeListData,
-  SelectUsageListData,
   SelectUserList1Data,
   SelectUserListData,
   SelectUserSelfInfoData,
@@ -262,9 +245,11 @@ import {
   SortCurationPayload,
   Test1Data,
   Test2Data,
-  TestCouponData,
   TestData,
+  TestPayload,
   UnlikeReviewByUserData,
+  UpdateAdminByMasterData,
+  UpdateAdminByMasterPayload,
   UpdateBannerData,
   UpdateBannerPayload,
   UpdateBannerStateData,
@@ -286,17 +271,7 @@ import {
   UpdatePasswordData,
   UpdatePasswordPayload,
   UpdateProductData,
-  UpdateProductLocationData,
-  UpdateProductLocationPayload,
   UpdateProductPayload,
-  UpdateProductProcessData,
-  UpdateProductProcessPayload,
-  UpdateProductStorageData,
-  UpdateProductStoragePayload,
-  UpdateProductTypeData,
-  UpdateProductTypePayload,
-  UpdateProductUsageData,
-  UpdateProductUsagePayload,
   UpdateRecommendCompareSetData,
   UpdateRecommendCompareSetPayload,
   UpdateReviewData,
@@ -305,6 +280,8 @@ import {
   UpdateSearchFilterFieldPayload,
   UpdateSiteInfoData,
   UpdateSiteInfoPayload,
+  UpdateStateProductsData,
+  UpdateStateProductsPayload,
   UpdateStoreInfo1Data,
   UpdateStoreInfo1Payload,
   UpdateStoreInfoData,
@@ -319,6 +296,10 @@ import {
   UpdateUserPayload,
   UpdateUserStateData,
   UpdateUserStatePayload,
+  UploadPartnerExcelData,
+  UploadPartnerExcelPayload,
+  UploadProductExcelData,
+  UploadProductExcelPayload,
   UserLoginReq,
   VerifyCodeData,
   VerifyCodeReq,
@@ -945,6 +926,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags product-controller
+   * @name UpdateStateProducts
+   * @request POST:/api/v1/product/update/state
+   * @response `200` `UpdateStateProductsData` OK
+   */
+  updateStateProducts = (data: UpdateStateProductsPayload, params: RequestParams = {}) =>
+    this.request<UpdateStateProductsData, any>({
+      path: `/api/v1/product/update/state`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-controller
    * @name LikeProductByUser
    * @request POST:/api/v1/product/like
    * @response `200` `LikeProductByUserData` OK
@@ -974,178 +971,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   addProduct = (data: AddProductPayload, params: RequestParams = {}) =>
     this.request<AddProductData, any>({
       path: `/api/v1/product/add`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name UpdateProductUsage
-   * @request POST:/api/v1/product-info/usage/update/{id}
-   * @response `200` `UpdateProductUsageData` OK
-   */
-  updateProductUsage = (id: number, data: UpdateProductUsagePayload, params: RequestParams = {}) =>
-    this.request<UpdateProductUsageData, any>({
-      path: `/api/v1/product-info/usage/update/${id}`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name AddProductUsage
-   * @request POST:/api/v1/product-info/usage/add
-   * @response `200` `AddProductUsageData` OK
-   */
-  addProductUsage = (data: AddProductUsagePayload, params: RequestParams = {}) =>
-    this.request<AddProductUsageData, any>({
-      path: `/api/v1/product-info/usage/add`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name UpdateProductType
-   * @request POST:/api/v1/product-info/type/update/{id}
-   * @response `200` `UpdateProductTypeData` OK
-   */
-  updateProductType = (id: number, data: UpdateProductTypePayload, params: RequestParams = {}) =>
-    this.request<UpdateProductTypeData, any>({
-      path: `/api/v1/product-info/type/update/${id}`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name AddProductType
-   * @request POST:/api/v1/product-info/type/add
-   * @response `200` `AddProductTypeData` OK
-   */
-  addProductType = (data: AddProductTypePayload, params: RequestParams = {}) =>
-    this.request<AddProductTypeData, any>({
-      path: `/api/v1/product-info/type/add`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name UpdateProductStorage
-   * @request POST:/api/v1/product-info/storage/update/{id}
-   * @response `200` `UpdateProductStorageData` OK
-   */
-  updateProductStorage = (
-    id: number,
-    data: UpdateProductStoragePayload,
-    params: RequestParams = {},
-  ) =>
-    this.request<UpdateProductStorageData, any>({
-      path: `/api/v1/product-info/storage/update/${id}`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name AddProductStorage
-   * @request POST:/api/v1/product-info/storage/add
-   * @response `200` `AddProductStorageData` OK
-   */
-  addProductStorage = (data: AddProductStoragePayload, params: RequestParams = {}) =>
-    this.request<AddProductStorageData, any>({
-      path: `/api/v1/product-info/storage/add`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name UpdateProductProcess
-   * @request POST:/api/v1/product-info/process/update/{id}
-   * @response `200` `UpdateProductProcessData` OK
-   */
-  updateProductProcess = (
-    id: number,
-    data: UpdateProductProcessPayload,
-    params: RequestParams = {},
-  ) =>
-    this.request<UpdateProductProcessData, any>({
-      path: `/api/v1/product-info/process/update/${id}`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name AddProductProcess
-   * @request POST:/api/v1/product-info/process/add
-   * @response `200` `AddProductProcessData` OK
-   */
-  addProductProcess = (data: AddProductProcessPayload, params: RequestParams = {}) =>
-    this.request<AddProductProcessData, any>({
-      path: `/api/v1/product-info/process/add`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name UpdateProductLocation
-   * @request POST:/api/v1/product-info/location/update/{id}
-   * @response `200` `UpdateProductLocationData` OK
-   */
-  updateProductLocation = (
-    id: number,
-    data: UpdateProductLocationPayload,
-    params: RequestParams = {},
-  ) =>
-    this.request<UpdateProductLocationData, any>({
-      path: `/api/v1/product-info/location/update/${id}`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name AddProductLocation
-   * @request POST:/api/v1/product-info/location/add
-   * @response `200` `AddProductLocationData` OK
-   */
-  addProductLocation = (data: AddProductLocationPayload, params: RequestParams = {}) =>
-    this.request<AddProductLocationData, any>({
-      path: `/api/v1/product-info/location/add`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -1282,6 +1107,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   confirmOrderProduct = (orderProductInfoId: number, params: RequestParams = {}) =>
     this.request<ConfirmOrderProductData, any>({
       path: `/api/v1/order/confirm/${orderProductInfoId}`,
+      method: 'POST',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller
+   * @name ConfirmDeposit
+   * @request POST:/api/v1/order/confirm-deposit/{orderId}
+   * @response `200` `ConfirmDepositData` OK
+   */
+  confirmDeposit = (orderId: string, params: RequestParams = {}) =>
+    this.request<ConfirmDepositData, any>({
+      path: `/api/v1/order/confirm-deposit/${orderId}`,
       method: 'POST',
       ...params,
     });
@@ -1489,6 +1328,70 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       method: 'POST',
       body: data,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags github-webhook
+   * @name GithubWebhookCallback
+   * @request POST:/api/v1/github_webhook
+   * @response `200` `GithubWebhookCallbackData` OK
+   */
+  githubWebhookCallback = (data: GithubWebhookCallbackPayload, params: RequestParams = {}) =>
+    this.request<GithubWebhookCallbackData, any>({
+      path: `/api/v1/github_webhook`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags excel-controller
+   * @name UploadProductExcel
+   * @request POST:/api/v1/excel/upload-product
+   * @response `200` `UploadProductExcelData` OK
+   */
+  uploadProductExcel = (data: UploadProductExcelPayload, params: RequestParams = {}) =>
+    this.request<UploadProductExcelData, any>({
+      path: `/api/v1/excel/upload-product`,
+      method: 'POST',
+      body: data,
+      type: ContentType.FormData,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags excel-controller
+   * @name UploadPartnerExcel
+   * @request POST:/api/v1/excel/upload-partner
+   * @response `200` `UploadPartnerExcelData` OK
+   */
+  uploadPartnerExcel = (data: UploadPartnerExcelPayload, params: RequestParams = {}) =>
+    this.request<UploadPartnerExcelData, any>({
+      path: `/api/v1/excel/upload-partner`,
+      method: 'POST',
+      body: data,
+      type: ContentType.FormData,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags excel-controller
+   * @name Test
+   * @request POST:/api/v1/excel/test
+   * @response `200` `TestData` OK
+   */
+  test = (data: TestPayload, params: RequestParams = {}) =>
+    this.request<TestData, any>({
+      path: `/api/v1/excel/test`,
+      method: 'POST',
+      body: data,
+      type: ContentType.FormData,
       ...params,
     });
   /**
@@ -1875,6 +1778,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags admin-controller
+   * @name UpdateAdminByMaster
+   * @request POST:/api/v1/admin/update/{id}
+   * @response `200` `UpdateAdminByMasterData` OK
+   */
+  updateAdminByMaster = (
+    id: number,
+    data: UpdateAdminByMasterPayload,
+    params: RequestParams = {},
+  ) =>
+    this.request<UpdateAdminByMasterData, any>({
+      path: `/api/v1/admin/update/${id}`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags admin-controller
    * @name LoginAdmin
    * @request POST:/api/v1/admin/login
    * @response `200` `LoginAdminData` OK
@@ -1882,6 +1805,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   loginAdmin = (data: LoginAdminPayload, params: RequestParams = {}) =>
     this.request<LoginAdminData, any>({
       path: `/api/v1/admin/login`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags admin-controller
+   * @name AddAdminByMaster
+   * @request POST:/api/v1/admin/add
+   * @response `200` `AddAdminByMasterData` OK
+   */
+  addAdminByMaster = (data: AddAdminByMasterPayload, params: RequestParams = {}) =>
+    this.request<AddAdminByMasterData, any>({
+      path: `/api/v1/admin/add`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -1919,43 +1858,14 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags user-controller
-   * @name Test
+   * @name Test1
    * @request GET:/api/v1/user/test
-   * @response `200` `TestData` OK
+   * @response `200` `Test1Data` OK
    */
-  test = (
-    query?: {
-      /**
-       * @format int32
-       * @default 0
-       */
-      page?: number;
-      /**
-       * @format int32
-       * @default 10
-       */
-      take?: number;
-      /** @default "joinAt" */
-      orderby?: 'state' | 'grade' | 'name' | 'nickname' | 'email' | 'phone' | 'point' | 'joinAt';
-      /** @default "DESC" */
-      orderType?: 'ASC' | 'DESC';
-      name?: string;
-      nickname?: string;
-      email?: string;
-      phone?: string;
-      state?: string;
-      loginType?: string;
-      /** @format date-time */
-      joinAtS?: string;
-      /** @format date-time */
-      joinAtE?: string;
-    },
-    params: RequestParams = {},
-  ) =>
-    this.request<TestData, any>({
+  test1 = (params: RequestParams = {}) =>
+    this.request<Test1Data, any>({
       path: `/api/v1/user/test`,
       method: 'GET',
-      query: query,
       ...params,
     });
   /**
@@ -2178,20 +2088,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v1/topbar/${id}/count`,
       method: 'GET',
       query: query,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags top-bar-controller
-   * @name Test1
-   * @request GET:/api/v1/topbar/test
-   * @response `200` `Test1Data` OK
-   */
-  test1 = (params: RequestParams = {}) =>
-    this.request<Test1Data, any>({
-      path: `/api/v1/topbar/test`,
-      method: 'GET',
       ...params,
     });
   /**
@@ -2746,6 +2642,8 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    */
   selectReviewListWithStoreId = (
     query?: {
+      /** @default "RECENT" */
+      orderType?: 'BEST' | 'RECENT';
       /**
        * @format int32
        * @default 1
@@ -2776,6 +2674,8 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   selectReviewListWithStoreId1 = (
     id: number,
     query?: {
+      /** @default "RECENT" */
+      orderType?: 'BEST' | 'RECENT';
       /**
        * @format int32
        * @default 1
@@ -2806,6 +2706,8 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   selectReviewListWithProductId = (
     id: number,
     query?: {
+      /** @default "RECENT" */
+      orderType?: 'BEST' | 'RECENT';
       /**
        * @format int32
        * @default 0
@@ -3159,96 +3061,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
-   * @tags product-info-controller
-   * @name SelectUsageList
-   * @request GET:/api/v1/product-info/usage
-   * @response `200` `SelectUsageListData` OK
-   */
-  selectUsageList = (params: RequestParams = {}) =>
-    this.request<SelectUsageListData, any>({
-      path: `/api/v1/product-info/usage`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name SelectTypeList
-   * @request GET:/api/v1/product-info/type
-   * @response `200` `SelectTypeListData` OK
-   */
-  selectTypeList = (params: RequestParams = {}) =>
-    this.request<SelectTypeListData, any>({
-      path: `/api/v1/product-info/type`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name SelectStorageList
-   * @request GET:/api/v1/product-info/storage
-   * @response `200` `SelectStorageListData` OK
-   */
-  selectStorageList = (params: RequestParams = {}) =>
-    this.request<SelectStorageListData, any>({
-      path: `/api/v1/product-info/storage`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name SelectProcessList
-   * @request GET:/api/v1/product-info/process
-   * @response `200` `SelectProcessListData` OK
-   */
-  selectProcessList = (params: RequestParams = {}) =>
-    this.request<SelectProcessListData, any>({
-      path: `/api/v1/product-info/process`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name SelectLocationList
-   * @request GET:/api/v1/product-info/location
-   * @response `200` `SelectLocationListData` OK
-   */
-  selectLocationList = (params: RequestParams = {}) =>
-    this.request<SelectLocationListData, any>({
-      path: `/api/v1/product-info/location`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags payment-controller
-   * @name PaymentTest
-   * @request GET:/api/v1/payment/test
-   * @response `200` `PaymentTestData` OK
-   */
-  paymentTest = (
-    query: {
-      impUid: string;
-    },
-    params: RequestParams = {},
-  ) =>
-    this.request<PaymentTestData, any>({
-      path: `/api/v1/payment/test`,
-      method: 'GET',
-      query: query,
-      ...params,
-    });
-  /**
-   * No description
-   *
    * @tags order-controller
    * @name SelectOrder
    * @request GET:/api/v1/order/{id}
@@ -3339,7 +3151,8 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
         | 'postalCode'
         | 'couponDiscount'
         | 'totalAmount'
-        | 'orderAt';
+        | 'orderAt'
+        | 'paymentWay';
       /** @default "DESC" */
       sortType?: 'ASC' | 'DESC';
       ordererName?: string;
@@ -3563,6 +3376,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   selectMainItems = (params: RequestParams = {}) =>
     this.request<SelectMainItemsData, any>({
       path: `/api/v1/main`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags main-controller
+   * @name SelectMainCurationList
+   * @request GET:/api/v1/main/curation
+   * @response `200` `SelectMainCurationListData` OK
+   */
+  selectMainCurationList = (params: RequestParams = {}) =>
+    this.request<SelectMainCurationListData, any>({
+      path: `/api/v1/main/curation`,
       method: 'GET',
       ...params,
     });
@@ -3863,20 +3690,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<DeleteCouponData, any>({
       path: `/api/v1/coupon/${id}`,
       method: 'DELETE',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags coupon-controller
-   * @name TestCoupon
-   * @request GET:/api/v1/coupon/test
-   * @response `200` `TestCouponData` OK
-   */
-  testCoupon = (params: RequestParams = {}) =>
-    this.request<TestCouponData, any>({
-      path: `/api/v1/coupon/test`,
-      method: 'GET',
       ...params,
     });
   /**
@@ -4290,6 +4103,81 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags admin-controller
+   * @name SelectAdmin
+   * @request GET:/api/v1/admin/{id}
+   * @response `200` `SelectAdminData` OK
+   */
+  selectAdmin = (id: number, params: RequestParams = {}) =>
+    this.request<SelectAdminData, any>({
+      path: `/api/v1/admin/${id}`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags admin-controller
+   * @name SelectAdminMyInfo
+   * @request GET:/api/v1/admin/my-info
+   * @response `200` `SelectAdminMyInfoData` OK
+   */
+  selectAdminMyInfo = (params: RequestParams = {}) =>
+    this.request<SelectAdminMyInfoData, any>({
+      path: `/api/v1/admin/my-info`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags admin-controller
+   * @name SelectAdminList
+   * @request GET:/api/v1/admin/list
+   * @response `200` `SelectAdminListData` OK
+   */
+  selectAdminList = (
+    query?: {
+      /**
+       * @format int32
+       * @default 0
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+      /** @default "createdAt" */
+      orderby?: 'id' | 'state' | 'name' | 'tel' | 'createdAt';
+      /** @default "DESC" */
+      orderType?: 'ASC' | 'DESC';
+      name?: string;
+      tel?: string;
+      state?: string;
+      /** @format date-time */
+      createdAtS?: string;
+      /** @format date-time */
+      createdAtE?: string;
+      accessUser?: boolean;
+      accessProduct?: boolean;
+      accessOrder?: boolean;
+      accessSettlement?: boolean;
+      accessBoard?: boolean;
+      accessPromotion?: boolean;
+      accessSetting?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectAdminListData, any>({
+      path: `/api/v1/admin/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags search-filter-controller
    * @name DeleteSearchFilterField
    * @request DELETE:/api/v1/search-filter/field/{id}
@@ -4312,86 +4200,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   deleteReports = (data: DeleteReportsPayload, params: RequestParams = {}) =>
     this.request<DeleteReportsData, any>({
       path: `/api/v1/report`,
-      method: 'DELETE',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name DeleteProductUsages
-   * @request DELETE:/api/v1/product-info/usage/delete
-   * @response `200` `DeleteProductUsagesData` OK
-   */
-  deleteProductUsages = (data: DeleteProductUsagesPayload, params: RequestParams = {}) =>
-    this.request<DeleteProductUsagesData, any>({
-      path: `/api/v1/product-info/usage/delete`,
-      method: 'DELETE',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name DeleteProductTypes
-   * @request DELETE:/api/v1/product-info/type/delete
-   * @response `200` `DeleteProductTypesData` OK
-   */
-  deleteProductTypes = (data: DeleteProductTypesPayload, params: RequestParams = {}) =>
-    this.request<DeleteProductTypesData, any>({
-      path: `/api/v1/product-info/type/delete`,
-      method: 'DELETE',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name DeleteProductStorages
-   * @request DELETE:/api/v1/product-info/storage/delete
-   * @response `200` `DeleteProductStoragesData` OK
-   */
-  deleteProductStorages = (data: DeleteProductStoragesPayload, params: RequestParams = {}) =>
-    this.request<DeleteProductStoragesData, any>({
-      path: `/api/v1/product-info/storage/delete`,
-      method: 'DELETE',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name DeleteProductProcesss
-   * @request DELETE:/api/v1/product-info/process/delete
-   * @response `200` `DeleteProductProcesssData` OK
-   */
-  deleteProductProcesss = (data: DeleteProductProcesssPayload, params: RequestParams = {}) =>
-    this.request<DeleteProductProcesssData, any>({
-      path: `/api/v1/product-info/process/delete`,
-      method: 'DELETE',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags product-info-controller
-   * @name DeleteProductLocations
-   * @request DELETE:/api/v1/product-info/location/delete
-   * @response `200` `DeleteProductLocationsData` OK
-   */
-  deleteProductLocations = (data: DeleteProductLocationsPayload, params: RequestParams = {}) =>
-    this.request<DeleteProductLocationsData, any>({
-      path: `/api/v1/product-info/location/delete`,
       method: 'DELETE',
       body: data,
       type: ContentType.Json,

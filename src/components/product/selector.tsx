@@ -47,11 +47,12 @@ const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
           {/* {value && !isOpen ? value.option : placeHolder} */}
         </p>
         <Image
+          unoptimized
           src='/assets/icons/common/chevron-category.svg'
           alt='chevron'
           width={23.5}
           height={24.5}
-          className={cm('', { 'rotate-180': !isOpen })}
+          className={cm({ 'rotate-180': !isOpen })}
           draggable={false}
         />
       </button>
@@ -81,7 +82,10 @@ const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
                   )}
                 >
                   {`${v.option}`}{' '}
-                  {v.additionalPrice !== 0 && `(+${formatToLocaleString(v.additionalPrice)}원)`}
+                  {v.additionalPrice !== 0 &&
+                    `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
+                      v.additionalPrice,
+                    )}원)`}
                   {`${isSoldOut ? '(품절)' : ''}`}
                 </p>
                 <p

@@ -26,6 +26,7 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
           return (
             <SwiperSlide key={`product${idx}`} className=''>
               <Image
+                unoptimized
                 priority
                 width={375}
                 height={375}
@@ -51,6 +52,7 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
           >
             <div className='flex h-9 w-9 items-center justify-center rounded-full bg-black opacity-60'>
               <Image
+                unoptimized
                 src='/assets/icons/common//chevron-banner.svg'
                 alt=''
                 width={16}
@@ -65,6 +67,7 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
           >
             <div className='flex h-9 w-9 items-center justify-center rounded-full bg-black opacity-60'>
               <Image
+                unoptimized
                 src='/assets/icons/common/chevron-banner.svg'
                 alt=''
                 width={16}

@@ -28,7 +28,7 @@ const CurationAbbreviation = ({ data }: Props) => {
                 v.id !== -2
                   ? {
                       pathname: '/search/product-result',
-                      query: { type: 'curation', id: v.id, title: v.title },
+                      query: { type: 'curation', id: v.id },
                     }
                   : {
                       pathname: '/tip',
@@ -37,10 +37,12 @@ const CurationAbbreviation = ({ data }: Props) => {
             >
               <div className='h-[70px] w-[70px] overflow-hidden rounded-full bg-primary-90'>
                 <Image
+                  priority
                   src={v.image ?? ''}
                   alt={v.shortName ?? ''}
                   width={70}
                   height={70}
+                  style={{ width: '70px', height: '70px' }}
                   className='object-cover'
                 />
               </div>

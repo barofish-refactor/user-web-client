@@ -18,7 +18,7 @@ const Inquiry = ({ productId, data }: Props) => {
   const [openIndex, setOpenIndex] = useState<number>();
 
   const { data: user } = useQuery(queryKey.user, async () => {
-    const res = await client().selectUserSelfInfo();
+    const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -42,30 +42,31 @@ const Inquiry = ({ productId, data }: Props) => {
           return (
             <div key={`inquiry${idx}`} className=''>
               <button
-                className='flex w-full items-end justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px]'
+                className='flex w-full items-end justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px] text-start'
                 onClick={() => {
                   if (v.isSecret && v.user?.userId !== user?.userId) return;
                   setOpenIndex(openIndex === idx ? undefined : idx);
                 }}
               >
                 <div className='flex flex-col gap-2'>
-                  <div className='flex items-center gap-0.5'>
+                  <div className='flex gap-0.5'>
                     <p
                       className={cm(
                         'text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20',
                         { 'text-grey-70': v.isSecret },
                       )}
                     >
-                      {`${setSquareBrackets(parseInquiryState(v.type))}`}
+                      {`${setSquareBrackets(parseInquiryState(v.type))}`}{' '}
+                      {v.isSecret ? '비밀글입니다.' : v.content}
                     </p>
-                    <p
+                    {/* <p
                       className={cm(
                         'text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20',
                         { 'text-grey-70': v.isSecret },
                       )}
                     >
                       {v.isSecret ? '비밀글입니다.' : v.content}
-                    </p>
+                    </p> */}
                   </div>
                   <div className='flex items-center gap-2'>
                     <p
@@ -88,6 +89,7 @@ const Inquiry = ({ productId, data }: Props) => {
                   </div>
                 </div>
                 <Image
+                  unoptimized
                   src='/assets/icons/common/chevron-category.svg'
                   alt='chevron'
                   width={23.5}

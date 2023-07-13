@@ -21,7 +21,7 @@ const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.faq.lists,
     async () => {
-      const res = await client().selectNoticeList({ type: 'FAQ' });
+      const res = await (await client()).selectNoticeList({ type: 'FAQ' });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -78,7 +78,13 @@ function Empty() {
   return (
     <div className='grid flex-1 place-items-center'>
       <div className='flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='up'
+          width={40}
+          height={40}
+        />
         <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           {`등록된 FAQ가 없습니다.\n1:1 문의에 문의사항을 남겨주세요. :)`}
         </p>
@@ -90,7 +96,7 @@ function Empty() {
 MypageFaq.getLayout = page => <FaqLayout page={page} />;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectNoticeList } = client();
+  const { selectNoticeList } = await client();
   return {
     props: { initialData: (await selectNoticeList({ type: 'FAQ' })).data.data },
   };

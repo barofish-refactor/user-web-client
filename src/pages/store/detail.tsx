@@ -16,7 +16,7 @@ import { ReviewChart, ReviewPhoto } from 'src/components/review';
 import { StoreTab } from 'src/components/store';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { type indexFilterType, useAlertStore, useFilterStore } from 'src/store';
+import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, type sortType } from 'src/utils/parse';
 import { VARIABLES } from 'src/variables';
@@ -42,7 +42,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data, refetch } = useQuery(
     queryKey.store.detail(id),
     async () => {
-      const res = await client().selectStore(Number(id));
+      const res = await (await client()).selectStore(Number(id));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -67,7 +67,10 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       sortby: sort,
     }),
     async ({ pageParam = 1 }) => {
-      const res = await client().selectProductListByUser({
+      if (pageParam === -1) return;
+      const res = await (
+        await client()
+      ).selectProductListByUser({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         storeId: Number(id),
         sortby: sort,
@@ -83,13 +86,14 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
       },
     },
   );
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(
-    (args: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => client().likeStoreByUser(args),
+    async (args: { storeId: number; type: 'LIKE' | 'UNLIKE' }) =>
+      await (await client()).likeStoreByUser(args),
   );
 
   const onMutate = ({ storeId, type }: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => {
@@ -179,11 +183,23 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             {data?.isLike ? (
               <StarIcon isActive={true} />
             ) : (
-              <Image src='/assets/icons/common/star.svg' alt='star' width={24} height={24} />
+              <Image
+                unoptimized
+                src='/assets/icons/common/star.svg'
+                alt='star'
+                width={24}
+                height={24}
+              />
             )}
           </button>
           <Link href='/product/cart'>
-            <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+            <Image
+              unoptimized
+              src='/assets/icons/common/cart-title.svg'
+              alt='cart'
+              width={22}
+              height={23}
+            />
           </Link>
           <ShareButton />
         </div>
@@ -191,6 +207,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
       {/* banner */}
       <Image
+        unoptimized
         priority
         width={375}
         height={186}
@@ -203,6 +220,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       <div className='flex items-start justify-between pb-5 pl-[17px] pr-[21px] pt-4'>
         <div className='flex flex-1 items-center gap-3'>
           <Image
+            unoptimized
             src={data?.profileImage ?? '/'}
             alt='partner'
             width={83}
@@ -264,7 +282,10 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       <StoreTab data={data} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       <div className='min-h-[calc(100dvb-95px)]'>
         {selectedTab === 0 ? (
-          <div dangerouslySetInnerHTML={{ __html: description }} className='mb-5 mt-5' />
+          <div
+            dangerouslySetInnerHTML={{ __html: description }}
+            className='mb-5 w-full [&_img]:w-full'
+          />
         ) : selectedTab === 1 ? (
           <Fragment>
             <HomeProductList
@@ -294,7 +315,7 @@ StoreDetail.getLayout = page => (
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
-  const { selectStore } = client();
+  const { selectStore } = await client();
   return {
     props: { initialData: (await selectStore(Number(id))).data.data },
   };

@@ -9,7 +9,7 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { formatToUtc, formatToLocaleString } from 'src/utils/functions';
+import { formatToLocaleString, formatToUtc } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 
 /** 후기 상세보기 */
@@ -21,7 +21,7 @@ const Review: NextPageWithLayout = () => {
   const { data, refetch } = useQuery(
     queryKey.review.detail(Number(id)),
     async () => {
-      const res = await client().selectReview(Number(id));
+      const res = await (await client()).selectReview(Number(id));
 
       if (res.data.isSuccess) {
         return res.data.data;
@@ -35,12 +35,12 @@ const Review: NextPageWithLayout = () => {
     },
   );
 
-  const { mutateAsync: likeReviewByUser, isLoading } = useMutation((id: number) =>
-    client().likeReviewByUser(id),
+  const { mutateAsync: likeReviewByUser, isLoading } = useMutation(
+    async (id: number) => await (await client()).likeReviewByUser(id),
   );
 
   const { mutateAsync: unlikeReviewByUser, isLoading: isUnlikeLoading } = useMutation(
-    (id: number) => client().unlikeReviewByUser(id),
+    async (id: number) => await (await client()).unlikeReviewByUser(id),
   );
 
   const onLikeMutate = ({ id }: { id: number }) => {
@@ -75,7 +75,7 @@ const Review: NextPageWithLayout = () => {
         </p>
         <div className='w-6' />
         {/* <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          <Image unoptimized src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
         </Link> */}
       </div>
       <ProductBanner isShowArrow image={data?.images ?? []} />
@@ -110,7 +110,13 @@ const Review: NextPageWithLayout = () => {
               else onLikeMutate({ id: data.id });
             }}
           >
-            <Image src='/assets/icons/product/review-like.svg' alt='like' width={12} height={13} />
+            <Image
+              unoptimized
+              src='/assets/icons/product/review-like.svg'
+              alt='like'
+              width={12}
+              height={13}
+            />
             <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>도움돼요</p>
             <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>{`${formatToLocaleString(
               data?.likeCount ?? 0,

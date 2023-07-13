@@ -18,6 +18,7 @@ const CompareNewItem = ({ data, onMutate, onDeleteSaveProductsMutate }: Props) =
     <Link href={{ pathname: '/product', query: { id: data.id } }}>
       <div className='relative overflow-hidden rounded-lg'>
         <Image
+          unoptimized
           width={150}
           height={150}
           src={data.image ?? ''}
@@ -34,6 +35,7 @@ const CompareNewItem = ({ data, onMutate, onDeleteSaveProductsMutate }: Props) =
           }}
         >
           <Image
+            unoptimized
             alt='bookmark'
             width={24}
             height={24}
@@ -66,6 +68,7 @@ const CompareNewItem = ({ data, onMutate, onDeleteSaveProductsMutate }: Props) =
       )}
       <div className='mt-1 flex items-center gap-0.5'>
         <Image
+          unoptimized
           src='/assets/icons/common/speech-bubble.svg'
           alt='후기'
           width={16}

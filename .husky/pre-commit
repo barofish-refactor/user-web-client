@@ -1,10 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# dev 브랜치에서의 커밋은 빌드를 수행한다.
-# if [ "git-branch-is dev" ]
-# then 
-#     npm run build
-# fi
-
 npx lint-staged

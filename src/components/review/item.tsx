@@ -2,22 +2,20 @@ import Image from 'next/image';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import { useMutation } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
+import { client } from 'src/api/client';
 import { type ReviewDto } from 'src/api/swagger/data-contracts';
-// import { ReviewDots } from 'src/components/review';
+import { useAlertStore } from 'src/store';
 import {
   calcDiscountRate,
   formatToLocaleString,
   formatToUtc,
   setSquareBrackets,
 } from 'src/utils/functions';
-
-import 'swiper/css';
-import { useRouter } from 'next/router';
-import { useMutation } from '@tanstack/react-query';
-import { client } from 'src/api/client';
-import { getCookie } from 'cookies-next';
 import { VARIABLES } from 'src/variables';
-import { useAlertStore } from 'src/store';
+import 'swiper/css';
 
 interface Props {
   data: ReviewDto;
@@ -31,12 +29,12 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const router = useRouter();
   const { setAlert } = useAlertStore();
 
-  const { mutateAsync: likeReviewByUser, isLoading } = useMutation((id: number) =>
-    client().likeReviewByUser(id),
+  const { mutateAsync: likeReviewByUser, isLoading } = useMutation(
+    async (id: number) => await (await client()).likeReviewByUser(id),
   );
 
   const { mutateAsync: unlikeReviewByUser, isLoading: isUnlikeLoading } = useMutation(
-    (id: number) => client().unlikeReviewByUser(id),
+    async (id: number) => await (await client()).unlikeReviewByUser(id),
   );
 
   const onLikeMutate = ({ id }: { id: number }) => {
@@ -106,22 +104,25 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           paddingRight: '16px',
         }}
       >
-        {(data.images ?? []).map((v, idx) => {
-          return (
-            <SwiperSlide key={`curation${idx}`} className=''>
-              <div className='relative overflow-hidden rounded-lg'>
-                <Image
-                  width={150}
-                  height={150}
-                  src={v}
-                  alt='review'
-                  draggable={false}
-                  className=' aspect-square w-full object-cover'
-                />
-              </div>
-            </SwiperSlide>
-          );
-        })}
+        {data.images
+          ?.filter(v => v !== '')
+          .map((v, idx) => {
+            return (
+              <SwiperSlide key={`curation${idx}`} className=''>
+                <div className='relative overflow-hidden rounded-lg'>
+                  <Image
+                    unoptimized
+                    width={150}
+                    height={150}
+                    src={v}
+                    alt='review'
+                    draggable={false}
+                    className=' aspect-square w-full object-cover'
+                  />
+                </div>
+              </SwiperSlide>
+            );
+          })}
       </Swiper>
       <p className='mt-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
         {data.content ?? ''}
@@ -135,6 +136,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
         >
           {data.simpleProduct?.image && (
             <Image
+              unoptimized
               src={data.simpleProduct?.image}
               alt='product'
               className='rounded-lg'
@@ -176,7 +178,13 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
             else onLikeMutate({ id: data.id });
           }}
         >
-          <Image src='/assets/icons/product/review-like.svg' alt='like' width={12} height={13} />
+          <Image
+            unoptimized
+            src='/assets/icons/product/review-like.svg'
+            alt='like'
+            width={12}
+            height={13}
+          />
           <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>도움돼요</p>
           <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>{`${formatToLocaleString(
             data.likeCount ?? 0,

@@ -11,10 +11,10 @@ const MypageReviewModify: NextPageWithLayout = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data } = useQuery(
+  useQuery(
     queryKey.review.detail(id),
     async () => {
-      const res = await client().selectReview(Number(id));
+      const res = await (await client()).selectReview(Number(id));
 
       if (res.data.isSuccess) {
         return res.data.data;

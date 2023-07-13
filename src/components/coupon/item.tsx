@@ -69,6 +69,7 @@ export function CouponItem({
           >
             {isAvailable && !isOrder && (
               <Image
+                unoptimized
                 src='/assets/icons/coupon/download.svg'
                 width={24}
                 height={24}

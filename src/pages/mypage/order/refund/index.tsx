@@ -10,7 +10,7 @@ import { type NextPageWithLayout } from 'src/types/common';
 /** 마이페이지 - 취소/환불/교환 내역 */
 const MypageOrder: NextPageWithLayout = () => {
   const { data } = useQuery(queryKey.order.list('canceled'), async () => {
-    const res = await client().selectCanceledOrderList();
+    const res = await (await client()).selectCanceledOrderList();
     if (res.data.isSuccess) {
       return res.data;
     } else {
@@ -42,7 +42,13 @@ const MypageOrder: NextPageWithLayout = () => {
 function Empty() {
   return (
     <div className='flex flex-col items-center gap-2'>
-      <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+      <Image
+        unoptimized
+        src='/assets/icons/search/search-error.svg'
+        alt='up'
+        width={40}
+        height={40}
+      />
       <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
         취소/환불/교환 내역이 없습니다.
       </p>

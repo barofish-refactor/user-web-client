@@ -77,8 +77,8 @@ const MypagePayMethodCreate: NextPageWithLayout = () => {
   const { control, handleSubmit, register } = useForm<FormType>({ mode: 'onBlur' });
 
   const { mutateAsync: addPaymentMethod, isLoading } = useMutation(
-    (args: AddPaymentMethodPayload) =>
-      client().addPaymentMethod(args, { type: ContentType.FormData }),
+    async (args: AddPaymentMethodPayload) =>
+      await (await client()).addPaymentMethod(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: AddPaymentMethodPayload) => {

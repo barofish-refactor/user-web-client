@@ -1,14 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
 import cm from 'src/utils/class-merge';
 
 const PcBanner = () => {
+  const { ref, inView } = useInView({ initialInView: false });
   const { data } = useQuery(
     queryKey.pcBanner,
     async () => {
-      const res = await client().selectPcWebBanner();
+      const res = await (await client()).selectPcWebBanner();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -16,16 +18,18 @@ const PcBanner = () => {
       }
     },
     {
+      enabled: inView,
       // staleTime: 0
     },
   );
 
   return (
     <aside className='w-[375px] max-md:hidden'>
-      <div className='fixed flex h-[100dvb] w-[375px] items-center justify-center'>
+      <div ref={ref} className='fixed flex h-[100dvb] w-[375px] items-center justify-center'>
         {data?.image && (
           <Image
             fill
+            unoptimized
             priority
             src={data.image}
             alt='banner'

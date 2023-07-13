@@ -1,17 +1,16 @@
 import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type AppProps } from 'next/app';
-import { useMemo } from 'react';
-
 import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 import { client } from 'src/api/client';
-import { ContentType } from 'src/api/swagger/http-client';
 import { Head } from 'src/components/common';
-import { fontPretendard } from 'src/fonts';
 import { useAlertStore } from 'src/store';
-import 'src/styles/globals.css';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, setToken } from 'src/utils/functions';
 import useWebview from 'src/utils/use-web-view';
+
+import { ContentType } from 'src/api/swagger/http-client';
+import 'src/styles/globals.css';
 
 type CustomAppProps = AppProps<any> & { Component: NextPageWithLayout };
 
@@ -28,13 +27,14 @@ export default function MyApp(props: CustomAppProps) {
           queries: {
             staleTime: 2.5 * (60 * 1000), // 2.5 min
             retry: 1,
+            refetchOnWindowFocus: false,
           },
         },
       }),
     [],
   );
 
-  useWebview(event => {
+  useWebview(async event => {
     const message = JSON.parse(event.data);
 
     if (message.type === 'backEvent') {
@@ -48,7 +48,7 @@ export default function MyApp(props: CustomAppProps) {
       router.push(message.url);
     } else if (message.type === 'socialLogin') {
       // 소셜 로그인
-      client()
+      (await client())
         .joinSnsUser(
           {
             data: formatToBlob(
@@ -61,7 +61,6 @@ export default function MyApp(props: CustomAppProps) {
                     : 'APPLE',
                 loginId: message.loginId,
                 profileImage: message.profileImage ?? undefined,
-                // email: message.email ?? undefined,
                 name: message.name ?? undefined,
                 nickname: message.nickname ?? undefined,
                 phone: message.phone
@@ -93,11 +92,6 @@ export default function MyApp(props: CustomAppProps) {
     <QueryClientProvider client={queryClient}>
       {/* <ReactQueryDevtools initialIsOpen={false} position='top-right' /> */}
       <Head />
-      <style jsx global>{`
-        :root {
-          --font-pretendard: ${fontPretendard.style.fontFamily};
-        }
-      `}</style>
       <Hydrate state={pageProps.dehydratedState}>{getLayout(<Component {...pageProps} />)}</Hydrate>
     </QueryClientProvider>
   );

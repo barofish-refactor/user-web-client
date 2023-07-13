@@ -1,15 +1,17 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import {
   type DeleteSaveProductsPayload,
   type SaveProductPayload,
   type SimpleProductDto,
 } from 'src/api/swagger/data-contracts';
+import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
 import {
   ProductBanner,
@@ -20,15 +22,13 @@ import {
   ProductTab,
   ShareButton,
 } from 'src/components/product';
-import { BackButton } from 'src/components/ui';
-import { type NextPageWithLayout } from 'src/types/common';
-import { getCookie } from 'cookies-next';
-import { VARIABLES } from 'src/variables';
-import { queryKey } from 'src/query-key';
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
+import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
 import { useAlertStore, useToastStore } from 'src/store';
-import { ContentType } from 'src/api/swagger/http-client';
+import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob } from 'src/utils/functions';
+import { VARIABLES } from 'src/variables';
 
 interface Props {
   initialData: SimpleProductDto;
@@ -44,7 +44,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data, refetch } = useQuery(
     queryKey.product.detail(id),
     async () => {
-      const res = await client().selectProduct(Number(id));
+      const res = await (await client()).selectProduct(Number(id));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -59,7 +59,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   );
 
   const { data: deliverInfo } = useQuery(queryKey.deliverInfo, async () => {
-    const res = await client().selectSiteInfo('HTML_DELIVER_INFO');
+    const res = await (await client()).selectSiteInfo('HTML_DELIVER_INFO');
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -67,12 +67,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     }
   });
 
-  // const { mutateAsync: likeProductByUser, isLoading } = useMutation(
-  //   (args: { productId: number; type: 'LIKE' | 'UNLIKE' }) => client().likeProductByUser(args),
-  // );
-
   const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
-    (args: SaveProductPayload) => client().saveProduct(args, { type: ContentType.FormData }),
+    async (args: SaveProductPayload) =>
+      await (await client()).saveProduct(args, { type: ContentType.FormData }),
   );
 
   const onSaveMutate = ({ data }: SaveProductPayload) => {
@@ -92,8 +89,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   };
 
   const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
-    (args: DeleteSaveProductsPayload) =>
-      client().deleteSaveProducts(args, { type: ContentType.FormData }),
+    async (args: DeleteSaveProductsPayload) =>
+      await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
   );
 
   const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
@@ -166,7 +163,13 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <BackButton />
         <div className='flex items-center gap-4'>
           <Link href='/product/cart'>
-            <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+            <Image
+              unoptimized
+              src='/assets/icons/common/cart-title.svg'
+              alt='cart'
+              width={22}
+              height={23}
+            />
           </Link>
           <ShareButton />
         </div>
@@ -185,7 +188,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       />
       <div className='min-h-[calc(100dvb-180px)]'>
         {selectedTab === 0 ? (
-          <div dangerouslySetInnerHTML={{ __html: description }} className='' />
+          <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />
         ) : // <Image
         //   width='0'
         //   height='0'
@@ -232,25 +235,38 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             else onSaveMutate({ data: { productId: Number(id) } });
           }}
         >
-          {isLiked ? (
-            <Image
-              src='/assets/icons/product/product-bookmark-on.svg'
-              alt='heart'
-              width={30}
-              height={30}
-            />
-          ) : (
-            <Image
-              src='/assets/icons/product/product-bookmark-off.svg'
-              alt='heart'
-              width={30}
-              height={30}
-            />
-          )}
+          <Image
+            unoptimized
+            alt='heart'
+            width={30}
+            height={30}
+            src={
+              isLiked
+                ? '/assets/icons/product/product-bookmark-on.svg'
+                : '/assets/icons/product/product-bookmark-off.svg'
+            }
+          />
         </button>
         <button
           className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
           onClick={() => {
+            if (data?.state !== 'ACTIVE') {
+              let message = '';
+              switch (data?.state) {
+                case 'DELETED':
+                  message = '삭제된 상품입니다.';
+                  break;
+                case 'SOLD_OUT':
+                  message = '품절된 상품입니다.';
+                  break;
+                case 'INACTIVE':
+                  message = '비활성화된 상품입니다.';
+                  break;
+                default:
+                  break;
+              }
+              return setAlert({ message });
+            }
             const cookie = getCookie(VARIABLES.ACCESS_TOKEN);
             if (!cookie) router.push('/login');
             else setIsVisible(true);
@@ -271,7 +287,7 @@ ProductDetail.getLayout = page => (
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
-  const { selectProduct } = client();
+  const { selectProduct } = await client();
   return {
     props: { initialData: (await selectProduct(Number(id))).data.data },
   };

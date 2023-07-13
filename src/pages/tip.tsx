@@ -33,7 +33,7 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.tipList.list(variables),
     async () => {
-      const res = await client().selectTipList(variables);
+      const res = await (await client()).selectTipList(variables);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -57,10 +57,22 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
           알아두면 좋은 정보
         </p>
         <Link href='/compare/storage'>
-          <Image src='/assets/icons/common/bookmark-title.svg' alt='cart' width={24} height={24} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/bookmark-title.svg'
+            alt='cart'
+            width={24}
+            height={24}
+          />
         </Link>
         <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/cart-title.svg'
+            alt='cart'
+            width={22}
+            height={23}
+          />
         </Link>
       </div>
 
@@ -99,6 +111,7 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
               className='relative aspect-[294/419] w-full overflow-hidden rounded-lg shadow-[0px_5px_10px_rgba(0,0,0,0.15)]'
             >
               <Image
+                unoptimized
                 width={294}
                 height={419}
                 src={v.image ?? ''}
@@ -129,7 +142,7 @@ Tip.getLayout = page => (
 );
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectTipList } = client();
+  const { selectTipList } = await client();
   return {
     props: { initialData: (await selectTipList()).data.data },
   };

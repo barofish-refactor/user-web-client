@@ -8,7 +8,13 @@ const Compare = () => {
           <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             다른 사람들은 이 상품과 비교했어요
           </p>
-          <Image src='/assets/icons/product/compare.svg' alt='compare' width={16} height={16} />
+          <Image
+            unoptimized
+            src='/assets/icons/product/compare.svg'
+            alt='compare'
+            width={16}
+            height={16}
+          />
         </div>
         <div className='grid grid-cols-2 gap-[11px] pt-[18px]'>
           {/* <ProductItem />

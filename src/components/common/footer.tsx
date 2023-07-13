@@ -1,6 +1,5 @@
 import { getCookie } from 'cookies-next';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type ComponentProps } from 'react';
 
@@ -90,6 +89,7 @@ export function Footer({ className, ...props }: FooterProps) {
                 })}
               >
                 <Image
+                  unoptimized
                   src={isActive ? v.activeIcon : v.inactiveIcon}
                   alt={v.title}
                   width={v.iconWidth}

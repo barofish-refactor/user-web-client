@@ -18,8 +18,8 @@ const MypageWithdrawal: NextPageWithLayout = () => {
   const queryClient = useQueryClient();
   const [isAgree, setIsAgree] = useState(false);
 
-  const { mutateAsync: withdrawUser, isLoading: isMutateLoading } = useMutation(() =>
-    client().withdrawUser(),
+  const { mutateAsync: withdrawUser, isLoading: isMutateLoading } = useMutation(
+    async () => await (await client()).withdrawUser(),
   );
 
   const onWithdrawal = () => {

@@ -72,7 +72,13 @@ function Empty() {
   return (
     <div className='grid flex-1 place-items-center bg-white'>
       <div className='flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='up'
+          width={40}
+          height={40}
+        />
         <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           보유중인 쿠폰이 없습니다.
         </p>

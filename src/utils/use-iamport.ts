@@ -46,12 +46,19 @@ export type IamportData = {
   mobileRedirectUrl: string;
 };
 
+export type vBankType = {
+  vbank_num?: string;
+  vbank_date?: string;
+  vbank_holder?: string;
+  vbank_name?: string;
+};
+
 /** 아임포트 props */
 export interface IamportProps {
   /** 결제정보 */
   data: IamportData;
   /** 성공시 실행 함수 */
-  onSuccess: () => void;
+  onSuccess: (vBankData?: vBankType) => void;
   /** 실패시 실행 함수 */
   onFailure: (message: string) => void;
 }
@@ -68,9 +75,9 @@ export const useIamport = () => {
 
     const suffix =
       p.data.payMethod === IamportPayMethod.Naverpay
-        ? process.env.NEXT_NAVER_PG_MID
+        ? process.env.NEXT_PUBLIC_NAVER_PG_MID
         : p.data.payMethod === IamportPayMethod.Kakaopay
-        ? process.env.NEXT_KAKAO_PG_MID
+        ? process.env.NEXT_PUBLIC_KAKAO_PG_MID
         : process.env.NEXT_PUBLIC_PG_MID;
 
     const value = {
@@ -100,7 +107,16 @@ export const useIamport = () => {
         if (process.env.NODE_ENV === 'development') console.log(response);
         p.onFailure(response.error_msg);
       } else {
-        p.onSuccess();
+        p.onSuccess(
+          p.data.payMethod === IamportPayMethod.Vbank
+            ? {
+                vbank_num: response.vbank_num,
+                vbank_date: response.vbank_date,
+                vbank_holder: response.vbank_holder,
+                vbank_name: response.vbank_name,
+              }
+            : undefined,
+        );
       }
     };
 

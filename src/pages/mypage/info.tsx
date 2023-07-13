@@ -30,7 +30,7 @@ const MypageInfo: NextPageWithLayout = () => {
   const onLogout = useLogout();
 
   const { data: user, refetch } = useQuery(queryKey.user, async () => {
-    const res = await client().selectUserSelfInfo();
+    const res = await (await client()).selectUserSelfInfo();
 
     if (res.data.isSuccess) {
       return res.data.data;
@@ -44,8 +44,8 @@ const MypageInfo: NextPageWithLayout = () => {
     }
   });
 
-  const { mutateAsync: updateUser, isLoading } = useMutation((args: UpdateUserPayload) =>
-    client().updateUser(args),
+  const { mutateAsync: updateUser, isLoading } = useMutation(
+    async (args: UpdateUserPayload) => await (await client()).updateUser(args),
   );
 
   const onMutate = ({ data, profileImage }: UpdateUserPayload) => {
@@ -202,6 +202,7 @@ function Row({
         {value}
       </p>
       <Image
+        unoptimized
         src='/assets/icons/common/chevron-mypage.svg'
         alt=''
         width={24}

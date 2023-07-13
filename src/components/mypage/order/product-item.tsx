@@ -33,8 +33,10 @@ export function MypageOrderProductItem({ id, item }: Props) {
     case 'WAIT_DEPOSIT':
     case 'PAYMENT_DONE':
     case 'DELIVERY_READY':
-    case 'ON_DELIVERY':
       buttonList = [0];
+      break;
+    case 'ON_DELIVERY':
+      buttonList = [2, 3];
       break;
     case 'DELIVERY_DONE':
       buttonList = [0, 1, 2, 3];
@@ -56,8 +58,8 @@ export function MypageOrderProductItem({ id, item }: Props) {
   }
 
   const { mutateAsync: confirmOrderProduct, isLoading: isConfirmLoading } = useMutation(
-    ({ orderProductInfoId }: { orderProductInfoId: number }) =>
-      client().confirmOrderProduct(orderProductInfoId),
+    async ({ orderProductInfoId }: { orderProductInfoId: number }) =>
+      await (await client()).confirmOrderProduct(orderProductInfoId),
   );
 
   const onConfirmMutate = ({ orderProductInfoId }: { orderProductInfoId: number }) => {
@@ -91,6 +93,7 @@ export function MypageOrderProductItem({ id, item }: Props) {
       <div className='mt-2 flex items-center gap-2.5'>
         <Link href={{ pathname: '/product', query: { id: item.product?.id } }}>
           <Image
+            unoptimized
             priority
             src={item.product?.image ?? ''}
             alt='product'
@@ -150,7 +153,27 @@ export function MypageOrderProductItem({ id, item }: Props) {
               구매 확정
             </button>
           )}
-          {buttonList.includes(3) && <button className={buttonClassName}>배송 조회</button>}
+          {buttonList.includes(3) && (
+            <button
+              className={buttonClassName}
+              onClick={() => {
+                setAlert({
+                  message: (item.deliverCompany ?? '') + ' ' + (item.invoiceCode ?? ''),
+                  onClick: () => {
+                    if (window.ReactNativeWebView) {
+                      window.ReactNativeWebView.postMessage(
+                        JSON.stringify({ type: 'link', url: `https://naver.me/5FlthH9K` }),
+                      );
+                    } else {
+                      return window.open(`https://naver.me/5FlthH9K`, '_blank');
+                    }
+                  },
+                });
+              }}
+            >
+              배송 조회
+            </button>
+          )}
           {buttonList.includes(4) && !item.isReviewWritten && (
             <Link
               href={{ pathname: '/mypage/review/write', query: { v: id, subId: item.id } }}

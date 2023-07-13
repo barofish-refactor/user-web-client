@@ -120,7 +120,7 @@ export const parseIamportPayMethod = (v: Nullish<IamportPayMethod>) => {
     case IamportPayMethod.Trans:
       return '실시간계좌이체';
     default:
-      return '-';
+      return '수기결제';
   }
 };
 // "CARD" | "KEY_IN" | "NAVER" | "KAKAO_PAY" | "PHONE" | "DEPOSIT" | "VIRTUAL_ACCOUNT"
@@ -142,5 +142,27 @@ export const parsePaymentWay = (v: Nullish<IamportPayMethod>) => {
       return 'DEPOSIT';
     default:
       return 'KEY_IN';
+  }
+};
+
+/** 결제수단 파싱 */
+export const parsePaymentWay2 = (
+  v: Nullish<'CARD' | 'KAKAO_PAY' | 'NAVER' | 'PHONE' | 'VIRTUAL_ACCOUNT' | 'DEPOSIT' | 'KEY_IN'>,
+) => {
+  switch (v) {
+    case 'CARD':
+      return '신용카드';
+    case 'KAKAO_PAY':
+      return '카카오페이';
+    case 'NAVER':
+      return '네이버페이';
+    case 'PHONE':
+      return '휴대폰결제';
+    case 'VIRTUAL_ACCOUNT':
+      return '가상계좌';
+    case 'DEPOSIT':
+      return '실시간계좌이체';
+    default:
+      return '수기결제';
   }
 };

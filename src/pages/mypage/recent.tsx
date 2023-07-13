@@ -15,7 +15,7 @@ const MypageRecent: NextPageWithLayout = () => {
   const { data } = useQuery(
     queryKey.recent.list(recentData),
     async () => {
-      const res = await client().selectRecentViewList({ ids: recentData.join(',') });
+      const res = await (await client()).selectRecentViewList({ ids: recentData.join(',') });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -64,7 +64,13 @@ function Empty() {
     <div className='flex h-[100dvb] w-full items-center justify-center'>
       <div className='mb-[100px] grid flex-1 place-items-center'>
         <div className='flex flex-col items-center gap-2'>
-          <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+          <Image
+            unoptimized
+            src='/assets/icons/search/search-error.svg'
+            alt='up'
+            width={40}
+            height={40}
+          />
           <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
             최근 본 상품이 없습니다.
           </p>

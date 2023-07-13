@@ -10,8 +10,9 @@ import { formatToBlob, requestPermission, setToken } from 'src/utils/functions';
 export function KakaoButton() {
   const router = useRouter();
   const { setAlert } = useAlertStore();
-  const { mutateAsync: loginUser } = useMutation((args: JoinSnsUserPayload) =>
-    client().joinSnsUser(args, { type: ContentType.FormData }),
+  const { mutateAsync: loginUser } = useMutation(
+    async (args: JoinSnsUserPayload) =>
+      await (await client()).joinSnsUser(args, { type: ContentType.FormData }),
   );
 
   return (

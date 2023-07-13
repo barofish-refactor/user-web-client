@@ -27,9 +27,11 @@ export function PhoneField() {
   const { setAlert } = useAlertStore();
 
   const { mutateAsync: requestCodeVerification, isLoading: requestCodeVerificationLoading } =
-    useMutation((args: RequestCodeReq) => client().requestCodeVerification(args));
+    useMutation(
+      async (args: RequestCodeReq) => await (await client()).requestCodeVerification(args),
+    );
   const { mutateAsync: verifyCode, isLoading: verifyCodeLoading } = useMutation(
-    (args: VerifyCodeReq) => client().verifyCode(args),
+    async (args: VerifyCodeReq) => await (await client()).verifyCode(args),
   );
 
   const verificationId = watch('verificationId');

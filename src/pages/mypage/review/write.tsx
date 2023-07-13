@@ -16,7 +16,7 @@ const MypageReviewWrite: NextPageWithLayout = () => {
   const { data } = useQuery(
     queryKey.order.detail(v as string),
     async () => {
-      const res = await client().selectOrder(v as string);
+      const res = await (await client()).selectOrder(v as string);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {

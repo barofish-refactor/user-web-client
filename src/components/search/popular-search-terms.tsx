@@ -14,11 +14,35 @@ const PopularSearchTerms = ({ data, setSearchText }: Props) => {
   const parseRankState = (state: 'UP' | 'DOWN' | 'NEW' | 'NONE') => {
     switch (state) {
       case 'UP':
-        return <Image src='/assets/icons/search/rank-up.svg' alt='up' width={15} height={15} />;
+        return (
+          <Image
+            unoptimized
+            src='/assets/icons/search/rank-up.svg'
+            alt='up'
+            width={15}
+            height={15}
+          />
+        );
       case 'DOWN':
-        return <Image src='/assets/icons/search/rank-down.svg' alt='down' width={15} height={15} />;
+        return (
+          <Image
+            unoptimized
+            src='/assets/icons/search/rank-down.svg'
+            alt='down'
+            width={15}
+            height={15}
+          />
+        );
       case 'NEW':
-        return <Image src='/assets/icons/search/rank-new.svg' alt='new' width={28} height={21} />;
+        return (
+          <Image
+            unoptimized
+            src='/assets/icons/search/rank-new.svg'
+            alt='new'
+            width={28}
+            height={21}
+          />
+        );
       case 'NONE':
         return <p className='w-[15px] text-[16px] font-normal text-grey-10'>-</p>;
       default:

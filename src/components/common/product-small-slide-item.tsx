@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { type ProductListDto, type AddBasketPayload } from 'src/api/swagger/data-contracts';
+import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
 import { useProductOptionStore } from 'src/store';
 import cm from 'src/utils/class-merge';
 import { calcDiscountRate, formatToLocaleString, setSquareBrackets } from 'src/utils/functions';
@@ -8,11 +8,12 @@ import { calcDiscountRate, formatToLocaleString, setSquareBrackets } from 'src/u
 interface Props {
   data: ProductListDto;
   type: 'SMALL' | 'LARGE';
+  imageOptimize?: boolean;
   onMutate: (value: AddBasketPayload) => void;
   onClick?: () => void;
 }
 
-const ProductSmallSlideItem = ({ data, type, onClick }: Props) => {
+const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) => {
   const router = useRouter();
   const { setProductOption } = useProductOptionStore();
   // const image = (data.images ?? '').replace('[', '').replace(']', '').split(',');
@@ -27,28 +28,18 @@ const ProductSmallSlideItem = ({ data, type, onClick }: Props) => {
     >
       <div
         className={cm('relative aspect-square w-full overflow-hidden rounded-lg', {
-          'aspect-[131/132]': type === 'SMALL',
+          'aspect-[132/132]': type === 'SMALL',
         })}
       >
         <Image
-          fill
-          src={data.image ?? ''}
-          alt='image'
-          draggable={false}
-          className='w-full object-cover'
-        />
-        {/* <div className={cm('relative overflow-hidden rounded-lg')}>
-        <Image
-          width={type === 'SMALL' ? 131 : 132}
+          width={132}
           height={132}
+          unoptimized={!imageOptimize}
           src={data.image ?? ''}
           alt='image'
           draggable={false}
-          className={cm(
-            'w-full object-cover',
-            type === 'SMALL' ? 'aspect-[131/132]' : 'aspect-square',
-          )}
-        /> */}
+          className='aspect-square w-full object-cover'
+        />
         <div
           className='product-cart'
           onClick={e => {

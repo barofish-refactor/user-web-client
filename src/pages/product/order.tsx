@@ -5,10 +5,10 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import { NumericFormat, PatternFormat } from 'react-number-format';
 import { client } from 'src/api/client';
 import {
-  type PaymentMethodDto,
   type Coupon,
   type DeliverPlace,
   type OrderReq,
+  type PaymentMethodDto,
 } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
 import { ProductCoupon, ProductShippingAddress } from 'src/components/product';
@@ -26,10 +26,14 @@ import {
 } from 'src/utils/functions';
 import { bToA, parseIamportPayMethod, parsePaymentWay } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
-import { IamportPayMethod, impSuccessKey, useIamport } from 'src/utils/use-iamport';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { IamportPayMethod, impSuccessKey, useIamport, type vBankType } from 'src/utils/use-iamport';
 import 'swiper/css';
-import { VARIABLES } from 'src/variables';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+const getSectionDeliverFee = (data: optionState[]) =>
+  data
+    .map(v => Math.ceil(v.amount / v.maxAvailableStock) * (data[0].deliveryFee ?? 0))
+    .reduce((a, b) => a + b, 0);
 
 /** 주문하기 */
 const Order: NextPageWithLayout = () => {
@@ -46,14 +50,14 @@ const Order: NextPageWithLayout = () => {
   const [isOpenProduct, setIsOpenProduct] = useState<boolean>(false);
   const [isCheck, setIsCheck] = useState<boolean>(false);
   const [selectCoupon, setSelectCoupon] = useState<Coupon>();
-  const [isOpenPayList, setIsOpenPayList] = useState<boolean>(false);
+  const [isOpenPayList, setIsOpenPayList] = useState<boolean>(true);
   const [payMethod, setPayMethod] = useState<IamportPayMethod | undefined>(
-    VARIABLES.IS_MASTER ? IamportPayMethod.Card : IamportPayMethod.Kakaopay,
+    IamportPayMethod.Kakaopay,
   );
   const [selectedCard, setSelectedCard] = useState<PaymentMethodDto>();
   const { onIamport } = useIamport();
-  const { mutateAsync: orderProduct } = useMutation((args: OrderReq) =>
-    client().orderProduct(args),
+  const { mutateAsync: orderProduct } = useMutation(
+    async (args: OrderReq) => await (await client()).orderProduct(args),
   );
 
   const selectedOption: optionState[] = router.isReady ? JSON.parse(bToA(options as string)) : [];
@@ -70,15 +74,7 @@ const Order: NextPageWithLayout = () => {
       const sectionTotal = x.data
         .map(v => (v.price + (v.additionalPrice ?? 0)) * (v.amount ?? 0))
         .reduce((a, b) => a + b, 0);
-      // const sectionDeliverFee =
-      //   (x.data[0].deliveryFee ?? 0) * x.data.map(v => v.amount ?? 0).reduce((a, b) => a + b, 0);
-      const sectionDeliverFee = x.data
-        .map(
-          v =>
-            Math.ceil(v.amount / v.maxAvailableStock) *
-            ((x.data[0].deliveryFee ?? 0) + (v.deliveryFee ?? 0)),
-        )
-        .reduce((a, b) => a + b, 0);
+      const sectionDeliverFee = getSectionDeliverFee(x.data);
       return x.data[0].deliverFeeType === 'FREE'
         ? 0
         : x.data[0].deliverFeeType === 'FIX'
@@ -90,7 +86,7 @@ const Order: NextPageWithLayout = () => {
     .reduce((a, b) => a + b, 0);
 
   const { data: user } = useQuery(queryKey.user, async () => {
-    const res = await client().selectUserSelfInfo();
+    const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -104,7 +100,7 @@ const Order: NextPageWithLayout = () => {
   });
 
   const { data: paymentMethodData } = useQuery(queryKey.paymentMethod, async () => {
-    const res = await client().selectPaymentMethodList();
+    const res = await (await client()).selectPaymentMethodList();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -114,7 +110,7 @@ const Order: NextPageWithLayout = () => {
   });
 
   const { data: pointData } = useQuery(queryKey.pointRule, async () => {
-    const res = await client().selectPointRule();
+    const res = await (await client()).selectPointRule();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -127,7 +123,7 @@ const Order: NextPageWithLayout = () => {
   const { data: couponData } = useQuery(
     queryKey.downloadedCoupon.lists,
     async () => {
-      const res = await client().selectDownloadedCoupon();
+      const res = await (await client()).selectDownloadedCoupon();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -143,13 +139,14 @@ const Order: NextPageWithLayout = () => {
     : selectCoupon.type === 'RATE'
     ? totalPrice * ((selectCoupon.amount ?? 1) / 100)
     : selectCoupon.amount ?? 0;
+
+  /** 최종결제금액 (적립금 제외) */
+  const finalPrice = totalPrice + totalDelivery - couponDiscountPoint;
+
   /** 구매 적립금 */
   const buyPoint =
     Math.round(
-      Math.floor(
-        ((totalPrice + totalDelivery - couponDiscountPoint - Number(point)) / 100) *
-          (user?.grade?.pointRate ?? 1),
-      ) / 10,
+      Math.floor(((finalPrice - Number(point)) / 100) * (user?.grade?.pointRate ?? 1)) / 10,
     ) * 10;
   /** 후기 작성 적립금 */
   const writeReviewPoint = pointData?.maxReviewPoint;
@@ -159,7 +156,17 @@ const Order: NextPageWithLayout = () => {
     [buyPoint, pointData?.maxReviewPoint],
   );
 
-  const onIamportResult = (orderId: string, isSuccess: boolean, error_msg?: string) => {
+  const onIamportResult = (
+    orderId: string,
+    isSuccess: boolean,
+    error_msg?: string,
+    vBankData?: vBankType,
+  ) => {
+    if (vBankData) {
+      setAlert({ message: '가상계좌 정보가 문자로 전송되었습니다.', type: 'success' });
+      router.push('/mypage');
+      return;
+    }
     router.push({
       pathname: '/product/payment',
       query: {
@@ -167,6 +174,7 @@ const Order: NextPageWithLayout = () => {
         [impSuccessKey]: isSuccess,
         orderId,
         error_msg: !isSuccess && error_msg,
+        vb: vBankData ? 'true' : undefined,
       },
     });
   };
@@ -200,7 +208,7 @@ const Order: NextPageWithLayout = () => {
         couponId: selectCoupon?.id ?? undefined,
         point: Number(point),
         deliverPlaceId: shippingAddress.id,
-        totalPrice: totalPrice + totalDelivery - couponDiscountPoint - Number(point),
+        totalPrice: finalPrice - Number(point),
         couponDiscountPrice: couponDiscountPoint,
         paymentMethodId: selectedCard?.id,
         paymentWay: parsePaymentWay(payMethod),
@@ -225,14 +233,14 @@ const Order: NextPageWithLayout = () => {
                 merchantUid: orderId,
                 mobileRedirectUrl: getMobileResultUrl(orderId),
                 productName: selectedOption[0]?.productName ?? '',
-                amount: totalPrice + totalDelivery - couponDiscountPoint - Number(point),
+                amount: finalPrice - Number(point),
                 email: '',
                 address: '',
                 postcode: '',
                 tel: phone,
                 name,
               },
-              onSuccess: () => onIamportResult(orderId, true),
+              onSuccess: (vBankData?: vBankType) => onIamportResult(orderId, true, '', vBankData),
               onFailure: (error_msg: string) => onIamportResult(orderId, false, error_msg),
             });
           } else {
@@ -244,6 +252,12 @@ const Order: NextPageWithLayout = () => {
         });
     }
   }
+
+  /** 적립금 모두 사용 버튼 클릭 */
+  const setAllPoint = () => {
+    if (finalPrice < (user?.point ?? 0)) setPoint(String(finalPrice));
+    else setPoint(String(user?.point ?? 0));
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -285,8 +299,6 @@ const Order: NextPageWithLayout = () => {
       document.body.style.overflow = 'overlay';
     }
   }, [isAddressVisible, isCouponVisible]);
-
-  const PayMethodEl = VARIABLES.IS_MASTER ? 'div' : 'button';
 
   return (
     <div className='pb-[100px] max-md:w-[100vw]'>
@@ -418,6 +430,7 @@ const Order: NextPageWithLayout = () => {
           {`${selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''}`}
         </p>
         <Image
+          unoptimized
           src='/assets/icons/common/chevron-mypage.svg'
           alt='chevron'
           width={24}
@@ -427,29 +440,13 @@ const Order: NextPageWithLayout = () => {
       </button>
       {isOpenProduct &&
         sectionOption.map(x => {
-          // const sectionTotal = x.data
-          //   .map(
-          //     v =>
-          //       (calcDiscountPrice(v.product?.originPrice, v.product?.discountRate) +
-          //         (v.option?.price ?? 0)) *
-          //       (v.amount ?? 0),
-          //   )
-          //   .reduce((a, b) => a + b, 0);
-          // const sectionDeliverFee =
-          //   (x.data[0].deliveryFee ?? 0) *
-          //   x.data.map(v => v.amount ?? 0).reduce((a, b) => a + b, 0);
-          const sectionDeliverFee = x.data
-            .map(
-              v =>
-                Math.ceil(v.amount / v.maxAvailableStock) *
-                ((x.data[0].deliveryFee ?? 0) + (v.deliveryFee ?? 0)),
-            )
-            .reduce((a, b) => a + b, 0);
+          const sectionDeliverFee = getSectionDeliverFee(x.data);
           return (
             <Fragment key={`${x.storeId}`}>
               <div className='flex items-center justify-between px-4'>
                 <div className='flex items-center gap-2'>
                   <Image
+                    unoptimized
                     src={x.storeImage}
                     alt=''
                     width={28}
@@ -481,6 +478,7 @@ const Order: NextPageWithLayout = () => {
                     <div key={`option${idx}`} className='px-4'>
                       <div className='mt-[13px] flex items-center gap-3'>
                         <Image
+                          unoptimized
                           alt=''
                           width={70}
                           height={70}
@@ -570,14 +568,14 @@ const Order: NextPageWithLayout = () => {
             inputMode='numeric'
             value={point}
             disabled={!user?.point}
-            isAllowed={e => (e.floatValue ?? 0) <= (user?.point ?? 0)}
+            isAllowed={e => (e.floatValue ?? 0) <= (finalPrice || (user?.point ?? 0))}
             onValueChange={e => setPoint(String(Math.min(e.floatValue ?? 0, user?.point ?? 0)))}
           />
           <button
             type='button'
             className='flex h-[44px] w-[93px] items-center justify-center rounded-lg border border-grey-40'
             disabled={!user?.point}
-            onClick={() => setPoint(String(user?.point ?? 0))}
+            onClick={setAllPoint}
           >
             <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>모두 사용</p>
           </button>
@@ -594,9 +592,9 @@ const Order: NextPageWithLayout = () => {
       <div className='h-2 bg-grey-90' />
 
       {/* 결제수단 */}
-      <PayMethodEl
+      <button
         className='flex h-[68px] w-full items-center gap-1.5 px-4'
-        onClick={() => !VARIABLES.IS_MASTER && setIsOpenPayList(!isOpenPayList)}
+        onClick={() => setIsOpenPayList(!isOpenPayList)}
       >
         <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           결제수단
@@ -604,16 +602,15 @@ const Order: NextPageWithLayout = () => {
         <p className='flex-1 text-end text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
           {payMethod ? parseIamportPayMethod(payMethod) : '등록된 카드'}
         </p>
-        {!VARIABLES.IS_MASTER && (
-          <Image
-            src='/assets/icons/common/chevron-mypage.svg'
-            alt='chevron'
-            width={24}
-            height={24}
-            className={isOpenPayList ? 'rotate-[270deg]' : 'rotate-90'}
-          />
-        )}
-      </PayMethodEl>
+        <Image
+          unoptimized
+          src='/assets/icons/common/chevron-mypage.svg'
+          alt='chevron'
+          width={24}
+          height={24}
+          className={isOpenPayList ? 'rotate-[270deg]' : 'rotate-90'}
+        />
+      </button>
       {isOpenPayList && (
         <div className='grid grid-cols-2 gap-2 px-4 pb-[22px]'>
           {(
@@ -655,6 +652,7 @@ const Order: NextPageWithLayout = () => {
                 >
                   {v.image && (
                     <Image
+                      unoptimized
                       src={isActive ? v.activeImage ?? v.image : v.image}
                       alt='icon'
                       width={20}
@@ -719,6 +717,7 @@ const Order: NextPageWithLayout = () => {
                         <div className='grid h-[132px] flex-1 place-items-center'>
                           <div className='flex flex-col items-center gap-2'>
                             <Image
+                              unoptimized
                               src='/assets/icons/search/search-error.svg'
                               alt='up'
                               width={40}
@@ -826,7 +825,7 @@ const Order: NextPageWithLayout = () => {
             최종 결제 금액
           </p>
           <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-            totalPrice + totalDelivery - couponDiscountPoint - Number(point),
+            finalPrice - Number(point),
           )}원`}</p>
         </div>
       </div>
@@ -880,9 +879,7 @@ const Order: NextPageWithLayout = () => {
           onClick={onPayment}
         >
           <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
-            {`${formatToLocaleString(
-              totalPrice + totalDelivery - couponDiscountPoint - Number(point),
-            )}원 결제하기`}
+            {`${formatToLocaleString(finalPrice - Number(point))}원 결제하기`}
           </p>
         </button>
       </div>
@@ -891,39 +888,24 @@ const Order: NextPageWithLayout = () => {
 };
 
 function BusinessInformation() {
+  const { data: info } = useQuery(queryKey.footer, async () => {
+    const res = await (await client()).selectSiteInfo('TC_FOOTER');
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
+
   return (
     <div className='px-4 py-[22px]'>
       <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
         (주) 맛신저 사업자정보
       </p>
-      <div className='mt-[18px] flex flex-col gap-2'>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          COMPANY : 주식회사 맛신저 (matsinger inc.)
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          CEO : 신용진
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          ADDRESS : 서울특별시 서대문구 신촌로 25 2층, 2328호
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          TEL : 1668-4591
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          FAX : 0504-366-3633
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          BUSINESS LICENCE : 380-88-02372
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          ONLINE LICENCE : 2022-서울서대문-1579
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          PRIVACY OFFICER : 노승우 (help@barofish.com)
-        </p>
-        <p className='text-[12px] font-medium leading-[16px] -tracking-[0.03em] text-grey-60'>
-          운영 시간 : 9~18시 근무, 12~1시 점심시간
-        </p>
+      <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+        {info?.tcContent?.map((v, i) => {
+          return <p key={i}>{`${v.title} : ${v.content}`}</p>;
+        })}
       </div>
     </div>
   );

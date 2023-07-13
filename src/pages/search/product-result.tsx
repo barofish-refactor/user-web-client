@@ -28,7 +28,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { filter, setFilter } = useFilterStore();
   const { setAlert } = useAlertStore();
-  const { id, title, subItemId, type, f } = router.query;
+  const { id, subItemId, type, f } = router.query;
   const refSwiper = useRef<SwiperRef>(null);
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>();
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(-1);
@@ -36,15 +36,41 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
   const [sort, setSort] = useState<sortType>('RECOMMEND'); // default: 추천순
 
-  const { data } = useQuery(
+  const [title, setTitle] = useState<string>('');
+
+  const { data, isLoading } = useQuery(
     queryKey.category,
     async () => {
-      const { selectCategories } = client();
+      const { selectCategories } = await client();
       const res = await selectCategories();
       return res.data;
     },
     { initialData },
   );
+
+  const { data: curationData, isLoading: curationLoading } = useQuery(
+    queryKey.curation.detail(id),
+    async () => {
+      const res = await (await client()).selectCuration(Number(id));
+      return res.data.data;
+    },
+    {
+      enabled: !!id && type === 'curation',
+    },
+  );
+
+  useEffect(() => {
+    if (curationData && !curationLoading) {
+      setTitle(curationData.title ?? curationData.shortName ?? '');
+    }
+  }, [curationData, curationLoading]);
+
+  useEffect(() => {
+    if (data && !isLoading && type === 'category' && id) {
+      const tmp = data.data?.filter(x => x.id === Number(id));
+      if (tmp && tmp?.length > 0) setTitle(tmp[0].name ?? '');
+    }
+  }, [data, id, isLoading, type]);
 
   const {
     data: productData,
@@ -60,7 +86,10 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       sortby: sort,
     }),
     async ({ pageParam = 1 }) => {
-      const res = await client().selectProductListByUser({
+      if (pageParam === -1) return;
+      const res = await (
+        await client()
+      ).selectProductListByUser({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         ...{
           categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
@@ -80,7 +109,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
       },
     },
   );
@@ -209,7 +238,7 @@ ProductResult.getLayout = page => (
 );
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectCategories } = client();
+  const { selectCategories } = await client();
   return {
     props: { initialData: (await selectCategories()).data },
   };

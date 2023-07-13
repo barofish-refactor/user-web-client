@@ -1,24 +1,24 @@
-import Layout from 'src/components/common/layout';
-import { BackButton } from 'src/components/ui';
-import { type NextPageWithLayout } from 'src/types/common';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
-import { inputClassName, submitButtonClassName } from 'src/components/form';
-import { Selector } from 'src/components/common';
-import clsx from 'clsx';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { client } from 'src/api/client';
-import { queryKey } from 'src/query-key';
-import { useAlertStore } from 'src/store';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
+import { client } from 'src/api/client';
 import {
   type CancelOrderByUserPayload,
-  type RequestChangeProductPayload,
   type OrderProductDto,
+  type RequestChangeProductPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
+import { Selector } from 'src/components/common';
+import Layout from 'src/components/common/layout';
+import { inputClassName, submitButtonClassName } from 'src/components/form';
+import { BackButton } from 'src/components/ui';
+import { queryKey } from 'src/query-key';
+import { useAlertStore } from 'src/store';
+import { type NextPageWithLayout } from 'src/types/common';
+import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
 
 interface optionType {
   label: string;
@@ -27,6 +27,7 @@ interface optionType {
 
 /** 마이페이지/주문 내역/주문 취소 */
 const MypageOrderRefundAction: NextPageWithLayout = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { id, subId, type } = router.query;
   const { setAlert } = useAlertStore();
@@ -37,7 +38,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
   const { data: orderData } = useQuery(
     queryKey.order.detail(id as string),
     async () => {
-      const res = await client().selectOrder(id as string);
+      const res = await (await client()).selectOrder(id as string);
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -58,23 +59,29 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
   }, [orderData, subId]);
 
   const { mutateAsync: cancelOrderByUser, isLoading: isCancelLoading } = useMutation(
-    ({
+    async ({
       orderProductInfoId,
       data,
     }: {
       orderProductInfoId: number;
       data: CancelOrderByUserPayload;
-    }) => client().cancelOrderByUser(orderProductInfoId, data, { type: ContentType.FormData }),
+    }) =>
+      await (
+        await client()
+      ).cancelOrderByUser(orderProductInfoId, data, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: requestChangeProduct, isLoading: isChangeLoading } = useMutation(
-    ({
+    async ({
       orderProductInfoId,
       data,
     }: {
       orderProductInfoId: number;
       data: RequestChangeProductPayload;
-    }) => client().requestChangeProduct(orderProductInfoId, data, { type: ContentType.FormData }),
+    }) =>
+      await (
+        await client()
+      ).requestChangeProduct(orderProductInfoId, data, { type: ContentType.FormData }),
   );
 
   const onCancelMutate = ({
@@ -88,6 +95,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
     cancelOrderByUser({ orderProductInfoId, data: { data: formatToBlob(data.data, true) } })
       .then(res => {
         if (res.data.isSuccess) {
+          queryClient.invalidateQueries(queryKey.order.lists);
           setAlert({
             message: `취소/환불 ${
               orderData?.state === 'WAIT_DEPOSIT' ? '완료 되었습니다.' : '요청이 접수되었습니다.'
@@ -97,7 +105,10 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        // if (error.message) setAlert(error.message);
+        console.log(error);
+      });
   };
 
   const onChangeMutate = ({
@@ -111,6 +122,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
     requestChangeProduct({ orderProductInfoId, data: { data: formatToBlob(data.data, true) } })
       .then(res => {
         if (res.data.isSuccess) {
+          queryClient.invalidateQueries(queryKey.order.lists);
           setAlert({
             message: '교환 요청이 접수되었습니다.',
             type: 'success',
@@ -118,7 +130,10 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        // if (error.message) setAlert(error.message);
+        console.log(error);
+      });
   };
 
   return (
@@ -135,6 +150,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
           <Link href={{ pathname: '/product', query: { id: 1 } }}>
             {productInfo?.product?.image && (
               <Image
+                unoptimized
                 priority
                 src={productInfo?.product?.image ?? ''}
                 alt='product'

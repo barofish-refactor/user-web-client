@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { type InfiniteData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
+import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type OrderDto } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
@@ -10,17 +11,45 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 
+const perView = 10;
+
 interface Props {
-  initialData: OrderDto[];
+  initialData: InfiniteData<OrderDto[]>;
 }
 
 /** 마이페이지/주문 내역 */
-const MypageOrder: NextPageWithLayout<Props> = ({ initialData }) => {
+const MypageOrder: NextPageWithLayout<Props> = ({}) => {
   const { setAlert } = useAlertStore();
-  const { data } = useQuery(
+  const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.order.lists,
+    async ({ pageParam = 0 }) => {
+      if (pageParam === -1) return;
+      const res = await (
+        await client()
+      ).selectOrderList({
+        page: pageParam,
+        take: perView,
+      });
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        setAlert({ message: res.data.code + ': ' + res.data.errorMsg });
+        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+      }
+    },
+    {
+      // staleTime: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextId = allPages.length;
+        return lastPage?.length !== 0 ? nextId : -1;
+      },
+    },
+  );
+
+  const { data: countData } = useQuery(
+    ['orderCount'],
     async () => {
-      const res = await client().selectOrderList();
+      const res = await (await client()).selectOrderList({ take: 9999 });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -29,18 +58,25 @@ const MypageOrder: NextPageWithLayout<Props> = ({ initialData }) => {
       }
     },
     {
-      initialData,
-      staleTime: 0,
+      // staleTime: 0
     },
   );
+
+  const { ref } = useInView({
+    initialInView: false,
+    skip: !hasNextPage,
+    onChange: inView => {
+      if (inView) fetchNextPage();
+    },
+  });
 
   return (
     <section className='pb-6'>
       <MypageOrderStatistics
-        totalCount={data?.length}
+        totalCount={countData?.length}
         deliveryDoneCount={
-          data && data.length > 0
-            ? data.filter(
+          countData && countData.length > 0
+            ? countData.filter(
                 x =>
                   (x.productInfos?.filter(v =>
                     ['DELIVERY_DONE', 'FINAL_CONFIRM'].includes(v.state ?? ''),
@@ -49,8 +85,8 @@ const MypageOrder: NextPageWithLayout<Props> = ({ initialData }) => {
             : 0
         }
         cancelRefundCount={
-          data && data.length > 0
-            ? data.filter(
+          countData && countData.length > 0
+            ? countData.filter(
                 x =>
                   (x.productInfos?.filter(v =>
                     [
@@ -69,19 +105,22 @@ const MypageOrder: NextPageWithLayout<Props> = ({ initialData }) => {
       />
       <hr className='border-t-8 border-grey-90' />
       <article className='divide-y-8 divide-grey-90'>
-        {data && data.length === 0 ? (
+        {countData && countData.length === 0 ? (
           <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>{Empty()}</div>
         ) : (
-          data?.map(v => (
-            <MypageOrderListItem
-              key={v.id}
-              id={v.id}
-              orderedAt={v.orderedAt}
-              orderProducts={v.productInfos}
-            />
-          ))
+          (data?.pages ?? []).map(x =>
+            (x ?? []).map(v => (
+              <MypageOrderListItem
+                key={v.id}
+                id={v.id}
+                orderedAt={v.orderedAt}
+                orderProducts={v.productInfos}
+              />
+            )),
+          )
         )}
       </article>
+      <div ref={ref} />
     </section>
   );
 };
@@ -89,7 +128,13 @@ const MypageOrder: NextPageWithLayout<Props> = ({ initialData }) => {
 function Empty() {
   return (
     <div className='flex flex-col items-center gap-2'>
-      <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+      <Image
+        unoptimized
+        src='/assets/icons/search/search-error.svg'
+        alt='up'
+        width={40}
+        height={40}
+      />
       <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
         주문 내역이 없습니다.
       </p>
@@ -111,7 +156,7 @@ MypageOrder.getLayout = page => (
 );
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectOrderList } = client();
+  const { selectOrderList } = await client();
   return {
     props: { initialData: (await selectOrderList()).data.data },
   };

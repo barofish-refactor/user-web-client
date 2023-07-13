@@ -6,7 +6,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_NAVER_KEY: string;
     NEXT_PUBLIC_APPLE_KEY: string;
     NEXT_PUBLIC_PG_MID: string;
-    NEXT_KAKAO_PG_MID: string;
-    NEXT_NAVER_PG_MID: string;
+    NEXT_PUBLIC_KAKAO_PG_MID: string;
+    NEXT_PUBLIC_NAVER_PG_MID: string;
   }
 }

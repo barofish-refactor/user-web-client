@@ -3,7 +3,7 @@ import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import { type Tip } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
@@ -25,7 +25,7 @@ const TipDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data } = useQuery(
     queryKey.tipList.detail(Number(id)),
     async () => {
-      const res = await client().selectTip(Number(id));
+      const res = await (await client()).selectTip(Number(id));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -57,18 +57,30 @@ const TipDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           알아두면 좋은 정보
         </p>
         <Link href='/compare/storage'>
-          <Image src='/assets/icons/common/bookmark-title.svg' alt='cart' width={24} height={24} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/bookmark-title.svg'
+            alt='cart'
+            width={24}
+            height={24}
+          />
         </Link>
         <Link href='/product/cart'>
-          <Image src='/assets/icons/common/cart-title.svg' alt='cart' width={22} height={23} />
+          <Image
+            unoptimized
+            src='/assets/icons/common/cart-title.svg'
+            alt='cart'
+            width={22}
+            height={23}
+          />
         </Link>
       </div>
-
       {/* content */}
       <div>
         <div className='relative aspect-[375/276] w-full'>
           {data?.image && (
             <Image
+              unoptimized
               src={data?.image}
               alt='image'
               width={375}
@@ -102,7 +114,7 @@ TipDetail.getLayout = page => (
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { id } = context.query;
-  const { selectTip } = client();
+  const { selectTip } = await client();
 
   return {
     props: { initialData: (await selectTip(Number(id))).data.data },

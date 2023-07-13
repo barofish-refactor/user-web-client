@@ -50,7 +50,9 @@ export function AgreementsField() {
                 id='1'
                 checked={value}
                 onCheckedChange={checked => {
-                  onChange(checked);
+                  if (typeof checked === 'boolean') {
+                    onChange(checked);
+                  }
                   const { termsOfService, marketingPolicy } = getValues();
                   if (checked && termsOfService) {
                     setIsAllChecked(marketingPolicy);
@@ -90,7 +92,9 @@ export function AgreementsField() {
                 id='2'
                 checked={value}
                 onCheckedChange={checked => {
-                  onChange(checked);
+                  if (typeof checked === 'boolean') {
+                    onChange(checked);
+                  }
                   const { privacyPolicy, marketingPolicy } = getValues();
                   if (checked && privacyPolicy) {
                     setIsAllChecked(marketingPolicy);
@@ -129,7 +133,9 @@ export function AgreementsField() {
                 id='3'
                 checked={value}
                 onCheckedChange={checked => {
-                  onChange(checked);
+                  if (typeof checked === 'boolean') {
+                    onChange(checked);
+                  }
                   const { privacyPolicy, termsOfService } = getValues();
                   setIsAllChecked(checked && privacyPolicy && termsOfService);
                 }}

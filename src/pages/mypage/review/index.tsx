@@ -17,7 +17,8 @@ const MypageReview: NextPageWithLayout = () => {
   const { data, isLoading, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.myReview,
     async ({ pageParam = 1 }) => {
-      const res = await client().selectMyReviewList({ page: pageParam, take });
+      if (pageParam === -1) return;
+      const res = await (await client()).selectMyReviewList({ page: pageParam, take });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -25,9 +26,9 @@ const MypageReview: NextPageWithLayout = () => {
       }
     },
     {
-      getNextPageParam: (_lastPage, allPages) => {
+      getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return nextId + 1;
+        return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
       },
     },
   );
@@ -69,7 +70,13 @@ function Empty() {
   return (
     <div className='grid flex-1 place-items-center'>
       <div className='flex flex-col items-center gap-2'>
-        <Image src='/assets/icons/search/search-error.svg' alt='up' width={40} height={40} />
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='up'
+          width={40}
+          height={40}
+        />
         <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           구매 후기가 없습니다.
         </p>

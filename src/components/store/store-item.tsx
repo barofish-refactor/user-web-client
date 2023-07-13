@@ -54,6 +54,7 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
             <StarIcon isActive={data?.isLike ?? false} />
           ) : (
             <Image
+              unoptimized
               alt=''
               width={24}
               height={24}

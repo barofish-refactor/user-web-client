@@ -15,7 +15,7 @@ const CurationTip = () => {
   const { data } = useQuery(
     queryKey.tipList.list({ type: undefined }),
     async () => {
-      const res = await client().selectTipList();
+      const res = await (await client()).selectTipList();
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -41,7 +41,13 @@ const CurationTip = () => {
             <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
               전체보기
             </p>
-            <Image src='/assets/icons/common/chevron.svg' alt='chevron' width={12} height={12} />
+            <Image
+              unoptimized
+              src='/assets/icons/common/chevron.svg'
+              alt='chevron'
+              width={12}
+              height={12}
+            />
           </div>
         </Link>
       </div>
