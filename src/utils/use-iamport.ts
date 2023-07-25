@@ -18,6 +18,8 @@ export enum IamportPayMethod {
   Kakaopay = 'kakaopay',
   /** 네이버페이 */
   Naverpay = 'naverpay',
+  /** 토스간편결제 */
+  Tosspay = 'tosspay',
 }
 
 /** 아임포트 결제정보 */
@@ -44,6 +46,8 @@ export type IamportData = {
   vbankDueHour?: number;
   /** 모바일결제시 리다이렉트 url */
   mobileRedirectUrl: string;
+  /** 면세금액 */
+  taxFree: number;
 };
 
 export type vBankType = {
@@ -73,17 +77,27 @@ export const useIamport = () => {
 
     IMP.init(process.env.NEXT_PUBLIC_IAMPORT_KEY);
 
-    const suffix =
-      p.data.payMethod === IamportPayMethod.Naverpay
-        ? process.env.NEXT_PUBLIC_NAVER_PG_MID
-        : p.data.payMethod === IamportPayMethod.Kakaopay
-        ? process.env.NEXT_PUBLIC_KAKAO_PG_MID
-        : process.env.NEXT_PUBLIC_PG_MID;
+    let suffix = '';
+    switch (p.data.payMethod) {
+      case IamportPayMethod.Naverpay:
+        suffix = process.env.NEXT_PUBLIC_NAVER_PG_MID;
+        break;
+      case IamportPayMethod.Kakaopay:
+        suffix = process.env.NEXT_PUBLIC_KAKAO_PG_MID;
+        break;
+      case IamportPayMethod.Tosspay:
+        suffix = process.env.NEXT_PUBLIC_TOSSPAY_PG_MID;
+        break;
+      default:
+        suffix = process.env.NEXT_PUBLIC_PG_MID;
+        break;
+    }
 
     const value = {
       pg: `${
-        [IamportPayMethod.Naverpay, IamportPayMethod.Kakaopay].includes(
-          p.data.payMethod ?? IamportPayMethod.Card,
+        p.data.payMethod &&
+        [IamportPayMethod.Naverpay, IamportPayMethod.Kakaopay, IamportPayMethod.Tosspay].includes(
+          p.data.payMethod,
         )
           ? p.data.payMethod
           : 'tosspayments'
@@ -92,6 +106,8 @@ export const useIamport = () => {
       merchant_uid: p.data.merchantUid,
       name: p.data.productName,
       amount: p.data.amount,
+      // tax_free: 0, //
+      tax_free: p.data.taxFree,
       buyer_email: p.data.email,
       buyer_name: p.data.name,
       buyer_tel: p.data.tel,

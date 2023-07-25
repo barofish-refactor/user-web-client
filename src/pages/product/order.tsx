@@ -24,9 +24,10 @@ import {
   formatToPhone,
   setSquareBrackets,
 } from 'src/utils/functions';
-import { bToA, parseIamportPayMethod, parsePaymentWay } from 'src/utils/parse';
+import { bToA, parseIamportPayMethod, parsePaymentWay, safeParse } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
 import { IamportPayMethod, impSuccessKey, useIamport, type vBankType } from 'src/utils/use-iamport';
+import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -60,12 +61,21 @@ const Order: NextPageWithLayout = () => {
     async (args: OrderReq) => await (await client()).orderProduct(args),
   );
 
-  const selectedOption: optionState[] = router.isReady ? JSON.parse(bToA(options as string)) : [];
+  const tmpOption: optionState[] | undefined = router.isReady
+    ? safeParse(bToA(options as string))
+    : [];
+  const selectedOption: optionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
   const totalPrice =
     selectedOption.length > 0
       ? selectedOption
           .map(x => (x.price + x.additionalPrice) * x.amount)
+          .reduce((a: number, b: number) => a + b)
+      : 0;
+  const taxFreePrice =
+    selectedOption.length > 0
+      ? selectedOption
+          .map(x => (x.needTaxation ? 0 : (x.price + x.additionalPrice) * x.amount))
           .reduce((a: number, b: number) => a + b)
       : 0;
 
@@ -142,12 +152,15 @@ const Order: NextPageWithLayout = () => {
 
   /** 최종결제금액 (적립금 제외) */
   const finalPrice = totalPrice + totalDelivery - couponDiscountPoint;
+  /** 결제 금액 (적립금 사용 포함) */
+  const orderPrice = finalPrice - Number(point);
+
+  /** taxFree 금액 (쿠폰 할인, 포인트 금액 포함) */
+  const taxFreePriceWithCoupon = taxFreePrice - couponDiscountPoint - Number(point);
 
   /** 구매 적립금 */
   const buyPoint =
-    Math.round(
-      Math.floor(((finalPrice - Number(point)) / 100) * (user?.grade?.pointRate ?? 1)) / 10,
-    ) * 10;
+    Math.round(Math.floor((orderPrice / 100) * (user?.grade?.pointRate ?? 1)) / 10) * 10;
   /** 후기 작성 적립금 */
   const writeReviewPoint = pointData?.maxReviewPoint;
   /** 예상 적립 금액 */
@@ -192,6 +205,11 @@ const Order: NextPageWithLayout = () => {
     if (Number(point) !== 0 && Number(point) < 100) {
       return setAlert({ message: '적립금은 100원 이상 사용할 수 있습니다.' });
     }
+    // if (orderPrice > 0 && orderPrice < 100) {
+    // return setAlert({ message: `최소 결제금액(100원) 이상\n또는 0원 결제로 진행해주세요.` });
+    if (orderPrice < 100) {
+      return setAlert({ message: `최소 결제금액(100원) 이상으로\n결제를 진행해주세요.` });
+    }
     if (isCheck) {
       if (!shippingAddress) return setAlert({ message: '배송지를 입력해주세요' });
 
@@ -201,6 +219,8 @@ const Order: NextPageWithLayout = () => {
             productId: x.productId,
             optionId: x.optionId === -1 ? undefined : x.optionId,
             amount: x.amount,
+            deliveryFee: x.deliveryFee,
+            needTaxation: x.needTaxation, //
           };
         }),
         name,
@@ -208,7 +228,7 @@ const Order: NextPageWithLayout = () => {
         couponId: selectCoupon?.id ?? undefined,
         point: Number(point),
         deliverPlaceId: shippingAddress.id,
-        totalPrice: finalPrice - Number(point),
+        totalPrice: orderPrice,
         couponDiscountPrice: couponDiscountPoint,
         paymentMethodId: selectedCard?.id,
         paymentWay: parsePaymentWay(payMethod),
@@ -233,12 +253,13 @@ const Order: NextPageWithLayout = () => {
                 merchantUid: orderId,
                 mobileRedirectUrl: getMobileResultUrl(orderId),
                 productName: selectedOption[0]?.productName ?? '',
-                amount: finalPrice - Number(point),
+                amount: orderPrice,
                 email: '',
                 address: '',
                 postcode: '',
                 tel: phone,
                 name,
+                taxFree: taxFreePriceWithCoupon > 0 ? taxFreePriceWithCoupon : 0,
               },
               onSuccess: (vBankData?: vBankType) => onIamportResult(orderId, true, '', vBankData),
               onFailure: (error_msg: string) => onIamportResult(orderId, false, error_msg),
@@ -465,10 +486,10 @@ const Order: NextPageWithLayout = () => {
                     {x.data[0].deliverFeeType === 'FREE'
                       ? '무료'
                       : x.data[0].deliverFeeType === 'FIX'
-                      ? formatToLocaleString(sectionDeliverFee)
+                      ? formatToLocaleString(sectionDeliverFee, { suffix: '원' })
                       : sectionDeliverFee >= (x.data[0].minOrderPrice ?? 0)
                       ? '무료'
-                      : sectionDeliverFee}
+                      : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
                   </p>
                 </div>
               </div>
@@ -612,7 +633,8 @@ const Order: NextPageWithLayout = () => {
         />
       </button>
       {isOpenPayList && (
-        <div className='grid grid-cols-2 gap-2 px-4 pb-[22px]'>
+        // grid-cols-3 -> grid-cols-2 : 휴대폰 결제 숨김 해제시 2로 변경 필요 (3군데)
+        <div className='grid grid-cols-3 gap-2 px-4 pb-[22px]'>
           {(
             [
               { image: '/assets/icons/product/payment-kakao.png', type: IamportPayMethod.Kakaopay },
@@ -620,6 +642,11 @@ const Order: NextPageWithLayout = () => {
                 image: '/assets/icons/product/payment-naver.png',
                 activeImage: '/assets/icons/product/payment-naver-active.png',
                 type: IamportPayMethod.Naverpay,
+              },
+              {
+                image: '/assets/icons/product/payment-toss.png',
+                activeImage: '/assets/icons/product/payment-toss-active.png',
+                type: IamportPayMethod.Tosspay,
               },
               {}, // 등록된 카드
               { type: IamportPayMethod.Card },
@@ -629,23 +656,29 @@ const Order: NextPageWithLayout = () => {
             ] as { image?: string; activeImage?: string; type?: IamportPayMethod }[]
           ).map((v, i) => {
             const isActive = payMethod === v.type;
+            // 네이버 페이 숨김
+            if (v.type === IamportPayMethod.Naverpay) return null;
+            // 휴대폰 결제 숨김
+            if (v.type === IamportPayMethod.Phone) return null;
+            // 등록된 카드 숨김
+            if (i === 3 && VARIABLES.IS_MASTER) return null;
             return (
               <Fragment key={`payment${i}`}>
                 <button
                   className={cm(
                     'flex h-[48px] w-full items-center justify-center gap-3 rounded-lg border border-[#E2E2E2]',
                     {
-                      'col-span-2': i < 3,
+                      // col-span-3 -> col-span-2 : 휴대폰 결제 숨김 해제시 2로 변경 필요 (3군데)
+                      'col-span-3': i < 4,
                       'bg-[#FEE33A]': i === 0 && isActive,
                       'bg-[#03C75A]': i === 1 && isActive,
-                      'bg-primary-50': (i > 2 || selectedCard !== undefined) && isActive,
-                      'rounded-b-none': i === 2 && isActive,
+                      'bg-[#0064FF]': i === 2 && isActive,
+                      'bg-primary-50': (i > 3 || selectedCard !== undefined) && isActive,
+                      'rounded-b-none': i === 3 && isActive,
                       'border-0': isActive && selectedCard !== undefined,
                     },
                   )}
                   onClick={() => {
-                    if (v.type === IamportPayMethod.Naverpay)
-                      return setAlert({ message: '준비중입니다.' });
                     setPayMethod(v.type);
                     setSelectedCard(undefined);
                   }}
@@ -662,8 +695,8 @@ const Order: NextPageWithLayout = () => {
                   <p
                     className={cm(
                       'text-[14px] font-medium -tracking-[0.03em]',
-                      (isActive && ![0, 2].includes(i)) ||
-                        (i === 2 && isActive && selectedCard !== undefined)
+                      (isActive && ![0, 3].includes(i)) ||
+                        (i === 3 && isActive && selectedCard !== undefined)
                         ? 'text-grey-90'
                         : 'text-grey-10',
                     )}
@@ -671,8 +704,9 @@ const Order: NextPageWithLayout = () => {
                     {v.type ? parseIamportPayMethod(v.type) : '등록된 카드'}
                   </p>
                 </button>
-                {i === 2 && isActive && (
-                  <div className='col-span-2 -mt-2 rounded-b-lg border-[#E2E2E2] bg-grey-90'>
+                {i === 3 && isActive && (
+                  // col-span-3 -> col-span-2 : 휴대폰 결제 숨김 해제시 2로 변경 필요 (3군데)
+                  <div className='col-span-3 -mt-2 rounded-b-lg border-[#E2E2E2] bg-grey-90'>
                     <Swiper
                       loop={false}
                       slidesPerView={1.1}
@@ -737,46 +771,6 @@ const Order: NextPageWithLayout = () => {
           })}
         </div>
       )}
-      {/* {isOpenPayList && (
-        <div className='px-4 pb-[22px]'>
-          <div className='h-[1px] bg-grey-90' />
-          <div className='flex flex-col items-start gap-2 pt-2'>
-            {
-              // 신용카드, 카카오페이, 네이버페이, 휴대폰결제, 가상계좌, 실시간계좌이체
-              (
-                [
-                  IamportPayMethod.Card,
-                  IamportPayMethod.Kakaopay,
-                  IamportPayMethod.Naverpay,
-                  IamportPayMethod.Phone,
-                  IamportPayMethod.Vbank,
-                  IamportPayMethod.Trans,
-                ] as IamportPayMethod[]
-              ).map((v, i) => {
-                return (
-                  <button
-                    key={`payment${i}`}
-                    className='flex h-[38px] w-full items-center gap-4'
-                    onClick={() => {
-                      setPayMethod(v);
-                      setIsOpenPayList(false);
-                    }}
-                  >
-                    <div
-                      className={cm('h-5 w-5 rounded-full border border-[#E2E2E2]', {
-                        'border-[6px] border-primary-50': payMethod === v,
-                      })}
-                    />
-                    <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-black'>
-                      {parseIamportPayMethod(v)}
-                    </p>
-                  </button>
-                );
-              })
-            }
-          </div>
-        </div>
-      )} */}
 
       <div className='h-2 bg-grey-90' />
 
@@ -825,7 +819,7 @@ const Order: NextPageWithLayout = () => {
             최종 결제 금액
           </p>
           <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-            finalPrice - Number(point),
+            orderPrice,
           )}원`}</p>
         </div>
       </div>
@@ -879,7 +873,7 @@ const Order: NextPageWithLayout = () => {
           onClick={onPayment}
         >
           <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
-            {`${formatToLocaleString(finalPrice - Number(point))}원 결제하기`}
+            {`${formatToLocaleString(orderPrice)}원 결제하기`}
           </p>
         </button>
       </div>

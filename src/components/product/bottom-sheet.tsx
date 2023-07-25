@@ -35,6 +35,7 @@ export interface optionState {
   storeId: number;
   storeImage: string;
   storeName: string;
+  needTaxation: boolean;
 }
 
 export interface optionSelectorType {
@@ -217,7 +218,8 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                             amount: 1,
                             price: value.price,
                             additionalPrice: value.additionalPrice,
-                            deliveryFee: data?.store?.deliverFee ?? 0,
+                            // deliveryFee:
+                            deliveryFee: data?.deliveryFee ?? data?.store?.deliverFee ?? 0,
                             deliverFeeType: data?.store?.deliverFeeType ?? 'FREE',
                             deliverBoxPerAmount: value.deliverBoxPerAmount,
                             minOrderPrice: data?.store?.minOrderPrice ?? 0,
@@ -229,6 +231,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                             storeId: data?.store?.storeId ?? -1,
                             storeImage: data?.store?.profileImage ?? '',
                             storeName: data?.store?.name ?? '',
+                            needTaxation: data?.needTaxation ?? false, //
                           });
                           setSelectedOption(tmp);
                         }

@@ -37,6 +37,8 @@ export const queryKey = {
   main: ['main'],
   /** 메인/큐레이션 */
   mainCuration: ['mainCuration'],
+  /** 메인/파트너 */
+  mainPartner: ['mainPartner'],
   /** 카테고리 */
   category: ['category'],
   /** 알아두면 좋은 정보 */
@@ -89,6 +91,8 @@ export const queryKey = {
   compare: getQueryKeys('compare'),
   /** 비교하기 3개짜리 세트 */
   compareSet: getQueryKeys('compareSet'),
+  /** 비교하기 3개짜리 세트 ids */
+  compareSetWithId: getQueryKeys('compareSetWithId'),
   /** 장바구니 */
   cart: getQueryKeys('cart'),
   /** 큐레이션, 카테고리 검색 */
@@ -109,8 +113,14 @@ export const queryKey = {
   deliverInfo: ['deliverInfo'],
   /** 카카오 문의 */
   kakao: ['kakao'],
+  /** 입점 문의 */
+  partnerJoin: ['partnerJoin'],
   /** 푸터 정보 */
   footer: ['footer'],
   /** 결제수단 */
   paymentMethod: ['paymentMethod'],
+  /** 문의하기 */
+  inquiry: getQueryKeys('inquiry'),
+  /** 큐레이션 제일 처음 부분 (꿀팁) */
+  tipInfo: ['tipInfo'],
 };

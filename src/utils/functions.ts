@@ -1,5 +1,5 @@
 import { setCookie } from 'cookies-next';
-import { lightFormat } from 'date-fns';
+import { addDays, isSunday, lightFormat } from 'date-fns';
 import { type BasketProductDto, type Jwt } from 'src/api/swagger/data-contracts';
 import { VARIABLES } from 'src/variables';
 import { REG_EXP } from './regex';
@@ -30,6 +30,18 @@ export const requestPermission = (type: string, value?: string) => {
         type,
         value,
       }),
+    );
+  }
+};
+
+/** 모바일 토큰 초기화 */
+export const resetToken = () => {
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({ type: 'cookies', key: VARIABLES.ACCESS_TOKEN, value: '' }),
+    );
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({ type: 'cookies', key: VARIABLES.REFRESH_TOKEN, value: '' }),
     );
   }
 };
@@ -278,4 +290,15 @@ export const changeSectionOption = (value: optionState[]): SectionoptionType[] =
 export const setSquareBrackets = (value: Nullish<string>) => {
   if (value) return '[' + value + ']';
   else return '';
+};
+
+/** 배송 날짜 세팅 */
+export const setDeliverDate = (expectedDeliverDay: number) => {
+  let value = addDays(new Date(), expectedDeliverDay);
+  // 일요일이면 +1일
+  if (isSunday(value)) value = addDays(value, 1);
+  // 12시 이후면 +1일
+  if (value.getHours() >= 12) value = addDays(value, 1);
+
+  return formatToUtc(value, 'M/d');
 };

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { errorMessageClassName, inputClassName, labelClassName } from 'src/components/form';
 import { DaumPostcode } from 'src/components/ui';
+import cm from 'src/utils/class-merge';
 
 export type AddressFormType = {
   postalCode: string;
@@ -10,7 +11,11 @@ export type AddressFormType = {
   addressDetail: string;
 };
 
-export function AddressField() {
+interface Props {
+  className?: string;
+}
+
+export function AddressField({ className }: Props) {
   const combineInputClassName = clsx(
     inputClassName,
     'flex-1 read-only:border-grey-80 read-only:bg-grey-90',
@@ -24,7 +29,7 @@ export function AddressField() {
 
   return (
     <div>
-      <label htmlFor='btn' className={labelClassName}>
+      <label htmlFor='btn' className={cm(labelClassName, className)}>
         주소
       </label>
       <div className='space-y-1.5'>

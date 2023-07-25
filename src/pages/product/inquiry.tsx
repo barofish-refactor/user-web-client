@@ -3,9 +3,13 @@ import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
-import { type AddInquiryPayload, type SimpleProductDto } from 'src/api/swagger/data-contracts';
+import {
+  type UpdateInquiryPayload,
+  type AddInquiryPayload,
+  type SimpleProductDto,
+} from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
 import { Selector } from 'src/components/common';
 import Layout from 'src/components/common/layout';
@@ -28,7 +32,7 @@ interface Props {
 /** 문의하기 */
 const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id, inquiryId } = router.query;
   const { setAlert } = useAlertStore();
 
   const [selectedType, setSelectedType] = useState<SelectorType>();
@@ -57,9 +61,30 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
+  const { data: inquiryData } = useQuery(
+    queryKey.inquiry.detail(inquiryId),
+    async () => {
+      const res = await (await client()).selectInquiry(Number(inquiryId));
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+      }
+    },
+    {
+      staleTime: 0,
+      enabled: !!inquiryId,
+    },
+  );
+
   const { mutateAsync: addInquiry, isLoading } = useMutation(
     async (args: AddInquiryPayload) =>
       await (await client()).addInquiry(args, { type: ContentType.FormData }),
+  );
+
+  const { mutateAsync: updateInquiry, isLoading: isUpdateLoading } = useMutation(
+    async ({ id, args }: { id: number; args: UpdateInquiryPayload }) =>
+      await (await client()).updateInquiry(id, args, { type: ContentType.FormData }),
   );
 
   const onMutate = () => {
@@ -77,24 +102,54 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
         true,
       ),
     }).then(res => {
-      if (res.data.isSuccess) {
-        setAlert({
-          message: '문의 내용이 등록되었습니다.',
-          onClick: () => {
-            router.back();
-          },
-          type: 'success',
-        });
-      } else {
-        setAlert({
-          message: res.data.errorMsg ?? '',
-          onClick: () => {
-            //
-          },
-        });
-      }
+      if (res.data.isSuccess) onSuccess();
+      else setAlert({ message: res.data.errorMsg ?? '' });
     });
   };
+
+  const onUpdateMutate = () => {
+    if (isUpdateLoading) return;
+    if (!selectedType) return;
+
+    updateInquiry({
+      id: Number(inquiryId),
+      args: {
+        data: formatToBlob<UpdateInquiryPayload['data']>(
+          {
+            type: selectedType.value as inquiryType,
+            content,
+            isSecret,
+          },
+          true,
+        ),
+      },
+    }).then(res => {
+      if (res.data.isSuccess) onSuccess();
+      else setAlert({ message: res.data.errorMsg ?? '' });
+    });
+  };
+
+  const onSuccess = () => {
+    setAlert({
+      message: `문의 내용이 ${inquiryId ? '수정' : '등록'}되었습니다.`,
+      onClick: () => {
+        router.back();
+      },
+      type: 'success',
+    });
+  };
+
+  useEffect(() => {
+    if (inquiryData) {
+      if (inquiryData.type) {
+        const selected = selectorList.filter(v => v.value === inquiryData.type);
+        setSelectedType(selected.length > 0 ? selected[0] : undefined);
+      }
+      setContent(inquiryData.content ?? '');
+      setIsSecret(inquiryData.isSecret ?? false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inquiryData]);
 
   return (
     <div className='pb-[100px] max-md:w-[100vw]'>
@@ -175,11 +230,14 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
           )}
           onClick={() => {
             if (selectedType && content.trim().length > 0) {
-              onMutate();
+              if (inquiryId) onUpdateMutate();
+              else onMutate();
             }
           }}
         >
-          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>등록하기</p>
+          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
+            {inquiryId ? '수정하기' : '등록하기'}
+          </p>
         </button>
       </div>
     </div>

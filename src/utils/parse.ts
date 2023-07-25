@@ -4,6 +4,15 @@ import { IamportPayMethod } from 'src/utils/use-iamport';
 export const aToB = (str = ''): string => Buffer.from(str, 'utf8').toString('base64');
 export const bToA = (str = ''): string => Buffer.from(str, 'base64').toString('utf8');
 
+// JSON.parse
+export function safeParse<T>(json: string): T | undefined {
+  try {
+    return JSON.parse(json) satisfies T;
+  } catch (e) {
+    return undefined;
+  }
+}
+
 export function parseGenerator<T extends string>(obj: { [_ in T]: string }, fallback = '-') {
   return (v: Nullish<T>) => (v ? obj[v] : fallback);
 }
@@ -117,13 +126,15 @@ export const parseIamportPayMethod = (v: Nullish<IamportPayMethod>) => {
       return '휴대폰결제';
     case IamportPayMethod.Vbank:
       return '가상계좌';
+    case IamportPayMethod.Tosspay:
+      return '토스페이';
     case IamportPayMethod.Trans:
       return '실시간계좌이체';
     default:
       return '수기결제';
   }
 };
-// "CARD" | "KEY_IN" | "NAVER" | "KAKAO_PAY" | "PHONE" | "DEPOSIT" | "VIRTUAL_ACCOUNT"
+// "CARD" | "KEY_IN" | "NAVER" | "KAKAO_PAY" | "PHONE" | "DEPOSIT" | 'TOSS_PAY' | "VIRTUAL_ACCOUNT"
 
 /** 결제수단 파싱 (결제할 때) */
 export const parsePaymentWay = (v: Nullish<IamportPayMethod>) => {
@@ -140,6 +151,8 @@ export const parsePaymentWay = (v: Nullish<IamportPayMethod>) => {
       return 'VIRTUAL_ACCOUNT';
     case IamportPayMethod.Trans:
       return 'DEPOSIT';
+    case IamportPayMethod.Tosspay:
+      return 'TOSS_PAY';
     default:
       return 'KEY_IN';
   }
@@ -147,7 +160,9 @@ export const parsePaymentWay = (v: Nullish<IamportPayMethod>) => {
 
 /** 결제수단 파싱 */
 export const parsePaymentWay2 = (
-  v: Nullish<'CARD' | 'KAKAO_PAY' | 'NAVER' | 'PHONE' | 'VIRTUAL_ACCOUNT' | 'DEPOSIT' | 'KEY_IN'>,
+  v: Nullish<
+    'CARD' | 'KAKAO_PAY' | 'NAVER' | 'PHONE' | 'VIRTUAL_ACCOUNT' | 'DEPOSIT' | 'TOSS_PAY' | 'KEY_IN'
+  >,
 ) => {
   switch (v) {
     case 'CARD':
@@ -162,6 +177,8 @@ export const parsePaymentWay2 = (
       return '가상계좌';
     case 'DEPOSIT':
       return '실시간계좌이체';
+    case 'TOSS_PAY':
+      return '토스페이';
     default:
       return '수기결제';
   }

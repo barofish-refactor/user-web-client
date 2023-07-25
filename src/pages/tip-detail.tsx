@@ -78,10 +78,10 @@ const TipDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       {/* content */}
       <div>
         <div className='relative aspect-[375/276] w-full'>
-          {data?.image && (
+          {data?.imageDetail && (
             <Image
               unoptimized
-              src={data?.image}
+              src={data?.imageDetail}
               alt='image'
               width={375}
               height={276}

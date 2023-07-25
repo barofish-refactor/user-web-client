@@ -1,12 +1,9 @@
-import addDays from 'date-fns/addDays';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment } from 'react';
-// import Link from 'next/link';
 import { type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ChevronIcon } from 'src/components/icons';
-// import { ChevronIcon } from 'src/components/icons';
-import { calcDiscountRate, formatToLocaleString, formatToUtc } from 'src/utils/functions';
+import { calcDiscountRate, formatToLocaleString, setDeliverDate } from 'src/utils/functions';
 
 interface Props {
   data?: SimpleProductDto;
@@ -65,7 +62,7 @@ const InformationDefault = ({ data }: Props) => {
               발송안내
             </p>
             <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
-              {`${formatToUtc(addDays(new Date(), data?.expectedDeliverDay ?? 0), 'M/d')} 도착예정`}
+              {`${setDeliverDate(1)} 도착예정`}
             </p>
           </div>
         </div>

@@ -93,7 +93,7 @@ const ReviewAll: NextPageWithLayout = () => {
                   );
                 }),
             )}
-            <div ref={ref} />
+            <div ref={ref} className='pb-10' />
           </Fragment>
         </div>
       )}

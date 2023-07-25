@@ -1,20 +1,29 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { client } from 'src/api/client';
 import { type InquiryDto } from 'src/api/swagger/data-contracts';
+import { InquiryDots } from 'src/components/product/inquiry-dots';
 import { queryKey } from 'src/query-key';
+import { useAlertStore, useConfirmStore } from 'src/store';
 import cm from 'src/utils/class-merge';
 import { formatToUtc, maskingName, setSquareBrackets } from 'src/utils/functions';
 import { parseInquiryState } from 'src/utils/parse';
+import { VARIABLES } from 'src/variables';
 
 interface Props {
   productId: number;
   data: InquiryDto[];
+  refetch: () => void;
 }
 
-const Inquiry = ({ productId, data }: Props) => {
+const Inquiry = ({ productId, data, refetch }: Props) => {
+  const router = useRouter();
+  const { setConfirm } = useConfirmStore();
+  const { setAlert } = useAlertStore();
   const [openIndex, setOpenIndex] = useState<number>();
 
   const { data: user } = useQuery(queryKey.user, async () => {
@@ -25,6 +34,24 @@ const Inquiry = ({ productId, data }: Props) => {
       throw new Error(res.data.errorMsg);
     }
   });
+
+  const { mutateAsync: deleteInquiryByUser, isLoading } = useMutation(
+    async (id: number) => await (await client()).deleteInquiryByUser(id),
+  );
+
+  const onDeleteMutate = ({ id }: { id: number }) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (isLoading) return;
+    deleteInquiryByUser(id)
+      .then(res => {
+        if (res.data.isSuccess) {
+          refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className=''>
@@ -40,9 +67,9 @@ const Inquiry = ({ productId, data }: Props) => {
         {data.map((v, idx) => {
           const isDone = !!v.answer;
           return (
-            <div key={`inquiry${idx}`} className=''>
-              <button
-                className='flex w-full items-end justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px] text-start'
+            <div key={`inquiry${idx}`} className='flex-col'>
+              <div
+                className='flex w-full cursor-pointer justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px] text-start'
                 onClick={() => {
                   if (v.isSecret && v.user?.userId !== user?.userId) return;
                   setOpenIndex(openIndex === idx ? undefined : idx);
@@ -59,14 +86,6 @@ const Inquiry = ({ productId, data }: Props) => {
                       {`${setSquareBrackets(parseInquiryState(v.type))}`}{' '}
                       {v.isSecret ? '비밀글입니다.' : v.content}
                     </p>
-                    {/* <p
-                      className={cm(
-                        'text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20',
-                        { 'text-grey-70': v.isSecret },
-                      )}
-                    >
-                      {v.isSecret ? '비밀글입니다.' : v.content}
-                    </p> */}
                   </div>
                   <div className='flex items-center gap-2'>
                     <p
@@ -88,16 +107,45 @@ const Inquiry = ({ productId, data }: Props) => {
                     )}`}</p>
                   </div>
                 </div>
-                <Image
-                  unoptimized
-                  src='/assets/icons/common/chevron-category.svg'
-                  alt='chevron'
-                  width={23.5}
-                  height={24.5}
-                  className={cm('mb-[3px]', { 'rotate-180': openIndex !== idx })}
-                  draggable={false}
-                />
-              </button>
+                <div className='flex flex-col justify-between self-stretch'>
+                  {v.user?.userId === user?.userId ? (
+                    <InquiryDots
+                      isCanEdit={!isDone}
+                      onUpdate={e => {
+                        e.stopPropagation();
+                        router.push({
+                          pathname: '/product/inquiry',
+                          query: { id: productId, inquiryId: v.id },
+                        });
+                      }}
+                      onDelete={e => {
+                        e.stopPropagation();
+                        setConfirm({
+                          message: '정말로 삭제하시겠습니까?',
+                          onClick: () => {
+                            if (!v.id) return;
+                            onDeleteMutate({ id: v.id });
+                            setAlert({ message: '삭제했습니다.' });
+                          },
+                          buttonText: '삭제',
+                          type: 'error',
+                        });
+                      }}
+                    />
+                  ) : (
+                    <div />
+                  )}
+                  <Image
+                    unoptimized
+                    src='/assets/icons/common/chevron-category.svg'
+                    alt='chevron'
+                    width={20}
+                    height={20}
+                    className={cm('self-end', { 'rotate-180': openIndex !== idx })}
+                    draggable={false}
+                  />
+                </div>
+              </div>
               {openIndex === idx && (
                 <div className='flex flex-col gap-[17px] bg-grey-90 px-4 pb-[27px] pt-5'>
                   <div className='flex gap-3'>

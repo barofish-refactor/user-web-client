@@ -8,5 +8,6 @@ declare namespace NodeJS {
     NEXT_PUBLIC_PG_MID: string;
     NEXT_PUBLIC_KAKAO_PG_MID: string;
     NEXT_PUBLIC_NAVER_PG_MID: string;
+    NEXT_PUBLIC_TOSSPAY_PG_MID: string;
   }
 }

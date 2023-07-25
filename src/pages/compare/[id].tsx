@@ -1,42 +1,70 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
-import { type CompareFilterDto, type CompareProductDto } from 'src/api/swagger/data-contracts';
+import {
+  type AddCompareSetPayload,
+  type CompareFilterDto,
+  type CompareProductDto,
+} from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-// import { useAlertStore } from 'src/store';
+import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { calcDiscountRate, formatToLocaleString } from 'src/utils/functions';
+import { calcDiscountRate, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+
+const initialTable: CompareProductDto[] = [{}];
 
 /** 비교하기 상세 */
 const CompareDetail: NextPageWithLayout = () => {
   const router = useRouter();
-  const { id } = router.query;
-  // const { setAlert } = useAlertStore();
+  const { setAlert } = useAlertStore();
+
+  const { id, type } = router.query;
   const [selectedTag, setSelectedTag] = useState<number[]>([]);
 
-  // const compareList = ['구분', '지역', '가공', '용도', '보관'];
   const [compareList, setCompareList] = useState<CompareFilterDto[]>([]);
 
   const { data: set, isLoading } = useQuery(
-    queryKey.compareSet.detail(Number(id)),
+    queryKey.compareSet.detail(id),
     async () => {
-      const res = await (await client()).selectCompareSet(Number(id));
+      const res = await (type === 'id'
+        ? (await client()).selectCompareSet(Number(id))
+        : (await client()).compareProductList({ productIdStr: String(id) }));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+        setAlert({
+          message: res.data.errorMsg ?? '',
+          onClick: () => {
+            router.back();
+          },
+        });
       }
     },
     {
-      enabled: !!id,
+      enabled: !!id && !!type,
     },
   );
+
+  const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
+    async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
+  );
+
+  const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
+    if (isAddLoading) return;
+    addCompareSet(formatToBlob(args, true))
+      .then(res => {
+        if (res.data.isSuccess) {
+          setAlert({ message: '조합을 저장했습니다.', type: 'success' });
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
 
   useEffect(() => {
     if (!isLoading && set) {
@@ -45,7 +73,7 @@ const CompareDetail: NextPageWithLayout = () => {
   }, [set, isLoading]);
 
   return (
-    <div className='pb-[50px] max-md:w-[100vw]'>
+    <div className='pb-[140px] max-md:w-[100vw]'>
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center bg-white pl-4 pr-[18px]'>
         <BackButton />
@@ -72,7 +100,7 @@ const CompareDetail: NextPageWithLayout = () => {
         </p>
       </div>
       <div className='pt-5'>
-        {(set ?? []).map((v, idx) => {
+        {set?.map((v, idx) => {
           return (
             <div
               key={`set${idx}`}
@@ -168,9 +196,14 @@ const CompareDetail: NextPageWithLayout = () => {
           );
         })}
       </div>
-      <div className='mx-4 mt-5 grid grid-cols-4 overflow-hidden rounded border border-[#E2E2E2]'>
+      <div
+        className={cm(
+          'mx-4 mt-5 grid grid-cols-4 overflow-hidden rounded border border-[#E2E2E2]',
+          { 'grid-cols-3': set?.length === 2 },
+        )}
+      >
         {[-2, -1].concat(selectedTag).map((x, i) =>
-          ([{}] as CompareProductDto[]).concat(set ?? []).map((v, idx) => {
+          initialTable.concat(set ?? []).map((v, idx) => {
             if (idx === 0) {
               const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
               return (
@@ -185,7 +218,6 @@ const CompareDetail: NextPageWithLayout = () => {
                 </div>
               );
             }
-
             const compareValue =
               i > 1 ? v.filterValues?.filter(w => w.compareFilterId === compareList[x].id) : [];
 
@@ -218,6 +250,16 @@ const CompareDetail: NextPageWithLayout = () => {
             );
           }),
         )}
+      </div>
+      <div className='fixed bottom-0 z-50 w-[375px] bg-white px-4 pb-7 pt-2 max-md:w-full'>
+        <button
+          className='flex h-[52px] w-full items-center justify-center rounded-lg border-0 bg-primary-50'
+          onClick={() => {
+            if (set && set.length > 0) onAddCompareSetMutate(set.map(x => x.id ?? -1));
+          }}
+        >
+          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>이 조합 저장하기</p>
+        </button>
       </div>
     </div>
   );

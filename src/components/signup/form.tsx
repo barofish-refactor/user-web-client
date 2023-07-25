@@ -102,23 +102,27 @@ export function SignupForm() {
             label='이메일'
             placeholder='이메일을 입력해 주세요'
             options={{ required: { value: true, message: '이메일을 입력해 주세요' } }}
+            className='required'
           />
           <FormField
             label='이름'
             fieldKey='name'
             placeholder='이름을 입력해 주세요'
             options={{ required: { value: true, message: '이름을 입력해 주세요' } }}
+            className='required'
           />
           <FormField
             fieldKey='nickname'
             label='닉네임'
             placeholder='닉네임을 입력해 주세요'
             options={{ required: { value: true, message: '닉네임을 입력해 주세요' } }}
+            className='required'
           />
           <PasswordField
             label='비밀번호'
             fieldKey='password'
             placeholder='영문,숫자,특수문자 8자리 이상'
+            className='required'
             options={{
               required: {
                 value: true,
@@ -130,24 +134,14 @@ export function SignupForm() {
             label='비밀번호 확인'
             fieldKey='passwordCheck'
             placeholder='비밀번호를 한번 더 입력해 주세요'
+            className='required'
             options={{
               required: { value: true, message: '비밀번호를 한번 더 입력해 주세요' },
               validate: v => v === getValues('password') || '동일한 비밀번호를 입력하세요.',
             }}
           />
-          {/* 본인인증시 필요 */}
-          {/* <div>
-            <label className={labelClassName}>본인 인증</label>
-            <button
-              type='button'
-              className='h-11 w-full rounded-lg border border-primary-50 text-[14px] font-bold leading-[22px] -tracking-[0.03em] text-primary-50 data-[invalid=true]:border-error data-[invalid=true]:text-error'
-              onClick={onCertification}
-            >
-              본인 인증
-            </button>
-          </div> */}
-          <PhoneField />
-          <AddressField />
+          <PhoneField className='required' />
+          <AddressField className='required' />
         </div>
         <hr className='border-t-8 border-[#f2f2f2]' />
         <div className='p-4'>

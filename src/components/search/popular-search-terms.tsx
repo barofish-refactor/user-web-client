@@ -65,9 +65,9 @@ const PopularSearchTerms = ({ data, setSearchText }: Props) => {
         {data.map((v, idx) => {
           const rank = idx + 1;
           const rankState = v.prevRank
-            ? v.prevRank > rank
+            ? v.prevRank < rank
               ? 'DOWN'
-              : v.prevRank < rank
+              : v.prevRank > rank
               ? 'UP'
               : 'NONE'
             : 'NEW';

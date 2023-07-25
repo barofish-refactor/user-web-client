@@ -6,7 +6,7 @@ import { client } from 'src/api/client';
 import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useConfirmStore } from 'src/store';
-import { formatToLocaleString } from 'src/utils/functions';
+import { formatToLocaleString, requestPermission } from 'src/utils/functions';
 import { parseProductInfoState } from 'src/utils/parse';
 
 /* 
@@ -161,9 +161,7 @@ export function MypageOrderProductItem({ id, item }: Props) {
                   message: (item.deliverCompany ?? '') + ' ' + (item.invoiceCode ?? ''),
                   onClick: () => {
                     if (window.ReactNativeWebView) {
-                      window.ReactNativeWebView.postMessage(
-                        JSON.stringify({ type: 'link', url: `https://naver.me/5FlthH9K` }),
-                      );
+                      requestPermission('link', `https://naver.me/5FlthH9K`);
                     } else {
                       return window.open(`https://naver.me/5FlthH9K`, '_blank');
                     }

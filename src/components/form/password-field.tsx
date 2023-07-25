@@ -7,12 +7,14 @@ import {
   inputClassName,
   labelClassName,
 } from 'src/components/form';
+import cm from 'src/utils/class-merge';
 
 interface Props<T> {
   label?: string;
   placeholder?: string;
   fieldKey: T;
   options?: RegisterOptions<FieldValues>;
+  className?: string;
 }
 
 export function PasswordField<T extends string>({
@@ -20,6 +22,7 @@ export function PasswordField<T extends string>({
   label,
   options,
   placeholder,
+  className,
 }: Props<T>) {
   const { register, formState } = useFormContext();
   const [visiblePassword, toggleVisiblePassword] = useReducer(p => !p, false);
@@ -29,7 +32,7 @@ export function PasswordField<T extends string>({
   return (
     <div>
       {label && (
-        <label htmlFor={fieldKey} className={labelClassName}>
+        <label htmlFor={fieldKey} className={cm(labelClassName, className)}>
           {label}
         </label>
       )}

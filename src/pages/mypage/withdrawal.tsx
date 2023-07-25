@@ -35,6 +35,7 @@ const MypageWithdrawal: NextPageWithLayout = () => {
               queryClient.clear();
               router.replace('/login');
               requestPermission('withdraw', '');
+              // resetToken();
             },
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });

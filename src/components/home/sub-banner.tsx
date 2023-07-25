@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { type Banner } from 'src/api/swagger/data-contracts';
 import { useRouter } from 'next/router';
 import cm from 'src/utils/class-merge';
+import { requestPermission } from 'src/utils/functions';
 
 interface Props {
   data: Banner;
@@ -24,13 +25,10 @@ const SubBanner = ({ data }: Props) => {
           'cursor-pointer':
             ['CURATION', 'CATEGORY', 'NOTICE'].includes(data.type ?? '') || data.link,
         })}
-        onClick={e => {
+        onClick={() => {
           if (data.link) {
             if (window.ReactNativeWebView) {
-              e.preventDefault();
-              window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'link', url: `${data.link}` }),
-              );
+              requestPermission('link', `${data.link}`);
             } else {
               return window.open(`${data.link}`, '_blank');
             }

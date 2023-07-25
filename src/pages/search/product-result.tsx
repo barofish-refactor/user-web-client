@@ -13,7 +13,7 @@ import { queryKey } from 'src/query-key';
 import { type indexFilterType, useFilterStore, useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { aToB, bToA, type sortType } from 'src/utils/parse';
+import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { FreeMode } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide, type SwiperRef } from 'swiper/react';
@@ -162,7 +162,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
   useEffect(() => {
     if (router.isReady && f) {
       try {
-        setSavedFilter(JSON.parse(bToA(f as string)));
+        setSavedFilter(safeParse(bToA(f as string)) ?? []);
       } catch (error) {
         console.log(error);
       }
@@ -226,7 +226,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
         sort={sort}
         setSort={setSort}
       />
-      <div ref={ref} />
+      <div ref={ref} className='pb-10' />
     </div>
   );
 };

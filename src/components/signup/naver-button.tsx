@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import { useRef } from 'react';
@@ -43,7 +44,7 @@ export function NaverButton() {
         } = naver.user;
 
         loginUser({
-          data: formatToBlob(
+          data: formatToBlob<JoinSnsUserPayload['data']>(
             {
               loginType: 'NAVER',
               loginId: naver.user.id,
@@ -88,9 +89,18 @@ export function NaverButton() {
       />
       <div ref={naverButtonRef} hidden id='naverIdLogin' />
       <button
-        className='h-[45px] w-[45px] bg-[url(/assets/icons/sign/naver.svg)] bg-cover'
+        className='relative flex h-12 items-center justify-center rounded-lg bg-[#03C75A]'
         onClick={onClickNaver}
-      />
+      >
+        <Image
+          src='/assets/icons/sign/naver.svg'
+          alt='naver'
+          width={14}
+          height={14}
+          className='absolute left-4'
+        />
+        <p className='text-[16px] font-bold -tracking-[0.48px] text-white'>네이버로 계속하기</p>
+      </button>
     </>
   );
 }

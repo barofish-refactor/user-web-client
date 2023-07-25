@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import Image from 'next/image';
 import router from 'next/router';
 import { useEffect, useState } from 'react';
 import AppleLogin from 'react-apple-login';
@@ -29,7 +30,10 @@ export function AppleButton() {
         const jwt = decodeToken(res.authorization.id_token);
         if ('sub' in jwt) {
           loginUser({
-            data: formatToBlob({ loginType: 'APPLE', loginId: jwt.sub }, true),
+            data: formatToBlob<JoinSnsUserPayload['data']>(
+              { loginType: 'APPLE', loginId: jwt.sub },
+              true,
+            ),
           })
             .then(res => {
               if (res.data.isSuccess) {
@@ -49,14 +53,23 @@ export function AppleButton() {
       render={({ onClick, disabled }) => (
         <button
           disabled={disabled}
-          className='h-[45px] w-[45px] bg-[url(/assets/icons/sign/apple.svg)] bg-cover'
+          className='relative flex h-12 items-center justify-center rounded-lg bg-black'
           onClick={() => {
             if (window.ReactNativeWebView) requestPermission('socialLogin', 'apple');
             else {
               onClick();
             }
           }}
-        />
+        >
+          <Image
+            src='/assets/icons/sign/apple.svg'
+            alt='apple'
+            width={14}
+            height={18}
+            className='absolute left-4'
+          />
+          <p className='text-[16px] font-bold -tracking-[0.48px] text-white'>Apple로 계속하기</p>
+        </button>
       )}
     />
   );

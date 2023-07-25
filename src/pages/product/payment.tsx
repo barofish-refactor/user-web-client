@@ -9,13 +9,12 @@ const FAILURE_MESSAGE = '결제에 실패했습니다. 잠시 후 다시 시도�
 
 const interval = 2; // interval + 1 초 반복
 
-// const pause = () => {
-//   return new Promise(r => setTimeout(r, 1));
-// };
-
 const Payment: NextPageWithLayout = () => {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, options, orderId, imp_success, error_msg } = router.query;
+
+  const isError = !!error_msg;
   const { setAlert } = useAlertStore();
 
   const isCountDownOnce = useRef(false);
@@ -60,19 +59,21 @@ const Payment: NextPageWithLayout = () => {
   }, [limit, orderId, router, setAlert, timer]);
 
   useEffect(() => {
-    if (imp_success === 'true') {
+    // 모바일은 isError, pc는 imp_success 체크 (모바일은 imp_success가 없는게 있음)
+    if (!router.isReady) return;
+    if (!isError || imp_success === 'true') {
       setIsPurchaseCheck(true);
     } else {
-      setAlert({
-        message: error_msg ? (error_msg as string) : FAILURE_MESSAGE,
-      });
+      // pc 에서 error_msg가 false로 오는게 있음
+      const message = error_msg === 'false' ? FAILURE_MESSAGE : (error_msg as string);
+      setAlert({ message });
       router.replace({
         pathname: '/product/order',
         query: { id, options },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imp_success, router]);
+  }, [router]);
 
   useEffect(() => {
     if (isPurchaseCheck) return;

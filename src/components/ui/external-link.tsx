@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { type ComponentProps } from 'react';
+import { requestPermission } from 'src/utils/functions';
 
 export function ExternalLink({
   href,
@@ -13,12 +14,9 @@ export function ExternalLink({
       href={href}
       target={target}
       rel={rel}
-      onClick={e => {
+      onClick={() => {
         if (window.ReactNativeWebView) {
-          e.preventDefault();
-          window.ReactNativeWebView.postMessage(
-            JSON.stringify({ type: 'link', url: `${location.origin}${href}` }),
-          );
+          requestPermission('link', `${location.origin}${href}`);
         }
       }}
     />

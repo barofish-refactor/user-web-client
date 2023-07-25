@@ -14,7 +14,7 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { aToB, bToA, type sortType } from 'src/utils/parse';
+import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
 
 const perView = 10;
@@ -51,8 +51,8 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
-  const { data: mainData } = useQuery(queryKey.main, async () => {
-    const res = await (await client()).selectMainItems();
+  const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
+    const res = await (await client()).selectMainCurationList();
     if (res.data.isSuccess) {
       return res.data.data;
     } else setAlert({ message: res.data.errorMsg ?? '' });
@@ -170,7 +170,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   useEffect(() => {
     if (router.isReady && f) {
       try {
-        setSavedFilter(JSON.parse(bToA(f as string)));
+        setSavedFilter(safeParse(bToA(f as string)) ?? []);
       } catch (error) {
         console.log(error);
       }
@@ -301,7 +301,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
               sort={sort}
               setSort={setSort}
             />
-            <div ref={ref} />
+            <div ref={ref} className='pb-10' />
           </Fragment>
         ) : (
           // 검색 결과 없을 경우
@@ -319,10 +319,10 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
               </p>
             </div>
             <div className='-mx-4 mt-4 h-2 bg-[#F2F2F2]' />
-            {mainData?.curations && mainData?.curations.length > 0 && (
+            {curationData && curationData.length > 0 && (
               <HomeCurationItem
                 className='mt-[30px] p-0'
-                data={mainData?.curations[0]}
+                data={curationData[0]}
                 showViewAll={false}
               />
             )}

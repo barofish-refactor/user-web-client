@@ -11,7 +11,7 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { formatToLocaleString } from 'src/utils/functions';
+import { formatToLocaleString, requestPermission } from 'src/utils/functions';
 
 /** 마이페이지 */
 const MyPage: NextPageWithLayout = () => {
@@ -19,7 +19,7 @@ const MyPage: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
   const [recentData, setRecentData] = useState<string[]>([]); // 최근 본 상품
 
-  const { data: user } = useQuery(
+  const { data: user, isLoading } = useQuery(
     queryKey.user,
     async () => {
       const res = await (await client()).selectUserSelfInfo();
@@ -80,7 +80,11 @@ const MyPage: NextPageWithLayout = () => {
               {user?.grade?.name ?? '멸치'}
             </span>
             <p className='mr-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
-              {user?.nickname}
+              {!isLoading
+                ? user?.nickname && user.nickname.length > 0
+                  ? user.nickname
+                  : '내 정보를 입력해주세요.'
+                : ' '}
             </p>
             <Image
               unoptimized
@@ -148,13 +152,10 @@ const MyPage: NextPageWithLayout = () => {
               'relative flex h-[140px] w-full flex-col items-start justify-between overflow-hidden rounded-lg px-4 pb-4 pt-6 text-start shadow-[0px_4px_10px_rgba(0,0,0,0.08)]',
               banner[0].link && banner[0].link.length > 0 ? 'cursor-pointer' : 'cursor-default',
             )}
-            onClick={e => {
+            onClick={() => {
               if (banner[0].link && banner[0].link.length > 0) {
                 if (window.ReactNativeWebView) {
-                  e.preventDefault();
-                  window.ReactNativeWebView.postMessage(
-                    JSON.stringify({ type: 'link', url: `${banner[0].link}` }),
-                  );
+                  requestPermission('link', `${banner[0].link}`);
                 } else {
                   return window.open(`${banner[0].link}`, '_blank');
                 }

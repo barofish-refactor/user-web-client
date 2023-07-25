@@ -95,12 +95,7 @@ export function ReviewPhoto({ id, type }: Props) {
           modules={[FreeMode]}
           spaceBetween={11}
           className='mt-3.5'
-          style={{
-            marginLeft: '-16px',
-            marginRight: '-16px',
-            paddingLeft: '16px',
-            paddingRight: '16px',
-          }}
+          style={{ marginInline: '-16px', paddingInline: '16px' }}
         >
           {data?.pages?.map((x, i) =>
             x?.content
@@ -171,7 +166,7 @@ export function ReviewPhoto({ id, type }: Props) {
               <ReviewItem key={`${i}${idx}${v.id}`} data={v} showInfo={false} refetch={refetch} />
             )),
           )}
-          <div ref={ref} />
+          <div ref={ref} className='pb-10' />
         </div>
       )}
     </div>

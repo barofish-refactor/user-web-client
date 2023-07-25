@@ -92,7 +92,10 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
     data: CancelOrderByUserPayload;
   }) => {
     if (isCancelLoading) return;
-    cancelOrderByUser({ orderProductInfoId, data: { data: formatToBlob(data.data, true) } })
+    cancelOrderByUser({
+      orderProductInfoId,
+      data: { data: formatToBlob<CancelOrderByUserPayload['data']>(data.data, true) },
+    })
       .then(res => {
         if (res.data.isSuccess) {
           queryClient.invalidateQueries(queryKey.order.lists);
@@ -119,7 +122,10 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
     data: RequestChangeProductPayload;
   }) => {
     if (isChangeLoading) return;
-    requestChangeProduct({ orderProductInfoId, data: { data: formatToBlob(data.data, true) } })
+    requestChangeProduct({
+      orderProductInfoId,
+      data: { data: formatToBlob<RequestChangeProductPayload['data']>(data.data, true) },
+    })
       .then(res => {
         if (res.data.isSuccess) {
           queryClient.invalidateQueries(queryKey.order.lists);

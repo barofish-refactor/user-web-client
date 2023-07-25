@@ -30,9 +30,28 @@ const getSectionDeliverFee = (data: BasketProductDto[], store: SimpleStore | und
       v =>
         Math.ceil(
           v.option?.maxAvailableAmount ? (v.amount ?? 0) / v.option?.maxAvailableAmount : 1,
-        ) * (store?.deliverFee ?? 0),
+        ) * (v.deliveryFee ?? store?.deliverFee ?? 0),
     )
     .reduce((a, b) => a + b, 0);
+
+function getAdditionalPrice(
+  value: BasketProductDto,
+  addDiscountPrice?: boolean,
+  multiple?: boolean,
+) {
+  const discountPrice = value.product?.discountPrice ?? 0;
+  let result = (value.option?.discountPrice ?? 0) - discountPrice;
+
+  if (addDiscountPrice) {
+    result = discountPrice + result;
+  }
+
+  if (multiple) {
+    result = result * (value.amount ?? 0);
+  }
+
+  return result;
+}
 
 export interface SectionBasketType {
   index: number;
@@ -170,23 +189,13 @@ const Cart: NextPageWithLayout = () => {
       const totalPrice =
         selectedItem.length > 0
           ? selectedItem
-              .map(
-                v =>
-                  ((v.product?.discountPrice ?? 0) +
-                    ((v.option?.discountPrice ?? 0) - (v.product?.discountPrice ?? 0))) *
-                  (v.amount ?? 0),
-              )
+              .map(v => getAdditionalPrice(v, true, true))
               .reduce((a: number, b: number) => a + b, 0)
           : 0;
       const totalDelivery = selectedSection
         .map(x => {
           const sectionTotal = x.data
-            .map(
-              v =>
-                ((v.product?.discountPrice ?? 0) +
-                  ((v.option?.discountPrice ?? 0) - (v.product?.discountPrice ?? 0))) *
-                (v.amount ?? 0),
-            )
+            .map(v => getAdditionalPrice(v, true, true))
             .reduce((a, b) => a + b, 0);
 
           const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
@@ -274,12 +283,7 @@ const Cart: NextPageWithLayout = () => {
           <div className='h-2 bg-grey-90' />
           {sectionCart.map(x => {
             const sectionTotal = x.data
-              .map(
-                v =>
-                  ((v.product?.discountPrice ?? 0) +
-                    ((v.option?.discountPrice ?? 0) - (v.product?.discountPrice ?? 0))) *
-                  (v.amount ?? 0),
-              )
+              .map(v => getAdditionalPrice(v, true, true))
               .reduce((a, b) => a + b, 0);
 
             const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
@@ -388,10 +392,11 @@ const Cart: NextPageWithLayout = () => {
                                 />
                               </button>
                             </div>
-                            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                              (v.product?.discountPrice ?? 0) +
-                                ((v.option?.discountPrice ?? 0) - (v.product?.discountPrice ?? 0)),
-                            )}원`}</p>
+                            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                              {`${formatToLocaleString(getAdditionalPrice(v, true), {
+                                suffix: '원',
+                              })}`}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -416,10 +421,10 @@ const Cart: NextPageWithLayout = () => {
                       {x.store?.deliverFeeType === 'FREE'
                         ? '무료'
                         : x.store?.deliverFeeType === 'FIX'
-                        ? formatToLocaleString(sectionDeliverFee) + '원'
+                        ? formatToLocaleString(sectionDeliverFee, { suffix: '원' })
                         : sectionTotal >= (x.store?.minOrderPrice ?? 0)
                         ? '무료'
-                        : formatToLocaleString(sectionDeliverFee) + '원'}
+                        : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
                     </p>
                   </div>
                 </div>
@@ -506,6 +511,24 @@ const Cart: NextPageWithLayout = () => {
           onClick={() => {
             if (selectedItem.length > 0) {
               const selectedOption: optionState[] = selectedItem.map(v => {
+                // 같은 스토어 총 금액
+                const sectionTotal = selectedItem
+                  .filter(
+                    x => x.store?.storeId === v.store?.storeId && x.product?.id && v.product?.id,
+                  )
+                  .map(v => getAdditionalPrice(v, true, true))
+                  .reduce((a, b) => a + b, 0);
+
+                const deliverResult = v.deliveryFee ?? v.store?.deliverFee ?? 0;
+                const deliveryFee =
+                  v.store?.deliverFeeType === 'FREE'
+                    ? 0
+                    : v.store?.deliverFeeType === 'FIX'
+                    ? deliverResult
+                    : sectionTotal >= (v.store?.minOrderPrice ?? 0)
+                    ? 0
+                    : deliverResult;
+
                 return {
                   isNeeded: true,
                   optionId: v.option?.id ?? -1,
@@ -513,8 +536,8 @@ const Cart: NextPageWithLayout = () => {
                   name: v.option?.name ?? '',
                   amount: v.amount ?? 0,
                   price: v.product?.discountPrice ?? 0,
-                  additionalPrice: (v.option?.discountPrice ?? 0) - (v.product?.discountPrice ?? 0),
-                  deliveryFee: v.deliveryFee ?? 0,
+                  additionalPrice: getAdditionalPrice(v),
+                  deliveryFee,
                   minOrderPrice: v.store?.minOrderPrice ?? 0,
                   deliverFeeType: v.store?.deliverFeeType ?? 'FREE',
                   stock: v.option?.amount ?? 999,
@@ -525,6 +548,7 @@ const Cart: NextPageWithLayout = () => {
                   storeId: v.store?.storeId ?? -1,
                   storeImage: v.store?.profileImage ?? '',
                   storeName: v.store?.name ?? '',
+                  needTaxation: v.product?.isNeedTaxation ?? false, //
                 };
               });
               router.push({

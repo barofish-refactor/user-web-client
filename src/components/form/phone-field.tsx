@@ -3,11 +3,12 @@ import clsx from 'clsx';
 import { intervalToDuration } from 'date-fns';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { NumericFormat, PatternFormat } from 'react-number-format';
+import { PatternFormat } from 'react-number-format';
 import { client } from 'src/api/client';
 import { type RequestCodeReq, type VerifyCodeReq } from 'src/api/swagger/data-contracts';
 import { errorMessageClassName, inputClassName, labelClassName } from 'src/components/form';
 import { useAlertStore } from 'src/store';
+import cm from 'src/utils/class-merge';
 import { REG_EXP } from 'src/utils/regex';
 import useRafInterval from 'src/utils/use-raf-interval';
 
@@ -17,11 +18,15 @@ export type PhoneFormType = {
   verificationId: number;
 };
 
+interface Props {
+  className?: string;
+}
+
 const INITIAL_TIMER = 180;
 const PHONE_KEY: Extract<keyof PhoneFormType, 'phone'> = 'phone';
 const VERIFICATION_CODE_KEY: Extract<keyof PhoneFormType, 'verificationCode'> = 'verificationCode';
 
-export function PhoneField() {
+export function PhoneField({ className }: Props) {
   const { formState, control, trigger, clearErrors, getValues, setValue, watch } =
     useFormContext<PhoneFormType>();
   const { setAlert } = useAlertStore();
@@ -60,15 +65,7 @@ export function PhoneField() {
             setValue('verificationId', 0); // 재인증시 초기화
             clearValidation();
           } else {
-            // setTimer(INITIAL_TIMER); // Toast 연동시 제거
-            // setValue('verificationId', 0); // Toast 연동시 제거
-            // clearValidation(); // Toast 연동시 제거
-            setAlert({
-              message: res.data.errorMsg ?? '',
-              onClick: () => {
-                //
-              },
-            });
+            setAlert({ message: res.data.errorMsg ?? '' });
           }
         })
         .catch(error => {
@@ -126,7 +123,7 @@ export function PhoneField() {
 
   return (
     <div>
-      <label htmlFor={PHONE_KEY} className={labelClassName}>
+      <label htmlFor={PHONE_KEY} className={cm(labelClassName, className)}>
         휴대폰 번호
       </label>
       <div className='space-y-1.5'>
@@ -180,10 +177,10 @@ export function PhoneField() {
                 minLength: { value: 6, message: '올바른 인증번호를 입력해 주세요.' },
               }}
               render={({ field: { ref, ...props } }) => (
-                <NumericFormat
+                <PatternFormat
                   {...props}
                   placeholder='인증번호를 입력해 주세요'
-                  maxLength={6}
+                  format='######'
                   readOnly={!!verificationId}
                   inputMode='numeric'
                   spellCheck={false}

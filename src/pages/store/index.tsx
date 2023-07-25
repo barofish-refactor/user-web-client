@@ -220,12 +220,7 @@ const Store: NextPageWithLayout = () => {
               freeMode
               modules={[FreeMode]}
               spaceBetween={6}
-              style={{
-                marginLeft: '-16px',
-                marginRight: '-16px',
-                paddingLeft: '16px',
-                paddingRight: '16px',
-              }}
+              style={{ marginInline: '-16px', paddingInline: '16px' }}
             >
               {['최신 입점순', '즐겨찾기 많은 순', '판매순', '리뷰많은 순'].map((v, idx) => {
                 return (
@@ -273,7 +268,7 @@ const Store: NextPageWithLayout = () => {
               }),
             )}
           </div>
-          <div ref={ref} />
+          <div ref={ref} className='pb-10' />
         </Fragment>
       ) : (
         <Fragment>

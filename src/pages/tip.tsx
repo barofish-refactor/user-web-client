@@ -8,6 +8,7 @@ import { Tip } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
+import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 
@@ -17,6 +18,8 @@ interface Props {
 
 /** 알아두면 좋은 정보 */
 const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
+  const { setAlert } = useAlertStore();
+
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const variables: { type?: 'COMPARE' | 'BUY_TIP' | 'NEW_ONE' } = {
@@ -47,6 +50,13 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
     },
   );
 
+  const { data: tipInfo } = useQuery(queryKey.tipInfo, async () => {
+    const res = await (await client()).selectTipInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else setAlert({ message: res.data.errorMsg ?? '' });
+  });
+
   return (
     <div className='max-md:w-[100vw]'>
       {/* header */}
@@ -54,7 +64,7 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
         <BackButton />
         <div className='w-5' />
         <p className='flex-1 whitespace-pre text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-          알아두면 좋은 정보
+          {tipInfo?.title ?? '알아두면 좋은 정보'}
         </p>
         <Link href='/compare/storage'>
           <Image

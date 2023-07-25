@@ -36,12 +36,7 @@ const CurationLargeSlide = ({ data }: Props) => {
       modules={[FreeMode]}
       spaceBetween={11}
       className='mt-5'
-      style={{
-        marginLeft: '-16px',
-        marginRight: '-16px',
-        paddingLeft: '16px',
-        paddingRight: '16px',
-      }}
+      style={{ marginInline: '-16px', paddingInline: '16px' }}
     >
       {data.map((v, idx) => {
         return (

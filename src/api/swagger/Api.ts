@@ -70,6 +70,7 @@ import {
   CancelSettleByAdminData,
   CancelSettleByAdminPayload,
   CheckPaymentDoneData,
+  CompareProductListData,
   ConfirmCancelOrderData,
   ConfirmChangeProductData,
   ConfirmDepositData,
@@ -92,6 +93,9 @@ import {
   DeleteCouponData,
   DeleteCurationData,
   DeleteDeliverPlaceData,
+  DeleteInquiryByAdminData,
+  DeleteInquiryByAdminPayload,
+  DeleteInquiryByUserData,
   DeletePaymentMethodData,
   DeleteProductData,
   DeleteProductListData,
@@ -108,6 +112,8 @@ import {
   DeleteTopBarData,
   DeliverReadyData,
   DoneRefundOrderProductData,
+  FindEmailData,
+  FindEmailPayload,
   GithubWebhookCallbackData,
   GithubWebhookCallbackPayload,
   JoinSnsUserData,
@@ -142,8 +148,10 @@ import {
   SaveProductPayload,
   SearchingProductDirectData,
   SearchProductData,
+  SelectAddressListData,
   SelectAdminData,
   SelectAdminListData,
+  SelectAdminLogListData,
   SelectAdminMyInfoData,
   SelectAllReviewListByAdminData,
   SelectBannerData,
@@ -180,6 +188,7 @@ import {
   SelectMainData,
   SelectMainItemsData,
   SelectMainStoreData,
+  SelectMainStoreListData,
   SelectMyPageBannerData,
   SelectMyReviewListData,
   SelectNoticeData,
@@ -227,6 +236,7 @@ import {
   SelectStoreListByAdminData,
   SelectStoreListData,
   SelectTipData,
+  SelectTipInfoData,
   SelectTipList1Data,
   SelectTipListData,
   SelectTopBarCountData,
@@ -237,14 +247,14 @@ import {
   SelectUserList1Data,
   SelectUserListData,
   SelectUserSelfInfoData,
+  SendFcmToUserData,
+  SendFcmToUserPayload,
   SetMainPartnerByAdminData,
   SetMainPartnerByAdminPayload,
   SortCuration1Data,
   SortCuration1Payload,
   SortCurationData,
   SortCurationPayload,
-  Test1Data,
-  Test2Data,
   TestData,
   TestPayload,
   UnlikeReviewByUserData,
@@ -265,6 +275,8 @@ import {
   UpdateFcmReq,
   UpdateGradeData,
   UpdateGradePayload,
+  UpdateInquiryData,
+  UpdateInquiryPayload,
   UpdateNotice1Data,
   UpdateNoticeData,
   UpdateNoticePayload,
@@ -286,10 +298,16 @@ import {
   UpdateStoreInfo1Payload,
   UpdateStoreInfoData,
   UpdateStoreInfoPayload,
+  UpdateStoreIsReliableData,
+  UpdateStoreIsReliablePayload,
   UpdateStoreStateData,
   UpdateStoreStatePayload,
   UpdateTipData,
+  UpdateTipInfoData,
+  UpdateTipInfoPayload,
   UpdateTipPayload,
+  UpdateTipStateData,
+  UpdateTipStatePayload,
   UpdateTopBarData,
   UpdateTopBarPayload,
   UpdateUserData,
@@ -472,6 +490,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags user-controller
+   * @name FindEmail
+   * @request POST:/api/v1/user/find-email
+   * @response `200` `FindEmailData` OK
+   */
+  findEmail = (data: FindEmailPayload, params: RequestParams = {}) =>
+    this.request<FindEmailData, any>({
+      path: `/api/v1/user/find-email`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags user-controller
    * @name UpdateFcm
    * @request POST:/api/v1/user/fcm-token
    * @response `200` `UpdateFcmData` OK
@@ -552,6 +586,38 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags tip-controller
+   * @name UpdateTipState
+   * @request POST:/api/v1/tip/update/state
+   * @response `200` `UpdateTipStateData` OK
+   */
+  updateTipState = (data: UpdateTipStatePayload, params: RequestParams = {}) =>
+    this.request<UpdateTipStateData, any>({
+      path: `/api/v1/tip/update/state`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags tip-controller
+   * @name UpdateTipInfo
+   * @request POST:/api/v1/tip/info/update
+   * @response `200` `UpdateTipInfoData` OK
+   */
+  updateTipInfo = (data: UpdateTipInfoPayload, params: RequestParams = {}) =>
+    this.request<UpdateTipInfoData, any>({
+      path: `/api/v1/tip/info/update`,
+      method: 'POST',
+      body: data,
+      type: ContentType.FormData,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags tip-controller
    * @name AddTip
    * @request POST:/api/v1/tip/add
    * @response `200` `AddTipData` OK
@@ -591,6 +657,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   updatePassword = (data: UpdatePasswordPayload, params: RequestParams = {}) =>
     this.request<UpdatePasswordData, any>({
       path: `/api/v1/store/update/password`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags store-controller
+   * @name UpdateStoreIsReliable
+   * @request POST:/api/v1/store/update/is-reliable
+   * @response `200` `UpdateStoreIsReliableData` OK
+   */
+  updateStoreIsReliable = (data: UpdateStoreIsReliablePayload, params: RequestParams = {}) =>
+    this.request<UpdateStoreIsReliableData, any>({
+      path: `/api/v1/store/update/is-reliable`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -1270,6 +1352,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags inquiry-controller
+   * @name UpdateInquiry
+   * @request POST:/api/v1/inquiry/update/{id}
+   * @response `200` `UpdateInquiryData` OK
+   */
+  updateInquiry = (id: number, data: UpdateInquiryPayload, params: RequestParams = {}) =>
+    this.request<UpdateInquiryData, any>({
+      path: `/api/v1/inquiry/update/${id}`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags inquiry-controller
    * @name AnswerInquiry
    * @request POST:/api/v1/inquiry/answer/{id}
    * @response `200` `AnswerInquiryData` OK
@@ -1341,6 +1439,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   githubWebhookCallback = (data: GithubWebhookCallbackPayload, params: RequestParams = {}) =>
     this.request<GithubWebhookCallbackData, any>({
       path: `/api/v1/github_webhook`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags fcm-controller
+   * @name SendFcmToUser
+   * @request POST:/api/v1/fcm/send-fcm
+   * @response `200` `SendFcmToUserData` OK
+   */
+  sendFcmToUser = (data: SendFcmToUserPayload, params: RequestParams = {}) =>
+    this.request<SendFcmToUserData, any>({
+      path: `/api/v1/fcm/send-fcm`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -1858,20 +1972,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags user-controller
-   * @name Test1
-   * @request GET:/api/v1/user/test
-   * @response `200` `Test1Data` OK
-   */
-  test1 = (params: RequestParams = {}) =>
-    this.request<Test1Data, any>({
-      path: `/api/v1/user/test`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags user-controller
    * @name SelectPaymentMethodList
    * @request GET:/api/v1/user/payment-method
    * @response `200` `SelectPaymentMethodListData` OK
@@ -2176,6 +2276,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v1/tip/management`,
       method: 'GET',
       query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags tip-controller
+   * @name SelectTipInfo
+   * @request GET:/api/v1/tip/info
+   * @response `200` `SelectTipInfoData` OK
+   */
+  selectTipInfo = (params: RequestParams = {}) =>
+    this.request<SelectTipInfoData, any>({
+      path: `/api/v1/tip/info`,
+      method: 'GET',
       ...params,
     });
   /**
@@ -3383,6 +3497,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags main-controller
+   * @name SelectMainStoreList
+   * @request GET:/api/v1/main/store
+   * @response `200` `SelectMainStoreListData` OK
+   */
+  selectMainStoreList = (params: RequestParams = {}) =>
+    this.request<SelectMainStoreListData, any>({
+      path: `/api/v1/main/store`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags main-controller
    * @name SelectMainCurationList
    * @request GET:/api/v1/main/curation
    * @response `200` `SelectMainCurationListData` OK
@@ -3405,6 +3533,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<SelectInquiryData, any>({
       path: `/api/v1/inquiry/${id}`,
       method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags inquiry-controller
+   * @name DeleteInquiryByUser
+   * @request DELETE:/api/v1/inquiry/{id}
+   * @response `200` `DeleteInquiryByUserData` OK
+   */
+  deleteInquiryByUser = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteInquiryByUserData, any>({
+      path: `/api/v1/inquiry/${id}`,
+      method: 'DELETE',
       ...params,
     });
   /**
@@ -3781,20 +3923,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags compare-controller
-   * @name Test2
-   * @request GET:/api/v1/compare/test
-   * @response `200` `Test2Data` OK
-   */
-  test2 = (params: RequestParams = {}) =>
-    this.request<Test2Data, any>({
-      path: `/api/v1/compare/test`,
-      method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags compare-controller
    * @name SelectCompareSet
    * @request GET:/api/v1/compare/set/{id}
    * @response `200` `SelectCompareSetData` OK
@@ -3893,6 +4021,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectRecommendCompareSetListByAdminData, any>({
       path: `/api/v1/compare/recommend/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags compare-controller
+   * @name CompareProductList
+   * @request GET:/api/v1/compare/products
+   * @response `200` `CompareProductListData` OK
+   */
+  compareProductList = (
+    query: {
+      productIdStr: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CompareProductListData, any>({
+      path: `/api/v1/compare/products`,
       method: 'GET',
       query: query,
       ...params,
@@ -4131,6 +4279,45 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags admin-log-controller
+   * @name SelectAdminLogList
+   * @request GET:/api/v1/admin/log/list
+   * @response `200` `SelectAdminLogListData` OK
+   */
+  selectAdminLogList = (
+    query: {
+      /**
+       * @format int32
+       * @default 0
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+      type:
+        | 'USER'
+        | 'PARTNER'
+        | 'PRODUCT'
+        | 'ORDER'
+        | 'SETTLEMENT'
+        | 'REPORT'
+        | 'INQUIRY'
+        | 'COUPON';
+      targetId: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectAdminLogListData, any>({
+      path: `/api/v1/admin/log/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags admin-controller
    * @name SelectAdminList
    * @request GET:/api/v1/admin/list
@@ -4178,6 +4365,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags address-controller
+   * @name SelectAddressList
+   * @request GET:/api/v1/address/list
+   * @response `200` `SelectAddressListData` OK
+   */
+  selectAddressList = (
+    query?: {
+      keyword?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectAddressListData, any>({
+      path: `/api/v1/address/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags search-filter-controller
    * @name DeleteSearchFilterField
    * @request DELETE:/api/v1/search-filter/field/{id}
@@ -4200,6 +4407,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   deleteReports = (data: DeleteReportsPayload, params: RequestParams = {}) =>
     this.request<DeleteReportsData, any>({
       path: `/api/v1/report`,
+      method: 'DELETE',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags inquiry-controller
+   * @name DeleteInquiryByAdmin
+   * @request DELETE:/api/v1/inquiry/list
+   * @response `200` `DeleteInquiryByAdminData` OK
+   */
+  deleteInquiryByAdmin = (data: DeleteInquiryByAdminPayload, params: RequestParams = {}) =>
+    this.request<DeleteInquiryByAdminData, any>({
+      path: `/api/v1/inquiry/list`,
       method: 'DELETE',
       body: data,
       type: ContentType.Json,

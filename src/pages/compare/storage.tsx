@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import { client } from 'src/api/client';
 import {
-  type AddCompareSetPayload,
   type CompareSetDto,
   type DeleteCompareSetPayload,
   type DeleteSaveProductsPayload,
@@ -62,10 +61,6 @@ const Storage: NextPageWithLayout = () => {
     }
   });
 
-  const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
-    async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
-  );
-
   const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
     async (args: DeleteSaveProductsPayload) =>
       await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
@@ -75,18 +70,6 @@ const Storage: NextPageWithLayout = () => {
     async (args: DeleteCompareSetPayload) =>
       await (await client()).deleteCompareSet(args, { type: ContentType.FormData }),
   );
-
-  const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
-    if (isAddLoading) return;
-    addCompareSet(formatToBlob(args, true))
-      .then(res => {
-        if (res.data.isSuccess) {
-          router.push({ pathname: '/compare/[id]', query: { id: res.data.data?.id } });
-          setRefetch();
-        } else setAlert({ message: res.data.errorMsg ?? '' });
-      })
-      .catch(error => console.log(error));
-  };
 
   const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
     if (isDeleteLoading) return;
@@ -432,8 +415,11 @@ const Storage: NextPageWithLayout = () => {
                       );
                     })}
                     <Link
-                      href={{ pathname: '/compare/[id]', query: { id: v.compareSetId } }}
                       className='mt-1.5'
+                      href={{
+                        pathname: '/compare/[id]',
+                        query: { id: v.compareSetId, type: 'id' },
+                      }}
                     >
                       <div className='flex h-[42px] items-center justify-center rounded-lg border border-grey-70'>
                         <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>
@@ -462,12 +448,7 @@ const Storage: NextPageWithLayout = () => {
             modules={[FreeMode]}
             spaceBetween={11}
             className='mt-[13px]'
-            style={{
-              marginLeft: '-16px',
-              marginRight: '-16px',
-              paddingLeft: '16px',
-              paddingRight: '16px',
-            }}
+            style={{ marginInline: '-16px', paddingInline: '16px' }}
           >
             {selectedItem.map((v, idx) => {
               return (
@@ -505,12 +486,17 @@ const Storage: NextPageWithLayout = () => {
           <button
             className='mt-5 flex h-[52px] w-full items-center justify-center rounded-lg bg-primary-50'
             onClick={() => {
-              if (selectedItem.length !== 3)
-                return setAlert({ message: '상품 3개를 선택해주세요.' });
+              if (![2, 3].includes(selectedItem.length))
+                return setAlert({ message: '상품 2~3개를 선택해주세요.' });
               const list = new Set<number | undefined>(selectedItem.map(x => x.parentCategoryId));
               if (Array.from(list).length > 1)
                 return setAlert({ message: '같은 카테고리의 상품끼리 비교 가능합니다.' });
-              onAddCompareSetMutate(selectedItem.map(x => x.id ?? -1));
+
+              // onAddCompareSetMutate(selectedItem.map(x => x.id ?? -1));
+              router.push({
+                pathname: '/compare/[id]',
+                query: { id: selectedItem.map(x => x.id).join(','), type: 'list' },
+              });
             }}
           >
             <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-white'>

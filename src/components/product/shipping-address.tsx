@@ -113,6 +113,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
   const [name, setName] = useState<string>('');
   const [receiverName, setReceiverName] = useState<string>('');
   const [tel, setTel] = useState<string>('');
+  const [bCode, setBCode] = useState<string>('');
   const [postalCode, setPostalCode] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const [addressDetail, setAddressDetail] = useState<string>('');
@@ -316,6 +317,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
                     open={openDaum}
                     onOpenChange={setOpenDaum}
                     onComplete={value => {
+                      setBCode(value.bcode);
                       setPostalCode(value.zonecode);
                       setAddress(value.address);
                     }}
@@ -412,6 +414,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
                     name,
                     receiverName,
                     tel: tel.replaceAll('-', ''),
+                    bcode: bCode,
                     postalCode,
                     address,
                     addressDetail,
@@ -425,6 +428,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
                     name,
                     receiverName,
                     tel: tel.replaceAll('-', ''),
+                    bcode: bCode,
                     postalCode,
                     address,
                     addressDetail,

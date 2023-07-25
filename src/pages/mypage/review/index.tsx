@@ -60,7 +60,7 @@ const MypageReview: NextPageWithLayout = () => {
             ))}
           </Fragment>
         ))}
-        <div ref={ref} />
+        <div ref={ref} className='pb-10' />
       </article>
     </div>
   );

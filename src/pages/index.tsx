@@ -17,14 +17,11 @@ import {
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { aToB, bToA } from 'src/utils/parse';
+import { aToB, bToA, safeParse } from 'src/utils/parse';
 
 import 'swiper/css';
 
 const perView = 10;
-const defaultCurationAbbreviation: Curation[] = [
-  { id: -2, image: '/dummy/dummy-curation-1.png', shortName: '해산물꿀팁' },
-];
 
 /** 홈화면 */
 const Home: NextPageWithLayout = () => {
@@ -35,6 +32,7 @@ const Home: NextPageWithLayout = () => {
   const { filter, setFilter } = useFilterStore();
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
+  const [defaultCurationAbbreviation, setDefaultCurationAbbreviation] = useState<Curation[]>([]);
 
   const { data, isLoading, refetch } = useQuery(
     queryKey.main,
@@ -48,6 +46,38 @@ const Home: NextPageWithLayout = () => {
       staleTime: 0,
     },
   );
+
+  const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
+    const res = await (await client()).selectMainCurationList();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else setAlert({ message: res.data.errorMsg ?? '' });
+  });
+
+  const { data: tipInfo } = useQuery(
+    queryKey.tipInfo,
+    async () => {
+      const res = await (await client()).selectTipInfo();
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else setAlert({ message: res.data.errorMsg ?? '' });
+    },
+    {
+      staleTime: 0,
+    },
+  );
+
+  useEffect(() => {
+    if (tipInfo) {
+      setDefaultCurationAbbreviation([
+        {
+          id: -2,
+          image: tipInfo.thumbnailImage,
+          shortName: tipInfo.name,
+        },
+      ]);
+    }
+  }, [tipInfo]);
 
   const {
     data: topBarData,
@@ -104,7 +134,7 @@ const Home: NextPageWithLayout = () => {
   useEffect(() => {
     if (router.isReady && f) {
       try {
-        if (typeof f === 'string') setSavedFilter(JSON.parse(bToA(f)));
+        if (typeof f === 'string') setSavedFilter(safeParse(bToA(f)) ?? []);
       } catch (error) {
         console.log(error);
       }
@@ -143,7 +173,9 @@ const Home: NextPageWithLayout = () => {
           />
           <HomeAbbreviationCuration
             data={defaultCurationAbbreviation.concat(
-              (data?.curations ?? []).filter(x => x.shortName && x.shortName.length > 0),
+              (curationData ?? []).filter(
+                x => x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
+              ),
             )}
           />
           <div className='h-[1px] bg-[#F4F4F4]' />
@@ -165,7 +197,7 @@ const Home: NextPageWithLayout = () => {
             dataDto={topBarData?.pages ?? []}
             filter={dummyFilter}
           />
-          <div ref={ref} />
+          <div ref={ref} className='pb-10' />
         </div>
       )}
       <HomeFooter />

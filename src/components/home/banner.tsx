@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import cm from 'src/utils/class-merge';
 
 import 'swiper/css';
+import { requestPermission } from 'src/utils/functions';
 
 interface Props {
   data: Banner[];
@@ -31,7 +32,7 @@ const Banner = ({ data }: Props) => {
         spaceBetween={16}
         className='aspect-[375/270]'
         autoplay={{
-          delay: 3000,
+          delay: 2000,
           disableOnInteraction: false,
         }}
         onSlideChange={v => setPageIndex(v.realIndex ?? 0)}
@@ -49,13 +50,10 @@ const Banner = ({ data }: Props) => {
                   'cursor-pointer':
                     ['CURATION', 'CATEGORY', 'NOTICE'].includes(v.type ?? '') || v.link,
                 })}
-                onClick={e => {
+                onClick={() => {
                   if (v.link) {
                     if (window.ReactNativeWebView) {
-                      e.preventDefault();
-                      window.ReactNativeWebView.postMessage(
-                        JSON.stringify({ type: 'link', url: `${v.link}` }),
-                      );
+                      requestPermission('link', `${v.link}`);
                     } else {
                       return window.open(`${v.link}`, '_blank');
                     }

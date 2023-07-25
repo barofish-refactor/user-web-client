@@ -18,7 +18,7 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { aToB, bToA, type sortType } from 'src/utils/parse';
+import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { VARIABLES } from 'src/variables';
 
 const perView = 10;
@@ -138,7 +138,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   useEffect(() => {
     if (router.isReady && f) {
       try {
-        setSavedFilter(JSON.parse(bToA(f as string)));
+        setSavedFilter(safeParse(bToA(f as string)) ?? []);
       } catch (error) {
         console.log(error);
       }
@@ -235,7 +235,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
               {data?.location ?? ''}
             </p>
-            <div className='mt-[5px] flex gap-1'>
+            <div className='mt-[5px] flex flex-wrap gap-1'>
               {(data?.keyword ?? []).map((v, idx) => {
                 return (
                   <div
@@ -282,10 +282,27 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       <StoreTab data={data} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       <div className='min-h-[calc(100dvb-95px)]'>
         {selectedTab === 0 ? (
-          <div
-            dangerouslySetInnerHTML={{ __html: description }}
-            className='mb-5 w-full [&_img]:w-full'
-          />
+          description === '' ? (
+            <div className='grid min-h-[calc(100dvb-95px)] flex-1 place-items-center'>
+              <div className='flex flex-col items-center gap-2'>
+                <Image
+                  unoptimized
+                  src='/assets/icons/search/search-error.svg'
+                  alt='up'
+                  width={40}
+                  height={40}
+                />
+                <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                  준비중입니다.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div
+              dangerouslySetInnerHTML={{ __html: description }}
+              className='mb-5 w-full [&_img]:w-full'
+            />
+          )
         ) : selectedTab === 1 ? (
           <Fragment>
             <HomeProductList
@@ -296,7 +313,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               sort={sort}
               setSort={setSort}
             />
-            <div ref={ref} />
+            <div ref={ref} className='pb-10' />
           </Fragment>
         ) : (
           // <ReviewPhoto data={[]} type='store' />

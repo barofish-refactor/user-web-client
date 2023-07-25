@@ -20,6 +20,7 @@ export default function useLogout() {
           deleteCookie(REFRESH_TOKEN);
           queryClient.clear();
           requestPermission('logout', '');
+          // resetToken();
         });
       },
     });

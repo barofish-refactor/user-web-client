@@ -8,9 +8,12 @@ import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
+import { useAlertStore } from 'src/store';
 
 /** 홈화면 - 알아두면 좋은 정보 */
 const CurationTip = () => {
+  const { setAlert } = useAlertStore();
+
   const { ref, inView } = useInView({ initialInView: false, triggerOnce: true });
   const { data } = useQuery(
     queryKey.tipList.list({ type: undefined }),
@@ -27,6 +30,13 @@ const CurationTip = () => {
     },
   );
 
+  const { data: tipInfo } = useQuery(queryKey.tipInfo, async () => {
+    const res = await (await client()).selectTipInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else setAlert({ message: res.data.errorMsg ?? '' });
+  });
+
   return (
     <div className='px-4 pt-[30px]'>
       <div className='flex items-center justify-between'>
@@ -34,7 +44,7 @@ const CurationTip = () => {
           ref={ref}
           className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'
         >
-          알아두면 좋은 정보 💡
+          {tipInfo?.title ?? ''}
         </p>
         <Link href='/tip' className=''>
           <div className='flex h-[30px] items-center gap-1'>
@@ -52,19 +62,14 @@ const CurationTip = () => {
         </Link>
       </div>
       <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
-        어디가서 잘 들을 수 없는 정보, 여기에 모두 담았어요!
+        {tipInfo?.subTitle ?? ''}
       </p>
       <Swiper
         freeMode
         slidesPerView={1.2}
         modules={[FreeMode]}
         spaceBetween={11}
-        style={{
-          marginLeft: '-16px',
-          marginRight: '-16px',
-          paddingLeft: '16px',
-          paddingRight: '16px',
-        }}
+        style={{ marginInline: '-16px', paddingInline: '16px' }}
       >
         {data?.map(v => {
           return (

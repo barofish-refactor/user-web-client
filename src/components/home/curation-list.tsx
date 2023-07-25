@@ -10,7 +10,7 @@ interface Props {
   mainRefetch: () => void;
 }
 
-export default function CurationList({ mainData, mainRefetch }: Props) {
+export default function CurationList({ mainData }: Props) {
   const { setAlert } = useAlertStore();
 
   const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
@@ -27,7 +27,7 @@ export default function CurationList({ mainData, mainRefetch }: Props) {
         .map((v, idx) => {
           return (
             <div key={v.id}>
-              <HomeCurationItem data={v} />
+              {(v.products ?? []).length > 0 && <HomeCurationItem data={v} />}
               {idx === 0 && (
                 <>
                   {/* SubBanner */}
@@ -40,7 +40,7 @@ export default function CurationList({ mainData, mainRefetch }: Props) {
                       </div>
                     )}
                   {/* Partner */}
-                  {mainData?.store && <HomePartner data={mainData?.store} refetch={mainRefetch} />}
+                  <HomePartner />
                 </>
               )}
             </div>

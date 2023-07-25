@@ -241,6 +241,7 @@ const BottomSheet = ({}: Props) => {
                                   storeId: -1,
                                   storeImage: '',
                                   storeName: '',
+                                  needTaxation: false, //
                                 });
                                 setSelectedOption(tmp);
                               }

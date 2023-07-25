@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,6 +13,7 @@ import {
   type SimpleProductDto,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
+import { HEAD_DESCRIPTION, HEAD_NAME } from 'src/components/common/head';
 import Layout from 'src/components/common/layout';
 import {
   ProductBanner,
@@ -104,6 +106,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       .catch(error => console.log(error));
   };
 
+  const headTitle = `${data?.title} - ${HEAD_NAME}`;
+  const headDescription = `${data?.title} - ${HEAD_DESCRIPTION}`;
+
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -149,6 +154,20 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   return (
     <div className='pb-[80px] max-md:w-[100vw]'>
+      <DefaultSeo
+        title={headTitle}
+        description={headDescription}
+        openGraph={{
+          title: headTitle,
+          description: headDescription,
+          images: data?.images?.map(v => {
+            return {
+              url: v,
+              alt: headTitle,
+            };
+          }),
+        }}
+      />
       {/* bottomSheet : 옵션 선택 */}
       <div className='sticky top-0 z-[100] w-full'>
         {isVisible && (
@@ -189,16 +208,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       <div className='min-h-[calc(100dvb-180px)]'>
         {selectedTab === 0 ? (
           <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />
-        ) : // <Image
-        //   width='0'
-        //   height='0'
-        //   sizes='100vw'
-        //   className='h-auto w-full'
-        //   src={data?.description ?? ''}
-        //   alt='상품상세'
-        //   draggable={false}
-        // />
-        selectedTab === 1 ? (
+        ) : selectedTab === 1 ? (
           <div>
             {/* 구매자들의 솔직 리뷰 */}
             <ReviewChart
@@ -216,7 +226,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <ReviewPhoto id={data?.id ?? -1} type='product' />
           </div>
         ) : selectedTab === 2 ? (
-          <ProductInquiry productId={Number(id)} data={data?.inquiries ?? []} />
+          <ProductInquiry productId={Number(id)} data={data?.inquiries ?? []} refetch={refetch} />
         ) : (
           <div
             dangerouslySetInnerHTML={{ __html: content }}

@@ -38,7 +38,7 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
       }
     },
     {
-      // staleTime: 0,
+      staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return lastPage?.length !== 0 ? nextId : -1;
@@ -120,7 +120,7 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
           )
         )}
       </article>
-      <div ref={ref} />
+      <div ref={ref} className='pb-10' />
     </section>
   );
 };

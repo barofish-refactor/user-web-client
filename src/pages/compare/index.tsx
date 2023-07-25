@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import {
-  type AddCompareSetPayload,
   type CompareMain,
   type DeleteSaveProductsPayload,
   type SaveProductPayload,
@@ -99,22 +98,6 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
       .catch(error => console.log(error));
   };
 
-  const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
-    async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args, {}),
-  );
-
-  const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
-    if (isAddLoading) return;
-    addCompareSet(formatToBlob(args, true))
-      .then(res => {
-        if (res.data.isSuccess) {
-          setAlert({ message: '보관함에 담았습니다.', type: 'success' });
-        } else setAlert({ message: res.data.errorMsg ?? '' });
-      })
-      .catch(error => console.log(error));
-  };
-
   const { ref } = useInView({
     initialInView: false,
     skip: !hasNextPage,
@@ -124,7 +107,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
   });
 
   return (
-    <div className='max-md:w-[100vw]'>
+    <div className='overflow-clip max-md:w-[100vw]'>
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-4 bg-white px-[18px]'>
         <div className='w-[60px]' />
         <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
@@ -156,7 +139,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
         >
           <Image src='/assets/icons/common/search.svg' alt='search' width={24} height={24} />
           <p className='bg-grey-90 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
-            비교하고싶은 상품을 검색해주세요
+            비교하고 싶은 상품을 검색해 주세요
           </p>
         </Link>
       </div>
@@ -169,18 +152,11 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
         </p>
       </div>
 
-      <div className='mx-4'>
+      <div className='mx-4 w-[83%]'>
         <Swiper
-          // freeMode
-          slidesPerView={1.1}
-          // modules={[FreeMode]}
+          className='!overflow-visible'
           spaceBetween={16}
-          style={{
-            marginLeft: '-16px',
-            marginRight: '-16px',
-            paddingLeft: '16px',
-            paddingRight: '16px',
-          }}
+          style={{ marginInline: '-16px', paddingInline: '16px' }}
         >
           {(data?.pages[0]?.popularCompareSets ?? []).map((set, idx) => {
             return (
@@ -224,7 +200,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                         </button>
                       </div>
                       <div className='flex-1'>
-                        <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+                        <p className='line-clamp-2 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
                           {`${setSquareBrackets(v.storeName)} ${v.title}`}
                         </p>
                         <div className='mt-0.5 flex items-center gap-0.5'>
@@ -266,7 +242,10 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                 <button
                   className='mt-2.5 flex h-[42px] w-full items-center justify-center rounded-lg border border-grey-70'
                   onClick={() => {
-                    onAddCompareSetMutate((set.products ?? []).map(x => x.id ?? -1));
+                    router.push({
+                      pathname: '/compare/[id]',
+                      query: { id: (set.products ?? []).map(x => x.id ?? -1), type: 'list' },
+                    });
                   }}
                 >
                   <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
@@ -299,8 +278,9 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                 <Image
                   unoptimized
                   fill
+                  draggable={false}
                   alt='product'
-                  className='rounded-lg'
+                  className='rounded-lg object-cover'
                   src={
                     data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.image ?? ''
                   }
@@ -330,8 +310,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                 </button>
               </div>
             </Link>
-            <p className='mt-2.5 text-[16px] font-normal leading-[24px] -tracking-[0.03em] text-grey-10'>
-              {/* {data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.title ?? ''} */}
+            <p className='mt-2.5 line-clamp-2 text-[16px] font-normal leading-[24px] -tracking-[0.03em] text-grey-10'>
               {`${setSquareBrackets(
                 data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.storeName,
               )} ${data.pages[0].recommendCompareProducts[refreshIndex].mainProduct?.title}`}
@@ -391,9 +370,10 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
                       <Image
                         unoptimized
                         fill
+                        draggable={false}
                         src={v.image ?? ''}
                         alt='product'
-                        className='aspect-square min-w-[calc((100%-12px)/3)] rounded-lg'
+                        className='aspect-square min-w-[calc((100%-12px)/3)] rounded-lg object-cover'
                       />
                       <button
                         className='absolute right-1 top-1.5'
@@ -473,7 +453,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
           })}
         </div>
       </div>
-      <div ref={ref} />
+      <div ref={ref} className='pb-10' />
     </div>
   );
 };

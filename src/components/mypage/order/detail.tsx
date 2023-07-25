@@ -20,6 +20,39 @@ interface Props {
   id: string;
 }
 
+interface SectionProductType {
+  index: number;
+  storeId?: number;
+  storeName?: string;
+  storeProfile?: string;
+  data: OrderProductDto[];
+}
+
+/** 장바구니 타입 변경 */
+const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] => {
+  let idx = 0;
+  const result = value.reduce((acc, cur) => {
+    const ownerId = cur.storeId;
+
+    const index = acc.findIndex(v => v.storeId === ownerId);
+
+    if (index === -1) {
+      acc.push({
+        data: [cur],
+        storeId: cur.storeId,
+        storeName: cur.storeName,
+        storeProfile: cur.storeProfile,
+        index: idx,
+      });
+      idx++;
+    } else {
+      acc[index].data.push(cur);
+    }
+    return acc;
+  }, [] as SectionProductType[]);
+  return result;
+};
+
 export function MypageOrderDetail({ id }: Props) {
   const { setAlert } = useAlertStore();
 
@@ -43,18 +76,25 @@ export function MypageOrderDetail({ id }: Props) {
 
   const totalProductPrice = data?.productInfos?.map(v => v.price ?? 0).reduce((a, b) => a + b, 0);
 
-  const sectionDeliverFee = data?.productInfos?.map(getDeliverFee).reduce((a, b) => a + b, 0);
-  const totalDeliverFee = data?.productInfos
-    ?.map(v =>
-      v.deliverFeeType === 'FREE'
+  const section = changeSectionProduct(data?.productInfos ?? []);
+
+  const totalDeliverFee = section
+    .map(x => {
+      const sectionTotal = x.data
+        .map(v => (v.price ?? 0) * (v.amount ?? 1))
+        .reduce((a, b) => a + b, 0);
+
+      const sectionDeliverFee = x.data.map(v => getDeliverFee(v)).reduce((a, b) => a + b, 0);
+
+      return x.data[0].deliverFeeType === 'FREE'
         ? 0
-        : v.deliverFeeType === 'FIX'
+        : x.data[0].deliverFeeType === 'FIX'
         ? sectionDeliverFee
-        : (v.price ?? 0) >= (v.minOrderPrice ?? 0)
+        : sectionTotal >= (x.data[0].minOrderPrice ?? 0)
         ? 0
-        : sectionDeliverFee,
-    )
-    .reduce((a, b) => (a ?? 0) + (b ?? 0), 0);
+        : sectionDeliverFee;
+    })
+    .reduce((a, b) => a + b, 0);
 
   const { data: pointData } = useQuery(queryKey.pointRule, async () => {
     const res = await (await client()).selectPointRule();
@@ -130,8 +170,14 @@ export function MypageOrderDetail({ id }: Props) {
               </div>
             </summary>
             <article className='space-y-4 pt-[22px]'>
-              {(data?.productInfos ?? []).map((v, idx) => {
-                const sectionDeliverFee = getDeliverFee(v);
+              {(section ?? []).map((v, idx) => {
+                const sectionDeliverFee = v.data
+                  .map(x => getDeliverFee(x))
+                  .reduce((a, b) => a + b, 0);
+                const totalPrice = v.data
+                  .map(x => (x.price ?? 0) * (x.amount ?? 1))
+                  .reduce((a, b) => a + b, 0);
+
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
                     <div className='flex items-center justify-between'>
@@ -156,44 +202,48 @@ export function MypageOrderDetail({ id }: Props) {
                           배송비
                         </span>
                         <span className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                          {v.deliverFeeType === 'FREE'
+                          {v.data[0].deliverFeeType === 'FREE'
                             ? '무료'
-                            : v.deliverFeeType === 'FIX'
+                            : v.data[0].deliverFeeType === 'FIX'
                             ? formatToLocaleString(sectionDeliverFee) + '원'
-                            : (v.price ?? 0) >= (v.minOrderPrice ?? 0)
+                            : totalPrice >= (v.data[0].minOrderPrice ?? 0)
                             ? '무료'
                             : formatToLocaleString(sectionDeliverFee) + '원'}
                         </span>
                       </div>
                     </div>
-                    <div className='flex items-center gap-2.5 pt-3'>
-                      <Link href={{ pathname: '/product', query: { id: v.product?.id } }}>
-                        <Image
-                          unoptimized
-                          src={v.product?.image ?? ''}
-                          width={70}
-                          height={70}
-                          alt='product'
-                          className='aspect-square h-[70px] w-[70px] rounded object-cover'
-                        />
-                      </Link>
-                      <div className='flex flex-1 flex-col justify-center gap-1'>
-                        <h4 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
-                          {v.product?.title ?? ''}
-                        </h4>
-                        <div className='flex items-center'>
-                          <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
-                            {v.amount ?? 0}개
-                          </p>
-                          <div className='mx-1.5 h-[14px] w-[1px] bg-[#E2E2E2]' />
-                          <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
-                            {v.optionName ?? '기본'}
-                          </p>
+                    {v.data.map((x, i) => {
+                      return (
+                        <div key={i} className='flex items-center gap-2.5 pt-3'>
+                          <Link href={{ pathname: '/product', query: { id: x.product?.id } }}>
+                            <Image
+                              unoptimized
+                              src={x.product?.image ?? ''}
+                              width={70}
+                              height={70}
+                              alt='product'
+                              className='aspect-square h-[70px] w-[70px] rounded object-cover'
+                            />
+                          </Link>
+                          <div className='flex flex-1 flex-col justify-center gap-1'>
+                            <h4 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+                              {x.product?.title ?? ''}
+                            </h4>
+                            <div className='flex items-center'>
+                              <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                                {x.amount ?? 0}개
+                              </p>
+                              <div className='mx-1.5 h-[14px] w-[1px] bg-[#E2E2E2]' />
+                              <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                                {x.optionName ?? '기본'}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      );
+                    })}
                     <p className='text-right font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                      {formatToLocaleString(v.price, { suffix: '원' })}
+                      {formatToLocaleString(totalPrice, { suffix: '원' })}
                     </p>
                   </div>
                 );

@@ -11,6 +11,7 @@ import useWebview from 'src/utils/use-web-view';
 
 import { ContentType } from 'src/api/swagger/http-client';
 import 'src/styles/globals.css';
+import { type JoinSnsUserPayload } from 'src/api/swagger/data-contracts';
 
 type CustomAppProps = AppProps<any> & { Component: NextPageWithLayout };
 
@@ -51,7 +52,7 @@ export default function MyApp(props: CustomAppProps) {
       (await client())
         .joinSnsUser(
           {
-            data: formatToBlob(
+            data: formatToBlob<JoinSnsUserPayload['data']>(
               {
                 loginType:
                   message.social === 'kakao'
@@ -61,7 +62,8 @@ export default function MyApp(props: CustomAppProps) {
                     : 'APPLE',
                 loginId: message.loginId,
                 profileImage: message.profileImage ?? undefined,
-                name: message.name ?? undefined,
+                name:
+                  message.social === 'apple' ? message.name.nickname : message.name ?? undefined,
                 nickname: message.nickname ?? undefined,
                 phone: message.phone
                   ? String(message.phone).replace('+82 ', '0').replaceAll('-', '')
@@ -84,7 +86,7 @@ export default function MyApp(props: CustomAppProps) {
         .then(res => {
           if (res) router.replace('/');
         })
-        .catch(console.error);
+        .catch(err => setAlert({ message: err }));
     }
   });
 
