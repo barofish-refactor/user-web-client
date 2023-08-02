@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import {
+  type RequestRefundOrderProductPayload,
   type CancelOrderByUserPayload,
   type OrderProductDto,
   type RequestChangeProductPayload,
@@ -71,6 +72,19 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
       ).cancelOrderByUser(orderProductInfoId, data, { type: ContentType.FormData }),
   );
 
+  const { mutateAsync: rejectCancelOrder, isLoading: isRejectCancelLoading } = useMutation(
+    async ({
+      orderProductInfoId,
+      data,
+    }: {
+      orderProductInfoId: number;
+      data: RequestRefundOrderProductPayload;
+    }) =>
+      await (
+        await client()
+      ).requestRefundOrderProduct(orderProductInfoId, data, { type: ContentType.FormData }),
+  );
+
   const { mutateAsync: requestChangeProduct, isLoading: isChangeLoading } = useMutation(
     async ({
       orderProductInfoId,
@@ -101,7 +115,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
           queryClient.invalidateQueries(queryKey.order.lists);
           setAlert({
             message: `취소/환불 ${
-              orderData?.state === 'WAIT_DEPOSIT' ? '완료 되었습니다.' : '요청이 접수되었습니다.'
+              productInfo?.state === 'WAIT_DEPOSIT' ? '완료 되었습니다.' : '요청이 접수되었습니다.'
             }`,
             type: 'success',
             onClick: () => router.replace({ pathname: '/mypage' }),
@@ -110,7 +124,35 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
       })
       .catch(error => {
         // if (error.message) setAlert(error.message);
-        console.log(error);
+        console.log('error:', error);
+      });
+  };
+
+  const onRefundMutate = ({
+    orderProductInfoId,
+    data,
+  }: {
+    orderProductInfoId: number;
+    data: RequestRefundOrderProductPayload;
+  }) => {
+    if (isRejectCancelLoading) return;
+    rejectCancelOrder({
+      orderProductInfoId,
+      data: { data: formatToBlob<RequestRefundOrderProductPayload['data']>(data.data, true) },
+    })
+      .then(res => {
+        if (res.data.isSuccess) {
+          queryClient.invalidateQueries(queryKey.order.lists);
+          setAlert({
+            message: '환불 요청이 접수되었습니다.',
+            type: 'success',
+            onClick: () => router.replace({ pathname: '/mypage' }),
+          });
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => {
+        // if (error.message) setAlert(error.message);
+        console.log('error:', error);
       });
   };
 
@@ -237,15 +279,27 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
                   },
                 });
               } else {
-                onCancelMutate({
-                  orderProductInfoId: productInfo?.id ?? -1,
-                  data: {
+                if (productInfo?.state === 'DELIVERY_DONE') {
+                  onRefundMutate({
+                    orderProductInfoId: productInfo?.id ?? -1,
                     data: {
-                      cancelReason: reportValue.value,
-                      content,
+                      data: {
+                        cancelReason: reportValue.value,
+                        content,
+                      },
                     },
-                  },
-                });
+                  });
+                } else {
+                  onCancelMutate({
+                    orderProductInfoId: productInfo?.id ?? -1,
+                    data: {
+                      data: {
+                        cancelReason: reportValue.value,
+                        content,
+                      },
+                    },
+                  });
+                }
               }
             }}
           >

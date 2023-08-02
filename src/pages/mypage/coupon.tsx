@@ -25,7 +25,6 @@ const MypageCoupon: NextPageWithLayout = () => {
         throw new Error('[selectDownloadedCoupon]' + res.data.code + ': ' + res.data.errorMsg);
       }
     },
-    { staleTime: 0 },
   );
 
   // 발급 가능한 쿠폰
@@ -39,7 +38,6 @@ const MypageCoupon: NextPageWithLayout = () => {
         throw new Error('[selectCanUseCoupon]' + res.data.code + ': ' + res.data.errorMsg);
       }
     },
-    { staleTime: 0 },
   );
 
   // 발급 받기

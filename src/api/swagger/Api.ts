@@ -142,6 +142,7 @@ import {
   RequestCodeReq,
   RequestCodeVerificationData,
   RequestRefundOrderProductData,
+  RequestRefundOrderProductPayload,
   ResetPasswordData,
   ResetPasswordPayload,
   SaveProductData,
@@ -154,6 +155,7 @@ import {
   SelectAdminLogListData,
   SelectAdminMyInfoData,
   SelectAllReviewListByAdminData,
+  SelectBankCodeListData,
   SelectBannerData,
   SelectBannerListByAdminData,
   SelectBannerListData,
@@ -207,6 +209,7 @@ import {
   SelectProductData,
   SelectProductListByUserData,
   SelectProductListData,
+  SelectProductListWithIdsData,
   SelectProductOptionListData,
   SelectProductOtherCustomerBuyData,
   SelectRecentViewListData,
@@ -235,6 +238,7 @@ import {
   SelectStoreData,
   SelectStoreListByAdminData,
   SelectStoreListData,
+  SelectSystemCouponData,
   SelectTipData,
   SelectTipInfoData,
   SelectTipList1Data,
@@ -255,8 +259,6 @@ import {
   SortCuration1Payload,
   SortCurationData,
   SortCurationPayload,
-  TestData,
-  TestPayload,
   UnlikeReviewByUserData,
   UpdateAdminByMasterData,
   UpdateAdminByMasterPayload,
@@ -302,6 +304,8 @@ import {
   UpdateStoreIsReliablePayload,
   UpdateStoreStateData,
   UpdateStoreStatePayload,
+  UpdateSystemCouponData,
+  UpdateSystemCouponPayload,
   UpdateTipData,
   UpdateTipInfoData,
   UpdateTipInfoPayload,
@@ -1096,10 +1100,16 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request POST:/api/v1/order/refund/{orderProductInfoId}/request
    * @response `200` `RequestRefundOrderProductData` OK
    */
-  requestRefundOrderProduct = (orderProductInfoId: number, params: RequestParams = {}) =>
+  requestRefundOrderProduct = (
+    orderProductInfoId: number,
+    data: RequestRefundOrderProductPayload,
+    params: RequestParams = {},
+  ) =>
     this.request<RequestRefundOrderProductData, any>({
       path: `/api/v1/order/refund/${orderProductInfoId}/request`,
       method: 'POST',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**
@@ -1495,22 +1505,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
-   * @tags excel-controller
-   * @name Test
-   * @request POST:/api/v1/excel/test
-   * @response `200` `TestData` OK
-   */
-  test = (data: TestPayload, params: RequestParams = {}) =>
-    this.request<TestData, any>({
-      path: `/api/v1/excel/test`,
-      method: 'POST',
-      body: data,
-      type: ContentType.FormData,
-      ...params,
-    });
-  /**
-   * No description
-   *
    * @tags deliver-place-controller
    * @name UpdateDeliverPlace
    * @request POST:/api/v1/deliverPlace/update/{id}
@@ -1606,6 +1600,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       method: 'POST',
       body: data,
       type: ContentType.FormData,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags coupon-controller
+   * @name UpdateSystemCoupon
+   * @request POST:/api/v1/coupon/system-coupon/update
+   * @response `200` `UpdateSystemCouponData` OK
+   */
+  updateSystemCoupon = (data: UpdateSystemCouponPayload, params: RequestParams = {}) =>
+    this.request<UpdateSystemCouponData, any>({
+      path: `/api/v1/coupon/system-coupon/update`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**
@@ -3081,6 +3091,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags product-controller
+   * @name SelectProductListWithIds
+   * @request GET:/api/v1/product/list/ids
+   * @response `200` `SelectProductListWithIdsData` OK
+   */
+  selectProductListWithIds = (
+    query: {
+      ids: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectProductListWithIdsData, any>({
+      path: `/api/v1/product/list/ids`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-controller
    * @name SelectProductCountByUser
    * @request GET:/api/v1/product/list/count
    * @response `200` `SelectProductCountByUserData` OK
@@ -3360,6 +3390,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   selectCanceledOrderList = (params: RequestParams = {}) =>
     this.request<SelectCanceledOrderListData, any>({
       path: `/api/v1/order/cancel-list`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller
+   * @name SelectBankCodeList
+   * @request GET:/api/v1/order/bank-code/list
+   * @response `200` `SelectBankCodeListData` OK
+   */
+  selectBankCodeList = (params: RequestParams = {}) =>
+    this.request<SelectBankCodeListData, any>({
+      path: `/api/v1/order/bank-code/list`,
       method: 'GET',
       ...params,
     });
@@ -3832,6 +3876,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<DeleteCouponData, any>({
       path: `/api/v1/coupon/${id}`,
       method: 'DELETE',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags coupon-controller
+   * @name SelectSystemCoupon
+   * @request GET:/api/v1/coupon/system-coupon
+   * @response `200` `SelectSystemCouponData` OK
+   */
+  selectSystemCoupon = (params: RequestParams = {}) =>
+    this.request<SelectSystemCouponData, any>({
+      path: `/api/v1/coupon/system-coupon`,
+      method: 'GET',
       ...params,
     });
   /**

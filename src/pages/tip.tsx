@@ -46,7 +46,6 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
     {
       // enabled: !!selectedIndex,
       initialData,
-      staleTime: 0,
     },
   );
 

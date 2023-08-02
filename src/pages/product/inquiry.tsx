@@ -71,10 +71,7 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
       }
     },
-    {
-      staleTime: 0,
-      enabled: !!inquiryId,
-    },
+    { enabled: !!inquiryId },
   );
 
   const { mutateAsync: addInquiry, isLoading } = useMutation(

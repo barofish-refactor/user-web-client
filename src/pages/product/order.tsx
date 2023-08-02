@@ -11,8 +11,13 @@ import {
   type PaymentMethodDto,
 } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
-import { ProductCoupon, ProductShippingAddress } from 'src/components/product';
-import { type optionState } from 'src/components/product/bottom-sheet';
+import {
+  ProductCoupon,
+  ProductRefundAccount,
+  ProductShippingAddress,
+} from 'src/components/product';
+import { type miniOptionState, type optionState } from 'src/components/product/bottom-sheet';
+import { type RefundAccountType } from 'src/components/product/refund-account';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
@@ -36,12 +41,54 @@ const getSectionDeliverFee = (data: optionState[]) =>
     .map(v => Math.ceil(v.amount / v.maxAvailableStock) * (data[0].deliveryFee ?? 0))
     .reduce((a, b) => a + b, 0);
 
+const setOptionData = async (value: miniOptionState[]) =>
+  (await client())
+    .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
+    .then(res => {
+      if (res.data.data && res.data.data.length > 0) {
+        const optionData: optionState[] = [];
+        value.forEach(v => {
+          const matched = res.data.data?.filter(x => x.id === v.productId);
+          if (matched && matched.length > 0) {
+            optionData.push({
+              isNeeded: true,
+              optionId: v.optionId,
+              productId: v.productId,
+              name: v.name,
+              amount: v.amount,
+              price: matched[0].discountPrice ?? 0,
+              additionalPrice: v.additionalPrice,
+              deliveryFee: v.deliveryFee,
+              stock: v.stock,
+              maxAvailableStock: v.maxAvailableStock,
+              deliverBoxPerAmount: v.deliverBoxPerAmount,
+              productName: matched[0].title ?? '',
+              productImage: matched[0].image ?? '',
+              needTaxation: matched[0].isNeedTaxation ?? false,
+              minOrderPrice: matched[0].minOrderPrice ?? 0,
+              deliverFeeType:
+                v.deliverBoxPerAmount === 999 ? 'FIX' : matched[0].deliverFeeType ?? 'FREE',
+              storeId: matched[0].storeId ?? -1,
+              storeImage: matched[0].storeImage ?? '',
+              storeName: matched[0].storeName ?? '',
+            });
+          }
+        });
+        return optionData;
+      }
+    });
+
 /** 주문하기 */
 const Order: NextPageWithLayout = () => {
   const router = useRouter();
   const { options } = router.query;
   const { setAlert } = useAlertStore();
 
+  const [refundBankData, setRefundBankData] = useState<RefundAccountType>({
+    name: '',
+    bankCode: '',
+    accountNumber: '',
+  });
   const [isAddressVisible, setIsAddressVisible] = useState<boolean>(false);
   const [isCouponVisible, setIsCouponVisible] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
@@ -61,21 +108,13 @@ const Order: NextPageWithLayout = () => {
     async (args: OrderReq) => await (await client()).orderProduct(args),
   );
 
-  const tmpOption: optionState[] | undefined = router.isReady
-    ? safeParse(bToA(options as string))
-    : [];
+  const [tmpOption, setTmpOption] = useState<optionState[]>([]);
   const selectedOption: optionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
   const totalPrice =
     selectedOption.length > 0
       ? selectedOption
           .map(x => (x.price + x.additionalPrice) * x.amount)
-          .reduce((a: number, b: number) => a + b)
-      : 0;
-  const taxFreePrice =
-    selectedOption.length > 0
-      ? selectedOption
-          .map(x => (x.needTaxation ? 0 : (x.price + x.additionalPrice) * x.amount))
           .reduce((a: number, b: number) => a + b)
       : 0;
 
@@ -130,18 +169,14 @@ const Order: NextPageWithLayout = () => {
   });
 
   // 보유 쿠폰
-  const { data: couponData } = useQuery(
-    queryKey.downloadedCoupon.lists,
-    async () => {
-      const res = await (await client()).selectDownloadedCoupon();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        throw new Error('[selectDownloadedCoupon]' + res.data.code + ': ' + res.data.errorMsg);
-      }
-    },
-    { staleTime: 0 },
-  );
+  const { data: couponData } = useQuery(queryKey.downloadedCoupon.lists, async () => {
+    const res = await (await client()).selectDownloadedCoupon();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error('[selectDownloadedCoupon]' + res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
 
   /** 쿠폰 할인금액 */
   const couponDiscountPoint = !selectCoupon
@@ -154,9 +189,6 @@ const Order: NextPageWithLayout = () => {
   const finalPrice = totalPrice + totalDelivery - couponDiscountPoint;
   /** 결제 금액 (적립금 사용 포함) */
   const orderPrice = finalPrice - Number(point);
-
-  /** taxFree 금액 (쿠폰 할인, 포인트 금액 포함) */
-  const taxFreePriceWithCoupon = taxFreePrice - couponDiscountPoint - Number(point);
 
   /** 구매 적립금 */
   const buyPoint =
@@ -192,13 +224,39 @@ const Order: NextPageWithLayout = () => {
     });
   };
 
-  const getMobileResultUrl = (orderId: string) => {
-    const url = new URL(`${location.origin}${'/product/payment'}`);
+  const getMobileResultUrl = (orderId: string, payMethod?: IamportPayMethod) => {
+    const url = new URL(
+      `${location.origin}${payMethod === IamportPayMethod.Vbank ? '/mypage' : '/product/payment'}`,
+    );
     url.searchParams.set('id', router.query.id as string);
-    url.searchParams.set('orderId', orderId);
-    url.searchParams.set('options', options as string);
-
+    if (payMethod !== IamportPayMethod.Vbank) {
+      url.searchParams.set('orderId', orderId);
+      url.searchParams.set('options', options as string);
+    }
     return url.href;
+  };
+
+  const getTaxFreePrice = () => {
+    const eachPriceList = selectedOption.map(x => (x.price + x.additionalPrice) * x.amount);
+    const priceList = selectedOption.map(
+      x =>
+        Math.round(
+          ((couponDiscountPoint + Number(point)) * ((x.price + x.additionalPrice) * x.amount)) /
+            totalPrice /
+            10,
+        ) * 10,
+    );
+    const priceListReduce = priceList.reduce((a, b) => a + b, 0);
+    const taxValueList = selectedOption.map(x => x.needTaxation);
+    const priceListAdd = [...priceList];
+    const lastIndex = priceListAdd.length - 1;
+    priceListAdd[lastIndex] =
+      priceListAdd[lastIndex] + -(priceListReduce - (couponDiscountPoint + Number(point)));
+    priceListAdd.forEach((element, index) => {
+      if (!taxValueList[index]) priceListAdd[index] = eachPriceList[index] - element;
+      else priceListAdd[index] = 0;
+    });
+    return priceListAdd.reduce((a, b) => a + b, 0);
   };
 
   async function onPayment() {
@@ -212,6 +270,14 @@ const Order: NextPageWithLayout = () => {
     }
     if (isCheck) {
       if (!shippingAddress) return setAlert({ message: '배송지를 입력해주세요' });
+      if (payMethod === IamportPayMethod.Vbank) {
+        if (!refundBankData.name) return setAlert({ message: '예금주명을 입력해 주세요.' });
+        else if (!refundBankData.bankCode)
+          return setAlert({ message: '입금 은행을 선택해 주세요.' });
+        else if (!refundBankData.accountNumber)
+          return setAlert({ message: '계좌번호을 입력해 주세요.' });
+      }
+      const taxFreePrice = getTaxFreePrice();
 
       orderProduct({
         products: selectedOption.map(x => {
@@ -232,6 +298,15 @@ const Order: NextPageWithLayout = () => {
         couponDiscountPrice: couponDiscountPoint,
         paymentMethodId: selectedCard?.id,
         paymentWay: parsePaymentWay(payMethod),
+        taxFreeAmount: taxFreePrice,
+        vbankRefundInfo:
+          payMethod === IamportPayMethod.Vbank
+            ? {
+                bankHolder: refundBankData.name,
+                bankCodeId: Number(refundBankData.bankCode),
+                bankAccount: refundBankData.accountNumber,
+              }
+            : undefined,
       })
         .then(res => {
           if (res.data.isSuccess) {
@@ -251,7 +326,8 @@ const Order: NextPageWithLayout = () => {
               data: {
                 payMethod,
                 merchantUid: orderId,
-                mobileRedirectUrl: getMobileResultUrl(orderId),
+                // mobileRedirectUrl: '',
+                mobileRedirectUrl: getMobileResultUrl(orderId, payMethod),
                 productName: selectedOption[0]?.productName ?? '',
                 amount: orderPrice,
                 email: '',
@@ -259,7 +335,7 @@ const Order: NextPageWithLayout = () => {
                 postcode: '',
                 tel: phone,
                 name,
-                taxFree: taxFreePriceWithCoupon > 0 ? taxFreePriceWithCoupon : 0,
+                taxFree: taxFreePrice,
               },
               onSuccess: (vBankData?: vBankType) => onIamportResult(orderId, true, '', vBankData),
               onFailure: (error_msg: string) => onIamportResult(orderId, false, error_msg),
@@ -320,6 +396,20 @@ const Order: NextPageWithLayout = () => {
       document.body.style.overflow = 'overlay';
     }
   }, [isAddressVisible, isCouponVisible]);
+
+  useEffect(() => {
+    const tmpMiniOption: miniOptionState[] | undefined = router.isReady
+      ? safeParse(bToA(options as string))
+      : [];
+
+    if (tmpMiniOption && tmpMiniOption.length > 0) {
+      setOptionData(tmpMiniOption).then(res => {
+        if (res) {
+          setTmpOption(res);
+        }
+      });
+    }
+  }, [options, router.isReady]);
 
   return (
     <div className='pb-[100px] max-md:w-[100vw]'>
@@ -771,9 +861,14 @@ const Order: NextPageWithLayout = () => {
           })}
         </div>
       )}
+      {payMethod === IamportPayMethod.Vbank && (
+        <Fragment>
+          <div className='h-2 bg-grey-90' />
+          <ProductRefundAccount setRefundData={setRefundBankData} />
+        </Fragment>
+      )}
 
       <div className='h-2 bg-grey-90' />
-
       {/* 결제 금액 */}
       <div className='px-4 py-[22px]'>
         <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>

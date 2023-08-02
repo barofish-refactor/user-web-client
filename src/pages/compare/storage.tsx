@@ -39,18 +39,14 @@ const Storage: NextPageWithLayout = () => {
   const [selectedItem, setSelectedItem] = useState<ProductListDto[]>([]);
   const [selectedSet, setSelectedSet] = useState<CompareSetDto[]>([]);
 
-  const { data, refetch } = useQuery(
-    queryKey.compare.lists,
-    async () => {
-      const res = await (await client()).selectSaveProductList();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
-      }
-    },
-    { staleTime: 0 },
-  );
+  const { data, refetch } = useQuery(queryKey.compare.lists, async () => {
+    const res = await (await client()).selectSaveProductList();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
 
   const { data: set, refetch: setRefetch } = useQuery(queryKey.compareSet.lists, async () => {
     const res = await (await client()).selectCompareSetList();

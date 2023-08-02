@@ -35,7 +35,6 @@ const ReviewAll: NextPageWithLayout = () => {
       }
     },
     {
-      // staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return lastPage?.content?.length !== 0 ? nextId : -1;

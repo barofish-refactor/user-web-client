@@ -17,10 +17,7 @@ const PcBanner = () => {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
       }
     },
-    {
-      enabled: inView,
-      // staleTime: 0
-    },
+    { enabled: inView },
   );
 
   return (

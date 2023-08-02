@@ -38,6 +38,19 @@ export interface optionState {
   needTaxation: boolean;
 }
 
+export interface miniOptionState {
+  productId: number;
+  optionId: number;
+  name: string;
+  amount: number;
+  additionalPrice: number;
+  deliveryFee: number;
+  stock: number;
+  maxAvailableStock: number;
+  deliverBoxPerAmount: number;
+  needTaxation: boolean;
+}
+
 export interface optionSelectorType {
   id: number;
   isNeeded: boolean;
@@ -346,9 +359,23 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                   onClick={() => {
                     if (selectedOption.filter(v => v.isNeeded === true).length === 0)
                       return setAlert({ message: '필수옵션을 1개 이상 선택해주세요.' });
+
+                    const querySendData: miniOptionState[] = selectedOption.map(v => ({
+                      productId: v.productId,
+                      optionId: v.optionId,
+                      name: v.name,
+                      amount: v.amount,
+                      additionalPrice: v.additionalPrice,
+                      deliveryFee: v.deliveryFee,
+                      stock: v.stock,
+                      maxAvailableStock: v.maxAvailableStock,
+                      deliverBoxPerAmount: v.deliverBoxPerAmount,
+                      needTaxation: v.needTaxation,
+                    }));
+
                     router.push({
                       pathname: '/product/order',
-                      query: { id: data?.id, options: aToB(JSON.stringify(selectedOption)) },
+                      query: { id: data?.id, options: aToB(JSON.stringify(querySendData)) },
                     });
                   }}
                 >

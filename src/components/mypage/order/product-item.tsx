@@ -36,7 +36,7 @@ export function MypageOrderProductItem({ id, item }: Props) {
       buttonList = [0];
       break;
     case 'ON_DELIVERY':
-      buttonList = [2, 3];
+      buttonList = [3];
       break;
     case 'DELIVERY_DONE':
       buttonList = [0, 1, 2, 3];

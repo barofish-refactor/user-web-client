@@ -57,22 +57,15 @@ export function MypageOrderDetail({ id }: Props) {
   const { setAlert } = useAlertStore();
 
   // const paymentMethod = '카드결제';
-  const { data } = useQuery(
-    queryKey.order.detail(id),
-    async () => {
-      const res = await (await client()).selectOrder(id);
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        setAlert({ message: res.data.errorMsg ?? '' });
-        throw new Error(res.data.errorMsg);
-      }
-    },
-    {
-      // initialData,
-      staleTime: 0,
-    },
-  );
+  const { data } = useQuery(queryKey.order.detail(id), async () => {
+    const res = await (await client()).selectOrder(id);
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.errorMsg);
+    }
+  });
 
   const totalProductPrice = data?.productInfos?.map(v => v.price ?? 0).reduce((a, b) => a + b, 0);
 

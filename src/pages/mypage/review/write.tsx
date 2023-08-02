@@ -26,7 +26,6 @@ const MypageReviewWrite: NextPageWithLayout = () => {
     },
     {
       enabled: !!v,
-      staleTime: 0,
     },
   );
 

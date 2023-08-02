@@ -283,6 +283,8 @@ export interface OrderProductInfo {
   isSettled?: boolean;
   /** @format date-time */
   settledAt?: string;
+  /** @format date-time */
+  finalConfirmedAt?: string;
   order?: Orders;
   product?: Product;
 }
@@ -327,6 +329,10 @@ export interface Orders {
   couponDiscount?: number;
   /** @format int32 */
   usePoint?: number;
+  bankHolder?: string;
+  bankCode?: string;
+  bankAccount?: string;
+  bankName?: string;
   productInfos?: OrderProductInfo[];
   deliverPlace?: OrderDeliverPlace;
 }
@@ -338,7 +344,7 @@ export interface Product {
   storeId?: number;
   store?: Store;
   category?: Category;
-  state?: 'ACTIVE' | 'INACTIVE' | 'SOLD_OUT' | 'DELETED';
+  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
   images?: string;
   title?: string;
   /** @format int32 */
@@ -424,7 +430,7 @@ export interface StoreInfo {
   deliverFee?: number;
   /** @format int32 */
   minOrderPrice?: number;
-  /** @format int32 */
+  /** @format float */
   settlementRate?: number;
   bankName?: string;
   bankHolder?: string;
@@ -572,7 +578,7 @@ export interface UpdateStoreIsReliableReq {
 }
 
 export interface AddStoreAdditionalReq {
-  /** @format int32 */
+  /** @format float */
   settlementRate?: number;
   bankName?: string;
   bankHolder?: string;
@@ -599,7 +605,7 @@ export interface CustomResponseStoreDto {
 }
 
 export interface StoreAdditionalDto {
-  /** @format int32 */
+  /** @format float */
   settlementRate?: number;
   bankName?: string;
   bankHolder?: string;
@@ -751,7 +757,7 @@ export interface ProductFilterValueDto {
 export interface ProductListDto {
   /** @format int32 */
   id?: number;
-  state?: 'ACTIVE' | 'INACTIVE' | 'SOLD_OUT' | 'DELETED';
+  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
   image?: string;
   title?: string;
   isNeedTaxation?: boolean;
@@ -765,6 +771,10 @@ export interface ProductListDto {
   /** @format int32 */
   storeId?: number;
   storeName?: string;
+  /** @format int32 */
+  minOrderPrice?: number;
+  storeImage?: string;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   parentCategoryId?: number;
   filterValues?: ProductFilterValueDto[];
@@ -997,7 +1007,7 @@ export interface SimpleProductDto {
   /** @format int32 */
   id?: number;
   category?: CategoryDto;
-  state?: 'ACTIVE' | 'INACTIVE' | 'SOLD_OUT' | 'DELETED';
+  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
   /** @format int32 */
   expectedDeliverDay?: number;
   images?: string[];
@@ -1122,6 +1132,14 @@ export interface OrderReq {
   deliverPlaceId?: number;
   /** @format int32 */
   paymentMethodId?: number;
+  vbankRefundInfo?: VBankRefundInfoReq;
+}
+
+export interface VBankRefundInfoReq {
+  bankHolder?: string;
+  /** @format int32 */
+  bankCodeId?: number;
+  bankAccount?: string;
 }
 
 export interface CustomResponseOrderDto {
@@ -1196,11 +1214,16 @@ export interface OrderDto {
   totalAmount?: number;
   /** @format int32 */
   couponDiscount?: number;
+  couponName?: string;
   /** @format int32 */
   usePoint?: number;
   /** @format date-time */
   orderedAt?: string;
   needTaxation?: boolean;
+  bankHolder?: string;
+  bankCode?: string;
+  bankAccount?: string;
+  bankName?: string;
   productInfos?: OrderProductDto[];
   deliverPlace?: OrderDeliverPlaceDto;
 }
@@ -1240,9 +1263,16 @@ export interface OrderProductDto {
   amount?: number;
   deliverCompany?: string;
   invoiceCode?: string;
+  /** @format date-time */
+  finalConfirmedAt?: string;
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   isReviewWritten?: boolean;
+}
+
+export interface RequestCancelReq {
+  cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
+  content?: string;
 }
 
 export interface ProcessDeliverStartReq {
@@ -1253,11 +1283,6 @@ export interface ProcessDeliverStartReq {
 export interface RequestChangeProduct {
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   reasonContent?: string;
-}
-
-export interface RequestCancelReq {
-  cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
-  content?: string;
 }
 
 export interface NoticeAddReq {
@@ -1429,7 +1454,20 @@ export interface CustomResponseListCurationDto {
   errorMsg?: string;
 }
 
-export interface CouponAddReq {
+export interface UpdateSystemCoupon {
+  /** @format int32 */
+  order_1stAmount?: number;
+  /** @format int32 */
+  order_3rdAmount?: number;
+  /** @format int32 */
+  order_5thAmount?: number;
+}
+
+export interface Coupon {
+  /** @format int32 */
+  id?: number;
+  state?: 'ACTIVE' | 'DELETED';
+  publicType?: 'PUBLIC' | 'PRIVATE' | 'SYSTEM';
   title?: string;
   type?: 'AMOUNT' | 'RATE';
   /** @format int32 */
@@ -1442,10 +1480,15 @@ export interface CouponAddReq {
   minPrice?: number;
 }
 
-export interface Coupon {
-  /** @format int32 */
-  id?: number;
-  state?: 'ACTIVE' | 'DELETED';
+export interface CustomResponseListCoupon {
+  isSuccess?: boolean;
+  code?: string;
+  data?: Coupon[];
+  errorMsg?: string;
+}
+
+export interface CouponAddReq {
+  userIds?: number[];
   title?: string;
   type?: 'AMOUNT' | 'RATE';
   /** @format int32 */
@@ -1698,9 +1741,9 @@ export interface PageUserInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -1749,9 +1792,9 @@ export interface PageProductListDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -1790,9 +1833,9 @@ export interface PageTip {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -1837,9 +1880,9 @@ export interface PageStoreDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -1867,6 +1910,7 @@ export interface OrderProductInfoDto {
   productId?: number;
   /** @format int32 */
   optionItemId?: number;
+  optionItem?: OptionItemDto;
   state?:
     | 'WAIT_DEPOSIT'
     | 'PAYMENT_DONE'
@@ -1889,14 +1933,21 @@ export interface OrderProductInfoDto {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
+  deliverCompany?: string;
   deliverCompanyCode?: string;
   invoiceCode?: string;
   isSettled?: boolean;
   /** @format date-time */
   settledAt?: string;
+  /** @format date-time */
+  finalConfirmedAt?: string;
   product?: ProductListDto;
+  order?: OrderDto;
+  /** @format float */
+  settlementRate?: number;
 }
 
 export interface PageOrderProductInfoDto {
@@ -1910,9 +1961,9 @@ export interface PageOrderProductInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -1936,9 +1987,9 @@ export interface PageSettlementDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2039,9 +2090,9 @@ export interface PageReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2065,9 +2116,9 @@ export interface PageReportDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2105,9 +2156,9 @@ export interface PageSimpleProductDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2145,9 +2196,9 @@ export interface PageOrderDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2157,6 +2208,20 @@ export interface CustomResponseListOrderDto {
   isSuccess?: boolean;
   code?: string;
   data?: OrderDto[];
+  errorMsg?: string;
+}
+
+export interface BankCode {
+  /** @format int32 */
+  id?: number;
+  code?: string;
+  name?: string;
+}
+
+export interface CustomResponseListBankCode {
+  isSuccess?: boolean;
+  code?: string;
+  data?: BankCode[];
   errorMsg?: string;
 }
 
@@ -2190,9 +2255,9 @@ export interface PageNotification {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2216,9 +2281,9 @@ export interface PageNotice {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2289,9 +2354,9 @@ export interface PageInquiryDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2427,45 +2492,63 @@ export interface PageCurationDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
 }
 
-export interface CustomResponsePageCoupon {
+export interface CouponDto {
+  /** @format int32 */
+  id?: number;
+  state?: 'ACTIVE' | 'DELETED';
+  publicType?: 'PUBLIC' | 'PRIVATE' | 'SYSTEM';
+  title?: string;
+  type?: 'AMOUNT' | 'RATE';
+  /** @format int32 */
+  amount?: number;
+  /** @format date-time */
+  startAt?: string;
+  /** @format date-time */
+  endAt?: string;
+  /** @format int32 */
+  minPrice?: number;
+  users?: UserInfoDto[];
+}
+
+export interface CustomResponseCouponDto {
   isSuccess?: boolean;
   code?: string;
-  data?: PageCoupon;
+  data?: CouponDto;
   errorMsg?: string;
 }
 
-export interface PageCoupon {
+export interface CustomResponsePageCouponDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: PageCouponDto;
+  errorMsg?: string;
+}
+
+export interface PageCouponDto {
   /** @format int32 */
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
   size?: number;
-  content?: Coupon[];
+  content?: CouponDto[];
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
-}
-
-export interface CustomResponseListCoupon {
-  isSuccess?: boolean;
-  code?: string;
-  data?: Coupon[];
-  errorMsg?: string;
 }
 
 export interface CompareProductDto {
@@ -2597,9 +2680,9 @@ export interface PageBannerDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2632,9 +2715,9 @@ export interface PageAdminLogDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -2658,9 +2741,9 @@ export interface PageAdmin {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
   empty?: boolean;
@@ -3027,6 +3110,10 @@ export type CancelOrderData = CustomResponseBoolean;
 
 export type OrderProductData = CustomResponseOrderDto;
 
+export interface RequestRefundOrderProductPayload {
+  data: RequestCancelReq;
+}
+
 export type RequestRefundOrderProductData = CustomResponseBoolean;
 
 export type RejectRefundOrderProductData = CustomResponseBoolean;
@@ -3135,13 +3222,6 @@ export interface UploadPartnerExcelPayload {
 
 export type UploadPartnerExcelData = CustomResponseBoolean;
 
-export interface TestPayload {
-  /** @format binary */
-  file?: File;
-}
-
-export type TestData = CustomResponseBoolean;
-
 export interface UpdateDeliverPlacePayload {
   data: AddDeliverPlaceReq;
 }
@@ -3187,6 +3267,12 @@ export interface CreateCurationPayload {
 }
 
 export type CreateCurationData = CustomResponseCuration;
+
+export interface UpdateSystemCouponPayload {
+  data: UpdateSystemCoupon;
+}
+
+export type UpdateSystemCouponData = CustomResponseListCoupon;
 
 export type SelectDownloadCouponData = CustomResponseBoolean;
 
@@ -3425,6 +3511,8 @@ export type SelectRecentViewListData = CustomResponseListProductListDto;
 
 export type SelectProductListByUserData = CustomResponsePageProductListDto;
 
+export type SelectProductListWithIdsData = CustomResponseListProductListDto;
+
 export type SelectProductCountByUserData = CustomResponseLong;
 
 export type SelectProductListData = CustomResponsePageSimpleProductDto;
@@ -3444,6 +3532,8 @@ export type SelectOrderListWithUserIdData = CustomResponseListOrderDto;
 export type SelectOrderListData = CustomResponseListOrderDto;
 
 export type SelectCanceledOrderListData = CustomResponseListOrderDto;
+
+export type SelectBankCodeListData = CustomResponseListBankCode;
 
 export type SelectNotificationData = CustomResponsePageNotification;
 
@@ -3493,11 +3583,13 @@ export type SelectCurationListByAdminData = CustomResponsePageCurationDto;
 
 export type SelectCurationListData = CustomResponseListCurationDto;
 
-export type SelectCouponData = CustomResponseCoupon;
+export type SelectCouponData = CustomResponseCouponDto;
 
 export type DeleteCouponData = CustomResponseBoolean;
 
-export type SelectCouponListByAdminData = CustomResponsePageCoupon;
+export type SelectSystemCouponData = CustomResponseListCoupon;
+
+export type SelectCouponListByAdminData = CustomResponsePageCouponDto;
 
 export type SelectDownloadedCouponData = CustomResponseListCoupon;
 

@@ -29,10 +29,7 @@ const Review: NextPageWithLayout = () => {
         throw new Error(res.data.errorMsg);
       }
     },
-    {
-      enabled: !!id,
-      staleTime: 0,
-    },
+    { enabled: !!id },
   );
 
   const { mutateAsync: likeReviewByUser, isLoading } = useMutation(

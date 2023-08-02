@@ -45,10 +45,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       const res = await selectTopSearchKeywords();
       return res.data;
     },
-    {
-      initialData,
-      staleTime: 0,
-    },
+    { initialData },
   );
 
   const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
@@ -86,7 +83,6 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     },
     {
       enabled: v !== '',
-      staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
@@ -101,10 +97,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       const res = await searchingProductDirect({ keyword: searchText as string });
       return res.data.data;
     },
-    {
-      enabled: searchText !== '',
-      staleTime: 0,
-    },
+    { enabled: searchText !== '' },
   );
 
   useEffect(() => {

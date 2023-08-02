@@ -57,7 +57,6 @@ const Store: NextPageWithLayout = () => {
     },
     {
       enabled: !!selectedSort || selectedSort === 0,
-      staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return lastPage?.length !== 0 ? nextId + 1 : -1;
@@ -75,10 +74,7 @@ const Store: NextPageWithLayout = () => {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
       }
     },
-    {
-      enabled: selectedTab === 1,
-      staleTime: 0,
-    },
+    { enabled: selectedTab === 1 },
   );
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(

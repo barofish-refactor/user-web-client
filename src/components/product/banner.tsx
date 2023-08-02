@@ -53,7 +53,7 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
             <div className='flex h-9 w-9 items-center justify-center rounded-full bg-black opacity-60'>
               <Image
                 unoptimized
-                src='/assets/icons/common//chevron-banner.svg'
+                src='/assets/icons/common/chevron-banner.svg'
                 alt=''
                 width={16}
                 height={16}

@@ -56,7 +56,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     {
       enabled: !!id,
       initialData,
-      staleTime: 0,
     },
   );
 

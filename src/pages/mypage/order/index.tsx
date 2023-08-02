@@ -38,7 +38,6 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
       }
     },
     {
-      staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return lastPage?.length !== 0 ? nextId : -1;
@@ -46,21 +45,15 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
     },
   );
 
-  const { data: countData } = useQuery(
-    ['orderCount'],
-    async () => {
-      const res = await (await client()).selectOrderList({ take: 9999 });
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        setAlert({ message: res.data.errorMsg ?? '' });
-        throw new Error(res.data.errorMsg);
-      }
-    },
-    {
-      // staleTime: 0
-    },
-  );
+  const { data: countData } = useQuery(['orderCount'], async () => {
+    const res = await (await client()).selectOrderList({ take: 9999 });
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.errorMsg);
+    }
+  });
 
   const { ref } = useInView({
     initialInView: false,

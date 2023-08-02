@@ -43,10 +43,7 @@ const BottomSheet = () => {
         // throw new Error(res.data.errorMsg);
       }
     },
-    {
-      enabled: isOpen,
-      staleTime: 0,
-    },
+    { enabled: isOpen },
   );
 
   const variables: selectProductCountByUserVariables | selectTopBarCountVariables = [
@@ -74,10 +71,7 @@ const BottomSheet = () => {
         throw new Error(res.data.errorMsg);
       }
     },
-    {
-      enabled: selectedItem.length > 0,
-      staleTime: 0,
-    },
+    { enabled: selectedItem.length > 0 },
   );
 
   useEffect(() => {

@@ -123,4 +123,6 @@ export const queryKey = {
   inquiry: getQueryKeys('inquiry'),
   /** 큐레이션 제일 처음 부분 (꿀팁) */
   tipInfo: ['tipInfo'],
+  /** 은행코드 */
+  bank: ['bank'],
 };

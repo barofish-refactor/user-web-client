@@ -16,43 +16,32 @@ import { formatToLocaleString, requestPermission } from 'src/utils/functions';
 /** 마이페이지 */
 const MyPage: NextPageWithLayout = () => {
   const router = useRouter();
+  const { id } = router.query;
   const { setAlert } = useAlertStore();
   const [recentData, setRecentData] = useState<string[]>([]); // 최근 본 상품
 
-  const { data: user, isLoading } = useQuery(
-    queryKey.user,
-    async () => {
-      const res = await (await client()).selectUserSelfInfo();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        if (res.data.code === 'FORBIDDEN') {
-          router.replace('/login');
-          return;
-        }
-        setAlert({ message: res.data.errorMsg ?? '' });
-        throw new Error(res.data.errorMsg);
+  const { data: user, isLoading } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      if (res.data.code === 'FORBIDDEN') {
+        router.replace('/login');
+        return;
       }
-    },
-    {
-      staleTime: 0,
-    },
-  );
+      setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.errorMsg);
+    }
+  });
 
-  const { data: banner } = useQuery(
-    queryKey.banner,
-    async () => {
-      const res = await (await client()).selectMyPageBanner();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
-      }
-    },
-    {
-      // staleTime: 0
-    },
-  );
+  const { data: banner } = useQuery(queryKey.banner, async () => {
+    const res = await (await client()).selectMyPageBanner();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -60,6 +49,16 @@ const MyPage: NextPageWithLayout = () => {
       setRecentData(JSON.parse(result));
     }
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      setAlert({
+        message: '가상계좌 정보가 문자로 전송되었습니다.',
+        type: 'success',
+        onClick: () => router.replace('/mypage'),
+      });
+    }
+  }, [id, router, setAlert]);
 
   return (
     <div className='max-md:w-[100vw]'>

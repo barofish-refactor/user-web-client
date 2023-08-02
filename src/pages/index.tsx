@@ -34,18 +34,12 @@ const Home: NextPageWithLayout = () => {
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
   const [defaultCurationAbbreviation, setDefaultCurationAbbreviation] = useState<Curation[]>([]);
 
-  const { data, isLoading, refetch } = useQuery(
-    queryKey.main,
-    async () => {
-      const res = await (await client()).selectMainItems();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else setAlert({ message: res.data.errorMsg ?? '' });
-    },
-    {
-      staleTime: 0,
-    },
-  );
+  const { data, isLoading, refetch } = useQuery(queryKey.main, async () => {
+    const res = await (await client()).selectMainItems();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else setAlert({ message: res.data.errorMsg ?? '' });
+  });
 
   const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
     const res = await (await client()).selectMainCurationList();
@@ -54,18 +48,12 @@ const Home: NextPageWithLayout = () => {
     } else setAlert({ message: res.data.errorMsg ?? '' });
   });
 
-  const { data: tipInfo } = useQuery(
-    queryKey.tipInfo,
-    async () => {
-      const res = await (await client()).selectTipInfo();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else setAlert({ message: res.data.errorMsg ?? '' });
-    },
-    {
-      staleTime: 0,
-    },
-  );
+  const { data: tipInfo } = useQuery(queryKey.tipInfo, async () => {
+    const res = await (await client()).selectTipInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else setAlert({ message: res.data.errorMsg ?? '' });
+  });
 
   useEffect(() => {
     if (tipInfo) {
@@ -105,7 +93,6 @@ const Home: NextPageWithLayout = () => {
     },
     {
       enabled: Number(tab) !== 0,
-      // staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return lastPage?.content?.length !== 0 ? nextId + 1 : -1;

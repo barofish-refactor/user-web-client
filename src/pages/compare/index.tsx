@@ -53,7 +53,6 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
       }
     },
     {
-      // staleTime: 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
         return lastPage?.newCompareProduct?.products?.length !== 0 ? nextId + 1 : -1;

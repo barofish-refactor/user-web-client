@@ -27,6 +27,7 @@ export function AppleButton() {
       clientId={process.env.NEXT_PUBLIC_APPLE_KEY}
       redirectURI={redirectUrl}
       callback={res => {
+        if (res.error) return;
         const jwt = decodeToken(res.authorization.id_token);
         if ('sub' in jwt) {
           loginUser({

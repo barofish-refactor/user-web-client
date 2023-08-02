@@ -74,6 +74,7 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
         if (res.data.isSuccess) {
           queryClient.invalidateQueries(queryKey.order.lists);
           queryClient.invalidateQueries(queryKey.myReview);
+          queryClient.invalidateQueries(queryKey.review.lists);
           setAlert({
             message: '리뷰를 등록했습니다.',
             onClick: () => router.back(),
@@ -282,7 +283,7 @@ function Images() {
               hidden
               multiple
               type='file'
-              accept='images/*'
+              accept='image/*'
               onChange={e => {
                 if (!e.target.files) return;
 

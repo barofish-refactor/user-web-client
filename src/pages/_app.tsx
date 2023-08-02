@@ -26,7 +26,7 @@ export default function MyApp(props: CustomAppProps) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 2.5 * (60 * 1000), // 2.5 min
+            staleTime: 0,
             retry: 1,
             refetchOnWindowFocus: false,
           },

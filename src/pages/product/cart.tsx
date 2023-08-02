@@ -12,7 +12,7 @@ import {
 import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
 import { HomeSmallSlideCuration } from 'src/components/home';
-import { type optionState } from 'src/components/product/bottom-sheet';
+import { type miniOptionState, type optionState } from 'src/components/product/bottom-sheet';
 import { Checkbox } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
@@ -23,6 +23,28 @@ import { aToB } from 'src/utils/parse';
 import { VARIABLES } from 'src/variables';
 import { getCookie } from 'cookies-next';
 import Link from 'next/link';
+
+export interface SectionBasketType {
+  index: number;
+  store?: SimpleStore;
+  data: BasketProductDto[];
+}
+
+export interface SectionoptionType {
+  index: number;
+  storeId: number;
+  storeName: string;
+  storeImage: string;
+  data: optionState[];
+}
+
+interface DeliverPriceCheckType {
+  deliverBoxPerAmount?: number;
+  result: number;
+  sectionTotal: number;
+  minOrderPrice: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+}
 
 const getSectionDeliverFee = (data: BasketProductDto[], store: SimpleStore | undefined) =>
   data
@@ -53,19 +75,23 @@ function getAdditionalPrice(
   return result;
 }
 
-export interface SectionBasketType {
-  index: number;
-  store?: SimpleStore;
-  data: BasketProductDto[];
-}
-
-export interface SectionoptionType {
-  index: number;
-  storeId: number;
-  storeName: string;
-  storeImage: string;
-  data: optionState[];
-}
+const deliverPriceAfterCheckType = ({
+  deliverBoxPerAmount,
+  result,
+  sectionTotal,
+  minOrderPrice,
+  deliverFeeType,
+}: DeliverPriceCheckType) => {
+  if (deliverBoxPerAmount)
+    return deliverFeeType === 'FREE'
+      ? 0
+      : deliverFeeType === 'FIX'
+      ? result
+      : sectionTotal >= minOrderPrice
+      ? 0
+      : result;
+  else return result;
+};
 
 /** 장바구니 */
 const Cart: NextPageWithLayout = () => {
@@ -77,21 +103,15 @@ const Cart: NextPageWithLayout = () => {
   const [totalDelivery, setTotalDelivery] = useState<number>(0);
   const [sectionCart, setSectionCart] = useState<SectionBasketType[]>([]);
 
-  const { data, refetch, isLoading } = useQuery(
-    queryKey.cart.lists,
-    async () => {
-      const res = await (await client()).selectBasket();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        setAlert({ message: res.data.errorMsg ?? '' });
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
-      }
-    },
-    {
-      staleTime: 0,
-    },
-  );
+  const { data, refetch, isLoading } = useQuery(queryKey.cart.lists, async () => {
+    const res = await (await client()).selectBasket();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
 
   const { data: selectProductOtherCustomerBuy } = useQuery(
     queryKey.orderRecommend.list(data?.map(x => x.product?.id).join(',')),
@@ -200,13 +220,13 @@ const Cart: NextPageWithLayout = () => {
 
           const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
 
-          return x.store?.deliverFeeType === 'FREE'
-            ? 0
-            : x.store?.deliverFeeType === 'FIX'
-            ? sectionDeliverFee
-            : sectionTotal >= (x.store?.minOrderPrice ?? 0)
-            ? 0
-            : sectionDeliverFee;
+          return deliverPriceAfterCheckType({
+            deliverBoxPerAmount: x.data[0].option?.deliverBoxPerAmount,
+            result: sectionDeliverFee,
+            sectionTotal,
+            minOrderPrice: x.store?.minOrderPrice ?? 0,
+            deliverFeeType: x.store?.deliverFeeType,
+          });
         })
         .reduce((a, b) => a + b, 0);
       setTotalPrice(totalPrice);
@@ -287,6 +307,13 @@ const Cart: NextPageWithLayout = () => {
               .reduce((a, b) => a + b, 0);
 
             const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
+            const deliverResult = deliverPriceAfterCheckType({
+              deliverBoxPerAmount: x.data[0].option?.deliverBoxPerAmount,
+              result: sectionDeliverFee,
+              sectionTotal,
+              minOrderPrice: x.store?.minOrderPrice ?? 0,
+              deliverFeeType: x.store?.deliverFeeType,
+            });
 
             return (
               <div key={x.index}>
@@ -418,13 +445,9 @@ const Cart: NextPageWithLayout = () => {
                       배송비
                     </p>
                     <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
-                      {x.store?.deliverFeeType === 'FREE'
+                      {deliverResult === 0
                         ? '무료'
-                        : x.store?.deliverFeeType === 'FIX'
-                        ? formatToLocaleString(sectionDeliverFee, { suffix: '원' })
-                        : sectionTotal >= (x.store?.minOrderPrice ?? 0)
-                        ? '무료'
-                        : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
+                        : formatToLocaleString(deliverResult, { suffix: '원' })}
                     </p>
                   </div>
                 </div>
@@ -508,7 +531,7 @@ const Cart: NextPageWithLayout = () => {
             'flex h-[52px] w-full items-center justify-center rounded-lg bg-[#D4D5D8]',
             { 'bg-primary-50': selectedItem.length > 0 },
           )}
-          onClick={() => {
+          onClick={async () => {
             if (selectedItem.length > 0) {
               const selectedOption: optionState[] = selectedItem.map(v => {
                 // 같은 스토어 총 금액
@@ -520,14 +543,15 @@ const Cart: NextPageWithLayout = () => {
                   .reduce((a, b) => a + b, 0);
 
                 const deliverResult = v.deliveryFee ?? v.store?.deliverFee ?? 0;
-                const deliveryFee =
-                  v.store?.deliverFeeType === 'FREE'
-                    ? 0
-                    : v.store?.deliverFeeType === 'FIX'
-                    ? deliverResult
-                    : sectionTotal >= (v.store?.minOrderPrice ?? 0)
-                    ? 0
-                    : deliverResult;
+                console.log(deliverResult);
+
+                const deliveryFee = deliverPriceAfterCheckType({
+                  deliverBoxPerAmount: v.option?.deliverBoxPerAmount,
+                  result: deliverResult,
+                  sectionTotal,
+                  minOrderPrice: v.store?.minOrderPrice ?? 0,
+                  deliverFeeType: v.store?.deliverFeeType,
+                });
 
                 return {
                   isNeeded: true,
@@ -539,7 +563,9 @@ const Cart: NextPageWithLayout = () => {
                   additionalPrice: getAdditionalPrice(v),
                   deliveryFee,
                   minOrderPrice: v.store?.minOrderPrice ?? 0,
-                  deliverFeeType: v.store?.deliverFeeType ?? 'FREE',
+                  deliverFeeType: v.option?.deliverBoxPerAmount
+                    ? v.store?.deliverFeeType ?? 'FREE'
+                    : 'FIX',
                   stock: v.option?.amount ?? 999,
                   maxAvailableStock: v.option?.maxAvailableAmount ?? 999,
                   deliverBoxPerAmount: v.option?.deliverBoxPerAmount ?? 999,
@@ -551,9 +577,23 @@ const Cart: NextPageWithLayout = () => {
                   needTaxation: v.product?.isNeedTaxation ?? false, //
                 };
               });
+
+              const querySendData: miniOptionState[] = selectedOption.map(v => ({
+                productId: v.productId,
+                optionId: v.optionId,
+                name: v.name,
+                amount: v.amount,
+                additionalPrice: v.additionalPrice,
+                deliveryFee: v.deliveryFee,
+                stock: v.stock,
+                maxAvailableStock: v.maxAvailableStock,
+                deliverBoxPerAmount: v.deliverBoxPerAmount,
+                needTaxation: v.needTaxation,
+              }));
+
               router.push({
                 pathname: '/product/order',
-                query: { options: aToB(JSON.stringify(selectedOption)) },
+                query: { options: aToB(JSON.stringify(querySendData)) },
               });
             }
           }}

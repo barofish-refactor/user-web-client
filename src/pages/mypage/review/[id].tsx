@@ -24,7 +24,6 @@ const MypageReviewModify: NextPageWithLayout = () => {
     },
     {
       enabled: !!id,
-      staleTime: 0,
     },
   );
 
