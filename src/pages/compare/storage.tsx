@@ -439,12 +439,16 @@ const Storage: NextPageWithLayout = () => {
           </p>
 
           <Swiper
-            freeMode
             slidesPerView={4.3}
             modules={[FreeMode]}
             spaceBetween={11}
             className='mt-[13px]'
             style={{ marginInline: '-16px', paddingInline: '16px' }}
+            freeMode={{
+              momentumRatio: 0.3,
+              momentumBounceRatio: 0.5,
+              momentumVelocityRatio: 0.5,
+            }}
           >
             {selectedItem.map((v, idx) => {
               return (

@@ -60,6 +60,7 @@ export function SignupForm() {
           phone: data.phone,
           verificationId: data.verificationId,
           postalCode: data.postalCode,
+          bcode: data.bcode,
         },
         true,
       ),

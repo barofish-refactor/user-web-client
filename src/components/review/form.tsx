@@ -249,12 +249,16 @@ function Images() {
   return (
     <div className='my-4'>
       <Swiper
-        freeMode
         slidesPerView='auto'
         spaceBetween={12}
         modules={[FreeMode]}
         className='review-form-swiper'
         slidesOffsetAfter={16}
+        freeMode={{
+          momentumRatio: 0.3,
+          momentumBounceRatio: 0.5,
+          momentumVelocityRatio: 0.5,
+        }}
       >
         {images.map(v => (
           <SwiperSlide key={v.id}>

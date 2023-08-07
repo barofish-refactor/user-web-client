@@ -209,6 +209,7 @@ import {
   SelectProductData,
   SelectProductListByUserData,
   SelectProductListData,
+  SelectProductListForExcelData,
   SelectProductListWithIdsData,
   SelectProductOptionListData,
   SelectProductOtherCustomerBuyData,
@@ -3147,6 +3148,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectProductCountByUserData, any>({
       path: `/api/v1/product/list/count`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-controller
+   * @name SelectProductListForExcel
+   * @request GET:/api/v1/product/excel-list
+   * @response `200` `SelectProductListForExcelData` OK
+   */
+  selectProductListForExcel = (
+    query?: {
+      ids?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectProductListForExcelData, any>({
+      path: `/api/v1/product/excel-list`,
       method: 'GET',
       query: query,
       ...params,

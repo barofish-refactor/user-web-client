@@ -9,6 +9,7 @@ export type AddressFormType = {
   postalCode: string;
   address: string;
   addressDetail: string;
+  bcode: string;
 };
 
 interface Props {
@@ -54,6 +55,7 @@ export function AddressField({ className }: Props) {
             onComplete={value => {
               setValue('postalCode', value.zonecode);
               setValue('address', value.address);
+              setValue('bcode', value.bcode);
               clearErrors(['postalCode', 'address']);
             }}
           />

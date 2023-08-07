@@ -188,6 +188,7 @@ export interface UserJoinReq {
   /** @format int32 */
   verificationId?: number;
   impUid?: string;
+  bcode?: string;
   postalCode?: string;
   address?: string;
   addressDetail?: string;
@@ -477,12 +478,23 @@ export interface User {
 }
 
 export interface UserAuth {
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  updatedAt?: string;
   loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
   loginId?: string;
   /** @format int32 */
   userId?: number;
   user?: User;
   password?: string;
+  id?: UserAuthId;
+  new?: boolean;
+}
+
+export interface UserAuthId {
+  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
+  loginId?: string;
 }
 
 export interface UserInfo {
@@ -929,6 +941,8 @@ export interface ProductUpdateReq {
   deliverBoxPerAmount?: number;
   descriptionContent?: string;
   needTaxation?: boolean;
+  /** @format float */
+  pointRate?: number;
   difficultDeliverAddressIds?: number[];
   searchFilterFieldIds?: number[];
   filterValues?: ProductFilterValueReq[];
@@ -1026,6 +1040,8 @@ export interface SimpleProductDto {
   description?: string;
   /** @format int32 */
   deliverBoxPerAmount?: number;
+  /** @format float */
+  pointRate?: number;
   store?: SimpleStore;
   isLike?: boolean;
   /** @format int32 */
@@ -1087,6 +1103,8 @@ export interface ProductAddReq {
   deliverBoxPerAmount?: number;
   descriptionContent?: string;
   needTaxation?: boolean;
+  /** @format float */
+  pointRate?: number;
   difficultDeliverAddressIds?: number[];
   searchFilterFieldIds?: number[];
   filterValues?: ProductFilterValueReq[];
@@ -1763,8 +1781,8 @@ export interface PageableObject {
 
 export interface SortObject {
   empty?: boolean;
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
 }
 
 export interface CustomResponseListTopBar {
@@ -2136,6 +2154,13 @@ export interface OptionDto {
   id?: number;
   isNeeded?: boolean;
   optionItems?: OptionItemDto[];
+}
+
+export interface CustomResponseListSimpleProductDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: SimpleProductDto[];
+  errorMsg?: string;
 }
 
 export interface CustomResponsePageSimpleProductDto {
@@ -2660,32 +2685,6 @@ export interface CustomResponseListBasketProductDto {
   code?: string;
   data?: BasketProductDto[];
   errorMsg?: string;
-}
-
-export interface CustomResponsePageBannerDto {
-  isSuccess?: boolean;
-  code?: string;
-  data?: PageBannerDto;
-  errorMsg?: string;
-}
-
-export interface PageBannerDto {
-  /** @format int32 */
-  totalPages?: number;
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  size?: number;
-  content?: BannerDto[];
-  /** @format int32 */
-  number?: number;
-  sort?: SortObject;
-  pageable?: PageableObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
 }
 
 export interface AdminLogDto {
@@ -3515,6 +3514,8 @@ export type SelectProductListWithIdsData = CustomResponseListProductListDto;
 
 export type SelectProductCountByUserData = CustomResponseLong;
 
+export type SelectProductListForExcelData = CustomResponseListSimpleProductDto;
+
 export type SelectProductListData = CustomResponsePageSimpleProductDto;
 
 export type SelectOrderData = CustomResponseOrderDto;
@@ -3637,7 +3638,7 @@ export type SelectPcWebBannerData = CustomResponseBannerDto;
 
 export type SelectMyPageBannerData = CustomResponseListBannerDto;
 
-export type SelectBannerListByAdminData = CustomResponsePageBannerDto;
+export type SelectBannerListByAdminData = CustomResponseListBannerDto;
 
 export type SelectBannerListData = CustomResponseListBannerDto;
 

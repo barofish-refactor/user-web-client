@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
-import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import 'swiper/css';
@@ -65,9 +64,7 @@ const CurationTip = () => {
         {tipInfo?.subTitle ?? ''}
       </p>
       <Swiper
-        freeMode
         slidesPerView={1.2}
-        modules={[FreeMode]}
         spaceBetween={11}
         style={{ marginInline: '-16px', paddingInline: '16px' }}
       >

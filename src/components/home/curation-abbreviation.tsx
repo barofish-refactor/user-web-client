@@ -12,12 +12,15 @@ interface Props {
 const CurationAbbreviation = ({ data }: Props) => {
   return (
     <Swiper
-      freeMode
-      modules={[FreeMode]}
-      // spaceBetween={10}
-      slidesPerView='auto'
       className='my-1'
       style={{ padding: '16px' }}
+      modules={[FreeMode]}
+      slidesPerView='auto'
+      freeMode={{
+        momentumRatio: 0.3,
+        momentumBounceRatio: 0.5,
+        momentumVelocityRatio: 0.5,
+      }}
     >
       {data.map((v, idx) => {
         return (

@@ -34,12 +34,16 @@ const CurationSmallSlide = ({ data, className, onClick }: Props) => {
 
   return (
     <Swiper
-      freeMode
       slidesPerView={2.5}
       modules={[FreeMode]}
       spaceBetween={11}
       className={cm('mt-5', className)}
       style={{ marginInline: '-16px', paddingInline: '16px' }}
+      freeMode={{
+        momentumRatio: 0.3,
+        momentumBounceRatio: 0.5,
+        momentumVelocityRatio: 0.5,
+      }}
     >
       {data.map((v, idx) => {
         return (

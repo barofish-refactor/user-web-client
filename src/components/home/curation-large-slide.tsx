@@ -31,12 +31,16 @@ const CurationLargeSlide = ({ data }: Props) => {
 
   return (
     <Swiper
-      freeMode
       slidesPerView={1.3}
       modules={[FreeMode]}
       spaceBetween={11}
       className='mt-5'
       style={{ marginInline: '-16px', paddingInline: '16px' }}
+      freeMode={{
+        momentumRatio: 0.3,
+        momentumBounceRatio: 0.5,
+        momentumVelocityRatio: 0.5,
+      }}
     >
       {data.map((v, idx) => {
         return (

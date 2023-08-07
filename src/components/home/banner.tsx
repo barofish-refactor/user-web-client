@@ -71,7 +71,7 @@ const Banner = ({ data }: Props) => {
                         pathname: '/search/product-result',
                         query: {
                           type: 'category',
-                          id: v.category?.categoryId,
+                          id: v.category?.categoryId ?? v.categoryId,
                           subItemId: v.categoryId,
                         },
                       });
