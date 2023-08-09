@@ -106,7 +106,6 @@ export const useIamport = () => {
       merchant_uid: p.data.merchantUid,
       name: p.data.productName,
       amount: p.data.amount,
-      // tax_free: 0, //
       tax_free: p.data.taxFree,
       buyer_email: p.data.email,
       buyer_name: p.data.name,

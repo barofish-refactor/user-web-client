@@ -12,7 +12,7 @@ export interface ProductSelectorType {
   value: string;
   additionalPrice: number;
   amount: number;
-  deliverBoxPerAmount: number;
+  deliverBoxPerAmount?: number;
   stock: number;
   maxAvailableStock: number;
 }

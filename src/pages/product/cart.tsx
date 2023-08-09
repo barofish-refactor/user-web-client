@@ -51,7 +51,7 @@ const getSectionDeliverFee = (data: BasketProductDto[], store: SimpleStore | und
     .map(
       v =>
         Math.ceil(
-          v.option?.maxAvailableAmount ? (v.amount ?? 0) / v.option?.maxAvailableAmount : 1,
+          v.option?.deliverBoxPerAmount ? (v.amount ?? 0) / v.option?.deliverBoxPerAmount : 1,
         ) * (v.deliveryFee ?? store?.deliverFee ?? 0),
     )
     .reduce((a, b) => a + b, 0);
@@ -82,7 +82,7 @@ const deliverPriceAfterCheckType = ({
   minOrderPrice,
   deliverFeeType,
 }: DeliverPriceCheckType) => {
-  if (deliverBoxPerAmount)
+  if (!deliverBoxPerAmount)
     return deliverFeeType === 'FREE'
       ? 0
       : deliverFeeType === 'FIX'
@@ -543,7 +543,6 @@ const Cart: NextPageWithLayout = () => {
                   .reduce((a, b) => a + b, 0);
 
                 const deliverResult = v.deliveryFee ?? v.store?.deliverFee ?? 0;
-                console.log(deliverResult);
 
                 const deliveryFee = deliverPriceAfterCheckType({
                   deliverBoxPerAmount: v.option?.deliverBoxPerAmount,
@@ -564,11 +563,11 @@ const Cart: NextPageWithLayout = () => {
                   deliveryFee,
                   minOrderPrice: v.store?.minOrderPrice ?? 0,
                   deliverFeeType: v.option?.deliverBoxPerAmount
-                    ? v.store?.deliverFeeType ?? 'FREE'
-                    : 'FIX',
+                    ? 'FIX'
+                    : v.store?.deliverFeeType ?? 'FREE',
                   stock: v.option?.amount ?? 999,
                   maxAvailableStock: v.option?.maxAvailableAmount ?? 999,
-                  deliverBoxPerAmount: v.option?.deliverBoxPerAmount ?? 999,
+                  deliverBoxPerAmount: v.option?.deliverBoxPerAmount,
                   productName: v.product?.title ?? '',
                   productImage: v.product?.image ?? '',
                   storeId: v.store?.storeId ?? -1,

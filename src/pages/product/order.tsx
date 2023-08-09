@@ -38,7 +38,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 const getSectionDeliverFee = (data: optionState[]) =>
   data
-    .map(v => Math.ceil(v.amount / v.maxAvailableStock) * (data[0].deliveryFee ?? 0))
+    .map(
+      v =>
+        Math.ceil(v.deliverBoxPerAmount ? (v.amount ?? 0) / v.deliverBoxPerAmount : 1) *
+        (data[0].deliveryFee ?? 0),
+    )
     .reduce((a, b) => a + b, 0);
 
 const setOptionData = async (value: miniOptionState[]) =>
@@ -124,7 +128,10 @@ const Order: NextPageWithLayout = () => {
         .map(v => (v.price + (v.additionalPrice ?? 0)) * (v.amount ?? 0))
         .reduce((a, b) => a + b, 0);
       const sectionDeliverFee = getSectionDeliverFee(x.data);
-      return x.data[0].deliverFeeType === 'FREE'
+
+      return x.data[0].deliverBoxPerAmount
+        ? sectionDeliverFee
+        : x.data[0].deliverFeeType === 'FREE'
         ? 0
         : x.data[0].deliverFeeType === 'FIX'
         ? sectionDeliverFee
@@ -552,6 +559,7 @@ const Order: NextPageWithLayout = () => {
       {isOpenProduct &&
         sectionOption.map(x => {
           const sectionDeliverFee = getSectionDeliverFee(x.data);
+          const deliverText = formatToLocaleString(sectionDeliverFee, { suffix: '원' });
           return (
             <Fragment key={`${x.storeId}`}>
               <div className='flex items-center justify-between px-4'>
@@ -573,13 +581,15 @@ const Order: NextPageWithLayout = () => {
                     배송비
                   </p>
                   <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                    {x.data[0].deliverFeeType === 'FREE'
+                    {x.data[0].deliverBoxPerAmount
+                      ? deliverText
+                      : x.data[0].deliverFeeType === 'FREE'
                       ? '무료'
                       : x.data[0].deliverFeeType === 'FIX'
-                      ? formatToLocaleString(sectionDeliverFee, { suffix: '원' })
+                      ? deliverText
                       : sectionDeliverFee >= (x.data[0].minOrderPrice ?? 0)
                       ? '무료'
-                      : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
+                      : deliverText}
                   </p>
                 </div>
               </div>
@@ -723,8 +733,7 @@ const Order: NextPageWithLayout = () => {
         />
       </button>
       {isOpenPayList && (
-        // grid-cols-3 -> grid-cols-2 : 휴대폰 결제 숨김 해제시 2로 변경 필요 (3군데)
-        <div className='grid grid-cols-3 gap-2 px-4 pb-[22px]'>
+        <div className='grid grid-cols-2 gap-2 px-4 pb-[22px]'>
           {(
             [
               { image: '/assets/icons/product/payment-kakao.png', type: IamportPayMethod.Kakaopay },
@@ -748,8 +757,6 @@ const Order: NextPageWithLayout = () => {
             const isActive = payMethod === v.type;
             // 네이버 페이 숨김
             if (v.type === IamportPayMethod.Naverpay) return null;
-            // 휴대폰 결제 숨김
-            if (v.type === IamportPayMethod.Phone) return null;
             // 등록된 카드 숨김
             if (i === 3 && VARIABLES.IS_MASTER) return null;
             return (
@@ -758,8 +765,7 @@ const Order: NextPageWithLayout = () => {
                   className={cm(
                     'flex h-[48px] w-full items-center justify-center gap-3 rounded-lg border border-[#E2E2E2]',
                     {
-                      // col-span-3 -> col-span-2 : 휴대폰 결제 숨김 해제시 2로 변경 필요 (3군데)
-                      'col-span-3': i < 4,
+                      'col-span-2': i < 4,
                       'bg-[#FEE33A]': i === 0 && isActive,
                       'bg-[#03C75A]': i === 1 && isActive,
                       'bg-[#0064FF]': i === 2 && isActive,
@@ -795,8 +801,7 @@ const Order: NextPageWithLayout = () => {
                   </p>
                 </button>
                 {i === 3 && isActive && (
-                  // col-span-3 -> col-span-2 : 휴대폰 결제 숨김 해제시 2로 변경 필요 (3군데)
-                  <div className='col-span-3 -mt-2 rounded-b-lg border-[#E2E2E2] bg-grey-90'>
+                  <div className='col-span-2 -mt-2 rounded-b-lg border-[#E2E2E2] bg-grey-90'>
                     <Swiper
                       loop={false}
                       slidesPerView={1.1}

@@ -26,7 +26,7 @@ export interface optionState {
   additionalPrice: number;
   deliveryFee: number;
   deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  deliverBoxPerAmount: number;
+  deliverBoxPerAmount?: number;
   minOrderPrice: number;
   stock: number;
   maxAvailableStock: number;
@@ -47,7 +47,7 @@ export interface miniOptionState {
   deliveryFee: number;
   stock: number;
   maxAvailableStock: number;
-  deliverBoxPerAmount: number;
+  deliverBoxPerAmount?: number;
   needTaxation: boolean;
 }
 
@@ -135,7 +135,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 additionalPrice: (x.discountPrice ?? 0) - (data?.discountPrice ?? 0),
                 stock: x.amount ?? 999,
                 maxAvailableStock: x.maxAvailableAmount ?? 999,
-                deliverBoxPerAmount: x.deliverBoxPerAmount ?? 999,
+                deliverBoxPerAmount: x.deliverBoxPerAmount,
               };
             }),
           };
