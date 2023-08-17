@@ -9,6 +9,7 @@ import {
   type CompareFilterDto,
   type CompareProductDto,
 } from 'src/api/swagger/data-contracts';
+import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -81,13 +82,7 @@ const CompareDetail: NextPageWithLayout = () => {
           비교하기
         </p>
         <Link href='/product/cart'>
-          <Image
-            unoptimized
-            src='/assets/icons/common/cart-title.svg'
-            alt='cart'
-            width={22}
-            height={23}
-          />
+          <CartIcon />
         </Link>
       </div>
 

@@ -13,6 +13,7 @@ import {
   type SaveProductPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
+import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { CompareNewItem } from 'src/components/compare';
 import { queryKey } from 'src/query-key';
@@ -122,13 +123,7 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
           />
         </Link>
         <Link href='/product/cart'>
-          <Image
-            unoptimized
-            src='/assets/icons/common/cart-title.svg'
-            alt='cart'
-            width={22}
-            height={23}
-          />
+          <CartIcon />
         </Link>
       </div>
       <div className='px-4 pt-2.5'>

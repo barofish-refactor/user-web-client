@@ -31,7 +31,7 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
               <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
                 {data?.location}
               </p>
-              <div className='mt-[5px] flex flex-wrap gap-1'>
+              <div className='mt-[5px] flex h-[22px] flex-wrap gap-1 overflow-hidden'>
                 {(data?.keyword ?? []).map((v, idx) => {
                   return (
                     <div

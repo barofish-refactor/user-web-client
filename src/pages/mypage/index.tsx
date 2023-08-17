@@ -34,6 +34,16 @@ const MyPage: NextPageWithLayout = () => {
     }
   });
 
+  const { data: cartCount } = useQuery(
+    queryKey.cartCount,
+    async () => {
+      const { countBasket } = await client();
+      const res = await countBasket();
+      return res.data.data;
+    },
+    { staleTime: Infinity },
+  );
+
   const { data: banner } = useQuery(queryKey.banner, async () => {
     const res = await (await client()).selectMyPageBanner();
     if (res.data.isSuccess) {
@@ -116,21 +126,30 @@ const MyPage: NextPageWithLayout = () => {
       </div>
       <div className='rounded-b-2xl px-4 pb-4 pt-6 shadow-[0px_4px_5px_rgba(0,0,0,0.04)]'>
         <div className='flex h-[61px] items-center justify-evenly rounded-lg bg-grey-90'>
-          <Link href='/mypage/review' className='flex w-[60px] flex-col items-center gap-0.5'>
-            <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
-              {formatToLocaleString(user?.reviewCount)}
-            </strong>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
-              구매후기
-            </p>
-          </Link>
-          <div className='h-6 w-[1px] bg-[#E2E2E2]' />
           <Link href='/mypage/notification' className='flex w-[60px] flex-col items-center gap-0.5'>
             <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(user?.notificationCount)}
             </strong>
             <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
               알림
+            </p>
+          </Link>
+          <div className='h-6 w-[1px] bg-[#E2E2E2]' />
+          <Link href='/compare/storage' className='flex w-[60px] flex-col items-center gap-0.5'>
+            <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
+              {formatToLocaleString(user?.saveProductCount)}
+            </strong>
+            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
+              저장함
+            </p>
+          </Link>
+          <div className='h-6 w-[1px] bg-[#E2E2E2]' />
+          <Link href='/product/cart' className='flex w-[60px] flex-col items-center gap-0.5'>
+            <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
+              {formatToLocaleString(cartCount)}
+            </strong>
+            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
+              장바구니
             </p>
           </Link>
           <div className='h-6 w-[1px] bg-[#E2E2E2]' />
@@ -152,11 +171,17 @@ const MyPage: NextPageWithLayout = () => {
               banner[0].link && banner[0].link.length > 0 ? 'cursor-pointer' : 'cursor-default',
             )}
             onClick={() => {
-              if (banner[0].link && banner[0].link.length > 0) {
+              const link = banner[0].link;
+              const productionUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL;
+
+              if (link && link.length > 0) {
+                if (link.includes(productionUrl))
+                  return router.push(link.replace(productionUrl, ''));
+
                 if (window.ReactNativeWebView) {
-                  requestPermission('link', `${banner[0].link}`);
+                  requestPermission('link', `${link}`);
                 } else {
-                  return window.open(`${banner[0].link}`, '_blank');
+                  return window.open(`${link}`, '_blank');
                 }
                 return;
               }
@@ -179,6 +204,8 @@ const MyPage: NextPageWithLayout = () => {
       <NavLink href='/mypage/order/refund'>취소 환불 교환 내역</NavLink>
       <NavLink href='/mypage/coupon'>쿠폰함</NavLink>
       <NavLink href='/mypage/pay-method'>결제수단 관리</NavLink>
+      <NavLink href='/mypage/inquiry'>상품 문의내역</NavLink>
+      <NavLink href='/mypage/review'>구매후기</NavLink>
       <hr className='border-t-8 border-grey-90' />
       <NavLink href='/mypage/notice'>공지사항</NavLink>
       <NavLink href='/mypage/faq'>FAQ</NavLink>

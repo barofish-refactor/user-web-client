@@ -8,6 +8,7 @@ import cm from 'src/utils/class-merge';
 
 import 'swiper/css';
 import { requestPermission } from 'src/utils/functions';
+import { VARIABLES } from 'src/variables';
 
 interface Props {
   data: Banner[];
@@ -51,11 +52,16 @@ const Banner = ({ data }: Props) => {
                     ['CURATION', 'CATEGORY', 'NOTICE'].includes(v.type ?? '') || v.link,
                 })}
                 onClick={() => {
-                  if (v.link) {
+                  const link = v.link;
+                  const productionUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL;
+                  if (link) {
+                    if (link.includes(productionUrl))
+                      return router.push(link.replace(productionUrl, ''));
+
                     if (window.ReactNativeWebView) {
-                      requestPermission('link', `${v.link}`);
+                      requestPermission('link', `${link}`);
                     } else {
-                      return window.open(`${v.link}`, '_blank');
+                      return window.open(`${link}`, '_blank');
                     }
                     return;
                   }

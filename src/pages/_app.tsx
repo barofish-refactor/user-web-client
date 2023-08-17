@@ -46,7 +46,7 @@ export default function MyApp(props: CustomAppProps) {
       );
       router.back();
     } else if (message.type === 'navigate') {
-      router.push(message.url);
+      router.push({ pathname: '/product', query: { id: message.id } });
     } else if (message.type === 'socialLogin') {
       // 소셜 로그인
       (await client())

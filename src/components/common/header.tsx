@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { type ComponentProps } from 'react';
+import CartIcon from 'src/components/common/cart-icon';
 
 import cm from 'src/utils/class-merge';
 
@@ -40,10 +41,9 @@ export function Header({ className, ...props }: HeaderProps) {
           className='h-6 w-6 bg-[url(/assets/icons/common/bookmark-title.svg)] bg-cover'
         />
         {/* 장바구니 */}
-        <Link
-          href='/product/cart'
-          className='ml-[2px] h-[23px] w-[22px] bg-[url(/assets/icons/common/cart-title.svg)] bg-cover'
-        />
+        <Link href='/product/cart' className='ml-[2px]'>
+          <CartIcon />
+        </Link>
       </div>
     </header>
   );

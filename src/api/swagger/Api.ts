@@ -78,6 +78,7 @@ import {
   ConfirmRefundOrderProductData,
   ConfirmReportsData,
   ConfirmReportsPayload,
+  CountBasketData,
   CreateBannerData,
   CreateBannerPayload,
   CreateCurationData,
@@ -186,6 +187,7 @@ import {
   SelectInquiryData,
   SelectInquiryListByAdminData,
   SelectInquiryListWithProductData,
+  SelectInquiryListWithUserIdData,
   SelectMainCurationListData,
   SelectMainData,
   SelectMainItemsData,
@@ -2324,7 +2326,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
        */
       take?: number;
       /** @default "joinAt" */
-      orderby?: 'id' | 'state' | 'loginId' | 'name' | 'location' | 'joinAt';
+      orderby?: 'id' | 'state' | 'loginId' | 'name' | 'location' | 'joinAt' | 'isReliable';
       /** @default "DESC" */
       orderType?: 'ASC' | 'DESC';
     },
@@ -2417,7 +2419,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
        */
       take?: number;
       /** @default "joinAt" */
-      orderby?: 'id' | 'state' | 'loginId' | 'name' | 'location' | 'joinAt';
+      orderby?: 'id' | 'state' | 'loginId' | 'name' | 'location' | 'joinAt' | 'isReliable';
       /** @default "DESC" */
       orderType?: 'ASC' | 'DESC';
       partnerId?: string;
@@ -2425,6 +2427,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       location?: string;
       keyword?: string;
       state?: string;
+      ids?: string;
       /** @format date-time */
       joinAtS?: string;
       /** @format date-time */
@@ -3618,6 +3621,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags inquiry-controller
+   * @name SelectInquiryListWithUserId
+   * @request GET:/api/v1/inquiry/user
+   * @response `200` `SelectInquiryListWithUserIdData` OK
+   */
+  selectInquiryListWithUserId = (params: RequestParams = {}) =>
+    this.request<SelectInquiryListWithUserIdData, any>({
+      path: `/api/v1/inquiry/user`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags inquiry-controller
    * @name SelectInquiryListWithProduct
    * @request GET:/api/v1/inquiry/product/{productId}
    * @response `200` `SelectInquiryListWithProductData` OK
@@ -4220,6 +4237,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   selectBasket = (params: RequestParams = {}) =>
     this.request<SelectBasketData, any>({
       path: `/api/v1/basket/list`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller
+   * @name CountBasket
+   * @request GET:/api/v1/basket/list/count
+   * @response `200` `CountBasketData` OK
+   */
+  countBasket = (params: RequestParams = {}) =>
+    this.request<CountBasketData, any>({
+      path: `/api/v1/basket/list/count`,
       method: 'GET',
       ...params,
     });

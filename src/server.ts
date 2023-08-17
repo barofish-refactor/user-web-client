@@ -1,7 +1,7 @@
 import { type GetServerSideProps } from 'next';
 import { client } from 'src/api/client';
 
-type Id = 'HTML_MARKETING' | 'HTML_PRIVACY' | 'HTML_TERM_OF_SERVICE';
+type Id = 'HTML_MARKETING' | 'HTML_PRIVACY' | 'HTML_TERM_OF_SERVICE' | 'HTML_WITHDRAW';
 
 export const getServerSidePolicy = (id: Id) => {
   const getServerSideProps: GetServerSideProps = async () => {

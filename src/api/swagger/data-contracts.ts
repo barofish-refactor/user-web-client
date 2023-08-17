@@ -112,7 +112,7 @@ export interface Grade {
   /** @format int32 */
   id?: number;
   name?: string;
-  /** @format int32 */
+  /** @format float */
   pointRate?: number;
   /** @format int32 */
   minOrderPrice?: number;
@@ -154,6 +154,8 @@ export interface UserInfoDto {
   reviewCount?: number;
   /** @format int32 */
   notificationCount?: number;
+  /** @format int32 */
+  saveProductCount?: number;
 }
 
 export interface UpdateUserStateReq {
@@ -285,6 +287,8 @@ export interface OrderProductInfo {
   /** @format date-time */
   settledAt?: string;
   /** @format date-time */
+  deliveryDoneAt?: string;
+  /** @format date-time */
   finalConfirmedAt?: string;
   order?: Orders;
   product?: Product;
@@ -367,8 +371,6 @@ export interface Product {
   createdAt?: string;
   reviews?: Review[];
   /** @format int32 */
-  deliveryFee?: number;
-  /** @format int32 */
   categoryId?: number;
 }
 
@@ -429,6 +431,8 @@ export interface StoreInfo {
   oneLineDescription?: string;
   /** @format int32 */
   deliverFee?: number;
+  /** @format int32 */
+  refundDeliverFee?: number;
   /** @format int32 */
   minOrderPrice?: number;
   /** @format float */
@@ -657,6 +661,8 @@ export interface StoreDto {
   /** @format int32 */
   deliverFee?: number;
   /** @format int32 */
+  refundDeliverFee?: number;
+  /** @format int32 */
   minOrderPrice?: number;
   oneLineDescription?: string;
   additionalData?: StoreAdditionalDto;
@@ -817,6 +823,7 @@ export interface ReviewStatistic {
 export interface SimpleStore {
   /** @format int32 */
   storeId?: number;
+  loginId?: string;
   backgroundImage?: string;
   isReliable?: boolean;
   profileImage?: string;
@@ -827,6 +834,8 @@ export interface SimpleStore {
   deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   deliverFee?: number;
+  /** @format int32 */
+  refundDeliverFee?: number;
   /** @format int32 */
   minOrderPrice?: number;
   oneLineDescription?: string;
@@ -1031,6 +1040,9 @@ export interface SimpleProductDto {
   deliveryInfo?: string;
   /** @format int32 */
   deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
   descriptionImages?: string[];
   /** @format int32 */
   representOptionItemId?: number;
@@ -1237,7 +1249,6 @@ export interface OrderDto {
   usePoint?: number;
   /** @format date-time */
   orderedAt?: string;
-  needTaxation?: boolean;
   bankHolder?: string;
   bankCode?: string;
   bankAccount?: string;
@@ -1283,6 +1294,7 @@ export interface OrderProductDto {
   invoiceCode?: string;
   /** @format date-time */
   finalConfirmedAt?: string;
+  needTaxation?: boolean;
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   isReviewWritten?: boolean;
@@ -1381,7 +1393,7 @@ export interface Inquiry {
 
 export interface AddGradeReq {
   name?: string;
-  /** @format int32 */
+  /** @format float */
   pointRate?: number;
   /** @format int32 */
   minOrderPrice?: number;
@@ -1600,6 +1612,9 @@ export interface BasketProductDto {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
   option?: OptionItemDto;
 }
 
@@ -1771,12 +1786,12 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
-  unpaged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  paged?: boolean;
+  unpaged?: boolean;
 }
 
 export interface SortObject {
@@ -1960,6 +1975,7 @@ export interface OrderProductInfoDto {
   isSettled?: boolean;
   /** @format date-time */
   settledAt?: string;
+  needTaxation?: boolean;
   /** @format date-time */
   finalConfirmedAt?: string;
   product?: ProductListDto;
@@ -2156,11 +2172,44 @@ export interface OptionDto {
   optionItems?: OptionItemDto[];
 }
 
-export interface CustomResponseListSimpleProductDto {
+export interface CustomResponseListListExcelProductDto2 {
   isSuccess?: boolean;
   code?: string;
-  data?: SimpleProductDto[];
+  data?: ExcelProductDto2[][];
   errorMsg?: string;
+}
+
+export interface ExcelProductDto2 {
+  storeLoginId?: string;
+  storeName?: string;
+  firstCategoryName?: string;
+  secondCategoryName?: string;
+  productName?: string;
+  /** @format int32 */
+  expectedDeliverDay?: number;
+  deliveryInfo?: string;
+  /** @format int32 */
+  deliveryFee?: number;
+  /** @format int32 */
+  deliverBoxPerAmount?: number;
+  isActive?: string;
+  needTaxation?: string;
+  hasOption?: string;
+  /** @format int32 */
+  purchasePrices?: number;
+  /** @format int32 */
+  representativeOptionNo?: number;
+  optionName?: string;
+  /** @format int32 */
+  optionOriginPrice?: number;
+  /** @format int32 */
+  optionDiscountPrice?: number;
+  /** @format int32 */
+  optionMaxOrderAmount?: number;
+  /** @format int32 */
+  optionAmount?: number;
+  /** @format float */
+  pointRate?: number;
 }
 
 export interface CustomResponsePageSimpleProductDto {
@@ -2197,7 +2246,7 @@ export interface CustomResponsePointRuleRes {
 }
 
 export interface PointRuleRes {
-  /** @format int32 */
+  /** @format float */
   pointRate?: number;
   /** @format int32 */
   maxReviewPoint?: number;
@@ -2588,6 +2637,9 @@ export interface CompareProductDto {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
   compareFilters?: CompareFilterDto[];
   filterValues?: ProductFilterValueDto[];
   type?: string;
@@ -2926,6 +2978,8 @@ export interface UpdateStoreInfoPayload {
   /** @format int32 */
   deliverFee?: number;
   /** @format int32 */
+  refundDeliverFee?: number;
+  /** @format int32 */
   minOrderPrice?: number;
   oneLineDescription?: string;
   additionalData?: AddStoreAdditionalReq;
@@ -2952,6 +3006,8 @@ export interface UpdateStoreInfo1Payload {
   deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   deliverFee?: number;
+  /** @format int32 */
+  refundDeliverFee?: number;
   /** @format int32 */
   minOrderPrice?: number;
   oneLineDescription?: string;
@@ -2995,6 +3051,8 @@ export interface AddStorePayload {
   deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   deliverFee?: number;
+  /** @format int32 */
+  refundDeliverFee?: number;
   /** @format int32 */
   minOrderPrice?: number;
   oneLineDescription?: string;
@@ -3514,7 +3572,7 @@ export type SelectProductListWithIdsData = CustomResponseListProductListDto;
 
 export type SelectProductCountByUserData = CustomResponseLong;
 
-export type SelectProductListForExcelData = CustomResponseListSimpleProductDto;
+export type SelectProductListForExcelData = CustomResponseListListExcelProductDto2;
 
 export type SelectProductListData = CustomResponsePageSimpleProductDto;
 
@@ -3555,6 +3613,8 @@ export type SelectMainCurationListData = CustomResponseListCurationDto;
 export type SelectInquiryData = CustomResponseInquiryDto;
 
 export type DeleteInquiryByUserData = CustomResponseBoolean;
+
+export type SelectInquiryListWithUserIdData = CustomResponseListInquiryDto;
 
 export type SelectInquiryListWithProductData = CustomResponseListInquiryDto;
 
@@ -3629,6 +3689,8 @@ export type SelectCategoryCompareFilter1Data = CustomResponseListCategoryDto;
 export type SelectCategoriesData = CustomResponseListCategory;
 
 export type SelectBasketData = CustomResponseListBasketProductDto;
+
+export type CountBasketData = CustomResponseInteger;
 
 export type SelectBannerData = CustomResponseBannerDto;
 

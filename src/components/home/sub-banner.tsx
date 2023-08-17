@@ -26,11 +26,16 @@ const SubBanner = ({ data }: Props) => {
             ['CURATION', 'CATEGORY', 'NOTICE'].includes(data.type ?? '') || data.link,
         })}
         onClick={() => {
-          if (data.link) {
+          const link = data.link;
+          const productionUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL;
+
+          if (link) {
+            if (link.includes(productionUrl)) return router.push(link.replace(productionUrl, ''));
+
             if (window.ReactNativeWebView) {
-              requestPermission('link', `${data.link}`);
+              requestPermission('link', `${link}`);
             } else {
-              return window.open(`${data.link}`, '_blank');
+              return window.open(`${link}`, '_blank');
             }
             return;
           }

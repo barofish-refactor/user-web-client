@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type Category, type CustomResponseListCategory } from 'src/api/swagger/data-contracts';
+import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { HomeProductList } from 'src/components/home';
 import { BackButton } from 'src/components/ui';
@@ -185,10 +186,9 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
         <p className='line-clamp-1 flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           {title}
         </p>
-        <Link
-          href='/product/cart'
-          className='h-[23px] w-[22px] bg-[url(/assets/icons/common/cart-title.svg)] bg-cover'
-        />
+        <Link href='/product/cart'>
+          <CartIcon />
+        </Link>
       </div>
       {type === 'category' ? (
         <Swiper ref={refSwiper} freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>

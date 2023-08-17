@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
+import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { StoreItem } from 'src/components/store';
 import { queryKey } from 'src/query-key';
@@ -127,13 +128,7 @@ const Store: NextPageWithLayout = () => {
           />
         </Link>
         <Link href='/product/cart'>
-          <Image
-            unoptimized
-            src='/assets/icons/common/cart-title.svg'
-            alt='cart'
-            width={22}
-            height={23}
-          />
+          <CartIcon />
         </Link>
       </div>
 

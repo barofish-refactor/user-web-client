@@ -95,6 +95,8 @@ export const queryKey = {
   compareSetWithId: getQueryKeys('compareSetWithId'),
   /** 장바구니 */
   cart: getQueryKeys('cart'),
+  /** 장바구니 카운트 */
+  cartCount: ['cartCount'],
   /** 큐레이션, 카테고리 검색 */
   productList: getQueryKeys('productList'),
   /** 리뷰 */
@@ -125,4 +127,6 @@ export const queryKey = {
   tipInfo: ['tipInfo'],
   /** 은행코드 */
   bank: ['bank'],
+  /** 탈퇴 약관 */
+  withdraw: ['withdraw'],
 };

@@ -13,6 +13,7 @@ import {
   type SimpleProductDto,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
+import { CartIcon } from 'src/components/common';
 import { HEAD_DESCRIPTION, HEAD_NAME } from 'src/components/common/head';
 import Layout from 'src/components/common/layout';
 import {
@@ -181,13 +182,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <BackButton />
         <div className='flex items-center gap-4'>
           <Link href='/product/cart'>
-            <Image
-              unoptimized
-              src='/assets/icons/common/cart-title.svg'
-              alt='cart'
-              width={22}
-              height={23}
-            />
+            <CartIcon />
           </Link>
           <ShareButton />
         </div>
@@ -276,9 +271,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               }
               return setAlert({ message });
             }
-            const cookie = getCookie(VARIABLES.ACCESS_TOKEN);
-            if (!cookie) router.push('/login');
-            else setIsVisible(true);
+            setIsVisible(true);
           }}
         >
           <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>구매하기</p>

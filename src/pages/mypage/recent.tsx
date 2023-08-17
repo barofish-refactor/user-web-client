@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, Fragment } from 'react';
 import { client } from 'src/api/client';
-import { ProductItem } from 'src/components/common';
+import { CartIcon, ProductItem } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -41,10 +41,9 @@ const MypageRecent: NextPageWithLayout = () => {
         <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
           최근 본 상품
         </h2>
-        <Link
-          href='/product/cart'
-          className='ml-[1px] h-[23px] basis-[22px] bg-[url(/assets/icons/common/cart-title.svg)] bg-cover'
-        />
+        <Link href='/product/cart' className='ml-[1px]'>
+          <CartIcon />
+        </Link>
       </header>
       {(data ?? []).length > 0 ? (
         <article className='grid auto-rows-fr grid-cols-2 gap-x-[11px] gap-y-4 p-4'>

@@ -53,13 +53,12 @@ const Notice: NextPageWithLayout = () => {
       {data?.pages.map((x, i) => (
         <Fragment key={i}>
           {x?.content?.map(v => {
-            const type = v.type as unknown as string;
-            const icon =
-              type === 'REVIEW'
-                ? '/assets/icons/notice/notice-review.svg'
-                : type === 'COUPON'
-                ? '/assets/icons/notice/notice-coupon.svg'
-                : '/assets/icons/notice/notice-delivery.svg';
+            const type = v.type ?? 'ADMIN';
+            const icon = ['REVIEW', 'ADMIN'].includes(type)
+              ? '/assets/icons/notice/notice-review.svg'
+              : type === 'COUPON'
+              ? '/assets/icons/notice/notice-coupon.svg'
+              : '/assets/icons/notice/notice-delivery.svg';
 
             return (
               <button

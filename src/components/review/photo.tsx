@@ -30,7 +30,7 @@ export function ReviewPhoto({ id, type }: Props) {
   const [selectedSort, setSelectedSort] = useState<number>(0); // 베스트순, 최신순
 
   const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
-    queryKey.review.list({ id, type }),
+    queryKey.review.list({ id, type, selectedSort }),
     async ({ pageParam = 0 }) => {
       if (pageParam === -1) return;
       const variables: Variables = [

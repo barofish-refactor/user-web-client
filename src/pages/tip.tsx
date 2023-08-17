@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { client } from 'src/api/client';
 import { Tip } from 'src/api/swagger/data-contracts';
+import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -75,13 +76,7 @@ const Tip: NextPageWithLayout<Props> = ({ initialData }) => {
           />
         </Link>
         <Link href='/product/cart'>
-          <Image
-            unoptimized
-            src='/assets/icons/common/cart-title.svg'
-            alt='cart'
-            width={22}
-            height={23}
-          />
+          <CartIcon />
         </Link>
       </div>
 

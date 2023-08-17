@@ -1,6 +1,7 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     NEXT_PUBLIC_END_POINT: string;
+    NEXT_PUBLIC_PRODUCTION_URL: string;
     NEXT_PUBLIC_IAMPORT_KEY: string;
     NEXT_PUBLIC_KAKAO_KEY: string;
     NEXT_PUBLIC_NAVER_KEY: string;

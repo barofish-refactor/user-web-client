@@ -164,7 +164,7 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
             unoptimized
             src={data?.images?.[0] ?? '/'}
             alt='product'
-            className='rounded-lg'
+            className='h-[72px] w-[72px] rounded-lg object-cover'
             width={72}
             height={72}
           />

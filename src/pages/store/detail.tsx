@@ -8,6 +8,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type SimpleStore } from 'src/api/swagger/data-contracts';
+import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { HomeProductList } from 'src/components/home';
 import { StarIcon } from 'src/components/icons';
@@ -191,13 +192,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             )}
           </button>
           <Link href='/product/cart'>
-            <Image
-              unoptimized
-              src='/assets/icons/common/cart-title.svg'
-              alt='cart'
-              width={22}
-              height={23}
-            />
+            <CartIcon />
           </Link>
           <ShareButton />
         </div>

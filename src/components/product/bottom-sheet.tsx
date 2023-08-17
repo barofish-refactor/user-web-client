@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -66,6 +66,8 @@ interface Props {
 const BottomSheet = ({ data, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
@@ -107,6 +109,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
       .then(res => {
         if (res.data.isSuccess) {
           setIsAddCart(true);
+          queryClient.invalidateQueries(queryKey.cartCount);
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => console.log(error));
@@ -231,8 +234,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                             amount: 1,
                             price: value.price,
                             additionalPrice: value.additionalPrice,
-                            // deliveryFee:
-                            deliveryFee: data?.deliveryFee ?? data?.store?.deliverFee ?? 0,
+                            deliveryFee: data?.store?.deliverFee ?? 0,
                             deliverFeeType: data?.store?.deliverFeeType ?? 'FREE',
                             deliverBoxPerAmount: value.deliverBoxPerAmount,
                             minOrderPrice: data?.store?.minOrderPrice ?? 0,
@@ -284,6 +286,11 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                         />
                       </button>
                     </div>
+                    {v.maxAvailableStock !== 999 && (
+                      <p className='text-[11px] leading-[16px] -tracking-[0.03em] text-grey-50'>
+                        최대 주문 가능 수량 : {v.maxAvailableStock}
+                      </p>
+                    )}
                     <div className='flex items-end justify-between'>
                       <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
                         <button className='' onClick={() => onPressMinus(v)}>
@@ -357,6 +364,12 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 <button
                   className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
                   onClick={() => {
+                    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                      setIsVisible(false);
+                      router.push('/login');
+                      return;
+                    }
+
                     if (selectedOption.filter(v => v.isNeeded === true).length === 0)
                       return setAlert({ message: '필수옵션을 1개 이상 선택해주세요.' });
 

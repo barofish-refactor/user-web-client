@@ -15,5 +15,6 @@ export { default as ProductItem } from './product-item';
 export { default as ProductSmallSlideItem } from './product-small-slide-item';
 export { default as Selector } from './selector';
 export { default as WatingPage } from './wating';
+export { default as CartIcon } from './cart-icon';
 
 export const PcBanner = dynamic(() => import('./pc-banner'));

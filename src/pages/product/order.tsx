@@ -70,8 +70,7 @@ const setOptionData = async (value: miniOptionState[]) =>
               productImage: matched[0].image ?? '',
               needTaxation: matched[0].isNeedTaxation ?? false,
               minOrderPrice: matched[0].minOrderPrice ?? 0,
-              deliverFeeType:
-                v.deliverBoxPerAmount === 999 ? 'FIX' : matched[0].deliverFeeType ?? 'FREE',
+              deliverFeeType: matched[0].deliverFeeType ?? 'FREE',
               storeId: matched[0].storeId ?? -1,
               storeImage: matched[0].storeImage ?? '',
               storeName: matched[0].storeName ?? '',
@@ -129,9 +128,7 @@ const Order: NextPageWithLayout = () => {
         .reduce((a, b) => a + b, 0);
       const sectionDeliverFee = getSectionDeliverFee(x.data);
 
-      return x.data[0].deliverBoxPerAmount
-        ? sectionDeliverFee
-        : x.data[0].deliverFeeType === 'FREE'
+      return x.data[0].deliverFeeType === 'FREE'
         ? 0
         : x.data[0].deliverFeeType === 'FIX'
         ? sectionDeliverFee
@@ -559,6 +556,9 @@ const Order: NextPageWithLayout = () => {
       {isOpenProduct &&
         sectionOption.map(x => {
           const sectionDeliverFee = getSectionDeliverFee(x.data);
+          const sectionTotalPrice = x.data
+            .map(v => (v.price + v.additionalPrice) * v.amount)
+            .reduce((a, b) => a + b, 0);
           const deliverText = formatToLocaleString(sectionDeliverFee, { suffix: '원' });
           return (
             <Fragment key={`${x.storeId}`}>
@@ -581,18 +581,23 @@ const Order: NextPageWithLayout = () => {
                     배송비
                   </p>
                   <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                    {x.data[0].deliverBoxPerAmount
-                      ? deliverText
-                      : x.data[0].deliverFeeType === 'FREE'
+                    {x.data[0].deliverFeeType === 'FREE'
                       ? '무료'
                       : x.data[0].deliverFeeType === 'FIX'
                       ? deliverText
-                      : sectionDeliverFee >= (x.data[0].minOrderPrice ?? 0)
+                      : sectionTotalPrice >= (x.data[0].minOrderPrice ?? 0)
                       ? '무료'
                       : deliverText}
                   </p>
                 </div>
               </div>
+              {x.data[0].deliverBoxPerAmount && (
+                <div className='flex justify-end px-4'>
+                  <p className='text-[12px] font-normal leading-[16px] -tracking-[0.03em] text-grey-50'>
+                    {`1박스에 최대 ${x.data[0].deliverBoxPerAmount}개 까지 가능합니다.`}
+                  </p>
+                </div>
+              )}
               <div>
                 {x.data.map((v, idx) => {
                   return (
@@ -982,6 +987,7 @@ const Order: NextPageWithLayout = () => {
 };
 
 function BusinessInformation() {
+  const [showInfo, setShowInfo] = useState<boolean>(false);
   const { data: info } = useQuery(queryKey.footer, async () => {
     const res = await (await client()).selectSiteInfo('TC_FOOTER');
     if (res.data.isSuccess) {
@@ -993,13 +999,39 @@ function BusinessInformation() {
 
   return (
     <div className='px-4 py-[22px]'>
-      <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
-        (주) 맛신저 사업자정보
+      <p className='text-[13px] font-medium leading-[18px] -tracking-[0.05em] text-[#969696]'>
+        (주) 맛신저는 통신판매중개자이며, 통신판매의 당사자가 아닙니다. 따라서 (주) 맛신저는 상품,
+        거래정보 및 거래에 대하여 책임을 지지 않습니다.
       </p>
-      <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
-        {info?.tcContent?.map((v, i) => {
-          return <p key={i}>{`${v.title} : ${v.content}`}</p>;
-        })}
+      <div className='pt-[23px]'>
+        <button onClick={() => setShowInfo(!showInfo)}>
+          <div className='flex items-center gap-[5px]'>
+            <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>
+              (주) 맛신저 사업자정보
+            </p>
+            <Image
+              unoptimized
+              src='/assets/icons/common/chevron-footer.svg'
+              alt=''
+              width={13}
+              height={8}
+              className={cm({ 'rotate-180': showInfo })}
+            />
+          </div>
+        </button>
+        {showInfo && info?.tcContent && (
+          <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
+            {info.tcContent.map((v, i) => {
+              return <p key={i}>{`${v.title} : ${v.content}`}</p>;
+            })}
+          </div>
+        )}
+        <div className='mt-[18px] flex items-center gap-[3px] text-[12px] font-medium leading-[16px] -tracking-[0.05em] text-[#B5B5B5]'>
+          <p>Copyright</p>
+          <p>©</p>
+          <p>바로피쉬.</p>
+          <p>All rights reserved.</p>
+        </div>
       </div>
     </div>
   );

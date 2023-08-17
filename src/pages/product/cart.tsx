@@ -52,7 +52,7 @@ const getSectionDeliverFee = (data: BasketProductDto[], store: SimpleStore | und
       v =>
         Math.ceil(
           v.option?.deliverBoxPerAmount ? (v.amount ?? 0) / v.option?.deliverBoxPerAmount : 1,
-        ) * (v.deliveryFee ?? store?.deliverFee ?? 0),
+        ) * (store?.deliverFee ?? 0),
     )
     .reduce((a, b) => a + b, 0);
 
@@ -76,21 +76,18 @@ function getAdditionalPrice(
 }
 
 const deliverPriceAfterCheckType = ({
-  deliverBoxPerAmount,
   result,
   sectionTotal,
   minOrderPrice,
   deliverFeeType,
 }: DeliverPriceCheckType) => {
-  if (!deliverBoxPerAmount)
-    return deliverFeeType === 'FREE'
-      ? 0
-      : deliverFeeType === 'FIX'
-      ? result
-      : sectionTotal >= minOrderPrice
-      ? 0
-      : result;
-  else return result;
+  return deliverFeeType === 'FREE'
+    ? 0
+    : deliverFeeType === 'FIX'
+    ? result
+    : sectionTotal >= minOrderPrice
+    ? 0
+    : result;
 };
 
 /** 장바구니 */
@@ -221,7 +218,6 @@ const Cart: NextPageWithLayout = () => {
           const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
 
           return deliverPriceAfterCheckType({
-            deliverBoxPerAmount: x.data[0].option?.deliverBoxPerAmount,
             result: sectionDeliverFee,
             sectionTotal,
             minOrderPrice: x.store?.minOrderPrice ?? 0,
@@ -308,7 +304,6 @@ const Cart: NextPageWithLayout = () => {
 
             const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
             const deliverResult = deliverPriceAfterCheckType({
-              deliverBoxPerAmount: x.data[0].option?.deliverBoxPerAmount,
               result: sectionDeliverFee,
               sectionTotal,
               minOrderPrice: x.store?.minOrderPrice ?? 0,
@@ -542,7 +537,7 @@ const Cart: NextPageWithLayout = () => {
                   .map(v => getAdditionalPrice(v, true, true))
                   .reduce((a, b) => a + b, 0);
 
-                const deliverResult = v.deliveryFee ?? v.store?.deliverFee ?? 0;
+                const deliverResult = v.store?.deliverFee ?? 0;
 
                 const deliveryFee = deliverPriceAfterCheckType({
                   deliverBoxPerAmount: v.option?.deliverBoxPerAmount,
@@ -562,9 +557,7 @@ const Cart: NextPageWithLayout = () => {
                   additionalPrice: getAdditionalPrice(v),
                   deliveryFee,
                   minOrderPrice: v.store?.minOrderPrice ?? 0,
-                  deliverFeeType: v.option?.deliverBoxPerAmount
-                    ? 'FIX'
-                    : v.store?.deliverFeeType ?? 'FREE',
+                  deliverFeeType: v.store?.deliverFeeType ?? 'FREE',
                   stock: v.option?.amount ?? 999,
                   maxAvailableStock: v.option?.maxAvailableAmount ?? 999,
                   deliverBoxPerAmount: v.option?.deliverBoxPerAmount,

@@ -120,7 +120,9 @@ export const useIamport = () => {
     const callback = (response: any) => {
       if (response.error_code || (response.error_msg && response.error_msg !== 'false')) {
         if (process.env.NODE_ENV === 'development') console.log(response);
-        p.onFailure(response.error_msg);
+        const text: string = response.error_msg;
+        const errorText = text.slice(text.indexOf(']') + 1).trim();
+        p.onFailure(errorText);
       } else {
         p.onSuccess(
           p.data.payMethod === IamportPayMethod.Vbank

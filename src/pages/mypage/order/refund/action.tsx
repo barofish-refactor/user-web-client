@@ -262,19 +262,15 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
           <button
             className={submitButtonClassName}
             onClick={() => {
-              if (!reportValue)
-                return setAlert({
-                  message: `${
-                    type === 'change' ? '교환 요청 사유를' : '취소/환불 사유를'
-                  } 선택해주세요`,
-                });
+              if (!reportValue?.value) return setAlert({ message: '항목을 선택해주세요' });
+              const contentData = !content ? undefined : content;
               if (type === 'change') {
                 onChangeMutate({
                   orderProductInfoId: productInfo?.id ?? -1,
                   data: {
                     data: {
                       cancelReason: reportValue.value,
-                      reasonContent: content,
+                      reasonContent: contentData,
                     },
                   },
                 });
@@ -285,7 +281,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
                     data: {
                       data: {
                         cancelReason: reportValue.value,
-                        content,
+                        content: contentData,
                       },
                     },
                   });
@@ -295,7 +291,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
                     data: {
                       data: {
                         cancelReason: reportValue.value,
-                        content,
+                        content: contentData,
                       },
                     },
                   });

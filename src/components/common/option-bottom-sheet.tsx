@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -21,6 +21,8 @@ interface Props {}
 const BottomSheet = ({}: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
@@ -72,6 +74,8 @@ const BottomSheet = ({}: Props) => {
       .then(res => {
         if (res.data.isSuccess) {
           initClear();
+          queryClient.invalidateQueries(queryKey.cart.lists);
+          queryClient.invalidateQueries(queryKey.cartCount);
           setToast({
             text: `${data.options
               ?.map(x => x.amount ?? 0)
@@ -281,6 +285,11 @@ const BottomSheet = ({}: Props) => {
                               />
                             </button>
                           </div>
+                          {v.maxAvailableStock !== 999 && (
+                            <p className='text-[11px] leading-[16px] -tracking-[0.03em] text-grey-50'>
+                              최대 주문 가능 수량 : {v.maxAvailableStock}
+                            </p>
+                          )}
                           <div className='flex items-end justify-between'>
                             <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
                               <button className='' onClick={() => onPressMinus(v)}>
