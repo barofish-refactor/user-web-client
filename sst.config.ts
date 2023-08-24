@@ -1,8 +1,8 @@
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { type SSTConfig } from 'sst';
 import { NextjsSite, type NextjsSiteProps } from 'sst/constructs';
 
 const isMaster = process.env.NEXT_PUBLIC_PRODUCTION_ENV === 'master';
-const isMasterDev = process.env.NEXT_PUBLIC_PRODUCTION_ENV === 'master-dev';
 const domain = 'barofish.com';
 
 export default {
@@ -10,12 +10,18 @@ export default {
     return {
       name: 'barofish-user-web',
       region: 'ap-northeast-2',
-      stage: isMaster ? 'master' : isMasterDev ? 'master-dev' : 'dev',
+      stage: isMaster ? 'master' : 'dev',
     };
   },
   stacks: app => {
     app.stack(({ stack }) => {
-      const props: NextjsSiteProps = {};
+      const props: NextjsSiteProps = {
+        cdk: {
+          server: {
+            logRetention: RetentionDays.ONE_DAY,
+          },
+        },
+      };
 
       if (isMaster) {
         props.customDomain = {
@@ -23,8 +29,7 @@ export default {
           domainAlias: `www.${domain}`,
           hostedZone: domain,
         };
-      }
-      if (isMasterDev) {
+      } else {
         props.customDomain = {
           domainName: `dev.${domain}`,
           hostedZone: domain,

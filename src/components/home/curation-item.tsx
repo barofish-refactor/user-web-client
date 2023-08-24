@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { type CurationDto } from 'src/api/swagger/data-contracts';
+import {
+  type DeleteSaveProductsPayload,
+  type SaveProductPayload,
+  type CurationDto,
+} from 'src/api/swagger/data-contracts';
 import {
   HomeLargeSlideCuration,
   HomeSmallSlideCuration,
@@ -12,10 +16,18 @@ interface Props {
   data: CurationDto;
   className?: string;
   showViewAll?: boolean;
+  onMutate?: (value: SaveProductPayload) => void;
+  onDeleteSaveProductsMutate?: (value: DeleteSaveProductsPayload) => void;
 }
 
 /** 홈화면 - 큐레이션 Item (type 처리) */
-const CurationItem = ({ data, className, showViewAll = true }: Props) => {
+const CurationItem = ({
+  data,
+  className,
+  showViewAll = true,
+  onMutate,
+  onDeleteSaveProductsMutate,
+}: Props) => {
   return (
     <div className={cm('px-4 py-[30px]', className)}>
       <div className='flex items-center justify-between'>
@@ -49,7 +61,11 @@ const CurationItem = ({ data, className, showViewAll = true }: Props) => {
         {data.description}
       </p>
       {data.type === 'SQUARE' ? (
-        <HomeTableCuration data={data.products?.filter(x => x.state === 'ACTIVE') ?? []} />
+        <HomeTableCuration
+          data={data.products?.filter(x => x.state === 'ACTIVE') ?? []}
+          onMutate={onMutate}
+          onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
+        />
       ) : data.type === 'S_SLIDER' ? (
         <HomeSmallSlideCuration data={data.products?.filter(x => x.state === 'ACTIVE') ?? []} />
       ) : (

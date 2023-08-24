@@ -13,6 +13,9 @@ const config = {
   experimental: {
     scrollRestoration: true,
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   images: {
     minimumCacheTTL: 60,
     disableStaticImages: true,
@@ -28,7 +31,7 @@ const config = {
   env: {
     NEXT_PUBLIC_IAMPORT_KEY: 'imp38983932',
     NEXT_PUBLIC_NAVER_KEY: '6R7kGWl8rIGqIYSXt91M',
-    NEXT_PUBLIC_KAKAO_KEY: 'ce11ca781427ffa0ee2f8358ab575e9a',
+    NEXT_PUBLIC_KAKAO_KEY: 'd8cd8c99c88e172ab9d16e7ba1efaa7f',
     NEXT_PUBLIC_APPLE_KEY: 'com.matsinger.barofish.signin',
   },
 };

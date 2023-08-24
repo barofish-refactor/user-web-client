@@ -1,4 +1,5 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,16 +7,23 @@ import { useRouter } from 'next/router';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
-import { type CustomResponseListSearchKeyword } from 'src/api/swagger/data-contracts';
+import {
+  type DeleteSaveProductsPayload,
+  type CustomResponseListSearchKeyword,
+  type SaveProductPayload,
+} from 'src/api/swagger/data-contracts';
+import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
 import { HomeCurationItem, HomeProductList } from 'src/components/home';
 import { PopularSearchTerms, RecentSearches } from 'src/components/search';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
+import { useAlertStore, useFilterStore, type indexFilterType, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
+import { formatToBlob } from 'src/utils/functions';
 import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
+import { VARIABLES } from 'src/variables';
 
 const perView = 10;
 
@@ -33,6 +41,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { filter, setFilter } = useFilterStore();
   const { setAlert } = useAlertStore();
+  const { setToast } = useToastStore();
 
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
@@ -60,6 +69,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     hasNextPage,
     fetchNextPage,
     isLoading,
+    refetch,
   } = useInfiniteQuery(
     queryKey.search.list({
       filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
@@ -99,6 +109,43 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     },
     { enabled: searchText !== '' },
   );
+
+  const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
+    async (args: SaveProductPayload) =>
+      await (await client()).saveProduct(args, { type: ContentType.FormData }),
+  );
+
+  const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
+    async (args: DeleteSaveProductsPayload) =>
+      await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
+  );
+
+  const onMutate = ({ data }: SaveProductPayload, isRefetch = true) => {
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (isSaveLoading) return;
+    saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
+      .then(res => {
+        if (res.data.isSuccess) {
+          setToast({
+            text: '1개의 상품이 저장함에 담겼어요.',
+            onClick: () => router.push('/compare/storage'),
+          });
+          if (isRefetch) refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
+
+  const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
+    if (isDeleteLoading) return;
+    deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
+      .then(res => {
+        if (res.data.isSuccess) {
+          refetch();
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      })
+      .catch(error => console.log(error));
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -293,6 +340,8 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
               filter={dummyFilter}
               sort={sort}
               setSort={setSort}
+              onMutate={onMutate}
+              onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
             />
             <div ref={ref} className='pb-10' />
           </Fragment>
@@ -317,6 +366,8 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
                 className='mt-[30px] p-0'
                 data={curationData[0]}
                 showViewAll={false}
+                onMutate={onMutate}
+                onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
               />
             )}
           </div>

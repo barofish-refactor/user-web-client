@@ -1,15 +1,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { type ProductListDto } from 'src/api/swagger/data-contracts';
+import {
+  type DeleteSaveProductsPayload,
+  type SaveProductPayload,
+  type ProductListDto,
+} from 'src/api/swagger/data-contracts';
 import { useProductOptionStore } from 'src/store';
 import { calcDiscountRate, formatToLocaleString, setSquareBrackets } from 'src/utils/functions';
 
 interface Props {
   dataDto?: ProductListDto;
   imageOptimize?: boolean;
+  onMutate?: (value: SaveProductPayload) => void;
+  onDeleteSaveProductsMutate?: (value: DeleteSaveProductsPayload) => void;
 }
 
-const ProductItem = ({ dataDto, imageOptimize }: Props) => {
+const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMutate }: Props) => {
   const { setProductOption } = useProductOptionStore();
 
   return (
@@ -27,6 +33,29 @@ const ProductItem = ({ dataDto, imageOptimize }: Props) => {
           alt='image'
           draggable={false}
         />
+        {onDeleteSaveProductsMutate && onMutate && dataDto && (
+          <button
+            className='absolute right-2 top-2.5'
+            onClick={e => {
+              e.preventDefault();
+              if (dataDto.isLike)
+                onDeleteSaveProductsMutate({ data: { productIds: [dataDto.id ?? -1] } });
+              else onMutate({ data: { productId: dataDto.id } });
+            }}
+          >
+            <Image
+              unoptimized
+              alt='bookmark'
+              width={24}
+              height={24}
+              src={
+                dataDto?.isLike
+                  ? '/assets/icons/compare/compare-bookmark-on.svg'
+                  : '/assets/icons/compare/compare-bookmark.svg'
+              }
+            />
+          </button>
+        )}
         <button
           className='product-cart'
           onClick={e => {

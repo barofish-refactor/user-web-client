@@ -13,7 +13,7 @@ for (let i = 0; i < args.length; i++) {
   }
   if (args[i] === '-h' || args[i] === '--help') {
     console.log('Usage: node env-replace.js --mode [env]');
-    console.log('env: master-dev, master');
+    console.log('env: dev, master');
     process.exit(0);
   }
 }

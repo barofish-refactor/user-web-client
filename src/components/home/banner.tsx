@@ -5,10 +5,9 @@ import Image from 'next/image';
 import { Banner } from 'src/api/swagger/data-contracts';
 import { useRouter } from 'next/router';
 import cm from 'src/utils/class-merge';
+import { requestPermission } from 'src/utils/functions';
 
 import 'swiper/css';
-import { requestPermission } from 'src/utils/functions';
-import { VARIABLES } from 'src/variables';
 
 interface Props {
   data: Banner[];

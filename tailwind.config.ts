@@ -25,7 +25,7 @@ const config: Config = {
   content: ['./src/**/*.{mdx,ts,tsx}'],
   theme: {
     fontFamily: {
-      sans: ['var(--font-pretendard)', ...fontFamily.sans],
+      sans: ['Pretendard', ...fontFamily.sans],
     },
     colors: {
       black: 'hsla(0, 0%, 0%, 1)',

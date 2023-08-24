@@ -652,6 +652,13 @@ const Order: NextPageWithLayout = () => {
             <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
               장
             </p>
+            {selectCoupon && (
+              <button className='ml-1.5' onClick={() => setSelectCoupon(undefined)}>
+                <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+                  적용 취소
+                </p>
+              </button>
+            )}
           </div>
         </div>
         <div className='mt-4 flex items-center gap-2'>

@@ -70,6 +70,7 @@ import {
   CancelSettleByAdminData,
   CancelSettleByAdminPayload,
   CheckPaymentDoneData,
+  CheckStoreIsActiveData,
   CompareProductListData,
   ConfirmCancelOrderData,
   ConfirmChangeProductData,
@@ -83,6 +84,8 @@ import {
   CreateBannerPayload,
   CreateCurationData,
   CreateCurationPayload,
+  CreateData,
+  CreatePayload,
   DeleteBannerData,
   DeleteBasketData,
   DeleteBasketPayload,
@@ -93,6 +96,7 @@ import {
   DeleteCompareSetPayload,
   DeleteCouponData,
   DeleteCurationData,
+  DeleteData,
   DeleteDeliverPlaceData,
   DeleteInquiryByAdminData,
   DeleteInquiryByAdminPayload,
@@ -115,8 +119,12 @@ import {
   DoneRefundOrderProductData,
   FindEmailData,
   FindEmailPayload,
+  GetData,
+  GetFormData,
   GithubWebhookCallbackData,
   GithubWebhookCallbackPayload,
+  JoinAppleSnsData,
+  JoinAppleSnsPayload,
   JoinSnsUserData,
   JoinSnsUserPayload,
   JoinUserData,
@@ -234,6 +242,7 @@ import {
   SelectSettlementAmountData,
   SelectSettlementLogsData,
   SelectSettlementOrderListData,
+  SelectSettlementOrderListDownloadData,
   SelectSiteInfoData,
   SelectSiteInfoListData,
   SelectStoreByAdmin1Data,
@@ -274,6 +283,7 @@ import {
   UpdateCategoryPayload,
   UpdateCurationData,
   UpdateCurationPayload,
+  UpdateData,
   UpdateDeliverPlaceData,
   UpdateDeliverPlacePayload,
   UpdateFcmData,
@@ -287,6 +297,7 @@ import {
   UpdateNoticePayload,
   UpdatePasswordData,
   UpdatePasswordPayload,
+  UpdatePayload,
   UpdateProductData,
   UpdateProductPayload,
   UpdateRecommendCompareSetData,
@@ -491,6 +502,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       method: 'POST',
       body: data,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags user-controller
+   * @name JoinAppleSns
+   * @request POST:/api/v1/user/join-apple
+   * @response `200` `JoinAppleSnsData` OK
+   */
+  joinAppleSns = (data: JoinAppleSnsPayload, params: RequestParams = {}) =>
+    this.request<JoinAppleSnsData, any>({
+      path: `/api/v1/user/join-apple`,
+      method: 'POST',
+      body: data,
+      type: ContentType.FormData,
       ...params,
     });
   /**
@@ -1060,6 +1087,38 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   addProduct = (data: AddProductPayload, params: RequestParams = {}) =>
     this.request<AddProductData, any>({
       path: `/api/v1/product/add`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-info-notice-controller
+   * @name Update
+   * @request POST:/api/v1/product-info-notice/update
+   * @response `200` `UpdateData` OK
+   */
+  update = (data: UpdatePayload, params: RequestParams = {}) =>
+    this.request<UpdateData, any>({
+      path: `/api/v1/product-info-notice/update`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-info-notice-controller
+   * @name Create
+   * @request POST:/api/v1/product-info-notice/add
+   * @response `200` `CreateData` OK
+   */
+  create = (data: CreatePayload, params: RequestParams = {}) =>
+    this.request<CreateData, any>({
+      path: `/api/v1/product-info-notice/add`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -2486,6 +2545,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags store-controller
+   * @name CheckStoreIsActive
+   * @request GET:/api/v1/store/is-active
+   * @response `200` `CheckStoreIsActiveData` OK
+   */
+  checkStoreIsActive = (params: RequestParams = {}) =>
+    this.request<CheckStoreIsActiveData, any>({
+      path: `/api/v1/store/is-active`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags site-info-controller
    * @name SelectSiteInfo
    * @request GET:/api/v1/site_info/{id}
@@ -2554,6 +2627,53 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectSettlementOrderListData, any>({
       path: `/api/v1/settlement/order/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags settlement-controller
+   * @name SelectSettlementOrderListDownload
+   * @request GET:/api/v1/settlement/order/list/download
+   * @response `200` `SelectSettlementOrderListDownloadData` OK
+   */
+  selectSettlementOrderListDownload = (
+    query?: {
+      /**
+       * @format int32
+       * @default 0
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+      /** @default "isSettled" */
+      orderby?:
+        | 'orderId'
+        | 'productName'
+        | 'settlePrice'
+        | 'price'
+        | 'amount'
+        | 'isSettled'
+        | 'settledAt';
+      /** @default "DESC" */
+      orderType?: 'ASC' | 'DESC';
+      isSettled?: boolean;
+      /** @format int32 */
+      storeId?: number;
+      /** @format date-time */
+      settledAtS?: string;
+      /** @format date-time */
+      settledAtE?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectSettlementOrderListDownloadData, any>({
+      path: `/api/v1/settlement/order/list/download`,
       method: 'GET',
       query: query,
       ...params,
@@ -3224,6 +3344,40 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v1/product/`,
       method: 'GET',
       query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-info-notice-controller
+   * @name GetForm
+   * @request GET:/api/v1/product-info-notice/getForm
+   * @response `200` `GetFormData` OK
+   */
+  getForm = (
+    query: {
+      itemCode: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<GetFormData, any>({
+      path: `/api/v1/product-info-notice/getForm`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-info-notice-controller
+   * @name Get
+   * @request GET:/api/v1/product-info-notice/get/{productId}
+   * @response `200` `GetData` OK
+   */
+  get = (productId: number, params: RequestParams = {}) =>
+    this.request<GetData, any>({
+      path: `/api/v1/product-info-notice/get/${productId}`,
+      method: 'GET',
       ...params,
     });
   /**
@@ -4520,6 +4674,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       method: 'DELETE',
       body: data,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-info-notice-controller
+   * @name Delete
+   * @request DELETE:/api/v1/product-info-notice/delete/{productId}
+   * @response `200` `DeleteData` OK
+   */
+  delete = (productId: number, params: RequestParams = {}) =>
+    this.request<DeleteData, any>({
+      path: `/api/v1/product-info-notice/delete/${productId}`,
+      method: 'DELETE',
       ...params,
     });
   /**

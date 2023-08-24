@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { type PageProductListDto } from 'src/api/swagger/data-contracts';
+import {
+  type DeleteSaveProductsPayload,
+  type SaveProductPayload,
+  type PageProductListDto,
+} from 'src/api/swagger/data-contracts';
 import { ProductItem } from 'src/components/common';
 import { useFilterStore, type indexFilterType } from 'src/store';
 import cm from 'src/utils/class-merge';
@@ -16,6 +20,8 @@ interface Props {
   filter?: indexFilterType[];
   sort?: sortType;
   setSort?: (value: sortType) => void;
+  onMutate?: (value: SaveProductPayload) => void;
+  onDeleteSaveProductsMutate?: (value: DeleteSaveProductsPayload) => void;
 }
 
 /** 홈화면 - 상품 리스트 (신상품, 인기상품, ...) */
@@ -28,6 +34,8 @@ const ProductList = ({
   filter,
   sort,
   setSort,
+  onMutate,
+  onDeleteSaveProductsMutate,
 }: Props) => {
   const { setFilter, setType, setIsOpen, clearFilter } = useFilterStore();
   const [isShowSort, setIsShowSort] = useState<boolean>();
@@ -134,7 +142,14 @@ const ProductList = ({
         {(dataDto[0]?.totalElements ?? 0) > 0
           ? dataDto.map(x =>
               (x?.content ?? []).map((v, idx) => {
-                return <ProductItem key={`curation${idx}`} dataDto={v} />;
+                return (
+                  <ProductItem
+                    key={`curation${idx}`}
+                    dataDto={v}
+                    onMutate={onMutate}
+                    onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
+                  />
+                );
               }),
             )
           : Empty()}

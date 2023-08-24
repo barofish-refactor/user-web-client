@@ -38,8 +38,13 @@ export function AppleButton() {
           })
             .then(res => {
               if (res.data.isSuccess) {
-                setToken(res.data.data);
-                return true;
+                if (res.data.data) {
+                  setToken(res.data.data);
+                  return true;
+                } else {
+                  router.push({ pathname: 'signup', query: { v: jwt.sub } });
+                  return false;
+                }
               } else {
                 setAlert({ message: res.data.errorMsg ?? '' });
                 return false;

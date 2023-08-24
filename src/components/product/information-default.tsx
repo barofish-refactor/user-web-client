@@ -49,20 +49,39 @@ const InformationDefault = ({ data }: Props) => {
           배송정보
         </p>
         <div className='mt-3 flex flex-col gap-3.5'>
-          <div className='flex items-center gap-[26px]'>
-            <p className='whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+          <div className='flex items-start'>
+            <p className='w-[70px] whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               배송안내
             </p>
-            <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+            <p className='flex-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               {`${data?.deliveryInfo ?? ''}`}
             </p>
           </div>
-          <div className='flex items-center gap-[26px]'>
-            <p className='whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+          <div className='flex items-start'>
+            <p className='w-[70px] whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               발송안내
             </p>
-            <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+            <p className='flex-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               {`${setDeliverDate(1)} 도착예정`}
+            </p>
+          </div>
+          <div className='flex items-start'>
+            <p className='w-[70px] whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+              배송비
+            </p>
+            <p className='flex-1 whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+              {`${
+                data?.store?.deliverFeeType === 'FREE'
+                  ? '무료'
+                  : data?.store?.deliverFeeType === 'FIX'
+                  ? formatToLocaleString(data.store.deliverFee, { suffix: '원' })
+                  : formatToLocaleString(data?.store?.deliverFee, { suffix: '원 (' }) +
+                    formatToLocaleString(data?.store?.minOrderPrice) +
+                    '원 이상 구매 시 무료)'
+              }`}
+              {data?.deliverBoxPerAmount
+                ? `\n1박스에 최대 ${data.deliverBoxPerAmount}개 까지 가능합니다.`
+                : ''}
             </p>
           </div>
         </div>
