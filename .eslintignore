@@ -1,0 +1,6 @@
+*.scss
+*.css
+/.next
+/node_modules
+next.config.js
+src/api/gql/**/*
