@@ -112,7 +112,10 @@ export const useIamport = () => {
       buyer_tel: p.data.tel,
       buyer_addr: p.data.address,
       buyer_postcode: p.data.postcode,
-      vbank_due: format(add(new Date(), { hours: p.data.vbankDueHour ?? 24 }), 'yyyyMMddHHmm'),
+      vbank_due: format(
+        add(new Date(), { hours: p.data.vbankDueHour ?? 24 }),
+        'yyyy-MM-dd HH:mm:ss',
+      ),
       m_redirect_url: p.data.mobileRedirectUrl,
       notice_url: VARIABLES.END_POINT + '/callback/iamport_pay_result',
     };

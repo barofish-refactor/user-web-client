@@ -28,7 +28,7 @@ export default function Layout({
   ...args
 }: Props) {
   return (
-    <article className='flex flex-1 gap-[18px] md:mx-auto'>
+    <div className='flex flex-1 gap-[18px] md:mx-auto'>
       {/* PC 좌측 배너 */}
       <PcBanner />
       {/* 메인화면 */}
@@ -51,6 +51,6 @@ export default function Layout({
         <main {...args} className={cm('flex-1', className)} />
         {!footerDisable && <Footer {...footerArgs} />}
       </div>
-    </article>
+    </div>
   );
 }

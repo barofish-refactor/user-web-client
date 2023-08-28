@@ -5,7 +5,7 @@ import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import {
   type DeleteSaveProductsPayload,
@@ -19,6 +19,7 @@ import Layout from 'src/components/common/layout';
 import {
   ProductBanner,
   ProductBottomSheet,
+  ProductInfoNotice,
   // ProductCompare,
   ProductInformationDefault,
   ProductInquiry,
@@ -201,7 +202,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       />
       <div className='min-h-[calc(100dvb-180px)]'>
         {selectedTab === 0 ? (
-          <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />
+          <Fragment>
+            <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />
+            <ProductInfoNotice id={Number(id)} />
+          </Fragment>
         ) : selectedTab === 1 ? (
           <div>
             {/* 구매자들의 솔직 리뷰 */}

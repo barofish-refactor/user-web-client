@@ -1,5 +1,6 @@
 export { default as ProductBanner } from './banner';
 export { default as ProductInformationDefault } from './information-default';
+export { default as ProductInfoNotice } from './product-info-notice';
 export { default as ProductCompare } from './compare';
 export { default as ProductTab } from './tab';
 

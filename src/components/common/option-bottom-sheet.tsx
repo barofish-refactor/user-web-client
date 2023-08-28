@@ -8,7 +8,7 @@ import { type AddBasketPayload } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
 import { HomeSmallSlideCuration } from 'src/components/home';
 import { ProductSelector } from 'src/components/product';
-import { type optionSelectorType, type optionState } from 'src/components/product/bottom-sheet';
+import { type optionSelectorType, type OptionState } from 'src/components/product/bottom-sheet';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useProductOptionStore, useToastStore } from 'src/store';
 import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
@@ -88,7 +88,7 @@ const BottomSheet = ({}: Props) => {
       .catch(error => console.log(error));
   };
 
-  const [selectedOption, setSelectedOption] = useState<optionState[]>([]);
+  const [selectedOption, setSelectedOption] = useState<OptionState[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [options, setOptions] = useState<optionSelectorType[]>([]);
 
@@ -132,7 +132,7 @@ const BottomSheet = ({}: Props) => {
   });
 
   /** 옵션 갯수 -1 처리 */
-  const onPressMinus = (item: optionState) => {
+  const onPressMinus = (item: OptionState) => {
     const tmp = [...selectedOption];
     const amount = item.amount;
     if (amount - 1 <= 0) return;
@@ -142,7 +142,7 @@ const BottomSheet = ({}: Props) => {
   };
 
   /** 옵션 갯수 +1 처리 */
-  const onPressPlus = (item: optionState) => {
+  const onPressPlus = (item: OptionState) => {
     const tmp = [...selectedOption];
     const amount = item.amount;
     const objIndex = tmp.findIndex(obj => obj.name === item.name);
@@ -155,7 +155,7 @@ const BottomSheet = ({}: Props) => {
   };
 
   /** 상품 옵션 삭제 */
-  const onPressDelete = (item: optionState) => {
+  const onPressDelete = (item: OptionState) => {
     const tmp = [...selectedOption];
     const objIndex = tmp.findIndex(obj => obj.name === item.name);
     tmp.splice(objIndex, 1);
@@ -191,9 +191,9 @@ const BottomSheet = ({}: Props) => {
   };
 
   return (
-    <div className='sticky top-0 z-[100] w-full'>
+    <div className='sticky top-0 z-[101] w-full'>
       {productOption && (
-        <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
+        <div className='absolute top-0 z-[102] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
           <div
             ref={target}
             className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-5'
@@ -246,6 +246,7 @@ const BottomSheet = ({}: Props) => {
                                   storeImage: '',
                                   storeName: '',
                                   needTaxation: false, //
+                                  pointRate: 0,
                                 });
                                 setSelectedOption(tmp);
                               }

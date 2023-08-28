@@ -12,13 +12,18 @@ import {
 import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
 import { HomeSmallSlideCuration } from 'src/components/home';
-import { type miniOptionState, type optionState } from 'src/components/product/bottom-sheet';
+import { type miniOptionState, type OptionState } from 'src/components/product/bottom-sheet';
 import { Checkbox } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { changeSectionBasket, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import {
+  changeSectionBasket,
+  formatToBlob,
+  formatToLocaleString,
+  mergeBasketProduct,
+} from 'src/utils/functions';
 import { aToB } from 'src/utils/parse';
 import { VARIABLES } from 'src/variables';
 import { getCookie } from 'cookies-next';
@@ -35,7 +40,7 @@ export interface SectionoptionType {
   storeId: number;
   storeName: string;
   storeImage: string;
-  data: optionState[];
+  data: OptionState[];
 }
 
 interface DeliverPriceCheckType {
@@ -215,6 +220,7 @@ const Cart: NextPageWithLayout = () => {
             .map(v => getAdditionalPrice(v, true, true))
             .reduce((a, b) => a + b, 0);
 
+          // const mergeProductData = mergeBasketProduct(x.data);
           const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
 
           return deliverPriceAfterCheckType({
@@ -302,6 +308,7 @@ const Cart: NextPageWithLayout = () => {
               .map(v => getAdditionalPrice(v, true, true))
               .reduce((a, b) => a + b, 0);
 
+            // const mergeProductData = mergeBasketProduct(x.data);
             const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
             const deliverResult = deliverPriceAfterCheckType({
               result: sectionDeliverFee,
@@ -528,7 +535,7 @@ const Cart: NextPageWithLayout = () => {
           )}
           onClick={async () => {
             if (selectedItem.length > 0) {
-              const selectedOption: optionState[] = selectedItem.map(v => {
+              const selectedOption: OptionState[] = selectedItem.map(v => {
                 // 같은 스토어 총 금액
                 const sectionTotal = selectedItem
                   .filter(
@@ -567,6 +574,7 @@ const Cart: NextPageWithLayout = () => {
                   storeImage: v.store?.profileImage ?? '',
                   storeName: v.store?.name ?? '',
                   needTaxation: v.product?.isNeedTaxation ?? false, //
+                  pointRate: v.option?.pointRate ?? 0,
                 };
               });
 
@@ -581,6 +589,7 @@ const Cart: NextPageWithLayout = () => {
                 maxAvailableStock: v.maxAvailableStock,
                 deliverBoxPerAmount: v.deliverBoxPerAmount,
                 needTaxation: v.needTaxation,
+                pointRate: v.pointRate,
               }));
 
               router.push({

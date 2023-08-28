@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { client } from 'src/api/client';
 import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { BackButton } from 'src/components/ui';
@@ -57,15 +58,21 @@ export function MypageOrderDetail({ id }: Props) {
   const { setAlert } = useAlertStore();
 
   // const paymentMethod = '카드결제';
-  const { data } = useQuery(queryKey.order.detail(id), async () => {
-    const res = await (await client()).selectOrder(id);
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else {
-      setAlert({ message: res.data.errorMsg ?? '' });
-      throw new Error(res.data.errorMsg);
-    }
-  });
+  const { data } = useQuery(
+    queryKey.order.detail(id),
+    async () => {
+      const res = await (await client()).selectOrder(id);
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      enabled: !!id,
+    },
+  );
 
   const totalProductPrice = data?.productInfos?.map(v => v.price ?? 0).reduce((a, b) => a + b, 0);
 
@@ -98,6 +105,27 @@ export function MypageOrderDetail({ id }: Props) {
       throw new Error(res.data.errorMsg);
     }
   });
+
+  /** 구매 적립금 */
+  const buyPoint =
+    Math.round(
+      (Math.floor(Math.max(totalProductPrice ?? 0, 0) / 100) * (pointData?.pointRate ?? 1)) / 10,
+    ) * 10;
+  /** 상품 적립금 */
+  const productPoint = Math.floor(
+    data?.productInfos
+      ? data?.productInfos
+          ?.map(v => ((v.price ?? 0) / 100) * (v.optionItem?.pointRate ?? 0))
+          .reduce((a, b) => a + b, 0)
+      : 0,
+  );
+  /** 후기 작성 적립금 */
+  const imageReviewPoint = pointData?.imageReviewPoint;
+  /** 예상 적립 금액 */
+  const expectPoint = useMemo(
+    () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
+    [buyPoint, imageReviewPoint, productPoint],
+  );
 
   return (
     <div>
@@ -167,9 +195,7 @@ export function MypageOrderDetail({ id }: Props) {
                 const sectionDeliverFee = v.data
                   .map(x => getDeliverFee(x))
                   .reduce((a, b) => a + b, 0);
-                const totalPrice = v.data
-                  .map(x => (x.price ?? 0) * (x.amount ?? 1))
-                  .reduce((a, b) => a + b, 0);
+                const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
 
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
@@ -296,22 +322,30 @@ export function MypageOrderDetail({ id }: Props) {
               <span className={labelClassName}>구매적립</span>
               <div className='text-right'>
                 <span className={subValueClassName}>
-                  {formatToLocaleString(
-                    Math.floor(((data?.totalAmount ?? 0) / 100) * (pointData?.pointRate ?? 1)),
-                    { prefix: '', suffix: '원' },
-                  )}
+                  {formatToLocaleString(buyPoint, { suffix: '원' })}
                 </span>
                 <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-60'>
                   {`(${data?.user?.grade?.name ?? ''} 등급 : 구매 적립 ${
-                    data?.user?.grade?.pointRate ?? 0
+                    data?.user?.grade?.pointRate ?? 1
                   }%)`}
                 </p>
               </div>
             </div>
             <div className='flex justify-between'>
+              <span className={labelClassName}>상품적립</span>
+              <div className='flex flex-col items-end'>
+                <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
+                  productPoint,
+                )}원`}</p>
+              </div>
+            </div>
+            <div className='flex justify-between'>
               <span className={labelClassName}>후기작성</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(pointData?.maxReviewPoint, { prefix: '최대 ', suffix: '원' })}
+                {formatToLocaleString(imageReviewPoint, {
+                  prefix: '최대 ',
+                  suffix: '원',
+                })}
               </span>
             </div>
           </div>
@@ -319,11 +353,7 @@ export function MypageOrderDetail({ id }: Props) {
           <div className='flex items-center justify-between pt-[22px]'>
             <h4 className={headingClassName}>적립 금액</h4>
             <strong className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-primary-50'>
-              {formatToLocaleString(
-                Math.floor(((data?.totalAmount ?? 0) / 100) * (pointData?.pointRate ?? 1)) +
-                  (pointData?.maxReviewPoint ?? 0),
-                { prefix: '최대 ', suffix: '원' },
-              )}
+              {formatToLocaleString(expectPoint, { prefix: '최대 ', suffix: '원' })}
             </strong>
           </div>
         </div>

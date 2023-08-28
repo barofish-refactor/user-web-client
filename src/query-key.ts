@@ -69,6 +69,8 @@ export const queryKey = {
   scrapedStore: ['scrapedStore'],
   /** 상품 */
   product: getQueryKeys('product'),
+  /** 상품고시정보 */
+  productInfo: getQueryKeys('productInfo'),
   /** PC 배너 */
   pcBanner: ['PcBanner'],
   /** 배너 */

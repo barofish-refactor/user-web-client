@@ -16,7 +16,7 @@ import {
   ProductRefundAccount,
   ProductShippingAddress,
 } from 'src/components/product';
-import { type miniOptionState, type optionState } from 'src/components/product/bottom-sheet';
+import { type miniOptionState, type OptionState } from 'src/components/product/bottom-sheet';
 import { type RefundAccountType } from 'src/components/product/refund-account';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -27,6 +27,7 @@ import {
   changeSectionOption,
   formatToLocaleString,
   formatToPhone,
+  mergeOptionState,
   setSquareBrackets,
 } from 'src/utils/functions';
 import { bToA, parseIamportPayMethod, parsePaymentWay, safeParse } from 'src/utils/parse';
@@ -36,7 +37,7 @@ import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-const getSectionDeliverFee = (data: optionState[]) =>
+const getSectionDeliverFee = (data: OptionState[]) =>
   data
     .map(
       v =>
@@ -50,7 +51,7 @@ const setOptionData = async (value: miniOptionState[]) =>
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
     .then(res => {
       if (res.data.data && res.data.data.length > 0) {
-        const optionData: optionState[] = [];
+        const optionData: OptionState[] = [];
         value.forEach(v => {
           const matched = res.data.data?.filter(x => x.id === v.productId);
           if (matched && matched.length > 0) {
@@ -74,6 +75,7 @@ const setOptionData = async (value: miniOptionState[]) =>
               storeId: matched[0].storeId ?? -1,
               storeImage: matched[0].storeImage ?? '',
               storeName: matched[0].storeName ?? '',
+              pointRate: v.pointRate,
             });
           }
         });
@@ -111,8 +113,8 @@ const Order: NextPageWithLayout = () => {
     async (args: OrderReq) => await (await client()).orderProduct(args),
   );
 
-  const [tmpOption, setTmpOption] = useState<optionState[]>([]);
-  const selectedOption: optionState[] = tmpOption ?? [];
+  const [tmpOption, setTmpOption] = useState<OptionState[]>([]);
+  const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
   const totalPrice =
     selectedOption.length > 0
@@ -126,6 +128,7 @@ const Order: NextPageWithLayout = () => {
       const sectionTotal = x.data
         .map(v => (v.price + (v.additionalPrice ?? 0)) * (v.amount ?? 0))
         .reduce((a, b) => a + b, 0);
+      // const mergeProductData = mergeOptionState(x.data);
       const sectionDeliverFee = getSectionDeliverFee(x.data);
 
       return x.data[0].deliverFeeType === 'FREE'
@@ -196,13 +199,22 @@ const Order: NextPageWithLayout = () => {
 
   /** 구매 적립금 */
   const buyPoint =
-    Math.round(Math.floor((orderPrice / 100) * (user?.grade?.pointRate ?? 1)) / 10) * 10;
+    Math.round(Math.floor((Math.max(totalPrice, 0) / 100) * (user?.grade?.pointRate ?? 1)) / 10) *
+    10;
+  /** 상품 적립금 */
+  const productPoint = Math.floor(
+    selectedOption.length > 0
+      ? selectedOption
+          .map(v => ((v.price * v.amount) / 100) * v.pointRate)
+          .reduce((a, b) => a + b, 0)
+      : 0,
+  );
   /** 후기 작성 적립금 */
-  const writeReviewPoint = pointData?.maxReviewPoint;
+  const imageReviewPoint = pointData?.imageReviewPoint;
   /** 예상 적립 금액 */
   const expectPoint = useMemo(
-    () => buyPoint + (pointData?.maxReviewPoint ?? 0),
-    [buyPoint, pointData?.maxReviewPoint],
+    () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
+    [buyPoint, imageReviewPoint, productPoint],
   );
 
   const onIamportResult = (
@@ -260,7 +272,7 @@ const Order: NextPageWithLayout = () => {
       if (!taxValueList[index]) priceListAdd[index] = eachPriceList[index] - element;
       else priceListAdd[index] = 0;
     });
-    return priceListAdd.reduce((a, b) => a + b, 0);
+    return { list: priceListAdd, sum: priceListAdd.reduce((a, b) => a + b, 0) };
   };
 
   async function onPayment() {
@@ -284,13 +296,14 @@ const Order: NextPageWithLayout = () => {
       const taxFreePrice = getTaxFreePrice();
 
       orderProduct({
-        products: selectedOption.map(x => {
+        products: selectedOption.map((x, i) => {
           return {
             productId: x.productId,
             optionId: x.optionId === -1 ? undefined : x.optionId,
             amount: x.amount,
             deliveryFee: x.deliveryFee,
             needTaxation: x.needTaxation, //
+            taxFreeAmount: taxFreePrice.list[i],
           };
         }),
         name,
@@ -302,7 +315,7 @@ const Order: NextPageWithLayout = () => {
         couponDiscountPrice: couponDiscountPoint,
         paymentMethodId: selectedCard?.id,
         paymentWay: parsePaymentWay(payMethod),
-        taxFreeAmount: taxFreePrice,
+        taxFreeAmount: taxFreePrice.sum,
         vbankRefundInfo:
           payMethod === IamportPayMethod.Vbank
             ? {
@@ -339,7 +352,7 @@ const Order: NextPageWithLayout = () => {
                 postcode: '',
                 tel: phone,
                 name,
-                taxFree: taxFreePrice,
+                taxFree: taxFreePrice.sum,
               },
               onSuccess: (vBankData?: vBankType) => onIamportResult(orderId, true, '', vBankData),
               onFailure: (error_msg: string) => onIamportResult(orderId, false, error_msg),
@@ -555,6 +568,7 @@ const Order: NextPageWithLayout = () => {
       </button>
       {isOpenProduct &&
         sectionOption.map(x => {
+          // const mergeProductData = mergeOptionState(x.data);
           const sectionDeliverFee = getSectionDeliverFee(x.data);
           const sectionTotalPrice = x.data
             .map(v => (v.price + v.additionalPrice) * v.amount)
@@ -591,7 +605,7 @@ const Order: NextPageWithLayout = () => {
                   </p>
                 </div>
               </div>
-              {x.data[0].deliverBoxPerAmount && (
+              {!!x.data[0].deliverBoxPerAmount && (
                 <div className='flex justify-end px-4'>
                   <p className='text-[12px] font-normal leading-[16px] -tracking-[0.03em] text-grey-50'>
                     {`1박스에 최대 ${x.data[0].deliverBoxPerAmount}개 까지 가능합니다.`}
@@ -955,12 +969,22 @@ const Order: NextPageWithLayout = () => {
             </p>
           </div>
         </div>
+        <div className='mt-4 flex items-start justify-between'>
+          <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+            상품적립
+          </p>
+          <div className='flex flex-col items-end'>
+            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
+              productPoint,
+            )}원`}</p>
+          </div>
+        </div>
         <div className='mt-4 flex items-center justify-between'>
           <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
             후기작성
           </p>
           <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`최대 ${formatToLocaleString(
-            writeReviewPoint,
+            imageReviewPoint,
           )}원`}</p>
         </div>
         <div className='mb-[22px] mt-4 h-[1px] bg-grey-90' />

@@ -16,7 +16,7 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 
-export interface optionState {
+export interface OptionState {
   isNeeded: boolean;
   optionId: number;
   productId: number;
@@ -36,6 +36,7 @@ export interface optionState {
   storeImage: string;
   storeName: string;
   needTaxation: boolean;
+  pointRate: number;
 }
 
 export interface miniOptionState {
@@ -49,6 +50,7 @@ export interface miniOptionState {
   maxAvailableStock: number;
   deliverBoxPerAmount?: number;
   needTaxation: boolean;
+  pointRate: number;
 }
 
 export interface optionSelectorType {
@@ -115,7 +117,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
       .catch(error => console.log(error));
   };
 
-  const [selectedOption, setSelectedOption] = useState<optionState[]>([]);
+  const [selectedOption, setSelectedOption] = useState<OptionState[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const [options, setOptions] = useState<optionSelectorType[]>([]);
@@ -154,7 +156,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   });
 
   /** 옵션 갯수 -1 처리 */
-  const onPressMinus = (item: optionState) => {
+  const onPressMinus = (item: OptionState) => {
     const tmp = [...selectedOption];
     const amount = item.amount;
     if (amount - 1 <= 0) return;
@@ -164,7 +166,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   };
 
   /** 옵션 갯수 +1 처리 */
-  const onPressPlus = (item: optionState) => {
+  const onPressPlus = (item: OptionState) => {
     const tmp = [...selectedOption];
     const amount = item.amount;
     const objIndex = tmp.findIndex(obj => obj.name === item.name);
@@ -177,7 +179,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   };
 
   /** 상품 옵션 삭제 */
-  const onPressDelete = (item: optionState) => {
+  const onPressDelete = (item: OptionState) => {
     const tmp = [...selectedOption];
     const objIndex = tmp.findIndex(obj => obj.name === item.name);
     tmp.splice(objIndex, 1);
@@ -209,7 +211,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
           <p className='self-center text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
             옵션 선택
           </p>
-          <div className='max-h-[560px] min-h-[280px]  overflow-y-scroll px-4 scrollbar-hide'>
+          <div className='max-h-[560px] min-h-[280px] overflow-y-scroll px-4 scrollbar-hide'>
             <div className='mb-3.5 min-h-[120px]'>
               {options.map((v, i) => {
                 return (
@@ -247,6 +249,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                             storeImage: data?.store?.profileImage ?? '',
                             storeName: data?.store?.name ?? '',
                             needTaxation: data?.needTaxation ?? false, //
+                            pointRate: data?.pointRate ?? 0,
                           });
                           setSelectedOption(tmp);
                         }
@@ -384,6 +387,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       maxAvailableStock: v.maxAvailableStock,
                       deliverBoxPerAmount: v.deliverBoxPerAmount,
                       needTaxation: v.needTaxation,
+                      pointRate: v.pointRate,
                     }));
 
                     router.push({

@@ -85,15 +85,12 @@ const TipDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           )}
         </div>
         <div className='px-4 pt-4'>
-          <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-50'>
+          <p className='whitespace-pre-line text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-50'>
             {data?.description}
           </p>
-          <p className='mt-1.5 text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-grey-10'>
+          <p className='mt-1.5 whitespace-pre-line text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-grey-10'>
             {data?.title}
           </p>
-          {/* <p className='mt-8 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
-            {data?.content}
-          </p> */}
         </div>
         <div dangerouslySetInnerHTML={{ __html: content }} className='mt-8' />
       </div>

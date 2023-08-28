@@ -407,6 +407,8 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
             }
             // 저장하기
             else {
+              if (tel.replaceAll('-', '').trim().length !== 11)
+                return setAlert({ message: '연락처를 확인해주세요' });
               if (updateId) {
                 onUpdateMutate({
                   id: updateId,

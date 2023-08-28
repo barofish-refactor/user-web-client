@@ -48,6 +48,7 @@ export function KakaoButton() {
           (typeof response.profile.kakao_account.name === 'string' ||
             typeof response.profile.kakao_account.name === 'undefined')
         ) {
+          console.log(response);
           loginUser({
             data: formatToBlob<JoinSnsUserPayload['data']>(
               {

@@ -4,7 +4,7 @@ import { type BasketProductDto, type Jwt } from 'src/api/swagger/data-contracts'
 import { VARIABLES } from 'src/variables';
 import { REG_EXP } from './regex';
 import { type SectionoptionType, type SectionBasketType } from 'src/pages/product/cart';
-import { type optionState } from 'src/components/product/bottom-sheet';
+import { type OptionState } from 'src/components/product/bottom-sheet';
 
 export function setToken(jwt: Jwt | undefined) {
   const { ACCESS_TOKEN, REFRESH_TOKEN, TOKEN_MAX_AGE } = VARIABLES;
@@ -245,7 +245,7 @@ export function maskingName(name: string) {
 /** 장바구니 타입 변경 */
 export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketType[] => {
   let idx = 0;
-  const result = value.reduce((acc, cur) => {
+  const result = value.reduce<SectionBasketType[]>((acc, cur) => {
     const ownerId = cur.store?.storeId;
 
     const index = acc.findIndex(v => v.store?.storeId === ownerId);
@@ -257,14 +257,14 @@ export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketTyp
       acc[index].data.push(cur);
     }
     return acc;
-  }, [] as SectionBasketType[]);
+  }, []);
   return result;
 };
 
 /** 장바구니 타입 변경 */
-export const changeSectionOption = (value: optionState[]): SectionoptionType[] => {
+export const changeSectionOption = (value: OptionState[]): SectionoptionType[] => {
   let idx = 0;
-  const result = value.reduce((acc, cur) => {
+  const result = value.reduce<SectionoptionType[]>((acc, cur) => {
     const ownerId = cur.storeId;
 
     const index = acc.findIndex(v => v.storeId === ownerId);
@@ -282,7 +282,35 @@ export const changeSectionOption = (value: optionState[]): SectionoptionType[] =
       acc[index].data.push(cur);
     }
     return acc;
-  }, [] as SectionoptionType[]);
+  }, []);
+  return result;
+};
+
+/** 동일 상품 옵션 합치기 (배송비 계산용) - 주문하기 */
+export const mergeOptionState = (value: OptionState[]): OptionState[] => {
+  const result = value.reduce<OptionState[]>((acc, cur) => {
+    const productId = cur.productId;
+    const index = acc.findIndex(v => v.productId === productId);
+
+    if (index === -1) acc.push({ ...cur });
+    else acc[index].amount = cur.amount + acc[index].amount;
+
+    return acc;
+  }, []);
+  return result;
+};
+
+/** 동일 상품 옵션 합치기 (배송비 계산용) - 장바구니 */
+export const mergeBasketProduct = (value: BasketProductDto[]): BasketProductDto[] => {
+  const result = value.reduce<BasketProductDto[]>((acc, cur) => {
+    const productId = cur.product?.id;
+    const index = acc.findIndex(v => v.product?.id === productId);
+
+    if (index === -1) acc.push({ ...cur });
+    else acc[index].amount = (cur.amount ?? 0) + (acc[index].amount ?? 0);
+
+    return acc;
+  }, []);
   return result;
 };
 
