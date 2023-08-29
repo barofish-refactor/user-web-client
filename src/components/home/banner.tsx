@@ -8,6 +8,7 @@ import cm from 'src/utils/class-merge';
 
 import 'swiper/css';
 import { requestPermission } from 'src/utils/functions';
+import { VARIABLES } from 'src/variables';
 
 interface Props {
   data: Banner[];
@@ -52,7 +53,7 @@ const Banner = ({ data }: Props) => {
                 })}
                 onClick={() => {
                   const link = v.link;
-                  const productionUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL;
+                  const productionUrl = VARIABLES.PRODUCTION_URL;
                   if (link) {
                     if (link.includes(productionUrl))
                       return router.push(link.replace(productionUrl, ''));

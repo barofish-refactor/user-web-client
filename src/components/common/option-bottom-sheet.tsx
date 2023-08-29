@@ -110,7 +110,6 @@ const BottomSheet = ({}: Props) => {
                 additionalPrice: (x.discountPrice ?? 0) - (productOption?.data?.discountPrice ?? 0),
                 stock: x.amount ?? 999,
                 maxAvailableStock: x.maxAvailableAmount ?? 999,
-                deliverBoxPerAmount: x.deliverBoxPerAmount ?? 999,
               };
             }),
           };
@@ -236,7 +235,6 @@ const BottomSheet = ({}: Props) => {
                                   additionalPrice: value.additionalPrice,
                                   deliveryFee: 0,
                                   deliverFeeType: 'FREE',
-                                  deliverBoxPerAmount: value.deliverBoxPerAmount,
                                   minOrderPrice: 0,
                                   stock: value.amount,
                                   maxAvailableStock: value.maxAvailableStock,

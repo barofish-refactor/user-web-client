@@ -67,6 +67,8 @@ import {
   CancelOrderByUserData,
   CancelOrderByUserPayload,
   CancelOrderData,
+  CancelOrdersByPartnerData,
+  CancelOrdersByPartnerPayload,
   CancelSettleByAdminData,
   CancelSettleByAdminPayload,
   CheckPaymentDoneData,
@@ -1386,6 +1388,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<ConfirmCancelOrderData, any>({
       path: `/api/v1/order/cancel/${orderProductInfoId}/confirm`,
       method: 'POST',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller
+   * @name CancelOrdersByPartner
+   * @request POST:/api/v1/order/cancel/partner
+   * @response `200` `CancelOrdersByPartnerData` OK
+   */
+  cancelOrdersByPartner = (data: CancelOrdersByPartnerPayload, params: RequestParams = {}) =>
+    this.request<CancelOrdersByPartnerData, any>({
+      path: `/api/v1/order/cancel/partner`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**

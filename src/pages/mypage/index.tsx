@@ -12,6 +12,7 @@ import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString, requestPermission } from 'src/utils/functions';
+import { VARIABLES } from 'src/variables';
 
 /** 마이페이지 */
 const MyPage: NextPageWithLayout = () => {
@@ -172,7 +173,7 @@ const MyPage: NextPageWithLayout = () => {
             )}
             onClick={() => {
               const link = banner[0].link;
-              const productionUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL;
+              const productionUrl = VARIABLES.PRODUCTION_URL;
 
               if (link && link.length > 0) {
                 if (link.includes(productionUrl))

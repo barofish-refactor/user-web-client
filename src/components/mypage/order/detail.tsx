@@ -7,15 +7,12 @@ import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
-import { formatToLocaleString, formatToPhone } from 'src/utils/functions';
+import { formatToLocaleString, formatToPhone, getDeliverFee } from 'src/utils/functions';
 import { parsePaymentWay2 } from 'src/utils/parse';
 
 const headingClassName = 'font-bold leading-[24px] -tracking-[0.03em] text-grey-10';
 const labelClassName = 'font-medium leading-[24px] -tracking-[0.03em] text-grey-50';
 const subValueClassName = 'font-medium leading-[24px] -tracking-[0.03em] text-grey-20';
-
-const getDeliverFee = (v: OrderProductDto) =>
-  Math.ceil((v.amount ?? 0) / (v.optionItem?.maxAvailableAmount ?? 1)) * (v.deliverFee ?? 0);
 
 interface Props {
   id: string;
@@ -26,6 +23,7 @@ interface SectionProductType {
   storeId?: number;
   storeName?: string;
   storeProfile?: string;
+  deliverFee: number;
   data: OrderProductDto[];
 }
 
@@ -36,6 +34,18 @@ const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] =>
     const ownerId = cur.storeId;
 
     const index = acc.findIndex(v => v.storeId === ownerId);
+    const productId = cur.product?.id;
+
+    const curTotalPrice = value
+      .filter(v => v.product?.id === productId)
+      .map(v => (v.amount ?? 0) * (v.price ?? 0))
+      .reduce((a, b) => a + b, 0);
+    const curDeliverFee = getDeliverFee({
+      type: cur.deliverFeeType ?? 'FREE',
+      deliverFee: cur.deliverFee ?? 0,
+      totalPrice: curTotalPrice,
+      minOrderPrice: cur.minOrderPrice ?? 0,
+    });
 
     if (index === -1) {
       acc.push({
@@ -43,10 +53,12 @@ const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] =>
         storeId: cur.storeId,
         storeName: cur.storeName,
         storeProfile: cur.storeProfile,
+        deliverFee: curDeliverFee,
         index: idx,
       });
       idx++;
     } else {
+      acc[index].deliverFee = Math.max(acc[index].deliverFee, curDeliverFee);
       acc[index].data.push(cur);
     }
     return acc;
@@ -78,23 +90,7 @@ export function MypageOrderDetail({ id }: Props) {
 
   const section = changeSectionProduct(data?.productInfos ?? []);
 
-  const totalDeliverFee = section
-    .map(x => {
-      const sectionTotal = x.data
-        .map(v => (v.price ?? 0) * (v.amount ?? 1))
-        .reduce((a, b) => a + b, 0);
-
-      const sectionDeliverFee = x.data.map(v => getDeliverFee(v)).reduce((a, b) => a + b, 0);
-
-      return x.data[0].deliverFeeType === 'FREE'
-        ? 0
-        : x.data[0].deliverFeeType === 'FIX'
-        ? sectionDeliverFee
-        : sectionTotal >= (x.data[0].minOrderPrice ?? 0)
-        ? 0
-        : sectionDeliverFee;
-    })
-    .reduce((a, b) => a + b, 0);
+  const totalDeliverFee = section.map(x => x.deliverFee).reduce((a, b) => a + b, 0);
 
   const { data: pointData } = useQuery(queryKey.pointRule, async () => {
     const res = await (await client()).selectPointRule();
@@ -114,8 +110,8 @@ export function MypageOrderDetail({ id }: Props) {
   /** 상품 적립금 */
   const productPoint = Math.floor(
     data?.productInfos
-      ? data?.productInfos
-          ?.map(v => ((v.price ?? 0) / 100) * (v.optionItem?.pointRate ?? 0))
+      ? data.productInfos
+          .map(v => ((v.price ?? 0) / 100) * (v.optionItem?.pointRate ?? 0))
           .reduce((a, b) => a + b, 0)
       : 0,
   );
@@ -192,9 +188,7 @@ export function MypageOrderDetail({ id }: Props) {
             </summary>
             <article className='space-y-4 pt-[22px]'>
               {(section ?? []).map((v, idx) => {
-                const sectionDeliverFee = v.data
-                  .map(x => getDeliverFee(x))
-                  .reduce((a, b) => a + b, 0);
+                const sectionDeliverFee = v.deliverFee;
                 const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
 
                 return (
@@ -221,13 +215,9 @@ export function MypageOrderDetail({ id }: Props) {
                           배송비
                         </span>
                         <span className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                          {v.data[0].deliverFeeType === 'FREE'
+                          {sectionDeliverFee === 0
                             ? '무료'
-                            : v.data[0].deliverFeeType === 'FIX'
-                            ? formatToLocaleString(sectionDeliverFee) + '원'
-                            : totalPrice >= (v.data[0].minOrderPrice ?? 0)
-                            ? '무료'
-                            : formatToLocaleString(sectionDeliverFee) + '원'}
+                            : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
                         </span>
                       </div>
                     </div>

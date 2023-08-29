@@ -1,7 +1,9 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
+import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 
@@ -11,7 +13,7 @@ const interval = 2; // interval + 1 초 반복
 
 const Payment: NextPageWithLayout = () => {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const queryClient = useQueryClient();
   const { id, options, orderId, imp_success, error_msg } = router.query;
 
   const isError = !!error_msg;
@@ -33,6 +35,7 @@ const Payment: NextPageWithLayout = () => {
             // 결제 성공
             if (res.data.isSuccess && res.data.data) {
               router.replace('/mypage');
+              queryClient.invalidateQueries(queryKey.order.lists);
             }
             // 사이클 다 돌았는데도 확인 안되면 결제 실패 처리
             else if (limit === 1) {
@@ -56,7 +59,7 @@ const Payment: NextPageWithLayout = () => {
         });
       }
     }
-  }, [limit, orderId, router, setAlert, timer]);
+  }, [limit, orderId, queryClient, router, setAlert, timer]);
 
   useEffect(() => {
     // 모바일은 isError, pc는 imp_success 체크 (모바일은 imp_success가 없는게 있음)

@@ -18,12 +18,7 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import {
-  changeSectionBasket,
-  formatToBlob,
-  formatToLocaleString,
-  mergeBasketProduct,
-} from 'src/utils/functions';
+import { changeSectionBasket, formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { aToB } from 'src/utils/parse';
 import { VARIABLES } from 'src/variables';
 import { getCookie } from 'cookies-next';
@@ -31,12 +26,18 @@ import Link from 'next/link';
 
 export interface SectionBasketType {
   index: number;
+  deliverFee: number;
+  // deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  // minOrderPrice: number;
   store?: SimpleStore;
   data: BasketProductDto[];
 }
 
-export interface SectionoptionType {
+export interface SectionOptionType {
   index: number;
+  deliverFee: number;
+  // deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  // minOrderPrice: number;
   storeId: number;
   storeName: string;
   storeImage: string;
@@ -44,22 +45,11 @@ export interface SectionoptionType {
 }
 
 interface DeliverPriceCheckType {
-  deliverBoxPerAmount?: number;
   result: number;
   sectionTotal: number;
   minOrderPrice: number;
   deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
 }
-
-const getSectionDeliverFee = (data: BasketProductDto[], store: SimpleStore | undefined) =>
-  data
-    .map(
-      v =>
-        Math.ceil(
-          v.option?.deliverBoxPerAmount ? (v.amount ?? 0) / v.option?.deliverBoxPerAmount : 1,
-        ) * (store?.deliverFee ?? 0),
-    )
-    .reduce((a, b) => a + b, 0);
 
 function getAdditionalPrice(
   value: BasketProductDto,
@@ -214,23 +204,9 @@ const Cart: NextPageWithLayout = () => {
               .map(v => getAdditionalPrice(v, true, true))
               .reduce((a: number, b: number) => a + b, 0)
           : 0;
-      const totalDelivery = selectedSection
-        .map(x => {
-          const sectionTotal = x.data
-            .map(v => getAdditionalPrice(v, true, true))
-            .reduce((a, b) => a + b, 0);
 
-          // const mergeProductData = mergeBasketProduct(x.data);
-          const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
+      const totalDelivery = selectedSection.map(x => x.deliverFee).reduce((a, b) => a + b, 0);
 
-          return deliverPriceAfterCheckType({
-            result: sectionDeliverFee,
-            sectionTotal,
-            minOrderPrice: x.store?.minOrderPrice ?? 0,
-            deliverFeeType: x.store?.deliverFeeType,
-          });
-        })
-        .reduce((a, b) => a + b, 0);
       setTotalPrice(totalPrice);
       setTotalDelivery(totalDelivery);
       setIsAllCheck(selectedItem.length === data.length);
@@ -308,14 +284,13 @@ const Cart: NextPageWithLayout = () => {
               .map(v => getAdditionalPrice(v, true, true))
               .reduce((a, b) => a + b, 0);
 
-            // const mergeProductData = mergeBasketProduct(x.data);
-            const sectionDeliverFee = getSectionDeliverFee(x.data, x.store);
-            const deliverResult = deliverPriceAfterCheckType({
-              result: sectionDeliverFee,
-              sectionTotal,
-              minOrderPrice: x.store?.minOrderPrice ?? 0,
-              deliverFeeType: x.store?.deliverFeeType,
-            });
+            const deliverResult = x.deliverFee;
+            // const deliverResult = deliverPriceAfterCheckType({
+            //   result: x.deliverFee,
+            //   sectionTotal,
+            //   minOrderPrice: x.minOrderPrice,
+            //   deliverFeeType: x.deliverFeeType,
+            // });
 
             return (
               <div key={x.index}>
@@ -544,14 +519,16 @@ const Cart: NextPageWithLayout = () => {
                   .map(v => getAdditionalPrice(v, true, true))
                   .reduce((a, b) => a + b, 0);
 
-                const deliverResult = v.store?.deliverFee ?? 0;
+                // const deliverResult = v.store?.deliverFee ?? 0;
+                const deliverResult = v.deliveryFee ?? 0;
 
                 const deliveryFee = deliverPriceAfterCheckType({
-                  deliverBoxPerAmount: v.option?.deliverBoxPerAmount,
                   result: deliverResult,
                   sectionTotal,
-                  minOrderPrice: v.store?.minOrderPrice ?? 0,
-                  deliverFeeType: v.store?.deliverFeeType,
+                  // minOrderPrice: v.store?.minOrderPrice ?? 0,
+                  // deliverFeeType: v.store?.deliverFeeType,
+                  minOrderPrice: v.minOrderPrice ?? 0,
+                  deliverFeeType: v.deliverFeeType,
                 });
 
                 return {
@@ -563,11 +540,10 @@ const Cart: NextPageWithLayout = () => {
                   price: v.product?.discountPrice ?? 0,
                   additionalPrice: getAdditionalPrice(v),
                   deliveryFee,
-                  minOrderPrice: v.store?.minOrderPrice ?? 0,
-                  deliverFeeType: v.store?.deliverFeeType ?? 'FREE',
+                  minOrderPrice: v.minOrderPrice ?? 0,
+                  deliverFeeType: v.deliverFeeType ?? 'FREE',
                   stock: v.option?.amount ?? 999,
                   maxAvailableStock: v.option?.maxAvailableAmount ?? 999,
-                  deliverBoxPerAmount: v.option?.deliverBoxPerAmount,
                   productName: v.product?.title ?? '',
                   productImage: v.product?.image ?? '',
                   storeId: v.store?.storeId ?? -1,
@@ -587,7 +563,6 @@ const Cart: NextPageWithLayout = () => {
                 deliveryFee: v.deliveryFee,
                 stock: v.stock,
                 maxAvailableStock: v.maxAvailableStock,
-                deliverBoxPerAmount: v.deliverBoxPerAmount,
                 needTaxation: v.needTaxation,
                 pointRate: v.pointRate,
               }));

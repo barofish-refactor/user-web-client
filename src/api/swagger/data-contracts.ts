@@ -389,6 +389,11 @@ export interface Product {
   promotionStartAt?: string;
   /** @format date-time */
   promotionEndAt?: string;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  deliverFee?: number;
+  /** @format int32 */
+  minOrderPrice?: number;
   reviews?: Review[];
   itemCode?: string;
   /** @format int32 */
@@ -448,14 +453,9 @@ export interface StoreInfo {
   location?: string;
   keyword?: string;
   visitNote?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
   oneLineDescription?: string;
   /** @format int32 */
-  deliverFee?: number;
-  /** @format int32 */
   refundDeliverFee?: number;
-  /** @format int32 */
-  minOrderPrice?: number;
   /** @format float */
   settlementRate?: number;
   bankName?: string;
@@ -681,13 +681,8 @@ export interface StoreDto {
   location?: string;
   keyword?: string[];
   visitNote?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  /** @format int32 */
-  deliverFee?: number;
   /** @format int32 */
   refundDeliverFee?: number;
-  /** @format int32 */
-  minOrderPrice?: number;
   oneLineDescription?: string;
   deliverCompany?: string;
   additionalData?: StoreAdditionalDto;
@@ -856,13 +851,8 @@ export interface SimpleStore {
   location?: string;
   keyword?: string[];
   visitNote?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  /** @format int32 */
-  deliverFee?: number;
   /** @format int32 */
   refundDeliverFee?: number;
-  /** @format int32 */
-  minOrderPrice?: number;
   oneLineDescription?: string;
   deliverCompany?: string;
   isLike?: boolean;
@@ -967,9 +957,12 @@ export interface ProductUpdateReq {
   categoryId?: number;
   title?: string;
   isActive?: boolean;
-  deliveryInfo?: string;
   /** @format int32 */
   deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
+  deliveryInfo?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
   /** @format int32 */
@@ -1140,9 +1133,12 @@ export interface ProductAddReq {
   categoryId?: number;
   title?: string;
   isActive?: boolean;
-  deliveryInfo?: string;
   /** @format int32 */
   deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
+  deliveryInfo?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
   /** @format int32 */
@@ -1191,9 +1187,9 @@ export type ProcessedFoodInfoDto = ProductInformation & {
 };
 
 export interface ProductInformation {
+  itemCode?: string;
   /** @format int32 */
   productId?: number;
-  itemCode?: string;
 }
 
 export interface CustomResponseObject {
@@ -1848,6 +1844,8 @@ export interface CustomResponsePageUserInfoDto {
 }
 
 export interface PageUserInfoDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -1882,6 +1880,7 @@ export interface SortObject {
   sorted?: boolean;
   empty?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
 }
 
 export interface CustomResponseListTopBar {
@@ -1899,6 +1898,8 @@ export interface CustomResponsePageProductListDto {
 }
 
 export interface PageProductListDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -1940,6 +1941,8 @@ export interface CustomResponsePageTip {
 }
 
 export interface PageTip {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -1987,6 +1990,8 @@ export interface CustomResponsePageStoreDto {
 }
 
 export interface PageStoreDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2069,6 +2074,8 @@ export interface OrderProductInfoDto {
 }
 
 export interface PageOrderProductInfoDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2162,6 +2169,8 @@ export interface OrderSettlementExcelDto {
 }
 
 export interface PageOrderSettlementExcelDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2188,6 +2197,8 @@ export interface CustomResponsePageSettlementDto {
 }
 
 export interface PageSettlementDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2291,6 +2302,8 @@ export interface CustomResponsePageReviewDto {
 }
 
 export interface PageReviewDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2317,6 +2330,8 @@ export interface CustomResponsePageReportDto {
 }
 
 export interface PageReportDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2397,6 +2412,8 @@ export interface CustomResponsePageSimpleProductDto {
 }
 
 export interface PageSimpleProductDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2439,6 +2456,8 @@ export interface CustomResponsePageOrderDto {
 }
 
 export interface PageOrderDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2498,6 +2517,8 @@ export interface Notification {
 }
 
 export interface PageNotification {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2524,6 +2545,8 @@ export interface CustomResponsePageNotice {
 }
 
 export interface PageNotice {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2597,6 +2620,8 @@ export interface CustomResponsePageInquiryDto {
 }
 
 export interface PageInquiryDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2735,6 +2760,8 @@ export interface CustomResponsePageCurationDto {
 }
 
 export interface PageCurationDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2786,6 +2813,8 @@ export interface CustomResponsePageCouponDto {
 }
 
 export interface PageCouponDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2935,6 +2964,8 @@ export interface CustomResponsePageAdminLogDto {
 }
 
 export interface PageAdminLogDto {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -2961,6 +2992,8 @@ export interface CustomResponsePageAdmin {
 }
 
 export interface PageAdmin {
+  /** @format int32 */
+  totalPages?: number;
   /** @format int64 */
   totalElements?: number;
   /** @format int32 */
@@ -3410,6 +3443,12 @@ export type RejectCancelOrderData = CustomResponseBoolean;
 export type CancelOrderByPartnerData = CustomResponseBoolean;
 
 export type ConfirmCancelOrderData = CustomResponseBoolean;
+
+export interface CancelOrdersByPartnerPayload {
+  orderProductInfoIds: number[];
+}
+
+export type CancelOrdersByPartnerData = CustomResponseBoolean;
 
 export interface UpdateNoticePayload {
   data: NoticeAddReq;
