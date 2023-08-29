@@ -18,4 +18,8 @@ export const VARIABLES = {
     process.env.NODE_ENV === 'development'
       ? false
       : process.env.NEXT_PUBLIC_PRODUCTION_ENV === 'master',
+  PRODUCTION_URL:
+    process.env.NEXT_PUBLIC_PRODUCTION_ENV === 'master'
+      ? 'https://barofish.com'
+      : 'https://dev.barofish.com',
 };

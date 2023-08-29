@@ -4,6 +4,7 @@ import { type Banner } from 'src/api/swagger/data-contracts';
 import { useRouter } from 'next/router';
 import cm from 'src/utils/class-merge';
 import { requestPermission } from 'src/utils/functions';
+import { VARIABLES } from 'src/variables';
 
 interface Props {
   data: Banner;
@@ -27,7 +28,7 @@ const SubBanner = ({ data }: Props) => {
         })}
         onClick={() => {
           const link = data.link;
-          const productionUrl = process.env.NEXT_PUBLIC_PRODUCTION_URL;
+          const productionUrl = VARIABLES.PRODUCTION_URL;
 
           if (link) {
             if (link.includes(productionUrl)) return router.push(link.replace(productionUrl, ''));

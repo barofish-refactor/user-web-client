@@ -27,7 +27,6 @@ import {
   changeSectionOption,
   formatToLocaleString,
   formatToPhone,
-  mergeOptionState,
   setSquareBrackets,
 } from 'src/utils/functions';
 import { bToA, parseIamportPayMethod, parsePaymentWay, safeParse } from 'src/utils/parse';
@@ -36,15 +35,6 @@ import { IamportPayMethod, impSuccessKey, useIamport, type vBankType } from 'src
 import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-const getSectionDeliverFee = (data: OptionState[]) =>
-  data
-    .map(
-      v =>
-        Math.ceil(v.deliverBoxPerAmount ? (v.amount ?? 0) / v.deliverBoxPerAmount : 1) *
-        (data[0].deliveryFee ?? 0),
-    )
-    .reduce((a, b) => a + b, 0);
 
 const setOptionData = async (value: miniOptionState[]) =>
   (await client())
@@ -66,7 +56,6 @@ const setOptionData = async (value: miniOptionState[]) =>
               deliveryFee: v.deliveryFee,
               stock: v.stock,
               maxAvailableStock: v.maxAvailableStock,
-              deliverBoxPerAmount: v.deliverBoxPerAmount,
               productName: matched[0].title ?? '',
               productImage: matched[0].image ?? '',
               needTaxation: matched[0].isNeedTaxation ?? false,
@@ -124,21 +113,7 @@ const Order: NextPageWithLayout = () => {
       : 0;
 
   const totalDelivery = changeSectionOption(selectedOption)
-    .map(x => {
-      const sectionTotal = x.data
-        .map(v => (v.price + (v.additionalPrice ?? 0)) * (v.amount ?? 0))
-        .reduce((a, b) => a + b, 0);
-      // const mergeProductData = mergeOptionState(x.data);
-      const sectionDeliverFee = getSectionDeliverFee(x.data);
-
-      return x.data[0].deliverFeeType === 'FREE'
-        ? 0
-        : x.data[0].deliverFeeType === 'FIX'
-        ? sectionDeliverFee
-        : sectionTotal >= (x.data[0].minOrderPrice ?? 0)
-        ? 0
-        : sectionDeliverFee;
-    })
+    .map(x => x.deliverFee)
     .reduce((a, b) => a + b, 0);
 
   const { data: user } = useQuery(queryKey.user, async () => {
@@ -205,7 +180,7 @@ const Order: NextPageWithLayout = () => {
   const productPoint = Math.floor(
     selectedOption.length > 0
       ? selectedOption
-          .map(v => ((v.price * v.amount) / 100) * v.pointRate)
+          .map(v => (((v.price + v.additionalPrice) * v.amount) / 100) * v.pointRate)
           .reduce((a, b) => a + b, 0)
       : 0,
   );
@@ -568,12 +543,9 @@ const Order: NextPageWithLayout = () => {
       </button>
       {isOpenProduct &&
         sectionOption.map(x => {
-          // const mergeProductData = mergeOptionState(x.data);
-          const sectionDeliverFee = getSectionDeliverFee(x.data);
-          const sectionTotalPrice = x.data
-            .map(v => (v.price + v.additionalPrice) * v.amount)
-            .reduce((a, b) => a + b, 0);
-          const deliverText = formatToLocaleString(sectionDeliverFee, { suffix: '원' });
+          const deliverText =
+            x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
+
           return (
             <Fragment key={`${x.storeId}`}>
               <div className='flex items-center justify-between px-4'>
@@ -595,23 +567,10 @@ const Order: NextPageWithLayout = () => {
                     배송비
                   </p>
                   <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                    {x.data[0].deliverFeeType === 'FREE'
-                      ? '무료'
-                      : x.data[0].deliverFeeType === 'FIX'
-                      ? deliverText
-                      : sectionTotalPrice >= (x.data[0].minOrderPrice ?? 0)
-                      ? '무료'
-                      : deliverText}
+                    {deliverText}
                   </p>
                 </div>
               </div>
-              {!!x.data[0].deliverBoxPerAmount && (
-                <div className='flex justify-end px-4'>
-                  <p className='text-[12px] font-normal leading-[16px] -tracking-[0.03em] text-grey-50'>
-                    {`1박스에 최대 ${x.data[0].deliverBoxPerAmount}개 까지 가능합니다.`}
-                  </p>
-                </div>
-              )}
               <div>
                 {x.data.map((v, idx) => {
                   return (

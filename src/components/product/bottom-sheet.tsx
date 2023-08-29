@@ -26,7 +26,6 @@ export interface OptionState {
   additionalPrice: number;
   deliveryFee: number;
   deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  deliverBoxPerAmount?: number;
   minOrderPrice: number;
   stock: number;
   maxAvailableStock: number;
@@ -48,7 +47,6 @@ export interface miniOptionState {
   deliveryFee: number;
   stock: number;
   maxAvailableStock: number;
-  deliverBoxPerAmount?: number;
   needTaxation: boolean;
   pointRate: number;
 }
@@ -140,7 +138,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 additionalPrice: (x.discountPrice ?? 0) - (data?.discountPrice ?? 0),
                 stock: x.amount ?? 999,
                 maxAvailableStock: x.maxAvailableAmount ?? 999,
-                deliverBoxPerAmount: x.deliverBoxPerAmount,
               };
             }),
           };
@@ -236,10 +233,9 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                             amount: 1,
                             price: value.price,
                             additionalPrice: value.additionalPrice,
-                            deliveryFee: data?.store?.deliverFee ?? 0,
-                            deliverFeeType: data?.store?.deliverFeeType ?? 'FREE',
-                            deliverBoxPerAmount: value.deliverBoxPerAmount,
-                            minOrderPrice: data?.store?.minOrderPrice ?? 0,
+                            deliveryFee: data?.deliveryFee ?? 0,
+                            deliverFeeType: data?.deliverFeeType ?? 'FREE',
+                            minOrderPrice: data?.minOrderPrice ?? 0,
                             stock: value.amount,
                             maxAvailableStock: value.maxAvailableStock,
                             productImage:
@@ -385,7 +381,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       deliveryFee: v.deliveryFee,
                       stock: v.stock,
                       maxAvailableStock: v.maxAvailableStock,
-                      deliverBoxPerAmount: v.deliverBoxPerAmount,
                       needTaxation: v.needTaxation,
                       pointRate: v.pointRate,
                     }));

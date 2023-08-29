@@ -3,7 +3,7 @@ import { addDays, isSunday, lightFormat } from 'date-fns';
 import { type BasketProductDto, type Jwt } from 'src/api/swagger/data-contracts';
 import { VARIABLES } from 'src/variables';
 import { REG_EXP } from './regex';
-import { type SectionoptionType, type SectionBasketType } from 'src/pages/product/cart';
+import { type SectionOptionType, type SectionBasketType } from 'src/pages/product/cart';
 import { type OptionState } from 'src/components/product/bottom-sheet';
 
 export function setToken(jwt: Jwt | undefined) {
@@ -242,6 +242,30 @@ export function maskingName(name: string) {
   }
 }
 
+export interface checkDeliverType {
+  type: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  totalPrice: number;
+  deliverFee: number;
+  minOrderPrice: number;
+}
+
+export const getDeliverFee = ({
+  type,
+  deliverFee,
+  minOrderPrice,
+  totalPrice,
+}: checkDeliverType): number => {
+  const result =
+    type === 'FREE'
+      ? 0
+      : type === 'FIX'
+      ? deliverFee
+      : totalPrice >= (minOrderPrice ?? 0)
+      ? 0
+      : deliverFee;
+  return result;
+};
+
 /** 장바구니 타입 변경 */
 export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketType[] => {
   let idx = 0;
@@ -249,11 +273,29 @@ export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketTyp
     const ownerId = cur.store?.storeId;
 
     const index = acc.findIndex(v => v.store?.storeId === ownerId);
+    const productId = cur.product?.id;
+
+    const curTotalPrice = value
+      .filter(v => v.product?.id === productId)
+      .map(v => (v.amount ?? 0) * (v.option?.discountPrice ?? 0))
+      .reduce((a, b) => a + b, 0);
+    const curDeliverFee = getDeliverFee({
+      type: cur.deliverFeeType ?? 'FREE',
+      deliverFee: cur.deliveryFee ?? 0,
+      totalPrice: curTotalPrice,
+      minOrderPrice: cur.minOrderPrice ?? 0,
+    });
 
     if (index === -1) {
-      acc.push({ data: [cur], store: cur.store, index: idx });
+      acc.push({
+        index: idx,
+        store: cur.store,
+        deliverFee: curDeliverFee,
+        data: [cur],
+      });
       idx++;
     } else {
+      acc[index].deliverFee = Math.max(acc[index].deliverFee, curDeliverFee);
       acc[index].data.push(cur);
     }
     return acc;
@@ -261,24 +303,38 @@ export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketTyp
   return result;
 };
 
-/** 장바구니 타입 변경 */
-export const changeSectionOption = (value: OptionState[]): SectionoptionType[] => {
+/** 주문하기 상품 타입 변경 */
+export const changeSectionOption = (value: OptionState[]): SectionOptionType[] => {
   let idx = 0;
-  const result = value.reduce<SectionoptionType[]>((acc, cur) => {
+  const result = value.reduce<SectionOptionType[]>((acc, cur) => {
     const ownerId = cur.storeId;
 
     const index = acc.findIndex(v => v.storeId === ownerId);
+    const productId = cur.productId;
+
+    const curTotalPrice = value
+      .filter(v => v.productId === productId)
+      .map(v => v.amount * (v.price + v.additionalPrice))
+      .reduce((a, b) => a + b, 0);
+    const curDeliverFee = getDeliverFee({
+      type: cur.deliverFeeType,
+      deliverFee: cur.deliveryFee,
+      totalPrice: curTotalPrice,
+      minOrderPrice: cur.minOrderPrice,
+    });
 
     if (index === -1) {
       acc.push({
-        data: [cur],
+        index: idx,
         storeId: cur.storeId,
         storeImage: cur.storeImage,
         storeName: cur.storeName,
-        index: idx,
+        data: [cur],
+        deliverFee: curDeliverFee,
       });
       idx++;
     } else {
+      acc[index].deliverFee = Math.max(acc[index].deliverFee, curDeliverFee);
       acc[index].data.push(cur);
     }
     return acc;

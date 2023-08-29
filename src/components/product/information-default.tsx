@@ -71,17 +71,14 @@ const InformationDefault = ({ data }: Props) => {
             </p>
             <p className='flex-1 whitespace-pre text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               {`${
-                data?.store?.deliverFeeType === 'FREE'
+                data?.deliverFeeType === 'FREE'
                   ? '무료'
-                  : data?.store?.deliverFeeType === 'FIX'
-                  ? formatToLocaleString(data.store.deliverFee, { suffix: '원' })
-                  : formatToLocaleString(data?.store?.deliverFee, { suffix: '원 (' }) +
-                    formatToLocaleString(data?.store?.minOrderPrice) +
+                  : data?.deliverFeeType === 'FIX'
+                  ? formatToLocaleString(data?.deliveryFee, { suffix: '원' })
+                  : formatToLocaleString(data?.deliveryFee, { suffix: '원 (' }) +
+                    formatToLocaleString(data?.minOrderPrice) +
                     '원 이상 구매 시 무료)'
               }`}
-              {data?.deliverBoxPerAmount
-                ? `\n1박스에 최대 ${data.deliverBoxPerAmount}개 까지 가능합니다.`
-                : ''}
             </p>
           </div>
         </div>
