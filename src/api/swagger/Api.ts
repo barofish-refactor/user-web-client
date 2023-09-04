@@ -247,6 +247,7 @@ import {
   SelectSettlementOrderListDownloadData,
   SelectSiteInfoData,
   SelectSiteInfoListData,
+  SelectSmartDeliverApiKeyData,
   SelectStoreByAdmin1Data,
   SelectStoreByAdminData,
   SelectStoreData,
@@ -3968,6 +3969,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   selectDeliverCompanyList = (params: RequestParams = {}) =>
     this.request<SelectDeliverCompanyListData, any>({
       path: `/api/v1/deliver/company/list`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags deliver-controller
+   * @name SelectSmartDeliverApiKey
+   * @request GET:/api/v1/deliver/api-key
+   * @response `200` `SelectSmartDeliverApiKeyData` OK
+   */
+  selectSmartDeliverApiKey = (params: RequestParams = {}) =>
+    this.request<SelectSmartDeliverApiKeyData, any>({
+      path: `/api/v1/deliver/api-key`,
       method: 'GET',
       ...params,
     });

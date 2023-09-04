@@ -1187,9 +1187,9 @@ export type ProcessedFoodInfoDto = ProductInformation & {
 };
 
 export interface ProductInformation {
-  itemCode?: string;
   /** @format int32 */
   productId?: number;
+  itemCode?: string;
 }
 
 export interface CustomResponseObject {
@@ -1372,6 +1372,7 @@ export interface OrderProductDto {
   amount?: number;
   deliverCompany?: string;
   invoiceCode?: string;
+  deliverCompanyCode?: string;
   /** @format date-time */
   finalConfirmedAt?: string;
   needTaxation?: boolean;
@@ -3194,14 +3195,9 @@ export interface UpdateStoreInfoPayload {
   location?: string;
   keyword?: string;
   visitNote?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  /** @format int32 */
-  deliverFee?: number;
   deliverCompany?: string;
   /** @format int32 */
   refundDeliverFee?: number;
-  /** @format int32 */
-  minOrderPrice?: number;
   oneLineDescription?: string;
   additionalData?: AddStoreAdditionalReq;
   /** @format binary */
@@ -3224,14 +3220,9 @@ export interface UpdateStoreInfo1Payload {
   location?: string;
   keyword?: string;
   visitNote?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  /** @format int32 */
-  deliverFee?: number;
   deliverCompany?: string;
   /** @format int32 */
   refundDeliverFee?: number;
-  /** @format int32 */
-  minOrderPrice?: number;
   oneLineDescription?: string;
   additionalData?: AddStoreAdditionalReq;
   /** @format binary */
@@ -3270,13 +3261,8 @@ export interface AddStorePayload {
   location: string;
   keyword: string;
   visitNote?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  /** @format int32 */
-  deliverFee?: number;
   /** @format int32 */
   refundDeliverFee?: number;
-  /** @format int32 */
-  minOrderPrice?: number;
   oneLineDescription?: string;
   deliverCompany?: string;
   additionalData: AddStoreAdditionalReq;
@@ -3878,6 +3864,8 @@ export type SelectTrackingInfoData = CustomResponseTrackingInfo;
 export type SelectRecommendDeliverCompanyListData = CustomResponseListCompany;
 
 export type SelectDeliverCompanyListData = CustomResponseListCompany;
+
+export type SelectSmartDeliverApiKeyData = CustomResponseString;
 
 export type SelectDashBoardData = CustomResponseDashBoard;
 

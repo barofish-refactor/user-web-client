@@ -7,9 +7,10 @@ interface Props {
   id: string | undefined;
   orderedAt: string | undefined;
   orderProducts: OrderProductDto[] | undefined;
+  apiKey: string;
 }
 
-export function MypageOrderListItem({ id, orderedAt, orderProducts }: Props) {
+export function MypageOrderListItem({ id, orderedAt, orderProducts, apiKey }: Props) {
   return (
     <div>
       <Link
@@ -25,8 +26,8 @@ export function MypageOrderListItem({ id, orderedAt, orderProducts }: Props) {
         <div className='inline-flex h-6 w-6 bg-[url(/assets/icons/common/chevron-mypage.svg)] bg-cover' />
       </Link>
       <div className='p-4 pb-6'>
-        {orderProducts?.map((v, i) => (
-          <MypageOrderProductItem key={i} item={v} id={id} />
+        {orderProducts?.map(v => (
+          <MypageOrderProductItem key={v.id} item={v} id={id} apiKey={apiKey} />
         ))}
       </div>
     </div>

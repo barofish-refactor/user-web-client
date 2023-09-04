@@ -34,7 +34,7 @@ const Payment: NextPageWithLayout = () => {
           if (res) {
             // 결제 성공
             if (res.data.isSuccess && res.data.data) {
-              router.replace('/mypage');
+              router.replace('/product/complete');
               queryClient.invalidateQueries(queryKey.order.lists);
             }
             // 사이클 다 돌았는데도 확인 안되면 결제 실패 처리

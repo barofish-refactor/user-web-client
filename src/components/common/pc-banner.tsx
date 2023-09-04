@@ -1,12 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
 import cm from 'src/utils/class-merge';
+import { VARIABLES } from 'src/variables';
 
 const PcBanner = () => {
   const { ref, inView } = useInView({ initialInView: false });
+  const router = useRouter();
+
   const { data } = useQuery(
     queryKey.pcBanner,
     async () => {
@@ -33,8 +37,13 @@ const PcBanner = () => {
             className={cm('!relative h-auto object-contain', { 'cursor-pointer': !!data.link })}
             draggable={false}
             onClick={() => {
-              if (data.link) {
-                window.open(data.link);
+              const link = data.link;
+              const productionUrl = VARIABLES.PRODUCTION_URL;
+              if (link) {
+                if (link.includes(productionUrl))
+                  return router.push(link.replace(productionUrl, ''));
+
+                return window.open(`${link}`, '_blank');
               }
             }}
           />

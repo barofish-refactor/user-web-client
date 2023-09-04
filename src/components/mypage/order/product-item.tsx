@@ -6,7 +6,7 @@ import { client } from 'src/api/client';
 import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useConfirmStore } from 'src/store';
-import { formatToLocaleString, requestPermission } from 'src/utils/functions';
+import { formatToLocaleString } from 'src/utils/functions';
 import { parseProductInfoState } from 'src/utils/parse';
 
 /* 
@@ -20,9 +20,10 @@ const buttonClassName =
 interface Props {
   id: string | undefined;
   item: OrderProductDto;
+  apiKey: string;
 }
 
-export function MypageOrderProductItem({ id, item }: Props) {
+export function MypageOrderProductItem({ id, item, apiKey }: Props) {
   const queryClient = useQueryClient();
   const { setAlert } = useAlertStore();
   const { setConfirm } = useConfirmStore();
@@ -153,25 +154,38 @@ export function MypageOrderProductItem({ id, item }: Props) {
               구매 확정
             </button>
           )}
-          {buttonList.includes(3) && (
-            <button
-              className={buttonClassName}
-              onClick={() => {
-                setAlert({
-                  message: (item.deliverCompany ?? '') + ' ' + (item.invoiceCode ?? ''),
-                  onClick: () => {
-                    if (window.ReactNativeWebView) {
-                      requestPermission('link', `https://naver.me/5FlthH9K`);
-                    } else {
-                      return window.open(`https://naver.me/5FlthH9K`, '_blank');
-                    }
-                  },
-                });
-              }}
-            >
-              배송 조회
-            </button>
-          )}
+          {buttonList.includes(3) &&
+            (window.ReactNativeWebView ? (
+              <button
+                className={buttonClassName}
+                onClick={() => {
+                  window.ReactNativeWebView.postMessage(
+                    JSON.stringify({
+                      type: 'smartApi',
+                      t_key: apiKey,
+                      t_code: item.deliverCompanyCode,
+                      t_invoice: item.invoiceCode,
+                    }),
+                  );
+                }}
+              >
+                배송 조회
+              </button>
+            ) : (
+              <form
+                action='https://info.sweettracker.co.kr/tracking/5'
+                method='post'
+                target='_blank'
+                className={buttonClassName}
+              >
+                <input type='hidden' name='t_key' value={apiKey} />
+                <input type='hidden' name='t_code' value={item.deliverCompanyCode} />
+                <input type='hidden' name='t_invoice' value={item.invoiceCode} />
+                <button type='submit' className='flex-1'>
+                  배송 조회
+                </button>
+              </form>
+            ))}
           {buttonList.includes(4) && !item.isReviewWritten && (
             <Link
               href={{ pathname: '/mypage/review/write', query: { v: id, subId: item.id } }}
