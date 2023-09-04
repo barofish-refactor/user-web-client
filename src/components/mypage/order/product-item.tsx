@@ -173,7 +173,7 @@ export function MypageOrderProductItem({ id, item, apiKey }: Props) {
               </button>
             ) : (
               <form
-                action='http://info.sweettracker.co.kr/tracking/5'
+                action='https://info.sweettracker.co.kr/tracking/5'
                 method='post'
                 target='_blank'
                 className={buttonClassName}
