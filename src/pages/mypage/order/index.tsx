@@ -20,7 +20,7 @@ interface Props {
 /** 마이페이지/주문 내역 */
 const MypageOrder: NextPageWithLayout<Props> = ({}) => {
   const { setAlert } = useAlertStore();
-  const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
+  const { data, hasNextPage, fetchNextPage, isFetched } = useInfiniteQuery(
     queryKey.order.lists,
     async ({ pageParam = 0 }) => {
       if (pageParam === -1) return;
@@ -46,6 +46,7 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
   );
 
   const { data: countData } = useQuery(['orderCount'], async () => {
+    // TODO 카운트쿼리 요청 필요
     const res = await (await client()).selectOrderList({ take: 9999 });
     if (res.data.isSuccess) {
       return res.data.data;
@@ -54,6 +55,23 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
       throw new Error(res.data.errorMsg);
     }
   });
+
+  const { data: smartApi } = useQuery(
+    ['smartApi'],
+    async () => {
+      const res = await (await client()).selectSmartDeliverApiKey();
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      enabled: isFetched,
+      staleTime: Infinity,
+    },
+  );
 
   const { ref } = useInView({
     initialInView: false,
@@ -108,6 +126,7 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
                 id={v.id}
                 orderedAt={v.orderedAt}
                 orderProducts={v.productInfos}
+                apiKey={smartApi ?? ''}
               />
             )),
           )

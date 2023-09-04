@@ -9,7 +9,7 @@ import { type NextPageWithLayout } from 'src/types/common';
 
 /** 마이페이지 - 취소/환불/교환 내역 */
 const MypageOrder: NextPageWithLayout = () => {
-  const { data } = useQuery(queryKey.order.list('canceled'), async () => {
+  const { data, isFetched } = useQuery(queryKey.order.list('canceled'), async () => {
     const res = await (await client()).selectCanceledOrderList();
     if (res.data.isSuccess) {
       return res.data;
@@ -17,6 +17,22 @@ const MypageOrder: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+
+  const { data: smartApi } = useQuery(
+    ['smartApi'],
+    async () => {
+      const res = await (await client()).selectSmartDeliverApiKey();
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        throw new Error(res.data.errorMsg);
+      }
+    },
+    {
+      enabled: isFetched,
+      staleTime: Infinity,
+    },
+  );
 
   return (
     <section className='pb-6'>
@@ -31,6 +47,7 @@ const MypageOrder: NextPageWithLayout = () => {
               id={v.id}
               orderedAt={v.orderedAt}
               orderProducts={v.productInfos}
+              apiKey={smartApi ?? ''}
             />
           ))
         )}

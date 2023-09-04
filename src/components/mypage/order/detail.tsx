@@ -221,9 +221,9 @@ export function MypageOrderDetail({ id }: Props) {
                         </span>
                       </div>
                     </div>
-                    {v.data.map((x, i) => {
+                    {v.data.map(x => {
                       return (
-                        <div key={i} className='flex items-center gap-2.5 pt-3'>
+                        <div key={x.id} className='flex items-center gap-2.5 pt-3'>
                           <Link href={{ pathname: '/product', query: { id: x.product?.id } }}>
                             <Image
                               unoptimized
