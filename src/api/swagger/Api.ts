@@ -210,6 +210,7 @@ import {
   SelectNoticeListData,
   SelectNotificationData,
   SelectOrderData,
+  SelectOrderList1Data,
   SelectOrderListData,
   SelectOrderListManageData,
   SelectOrderListWithUserIdData,
@@ -3572,6 +3573,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectOrderListData, any>({
       path: `/api/v1/order/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller
+   * @name SelectOrderList1
+   * @request GET:/api/v1/order/list/count
+   * @response `200` `SelectOrderList1Data` OK
+   */
+  selectOrderList1 = (
+    query?: {
+      state?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectOrderList1Data, any>({
+      path: `/api/v1/order/list/count`,
       method: 'GET',
       query: query,
       ...params,

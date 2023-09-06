@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
 import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { queryKey } from 'src/query-key';
@@ -21,10 +22,12 @@ interface Props {
   id: string | undefined;
   item: OrderProductDto;
   apiKey: string;
+  isAllCancel?: boolean;
 }
 
-export function MypageOrderProductItem({ id, item, apiKey }: Props) {
+export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }: Props) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { setAlert } = useAlertStore();
   const { setConfirm } = useConfirmStore();
 
@@ -123,15 +126,37 @@ export function MypageOrderProductItem({ id, item, apiKey }: Props) {
       {buttonList.length > 0 && (
         <nav className='mt-3 grid h-8 grid-flow-col gap-x-1.5'>
           {buttonList.includes(0) && (
-            <Link
+            <button
               className={buttonClassName}
-              href={{
-                pathname: '/mypage/order/refund/action',
-                query: { id, subId: item.id, type: 'refund', state: item.state },
+              onClick={() => {
+                if (isAllCancel) {
+                  setConfirm({
+                    message: '쿠폰이 적용된 주문은 전체 취소만 가능합니다.\n취소 하시겠습니까?',
+                    onClick: () => {
+                      router.push({
+                        pathname: '/mypage/order/refund/action',
+                        query: { id, subId: item.id, type: 'refund', state: item.state },
+                      });
+                    },
+                  });
+                } else {
+                  router.push({
+                    pathname: '/mypage/order/refund/action',
+                    query: { id, subId: item.id, type: 'refund', state: item.state },
+                  });
+                }
               }}
             >
               취소/환불
-            </Link>
+            </button>
+            // <Link
+            //   className={buttonClassName}
+            //   href={{
+            //     pathname: '/mypage/order/refund/action',
+            //     query: { id, subId: item.id, type: 'refund', state: item.state },
+            //   }}
+            // >
+            // </Link>
           )}
           {buttonList.includes(1) && (
             <Link

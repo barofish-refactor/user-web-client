@@ -28,7 +28,7 @@ interface FormType extends PhoneFormType, AddressFormType, AgreementsFormType {
   passwordCheck: string;
 }
 
-export function SignupForm({ appleId }: { appleId?: string }) {
+export function SignupForm({ appleId }: { appleId?: string | string[] }) {
   const router = useRouter();
   const form = useForm<FormType>();
   const { handleSubmit, getValues, setError, setFocus } = form;
@@ -57,7 +57,7 @@ export function SignupForm({ appleId }: { appleId?: string }) {
       joinAppleSns({
         data: formatToBlob<JoinAppleSnsPayload['data']>(
           {
-            loginId: appleId,
+            loginId: String(appleId),
             address: data.address,
             addressDetail: data.addressDetail,
             isAgreeMarketing: data.marketingPolicy,

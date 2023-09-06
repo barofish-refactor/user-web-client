@@ -41,15 +41,7 @@ const MypageOrder: NextPageWithLayout = () => {
         {data?.data && data.data.length === 0 ? (
           <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>{Empty()}</div>
         ) : (
-          data?.data?.map(v => (
-            <MypageOrderListItem
-              key={v.id}
-              id={v.id}
-              orderedAt={v.orderedAt}
-              orderProducts={v.productInfos}
-              apiKey={smartApi ?? ''}
-            />
-          ))
+          data?.data?.map(v => <MypageOrderListItem key={v.id} data={v} apiKey={smartApi ?? ''} />)
         )}
       </article>
     </section>

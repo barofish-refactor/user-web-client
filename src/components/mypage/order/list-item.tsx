@@ -1,34 +1,42 @@
 import Link from 'next/link';
-import { type OrderProductDto } from 'src/api/swagger/data-contracts';
+import { type OrderDto } from 'src/api/swagger/data-contracts';
 import { MypageOrderProductItem } from 'src/components/mypage/order';
 import { formatToUtc } from 'src/utils/functions';
 
 interface Props {
-  id: string | undefined;
-  orderedAt: string | undefined;
-  orderProducts: OrderProductDto[] | undefined;
+  data?: OrderDto;
   apiKey: string;
 }
 
-export function MypageOrderListItem({ id, orderedAt, orderProducts, apiKey }: Props) {
+export function MypageOrderListItem({ data, apiKey }: Props) {
+  const productInfos = data?.productInfos ?? [];
   return (
     <div>
       <Link
-        href={{ pathname: '/mypage/order/[id]', query: { id } }}
+        href={{ pathname: '/mypage/order/[id]', query: { id: data?.id } }}
         className='flex h-[56px] items-center justify-between border-b border-b-grey-90 px-4'
       >
         <time
-          dateTime={orderedAt}
+          dateTime={data?.orderedAt}
           className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'
         >
-          {formatToUtc(orderedAt, 'yy.MM.dd')}
+          {formatToUtc(data?.orderedAt, 'yy.MM.dd')}
         </time>
         <div className='inline-flex h-6 w-6 bg-[url(/assets/icons/common/chevron-mypage.svg)] bg-cover' />
       </Link>
       <div className='p-4 pb-6'>
-        {orderProducts?.map(v => (
-          <MypageOrderProductItem key={v.id} item={v} id={id} apiKey={apiKey} />
-        ))}
+        {data &&
+          productInfos.map(v => (
+            <MypageOrderProductItem
+              key={v.id}
+              item={v}
+              id={data.id}
+              apiKey={apiKey}
+              isAllCancel={
+                !!data.couponDiscount && data.couponDiscount !== 0 && productInfos.length > 1
+              } // 상품이 두개 이상, 쿠폰을 썼을 경우 true
+            />
+          ))}
       </div>
     </div>
   );

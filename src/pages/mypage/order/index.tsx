@@ -46,14 +46,21 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
   );
 
   const { data: countData } = useQuery(['orderCount'], async () => {
-    // TODO 카운트쿼리 요청 필요
-    const res = await (await client()).selectOrderList({ take: 9999 });
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else {
-      setAlert({ message: res.data.errorMsg ?? '' });
-      throw new Error(res.data.errorMsg);
-    }
+    const res = await (await client()).selectOrderList1();
+    if (res.data.isSuccess) return res.data.data;
+  });
+  const { data: deliveryDoneCount } = useQuery(['deliveryDoneCount'], async () => {
+    const res = await (await client()).selectOrderList1({ state: 'DELIVERY_DONE,FINAL_CONFIRM' });
+    if (res.data.isSuccess) return res.data.data;
+  });
+  const { data: cancelRefundCount } = useQuery(['cancelRefundCount'], async () => {
+    const res = await (
+      await client()
+    ).selectOrderList1({
+      state:
+        'CANCELED,CANCEL_REQUEST,EXCHANGE_REQUEST,EXCHANGE_ACCEPT,REFUND_REQUEST,REFUND_ACCEPT,REFUND_DONE',
+    });
+    if (res.data.isSuccess) return res.data.data;
   });
 
   const { data: smartApi } = useQuery(
@@ -84,51 +91,17 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
   return (
     <section className='pb-6'>
       <MypageOrderStatistics
-        totalCount={countData?.length}
-        deliveryDoneCount={
-          countData && countData.length > 0
-            ? countData.filter(
-                x =>
-                  (x.productInfos?.filter(v =>
-                    ['DELIVERY_DONE', 'FINAL_CONFIRM'].includes(v.state ?? ''),
-                  ).length ?? 0) > 0,
-              ).length
-            : 0
-        }
-        cancelRefundCount={
-          countData && countData.length > 0
-            ? countData.filter(
-                x =>
-                  (x.productInfos?.filter(v =>
-                    [
-                      'CANCELED',
-                      'CANCEL_REQUEST',
-                      'EXCHANGE_REQUEST',
-                      'EXCHANGE_ACCEPT',
-                      'REFUND_REQUEST',
-                      'REFUND_ACCEPT',
-                      'REFUND_DONE',
-                    ].includes(v.state ?? ''),
-                  ).length ?? 0) > 0,
-              ).length
-            : 0
-        }
+        totalCount={countData}
+        deliveryDoneCount={deliveryDoneCount ?? 0}
+        cancelRefundCount={cancelRefundCount ?? 0}
       />
       <hr className='border-t-8 border-grey-90' />
       <article className='divide-y-8 divide-grey-90'>
-        {countData && countData.length === 0 ? (
+        {!!countData && countData === 0 ? (
           <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>{Empty()}</div>
         ) : (
           (data?.pages ?? []).map(x =>
-            (x ?? []).map(v => (
-              <MypageOrderListItem
-                key={v.id}
-                id={v.id}
-                orderedAt={v.orderedAt}
-                orderProducts={v.productInfos}
-                apiKey={smartApi ?? ''}
-              />
-            )),
+            (x ?? []).map(v => <MypageOrderListItem key={v.id} data={v} apiKey={smartApi ?? ''} />),
           )
         )}
       </article>

@@ -93,7 +93,7 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
         content: data.description,
         evaluations: data.selectKeywords as ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[],
         userId: order?.user?.userId,
-        productId: order?.productInfos?.[0].product?.id,
+        productId: productInfo ? productInfo.product?.id : order?.productInfos?.[0].product?.id,
       },
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       images: data.images.map(x => x.file!),

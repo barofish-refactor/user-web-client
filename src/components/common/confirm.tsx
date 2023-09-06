@@ -24,7 +24,7 @@ const Confirm = () => {
               e.stopPropagation();
             }}
           >
-            <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
+            <p className='whitespace-pre-wrap break-all text-center text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
               {confirm.message}
             </p>
             <div className='flex w-full items-center gap-2'>
