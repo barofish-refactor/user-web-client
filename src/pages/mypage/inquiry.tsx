@@ -116,7 +116,6 @@ const MypageInquiry: NextPageWithLayout<Props> = ({ initialData }) => {
                   }}
                   onDelete={e => {
                     e.stopPropagation();
-                    if (isDone) return;
                     setConfirm({
                       message: '정말로 삭제하시겠습니까?',
                       onClick: () => {

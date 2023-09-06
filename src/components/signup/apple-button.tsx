@@ -24,6 +24,8 @@ export function AppleButton() {
   return (
     <AppleLogin
       usePopup
+      // responseMode='form_post'
+      // scope='name email'
       clientId={process.env.NEXT_PUBLIC_APPLE_KEY}
       redirectURI={redirectUrl}
       callback={res => {

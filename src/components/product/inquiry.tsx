@@ -113,6 +113,7 @@ const Inquiry = ({ productId, data, refetch }: Props) => {
                       isCanEdit={!isDone}
                       onUpdate={e => {
                         e.stopPropagation();
+                        if (isDone) return;
                         router.push({
                           pathname: '/product/inquiry',
                           query: { id: productId, inquiryId: v.id },

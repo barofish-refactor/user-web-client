@@ -33,7 +33,7 @@ export function InquiryDots({ isCanEdit, onUpdate, onDelete }: Props) {
               수정하기
             </button>
             <button
-              className={clsx(buttonClassName, isCanEdit ? 'text-grey-20' : 'text-grey-60')}
+              className={clsx(buttonClassName, 'text-grey-20')}
               type='button'
               onClick={onDelete}
             >

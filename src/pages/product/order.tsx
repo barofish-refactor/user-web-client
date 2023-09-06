@@ -227,6 +227,12 @@ const Order: NextPageWithLayout = () => {
     return url.href;
   };
 
+  /**
+   * 과세, 면세금액 계산
+   * @returns zeroList : 과세 금액 0으로 표시
+   * @returns allList : 과세 금액도 그대로 표시
+   * @returns sum : 과세 금액 0 으로 더한거
+   */
   const getTaxFreePrice = () => {
     const eachPriceList = selectedOption.map(x => (x.price + x.additionalPrice) * x.amount);
     const priceList = selectedOption.map(
@@ -243,11 +249,20 @@ const Order: NextPageWithLayout = () => {
     const lastIndex = priceListAdd.length - 1;
     priceListAdd[lastIndex] =
       priceListAdd[lastIndex] + -(priceListReduce - (couponDiscountPoint + Number(point)));
+    const priceListAddAll = [...priceListAdd];
     priceListAdd.forEach((element, index) => {
-      if (!taxValueList[index]) priceListAdd[index] = eachPriceList[index] - element;
-      else priceListAdd[index] = 0;
+      if (!taxValueList[index]) {
+        priceListAdd[index] = eachPriceList[index] - element;
+      } else {
+        priceListAdd[index] = 0;
+      }
+      priceListAddAll[index] = eachPriceList[index] - element;
     });
-    return { list: priceListAdd, sum: priceListAdd.reduce((a, b) => a + b, 0) };
+    return {
+      zeroList: priceListAdd,
+      allList: priceListAddAll,
+      sum: priceListAdd.reduce((a, b) => a + b, 0),
+    };
   };
 
   async function onPayment() {
@@ -278,7 +293,7 @@ const Order: NextPageWithLayout = () => {
             amount: x.amount,
             deliveryFee: x.deliveryFee,
             needTaxation: x.needTaxation, //
-            taxFreeAmount: taxFreePrice.list[i],
+            taxFreeAmount: taxFreePrice.allList[i],
           };
         }),
         name,

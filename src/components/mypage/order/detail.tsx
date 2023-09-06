@@ -8,7 +8,7 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { formatToLocaleString, formatToPhone, getDeliverFee } from 'src/utils/functions';
-import { parsePaymentWay2 } from 'src/utils/parse';
+import { parsePaymentWay2, parseProductInfoState } from 'src/utils/parse';
 
 const headingClassName = 'font-bold leading-[24px] -tracking-[0.03em] text-grey-10';
 const labelClassName = 'font-medium leading-[24px] -tracking-[0.03em] text-grey-50';
@@ -245,6 +245,10 @@ export function MypageOrderDetail({ id }: Props) {
                               <div className='mx-1.5 h-[14px] w-[1px] bg-[#E2E2E2]' />
                               <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
                                 {x.optionName ?? '기본'}
+                              </p>
+                              <div className='mx-1.5 h-[14px] w-[1px] bg-[#E2E2E2]' />
+                              <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                                {parseProductInfoState(x.state)}
                               </p>
                             </div>
                           </div>
