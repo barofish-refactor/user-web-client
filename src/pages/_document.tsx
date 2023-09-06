@@ -17,6 +17,10 @@ export default function Document() {
         />
         <meta name='msapplication-TileColor' content='#da532c' />
         <meta name='theme-color' content='#ffffff' />
+        <meta
+          name='google-site-verification'
+          content='T3lWWvNBN9VLNavR3ZtyKsKoat_QW1rBqsfxDBo_FAs'
+        />
       </Head>
       <body>
         <Main />
