@@ -111,7 +111,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
             {item.product?.title ?? ''}
           </h4>
           <p className='line-clamp-1 text-[13px] leading-[20px] -tracking-[0.03em] text-grey-40'>
-            기본
+            {item.optionName ?? '기본'}
           </p>
           <div className='mt-0.5 flex items-center gap-1'>
             <span className='text-[13px] leading-[20px] -tracking-[0.03em] text-grey-60'>
