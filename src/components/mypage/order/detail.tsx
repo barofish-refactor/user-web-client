@@ -238,7 +238,7 @@ export function MypageOrderDetail({ id }: Props) {
                             <h4 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
                               {x.product?.title ?? ''}
                             </h4>
-                            <div className='flex items-center'>
+                            <div className='flex flex-wrap items-center'>
                               <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
                                 {x.amount ?? 0}개
                               </p>
