@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -152,139 +153,155 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       localStorage.setItem('product', JSON.stringify(Array.from(list2)));
     }
   }, [id]);
+  console.log(data);
 
   return (
-    <div className='pb-[80px] max-md:w-[100vw]'>
-      <DefaultSeo
-        title={headTitle}
-        description={headDescription}
-        openGraph={{
-          price: data?.discountPrice || data?.originPrice,
-          availability: true,
-          link: `https://barofish.com/${router.pathname}?${router?.query.id}`,
-          title: headTitle,
-          description: headDescription,
-          images: data?.images?.map(v => {
-            return {
-              url: v,
-              alt: headTitle,
-            };
-          }),
-        }}
-      />
-      {/* bottomSheet : 옵션 선택 */}
-      <div className='sticky top-0 z-[100] w-full'>
-        {isVisible && (
-          <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
-            <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
-          </div>
-        )}
-      </div>
+    <>
+      <Head>
+        <meta
+          property='og:url'
+          content={`https://barofish.comxs${router.pathname}?${router?.query.id}`}
+        />
+        <meta property='product:brand' content={data?.store?.name} />
+        <meta property='product:availability' content='in stock' />
+        <meta
+          property='product:price:amount'
+          content={String(data?.discountPrice) || String(data?.originPrice)}
+        />
+        <meta property='product:price:currency' content='₩' />
+        <meta property='product:item_group_id' content={String(data?.id)} />
+      </Head>
+      {/* <Head></Head> */}
+      <div className='pb-[80px] max-md:w-[100vw]'>
+        <DefaultSeo
+          title={headTitle}
+          description={headDescription}
+          openGraph={{
+            title: headTitle,
+            description: headDescription,
+            images: data?.images?.map(v => {
+              return {
+                url: v,
+                alt: headTitle,
+              };
+            }),
+          }}
+        />
 
-      {/* header */}
-      <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'>
-        <BackButton />
-        <div className='flex items-center gap-4'>
-          <Link href='/product/cart'>
-            <CartIcon />
-          </Link>
-          <ShareButton />
+        {/* bottomSheet : 옵션 선택 */}
+        <div className='sticky top-0 z-[100] w-full'>
+          {isVisible && (
+            <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
+              <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
+            </div>
+          )}
+        </div>
+
+        {/* header */}
+        <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'>
+          <BackButton />
+          <div className='flex items-center gap-4'>
+            <Link href='/product/cart'>
+              <CartIcon />
+            </Link>
+            <ShareButton />
+          </div>
+        </div>
+
+        {/* content */}
+        <ProductBanner image={data?.images ?? []} />
+        <ProductInformationDefault data={data} />
+        {/* <ProductCompare /> */}
+
+        {/* Tab Content */}
+        <ProductTab
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+          reviewCount={data?.reviews?.length ?? 0}
+        />
+        <div className='min-h-[calc(100dvb-180px)]'>
+          {selectedTab === 0 ? (
+            <Fragment>
+              <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />
+              <ProductInfoNotice id={Number(id)} />
+            </Fragment>
+          ) : selectedTab === 1 ? (
+            <div>
+              {/* 구매자들의 솔직 리뷰 */}
+              <ReviewChart
+                data={{
+                  taste: data?.reviewStatistics?.taste ?? 0,
+                  freshness: data?.reviewStatistics?.fresh ?? 0,
+                  price: data?.reviewStatistics?.price ?? 0,
+                  packaging: data?.reviewStatistics?.packaging ?? 0,
+                  size: data?.reviewStatistics?.size ?? 0,
+                }}
+              />
+              {/* 사진 후기 */}
+              <div className='h-2 bg-grey-90' />
+              {/* <ReviewPhoto data={data?.reviews ?? []} type='product' /> */}
+              <ReviewPhoto id={data?.id ?? -1} type='product' />
+            </div>
+          ) : selectedTab === 2 ? (
+            <ProductInquiry productId={Number(id)} data={data?.inquiries ?? []} refetch={refetch} />
+          ) : (
+            <div
+              dangerouslySetInnerHTML={{ __html: content }}
+              className='product-delivery-description mt-5 px-4'
+            />
+          )}
+        </div>
+
+        {/* 하단 부분 */}
+        <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
+          <button
+            className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
+            onClick={() => {
+              if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+              if (data?.isLike) onDeleteSaveProductsMutate({ data: { productIds: [Number(id)] } });
+              else onSaveMutate({ data: { productId: Number(id) } });
+            }}
+          >
+            <Image
+              unoptimized
+              alt='heart'
+              width={30}
+              height={30}
+              src={
+                isLiked
+                  ? '/assets/icons/product/product-bookmark-on.svg'
+                  : '/assets/icons/product/product-bookmark-off.svg'
+              }
+            />
+          </button>
+          <button
+            className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+            onClick={() => {
+              if (data?.state !== 'ACTIVE') {
+                let message = '';
+                switch (data?.state) {
+                  case 'DELETED':
+                    message = '삭제된 상품입니다.';
+                    break;
+                  case 'SOLD_OUT':
+                    message = '품절된 상품입니다.';
+                    break;
+                  case 'INACTIVE':
+                    message = '비활성화된 상품입니다.';
+                    break;
+                  default:
+                    break;
+                }
+                return setAlert({ message });
+              }
+              setIsVisible(true);
+            }}
+          >
+            <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>구매하기</p>
+          </button>
         </div>
       </div>
-
-      {/* content */}
-      <ProductBanner image={data?.images ?? []} />
-      <ProductInformationDefault data={data} />
-      {/* <ProductCompare /> */}
-
-      {/* Tab Content */}
-      <ProductTab
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
-        reviewCount={data?.reviews?.length ?? 0}
-      />
-      <div className='min-h-[calc(100dvb-180px)]'>
-        {selectedTab === 0 ? (
-          <Fragment>
-            <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />
-            <ProductInfoNotice id={Number(id)} />
-          </Fragment>
-        ) : selectedTab === 1 ? (
-          <div>
-            {/* 구매자들의 솔직 리뷰 */}
-            <ReviewChart
-              data={{
-                taste: data?.reviewStatistics?.taste ?? 0,
-                freshness: data?.reviewStatistics?.fresh ?? 0,
-                price: data?.reviewStatistics?.price ?? 0,
-                packaging: data?.reviewStatistics?.packaging ?? 0,
-                size: data?.reviewStatistics?.size ?? 0,
-              }}
-            />
-            {/* 사진 후기 */}
-            <div className='h-2 bg-grey-90' />
-            {/* <ReviewPhoto data={data?.reviews ?? []} type='product' /> */}
-            <ReviewPhoto id={data?.id ?? -1} type='product' />
-          </div>
-        ) : selectedTab === 2 ? (
-          <ProductInquiry productId={Number(id)} data={data?.inquiries ?? []} refetch={refetch} />
-        ) : (
-          <div
-            dangerouslySetInnerHTML={{ __html: content }}
-            className='product-delivery-description mt-5 px-4'
-          />
-        )}
-      </div>
-
-      {/* 하단 부분 */}
-      <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
-        <button
-          className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
-          onClick={() => {
-            if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
-            if (data?.isLike) onDeleteSaveProductsMutate({ data: { productIds: [Number(id)] } });
-            else onSaveMutate({ data: { productId: Number(id) } });
-          }}
-        >
-          <Image
-            unoptimized
-            alt='heart'
-            width={30}
-            height={30}
-            src={
-              isLiked
-                ? '/assets/icons/product/product-bookmark-on.svg'
-                : '/assets/icons/product/product-bookmark-off.svg'
-            }
-          />
-        </button>
-        <button
-          className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
-          onClick={() => {
-            if (data?.state !== 'ACTIVE') {
-              let message = '';
-              switch (data?.state) {
-                case 'DELETED':
-                  message = '삭제된 상품입니다.';
-                  break;
-                case 'SOLD_OUT':
-                  message = '품절된 상품입니다.';
-                  break;
-                case 'INACTIVE':
-                  message = '비활성화된 상품입니다.';
-                  break;
-                default:
-                  break;
-              }
-              return setAlert({ message });
-            }
-            setIsVisible(true);
-          }}
-        >
-          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>구매하기</p>
-        </button>
-      </div>
-    </div>
+    </>
   );
 };
 
