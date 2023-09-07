@@ -166,7 +166,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <meta property='product:availability' content='in stock' />
         <meta property='product:price:amount' content={String(data?.originPrice)} />
         <meta property='product:condition' content='basic' />
-
+        <meta property='product:plural_title' content={headTitle} />
         <meta property='product:price:currency' content='원' />
         <meta property='product:item_group_id' content={String(data?.id)} />
         <meta property='product:retailer_item_id' content={String(data?.id)} />
