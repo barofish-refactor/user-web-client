@@ -42,7 +42,7 @@ function PxixelScript() {
 
   useEffect(() => {
     // This pageview only triggers the first time (it's important for Pixel to have real information)
-    fpixel.pageview();
+
     const handleRouteChange = () => {
       fpixel.pageview();
     };
