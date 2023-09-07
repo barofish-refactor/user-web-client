@@ -168,8 +168,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           property='product:price:amount'
           content={String(data?.discountPrice) || String(data?.originPrice)}
         />
-        <meta property='product:price:currency' content='₩' />
+        <meta property='product:condition' content='basic' />
+
+        <meta property='product:price:currency' content='원' />
         <meta property='product:item_group_id' content={String(data?.id)} />
+        <meta property='product:retailer_item_id' content={String(data?.id)} />
       </Head>
       {/* <Head></Head> */}
       <div className='pb-[80px] max-md:w-[100vw]'>
