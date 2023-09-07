@@ -159,6 +159,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         title={headTitle}
         description={headDescription}
         openGraph={{
+          price: data?.discountPrice || data?.originPrice,
+          availability: true,
+          link: `https://barofish.com/${router.pathname}?${router?.query.id}`,
           title: headTitle,
           description: headDescription,
           images: data?.images?.map(v => {
