@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
@@ -16,6 +16,7 @@ import {
 } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 import 'swiper/css';
+import { queryKey } from 'src/query-key';
 
 interface Props {
   data: ReviewDto;
@@ -36,6 +37,15 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const { mutateAsync: unlikeReviewByUser, isLoading: isUnlikeLoading } = useMutation(
     async (id: number) => await (await client()).unlikeReviewByUser(id),
   );
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.errorMsg);
+    }
+  });
+  console.log(user, 'xx');
 
   const onLikeMutate = ({ id }: { id: number }) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
@@ -168,7 +178,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
         <button
           className='flex h-8 items-center gap-1.5 rounded-full border border-grey-80 px-3.5'
           onClick={() => {
-            if (!data.id) return;
+            if (!data.id || user?.userId === data.user?.userId) return;
             if (data.isLike) onUnlikeMutate({ id: data.id });
             else onLikeMutate({ id: data.id });
           }}
