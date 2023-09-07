@@ -5,8 +5,8 @@ export const pageview = () => {
   window.fbq('track', 'PageView');
 };
 
-export const event = (name: any, options = {}) => {
-  console.log(name, options);
+export const view = (options = {}) => {
+  console.log(options);
   // @ts-ignore
-  window.fbq('track', name, options);
+  window.fbq('track', 'ViewContent', options);
 };

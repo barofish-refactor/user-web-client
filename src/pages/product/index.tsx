@@ -34,7 +34,7 @@ import { useAlertStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
-
+import * as fpixel from 'src/utils/fpixel';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -154,7 +154,22 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     }
   }, [id]);
   console.log(data?.originPrice);
-
+  useEffect(() => {
+    if (!data) return;
+    const value = {
+      id: data?.id,
+      brand: data?.store?.name,
+      price: data?.originPrice,
+      title: headTitle,
+    };
+    const handleRouteChange = () => {
+      fpixel.view({ value });
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [data, headTitle, router.events]);
   return (
     <>
       <Head>
