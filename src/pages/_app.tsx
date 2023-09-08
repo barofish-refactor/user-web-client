@@ -80,7 +80,10 @@ export default function MyApp(props: CustomAppProps) {
               setToken(res.data.data);
               return true;
             } else {
-              router.push({ pathname: 'signup', query: { v: message.loginId } });
+              router.push({
+                pathname: 'signup',
+                query: { v: message.loginId, name: message.name },
+              });
               return false;
             }
           } else {

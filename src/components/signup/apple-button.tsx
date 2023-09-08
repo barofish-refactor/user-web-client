@@ -24,13 +24,17 @@ export function AppleButton() {
   return (
     <AppleLogin
       usePopup
-      // responseMode='form_post'
+      responseMode='form_post'
       // scope='name email'
+      scope='name'
       clientId={process.env.NEXT_PUBLIC_APPLE_KEY}
       redirectURI={redirectUrl}
       callback={res => {
         if (res.error) return;
         const jwt = decodeToken(res.authorization.id_token);
+        const fullName = res.user?.name;
+        const name = (fullName?.lastName ?? '') + (fullName?.firstName ?? '');
+        console.log(fullName, name);
         if ('sub' in jwt) {
           loginUser({
             data: formatToBlob<JoinSnsUserPayload['data']>(
@@ -44,7 +48,7 @@ export function AppleButton() {
                   setToken(res.data.data);
                   return true;
                 } else {
-                  router.push({ pathname: 'signup', query: { v: jwt.sub } });
+                  router.push({ pathname: 'signup', query: { v: jwt.sub, name } });
                   return false;
                 }
               } else {

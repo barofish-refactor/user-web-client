@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { client } from 'src/api/client';
 import { type JoinAppleSnsPayload, type JoinUserPayload } from 'src/api/swagger/data-contracts';
@@ -28,10 +28,16 @@ interface FormType extends PhoneFormType, AddressFormType, AgreementsFormType {
   passwordCheck: string;
 }
 
-export function SignupForm({ appleId }: { appleId?: string | string[] }) {
+export function SignupForm({
+  appleId,
+  name,
+}: {
+  appleId?: string | string[];
+  name?: string | string[];
+}) {
   const router = useRouter();
   const form = useForm<FormType>();
-  const { handleSubmit, getValues, setError, setFocus } = form;
+  const { handleSubmit, getValues, setError, setFocus, setValue } = form;
   const [profile, setProfile] = useState(myProfileDefaultValue);
   const { setAlert } = useAlertStore();
 
@@ -128,6 +134,10 @@ export function SignupForm({ appleId }: { appleId?: string | string[] }) {
         });
     }
   });
+
+  useEffect(() => {
+    if (name) setValue('name', String(name));
+  }, [name, setValue]);
 
   return (
     <FormProvider {...form}>
