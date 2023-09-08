@@ -17,7 +17,7 @@ const SubBanner = ({ data }: Props) => {
   return (
     <div className='relative'>
       <Image
-        priority
+        // priority
         src={data.image ?? ''}
         width={375}
         height={208}
