@@ -343,6 +343,20 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                     }
                     if (selectedOption.filter(v => v.isNeeded === false).length > 0)
                       return setAlert({ message: '필수옵션만 선택해주세요.' });
+                    console.log(
+                      'data:',
+                      data,
+                      'productId:',
+                      data?.id,
+                      'options:',
+                      selectedOption.map(x => {
+                        return {
+                          optionId: x.optionId === -1 ? undefined : x.optionId,
+                          amount: x.amount,
+                        };
+                      }),
+                    );
+
                     onMutate({
                       data: {
                         productId: data?.id,
