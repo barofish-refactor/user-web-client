@@ -348,7 +348,7 @@ const Order: NextPageWithLayout = () => {
                 onIamportResult(orderId, true, '', vBankData);
                 const nameMap = selectedOption.map(item => item.productName);
                 gtag.Purchase({
-                  action: 'purchase',
+                  action: 'click',
                   value: formatToLocaleString(orderPrice),
                   name: nameMap,
                   category: '상품',
