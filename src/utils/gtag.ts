@@ -29,6 +29,7 @@ type GTagEvent = {
 // };
 export const Purchase = ({ action, category, name, value }: GTagEvent) => {
   if (typeof window.gtag !== 'undefined') {
+    console.log('ga');
     window.gtag('event', action, {
       event_category: category,
       event_label: name,
