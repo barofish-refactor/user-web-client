@@ -37,6 +37,8 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const { mutateAsync: unlikeReviewByUser, isLoading: isUnlikeLoading } = useMutation(
     async (id: number) => await (await client()).unlikeReviewByUser(id),
   );
+
+  // 유저 조회
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
@@ -45,7 +47,6 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       throw new Error(res.data.errorMsg);
     }
   });
-  console.log(user, 'xx');
 
   const onLikeMutate = ({ id }: { id: number }) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');

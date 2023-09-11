@@ -1852,6 +1852,9 @@ export interface PageUserInfoDto {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: UserInfoDto[];
   /** @format int32 */
@@ -1903,6 +1906,9 @@ export interface PageProductListDto {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: ProductListDto[];
   /** @format int32 */
@@ -1942,6 +1948,9 @@ export interface PageTip {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -1989,6 +1998,9 @@ export interface PageStoreDto {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2071,6 +2083,9 @@ export interface PageOrderProductInfoDto {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2166,6 +2181,9 @@ export interface PageOrderSettlementExcelDto {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: OrderSettlementExcelDto[];
   /** @format int32 */
@@ -2190,6 +2208,9 @@ export interface PageSettlementDto {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2295,6 +2316,9 @@ export interface PageReviewDto {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: ReviewDto[];
   /** @format int32 */
@@ -2319,6 +2343,9 @@ export interface PageReportDto {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2401,6 +2428,9 @@ export interface PageSimpleProductDto {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: SimpleProductDto[];
   /** @format int32 */
@@ -2441,6 +2471,9 @@ export interface PageOrderDto {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2502,6 +2535,9 @@ export interface PageNotification {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: Notification[];
   /** @format int32 */
@@ -2526,6 +2562,9 @@ export interface PageNotice {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2599,6 +2638,9 @@ export interface PageInquiryDto {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2739,6 +2781,9 @@ export interface PageCurationDto {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: CurationDto[];
   /** @format int32 */
@@ -2788,6 +2833,9 @@ export interface PageCouponDto {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;
@@ -2939,6 +2987,9 @@ export interface PageAdminLogDto {
   totalElements?: number;
   pageable?: PageableObject;
   /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
   size?: number;
   content?: AdminLogDto[];
   /** @format int32 */
@@ -2963,6 +3014,9 @@ export interface PageAdmin {
   totalPages?: number;
   /** @format int64 */
   totalElements?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  totalPages?: number;
   pageable?: PageableObject;
   /** @format int32 */
   size?: number;

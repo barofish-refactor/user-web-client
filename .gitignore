@@ -42,5 +42,6 @@ next-env.d.ts
 .open-next
 .sst
 sst-env.d.ts
+
 # yarn
 yarn.lock
