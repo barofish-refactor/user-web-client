@@ -10,12 +10,12 @@ export const pageview = (url: URL) => {
   }
 };
 
-// type GTagEvent = {
-//   action: string;
-//   category: string;
-//   label: string;
-//   value: number;
-// };
+type GTagEvent = {
+  action: string;
+  category: string;
+  name: string | string[];
+  value: number | string;
+};
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/events
 // export const event = ({ action, category, label, value }: GTagEvent) => {
@@ -27,3 +27,12 @@ export const pageview = (url: URL) => {
 //     });
 //   }
 // };
+export const Purchase = ({ action, category, name, value }: GTagEvent) => {
+  if (typeof window.gtag !== 'undefined') {
+    window.gtag('event', action, {
+      event_category: category,
+      event_label: name,
+      value,
+    });
+  }
+};

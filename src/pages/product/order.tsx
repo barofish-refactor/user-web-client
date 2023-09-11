@@ -35,7 +35,7 @@ import { IamportPayMethod, impSuccessKey, useIamport, type vBankType } from 'src
 import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
+import * as gtag from 'src/utils/gtag';
 const setOptionData = async (value: miniOptionState[]) =>
   (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
@@ -344,7 +344,16 @@ const Order: NextPageWithLayout = () => {
                 name,
                 taxFree: taxFreePrice.sum,
               },
-              onSuccess: (vBankData?: vBankType) => onIamportResult(orderId, true, '', vBankData),
+              onSuccess: (vBankData?: vBankType) => {
+                onIamportResult(orderId, true, '', vBankData);
+                const nameMap = selectedOption.map(item => item.productName);
+                gtag.Purchase({
+                  action: 'purchase',
+                  value: formatToLocaleString(orderPrice),
+                  name: nameMap,
+                  category: '상품',
+                });
+              },
               onFailure: (error_msg: string) => onIamportResult(orderId, false, error_msg),
             });
           } else {

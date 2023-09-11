@@ -161,7 +161,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       brand: data?.store?.name,
       value: data?.originPrice,
       title: headTitle,
-      currency: '원',
+      currency: 'KRW',
     };
     const handleRouteChange = () => {
       fpixel.view({ value });
@@ -180,11 +180,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           content={`https://barofish.comxs${router.pathname}?${router?.query.id}`}
         />
         <meta property='product:brand' content={data?.store?.name} />
-        <meta property='product:availability' content='in stock' />
-        <meta property='product:price:amount' content={String(initialData?.originPrice)} />
+        <meta property='product:price:amount' content={String(data?.originPrice)} />
         <meta property='product:condition' content='basic' />
         <meta property='product:plural_title' content={headTitle} />
-        <meta property='product:price:currency' content='원' />
+        <meta property='product:price:currency' content='KRW' />
+
         <meta property='product:item_group_id' content={String(data?.id)} />
         <meta property='product:retailer_item_id' content={String(data?.id)} />
       </Head>
@@ -212,6 +212,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
             </div>
           )}
+
         </div>
 
         {/* header */}
@@ -229,6 +230,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <ProductBanner image={data?.images ?? []} />
         <ProductInformationDefault data={data} />
         {/* <ProductCompare /> */}
+
 
         {/* Tab Content */}
         <ProductTab

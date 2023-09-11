@@ -166,6 +166,7 @@ const Home: NextPageWithLayout = () => {
             )}
           />
           <div className='h-[1px] bg-[#F4F4F4]' />
+
           {isLoading ? (
             <div className='h-[50vh]' />
           ) : (
