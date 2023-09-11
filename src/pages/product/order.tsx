@@ -264,7 +264,6 @@ const Order: NextPageWithLayout = () => {
       sum: priceListAdd.reduce((a, b) => a + b, 0),
     };
   };
-  console.log(selectedOption, 'selectedOption');
 
   async function onPayment() {
     if (Number(point) !== 0 && Number(point) < 100) {
@@ -319,7 +318,6 @@ const Order: NextPageWithLayout = () => {
         .then(res => {
           if (res.data.isSuccess) {
             if (selectedCard) {
-              console.log(selectedCard, 'dd');
               router.push({
                 pathname: '/product/payment',
                 query: {
@@ -348,9 +346,7 @@ const Order: NextPageWithLayout = () => {
               },
               onSuccess: (vBankData?: vBankType) => {
                 onIamportResult(orderId, true, '', vBankData);
-                const nameMap = selectedOption.map(item => item.name);
-                console.log(nameMap);
-
+                const nameMap = selectedOption.map(item => item.productName);
                 gtag.Purchase({
                   action: 'purchase',
                   value: formatToLocaleString(orderPrice),
