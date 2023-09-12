@@ -9,3 +9,12 @@ export const view = (options = {}) => {
   // @ts-ignore
   window.fbq('track', 'ViewContent', options);
 };
+export const addToCart = (options = {}) => {
+  // @ts-ignore
+  window.fbq('track', 'AddToCart', options);
+};
+
+export const purchase = (options = {}) => {
+  // @ts-ignore
+  window.fbq('track', 'Purchase', options);
+};

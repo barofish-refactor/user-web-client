@@ -15,7 +15,7 @@ import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
-
+import * as fpixel from 'src/utils/fpixel';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -193,7 +193,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
         : 0;
     setTotalPrice(totalPrice);
   }, [selectedOption]);
-  console.log(selectProductOtherCustomerBuy, 'selectProductOtherCustomerBuy');
 
   return (
     <div
@@ -342,13 +341,25 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       router.push('/login');
                       return;
                     }
-
                     if (selectedOption.filter(v => v.isNeeded === false).length > 0)
                       return setAlert({ message: '필수옵션만 선택해주세요.' });
                     const gtagValue: any = selectProductOtherCustomerBuy;
+                    fpixel.addToCart({
+                      content_ids: gtagValue?.id,
+                      content_type: 'product',
+                      contents: {
+                        id: gtagValue?.id,
+                        name: gtagValue?.title,
+                        quantity: selectedOption.length,
+                        affiliation: '바로피쉬',
+                        currency: 'KRW',
+                        item_brand: gtagValue?.storeName,
+                        price: formatToLocaleString(totalPrice),
+                      },
+                    });
                     gtag('event', 'add_to_cart', {
                       currency: 'KRW',
-                      value: gtagValue?.discountPrice,
+                      value: formatToLocaleString(totalPrice),
                       items: [
                         {
                           item_id: gtagValue?.id,
@@ -356,7 +367,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                           affiliation: '바로피쉬',
                           currency: 'KRW',
                           item_brand: gtagValue?.storeName,
-                          price: gtagValue?.discountPrice,
+                          price: formatToLocaleString(totalPrice),
                         },
                       ],
                     });

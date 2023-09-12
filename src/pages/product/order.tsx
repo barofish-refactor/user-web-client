@@ -36,6 +36,7 @@ import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import * as gtag from 'src/utils/gtag';
+import * as fpixel from 'src/utils/fpixel';
 const setOptionData = async (value: miniOptionState[]) =>
   (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
@@ -329,8 +330,23 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
+            fpixel.purchase({
+              content_ids: orderId,
+              value: formatToLocaleString(orderPrice),
+              currency: 'KRW',
+              content_type: 'product',
+              contents: {
+                item_id: orderId,
+                item_name: selectedOption[0]?.productName,
+                affiliation: '바로피쉬',
+                currency: 'KRW',
+                quantity: selectedOption.length,
+                item_brand: selectedOption[0]?.storeName,
+                price: formatToLocaleString(totalPrice),
+              },
+            });
             gtag.Purchase({
-              action: 'click',
+              action: 'purchase',
               value: formatToLocaleString(orderPrice),
               name: selectedOption[0]?.productName,
               category: '상품',
