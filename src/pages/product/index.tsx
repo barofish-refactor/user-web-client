@@ -153,15 +153,19 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       localStorage.setItem('product', JSON.stringify(Array.from(list2)));
     }
   }, [id]);
-  console.log(data?.originPrice);
   useEffect(() => {
     if (!data) return;
     const value = {
-      id: data?.id,
-      brand: data?.store?.name,
-      value: data?.originPrice,
-      title: headTitle,
-      currency: 'KRW',
+      content_ids: data?.id,
+      content_type: 'product',
+      contents: {
+        id: data?.id,
+        name: data?.title,
+        affiliation: '바로피쉬',
+        currency: 'KRW',
+        quantity: 1,
+        price: data?.discountPrice || data?.originPrice,
+      },
     };
     const handleRouteChange = () => {
       fpixel.view({ value });
@@ -178,14 +182,19 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <Head>
           <meta
             property='og:url'
-            content={`https://barofish.comxs${router.pathname}?${router?.query.id}`}
+            content={`https://barofish.com${router.pathname}?id=${router?.query.id}`}
           />
           <meta property='product:availability' content='in stock' />
           <meta property='product:brand' content={data?.store?.name} />
           <meta property='product:condition' content='basic' />
           <meta property='product:plural_title' content={headTitle} />
           <meta property='product:price:currency' content='KRW' />
-          <meta property='product:price:amount' content={data?.originPrice?.toString()} />
+          <meta
+            property='product:price:amount'
+            content={`${
+              initialData?.discountPrice?.toString() || initialData?.originPrice?.toString()
+            }`}
+          />
           <meta property='product:item_group_id' content={String(data?.id)} />
           <meta property='product:retailer_item_id' content={String(data?.id)} />
         </Head>
