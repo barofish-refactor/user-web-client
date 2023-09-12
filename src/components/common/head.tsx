@@ -103,9 +103,8 @@ function GAScript() {
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', '${gtag.GA_TRACKING_ID}', {
-    page_path: window.location.pathname, { 'debug_mode':true }
+    page_path: window.location.pathname,
   });
-  gtag('config', '${gtag.GA_TRACKING_ID}', { 'debug_mode':true });
   `,
         }}
       />

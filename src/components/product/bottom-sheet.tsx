@@ -193,6 +193,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
         : 0;
     setTotalPrice(totalPrice);
   }, [selectedOption]);
+  console.log(selectProductOtherCustomerBuy, 'selectProductOtherCustomerBuy');
 
   return (
     <div
@@ -341,8 +342,24 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       router.push('/login');
                       return;
                     }
+
                     if (selectedOption.filter(v => v.isNeeded === false).length > 0)
                       return setAlert({ message: '필수옵션만 선택해주세요.' });
+                    const gtagValue: any = selectProductOtherCustomerBuy;
+                    gtag('event', 'add_to_cart', {
+                      currency: 'KRW',
+                      value: gtagValue?.discountPrice,
+                      items: [
+                        {
+                          item_id: gtagValue?.id,
+                          item_name: gtagValue?.title,
+                          affiliation: '바로피쉬',
+                          currency: 'KRW',
+                          item_brand: gtagValue?.storeName,
+                          price: gtagValue?.discountPrice,
+                        },
+                      ],
+                    });
                     onMutate({
                       data: {
                         productId: data?.id,

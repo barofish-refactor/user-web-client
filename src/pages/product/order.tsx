@@ -329,6 +329,12 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
+            gtag.Purchase({
+              action: 'click',
+              value: formatToLocaleString(orderPrice),
+              name: selectedOption[0]?.productName,
+              category: '상품',
+            });
             onIamport({
               data: {
                 payMethod,
@@ -346,13 +352,7 @@ const Order: NextPageWithLayout = () => {
               },
               onSuccess: (vBankData?: vBankType) => {
                 onIamportResult(orderId, true, '', vBankData);
-                const nameMap = selectedOption.map(item => item.productName);
-                gtag.Purchase({
-                  action: 'click',
-                  value: formatToLocaleString(orderPrice),
-                  name: nameMap,
-                  category: '상품',
-                });
+                // const nameMap = selectedOption.map(item => item.productName);
               },
               onFailure: (error_msg: string) => onIamportResult(orderId, false, error_msg),
             });
