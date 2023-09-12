@@ -6,7 +6,6 @@ export const pageview = () => {
 };
 
 export const view = (options = {}) => {
-  console.log(options);
   // @ts-ignore
   window.fbq('track', 'ViewContent', options);
 };
