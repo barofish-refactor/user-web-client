@@ -153,11 +153,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       localStorage.setItem('product', JSON.stringify(Array.from(list2)));
     }
   }, [id]);
+
   useEffect(() => {
     if (!data) return;
     const value = {
       content_ids: data?.id,
       content_type: 'product',
+      currency: 'KRW',
+      value: data?.discountPrice || data?.originPrice,
       contents: {
         id: data?.id,
         name: data?.title,

@@ -331,25 +331,41 @@ const Order: NextPageWithLayout = () => {
             }
             const orderId = res.data.data?.id ?? '';
             fpixel.purchase({
-              content_ids: orderId,
-              value: formatToLocaleString(orderPrice),
+              content_ids: res.data.data?.id,
+              value: totalPrice,
               currency: 'KRW',
               content_type: 'product',
-              contents: {
-                item_id: orderId,
-                item_name: selectedOption[0]?.productName,
-                affiliation: '바로피쉬',
-                currency: 'KRW',
-                quantity: selectedOption.length,
-                item_brand: selectedOption[0]?.storeName,
-                price: formatToLocaleString(totalPrice),
-              },
+              contents: selectedOption.map(item => {
+                return {
+                  item_id: item.storeId,
+                  item_name: item.productName,
+                  affiliation: '바로피쉬',
+                  currency: 'KRW',
+                  quantity: item.stock,
+                  item_brand: item.storeName,
+                  price: item.price,
+                };
+              }),
             });
+
             gtag.Purchase({
               action: 'purchase',
-              value: formatToLocaleString(orderPrice),
-              name: selectedOption[0]?.productName,
+              value: totalPrice,
+              name: selectedOption.map(item => item.productName),
               category: '상품',
+              currency: 'KRW',
+              items: [
+                selectedOption.map(item => {
+                  return {
+                    item_id: item.storeId,
+                    item_name: '구매_버튼',
+                    affiliation: '바로피쉬',
+                    item_brand: item.storeName,
+                    price: item.price,
+                    quantity: item.stock,
+                  };
+                }),
+              ],
             });
             onIamport({
               data: {
