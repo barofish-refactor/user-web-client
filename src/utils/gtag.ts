@@ -13,10 +13,13 @@ export const pageview = (url: URL) => {
 type GTagEvent = {
   action: string;
   category: string;
+  shipping: number;
+  transaction_id: string | number;
   name: string | string[];
   value: number | string;
   currency: string;
   items: any;
+  tax: number;
 };
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/events
@@ -29,11 +32,20 @@ type GTagEvent = {
 //     });
 //   }
 // };
-export const Purchase = ({ action, category, name, value, currency, items }: GTagEvent) => {
+export const Purchase = ({
+  action,
+  category,
+  name,
+  value,
+  currency,
+  items,
+  transaction_id,
+}: GTagEvent) => {
   if (typeof window.gtag !== 'undefined') {
     console.log('ga');
     window.gtag('event', action, {
       event_category: category,
+      transaction_id,
       currency,
       event_label: name,
       value,

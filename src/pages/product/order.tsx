@@ -354,12 +354,18 @@ const Order: NextPageWithLayout = () => {
               name: selectedOption.map(item => item.productName),
               category: '상품',
               currency: 'KRW',
+              transaction_id: orderId,
+              shipping: 4000,
+              tax: 0,
               items: [
                 selectedOption.map(item => {
                   return {
                     item_id: item.storeId,
-                    item_name: '구매_버튼',
+                    item_name: item.productName,
+                    list_name: '해산물',
+                    variant: '해산물',
                     affiliation: '바로피쉬',
+                    list_position: '스토어',
                     item_brand: item.storeName,
                     price: item.price,
                     quantity: item.stock,
