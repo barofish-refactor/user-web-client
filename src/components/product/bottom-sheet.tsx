@@ -347,28 +347,32 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                     fpixel.addToCart({
                       content_ids: gtagValue?.id,
                       content_type: 'product',
-                      contents: {
-                        id: gtagValue?.id,
-                        name: gtagValue?.title,
-                        quantity: selectedOption.length,
-                        affiliation: '바로피쉬',
-                        currency: 'KRW',
-                        item_brand: gtagValue?.storeName,
-                        price: formatToLocaleString(totalPrice),
-                      },
+                      contents: selectedOption.map(item => {
+                        return {
+                          item_id: item.storeId,
+                          item_name: item.productName,
+                          affiliation: '바로피쉬',
+                          currency: 'KRW',
+                          quantity: item.stock,
+                          item_brand: item.storeName,
+                          price: totalPrice,
+                        };
+                      }),
                     });
                     gtag('event', 'add_to_cart', {
                       currency: 'KRW',
-                      value: formatToLocaleString(totalPrice),
+                      value: totalPrice,
                       items: [
-                        {
-                          item_id: gtagValue?.id,
-                          item_name: gtagValue?.title,
-                          affiliation: '바로피쉬',
-                          currency: 'KRW',
-                          item_brand: gtagValue?.storeName,
-                          price: formatToLocaleString(totalPrice),
-                        },
+                        selectedOption.map(item => {
+                          return {
+                            item_id: item.storeId,
+                            item_name: item.productName,
+                            affiliation: '바로피쉬',
+                            item_brand: item.storeName,
+                            price: item.price,
+                            quantity: item.stock,
+                          };
+                        }),
                       ],
                     });
                     onMutate({

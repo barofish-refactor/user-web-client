@@ -15,6 +15,8 @@ type GTagEvent = {
   category: string;
   name: string | string[];
   value: number | string;
+  currency: string;
+  items: any;
 };
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/events
@@ -27,13 +29,15 @@ type GTagEvent = {
 //     });
 //   }
 // };
-export const Purchase = ({ action, category, name, value }: GTagEvent) => {
+export const Purchase = ({ action, category, name, value, currency, items }: GTagEvent) => {
   if (typeof window.gtag !== 'undefined') {
     console.log('ga');
     window.gtag('event', action, {
       event_category: category,
+      currency,
       event_label: name,
       value,
+      items,
     });
   }
 };

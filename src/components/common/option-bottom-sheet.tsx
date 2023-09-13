@@ -341,32 +341,35 @@ const BottomSheet = ({}: Props) => {
                             }
                             if (selectedOption.filter(v => v.isNeeded === false).length > 0)
                               return setAlert({ message: '필수옵션만 선택해주세요.' });
-
                             fpixel.addToCart({
                               content_ids: productOption.data?.id,
                               content_type: 'product',
-                              contents: {
-                                id: productOption.data?.id,
-                                name: productOption.data?.title,
-                                affiliation: '바로피쉬',
-                                currency: 'KRW',
-                                quantity: selectedOption.length,
-                                item_brand: productOption.data?.storeName,
-                                price: formatToLocaleString(totalPrice),
-                              },
+                              contents: selectedOption.map(item => {
+                                return {
+                                  item_id: item.storeId,
+                                  item_name: item.productName,
+                                  affiliation: '바로피쉬',
+                                  currency: 'KRW',
+                                  quantity: item.stock,
+                                  item_brand: item.storeName,
+                                  price: totalPrice,
+                                };
+                              }),
                             });
                             gtag('event', 'add_to_cart', {
                               currency: 'KRW',
-                              value: formatToLocaleString(totalPrice),
+                              value: totalPrice,
                               items: [
-                                {
-                                  item_id: productOption.data?.id,
-                                  item_name: productOption.data?.title,
-                                  affiliation: '바로피쉬',
-                                  currency: 'KRW',
-                                  item_brand: productOption.data?.storeName,
-                                  price: formatToLocaleString(totalPrice),
-                                },
+                                selectedOption.map(item => {
+                                  return {
+                                    item_id: item.storeId,
+                                    item_name: item.productName,
+                                    affiliation: '바로피쉬',
+                                    item_brand: item.storeName,
+                                    price: item.price,
+                                    quantity: item.stock,
+                                  };
+                                }),
                               ],
                             });
                             onMutate({
