@@ -42,7 +42,6 @@ export const Purchase = ({
   transaction_id,
 }: GTagEvent) => {
   if (typeof window.gtag !== 'undefined') {
-    console.log('ga');
     window.gtag('event', action, {
       event_category: category,
       transaction_id,

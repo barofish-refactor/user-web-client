@@ -22,6 +22,7 @@ export default function Document() {
           name='google-site-verification'
           content='T3lWWvNBN9VLNavR3ZtyKsKoat_QW1rBqsfxDBo_FAs'
         />
+        <meta name='naver-site-verification' content='1e575d2a85af7f25e9fddd1ce448ecc7bc99335d' />
         <Script id='google-tag-manager' strategy='afterInteractive'>
           {`
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
