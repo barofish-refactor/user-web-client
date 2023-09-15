@@ -48,24 +48,25 @@ const Home: NextPageWithLayout = () => {
     } else setAlert({ message: res.data.errorMsg ?? '' });
   });
 
-  const { data: tipInfo } = useQuery(queryKey.tipInfo, async () => {
-    const res = await (await client()).selectTipInfo();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else setAlert({ message: res.data.errorMsg ?? '' });
-  });
+  // 꿀팁 아이콘
+  // const { data: tipInfo } = useQuery(queryKey.tipInfo, async () => {
+  //   const res = await (await client()).selectTipInfo();
+  //   if (res.data.isSuccess) {
+  //     return res.data.data;
+  //   } else setAlert({ message: res.data.errorMsg ?? '' });
+  // });
 
-  useEffect(() => {
-    if (tipInfo) {
-      setDefaultCurationAbbreviation([
-        {
-          id: -2,
-          image: tipInfo.thumbnailImage,
-          shortName: tipInfo.name,
-        },
-      ]);
-    }
-  }, [tipInfo]);
+  // useEffect(() => {
+  //   if (tipInfo) {
+  //     setDefaultCurationAbbreviation([
+  //       {
+  //         id: -2,
+  //         image: tipInfo.thumbnailImage,
+  //         shortName: tipInfo.name,
+  //       },
+  //     ]);
+  //   }
+  // }, [tipInfo]);
 
   const {
     data: topBarData,
@@ -137,7 +138,6 @@ const Home: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
-
   return (
     <div className='max-md:w-[100vw]'>
       {/* Tab */}
@@ -173,7 +173,7 @@ const Home: NextPageWithLayout = () => {
             <HomeCurationList mainData={data} mainRefetch={refetch} />
           )}
           {/* 알아두면 좋은 정보 */}
-          <HomeCurationTip />
+          {/* <HomeCurationTip /> */}
         </>
       ) : (
         <div>

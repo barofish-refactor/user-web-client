@@ -362,18 +362,18 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                     gtag('event', 'add_to_cart', {
                       currency: 'KRW',
                       value: totalPrice,
-                      items: [
-                        selectedOption.map(item => {
-                          return {
-                            item_id: item.storeId,
-                            item_name: item.productName,
-                            affiliation: '바로피쉬',
-                            item_brand: item.storeName,
-                            price: item.price,
-                            quantity: item.stock,
-                          };
-                        }),
-                      ],
+                      event_label: selectedOption[0].productName,
+                      items: selectedOption.map(item => {
+                        return {
+                          item_id: item.productId,
+                          item_name: item.name,
+                          affiliation: '바로피쉬',
+                          currency: 'KRW',
+                          item_brand: item.storeName,
+                          price: (item.price + item.additionalPrice) * item.amount,
+                          quantity: item.amount,
+                        };
+                      }),
                     });
                     onMutate({
                       data: {
