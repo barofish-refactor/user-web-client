@@ -118,7 +118,7 @@ const Store: NextPageWithLayout = () => {
         <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           스토어
         </p>
-        <Link href='/compare/storage'>
+        {/* <Link href='/compare/storage'>
           <Image
             unoptimized
             src='/assets/icons/common/bookmark-title.svg'
@@ -126,7 +126,7 @@ const Store: NextPageWithLayout = () => {
             width={24}
             height={24}
           />
-        </Link>
+        </Link> */}
         <Link href='/product/cart'>
           <CartIcon />
         </Link>
