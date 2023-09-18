@@ -114,7 +114,7 @@ const Store: NextPageWithLayout = () => {
     <div className='max-md:w-[100vw]'>
       {/* Header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-4 bg-white px-[18px]'>
-        <div className='w-[60px]' />
+        <div className='w-[13px]' />
         <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           스토어
         </p>
