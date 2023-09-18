@@ -129,11 +129,11 @@ function GAScript() {
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+  gtag('config', 'AW-11315318272');
   gtag('config', '${gtag.GA_TRACKING_ID}' , {
     page_path: window.location.pathname,
     'debug_mode': true,
   });
-  gtag('config', 'AW-11315318272');
   `,
         }}
       />

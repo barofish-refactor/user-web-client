@@ -36,10 +36,10 @@ export function Header({ className, ...props }: HeaderProps) {
           </p>
         </Link>
         {/* 비교하기 */}
-        <Link
+        {/* <Link
           href='/compare/storage'
           className='h-6 w-6 bg-[url(/assets/icons/common/bookmark-title.svg)] bg-cover'
-        />
+        /> */}
         {/* 장바구니 */}
         <Link href='/product/cart' className='ml-[2px]'>
           <CartIcon />
