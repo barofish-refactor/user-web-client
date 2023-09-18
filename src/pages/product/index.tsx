@@ -170,6 +170,23 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         price: data?.discountPrice || data?.originPrice,
       },
     };
+    gtag('event', 'view_item', {
+      items: [
+        {
+          id: data?.id,
+          name: data?.title,
+          list_name: '해산물',
+          brand: data?.store?.name,
+          category: data?.category?.name,
+          variant: '상품 옵션',
+          list_position: data?.category?.parentCategoryName,
+          quantity: 1,
+          price: data?.discountPrice || data?.originPrice,
+        },
+      ],
+    });
+    console.log(data, 'data');
+
     const handleRouteChange = () => {
       fpixel.view({ value });
     };

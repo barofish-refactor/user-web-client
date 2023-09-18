@@ -136,7 +136,7 @@ const MyPage: NextPageWithLayout = () => {
             </p>
           </Link>
           <div className='h-6 w-[1px] bg-[#E2E2E2]' />
-          <Link href='/compare/storage' className='flex w-[60px] flex-col items-center gap-0.5'>
+          {/* <Link href='/compare/storage' className='flex w-[60px] flex-col items-center gap-0.5'>
             <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(user?.saveProductCount)}
             </strong>
@@ -144,7 +144,7 @@ const MyPage: NextPageWithLayout = () => {
               저장함
             </p>
           </Link>
-          <div className='h-6 w-[1px] bg-[#E2E2E2]' />
+          <div className='h-6 w-[1px] bg-[#E2E2E2]' /> */}
           <Link href='/product/cart' className='flex w-[60px] flex-col items-center gap-0.5'>
             <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(cartCount)}
