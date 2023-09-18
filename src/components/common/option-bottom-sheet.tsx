@@ -346,13 +346,13 @@ const BottomSheet = ({}: Props) => {
                               content_type: 'product',
                               contents: selectedOption.map(item => {
                                 return {
-                                  item_id: item.storeId,
+                                  item_id: item.productId,
                                   item_name: item.productName,
                                   affiliation: '바로피쉬',
                                   currency: 'KRW',
-                                  quantity: item.stock,
+                                  quantity: item.amount,
                                   item_brand: item.storeName,
-                                  price: totalPrice,
+                                  price: (item.price + item.additionalPrice) * item.amount,
                                 };
                               }),
                             });

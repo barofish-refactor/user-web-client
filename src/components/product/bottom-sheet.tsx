@@ -343,19 +343,18 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                     }
                     if (selectedOption.filter(v => v.isNeeded === false).length > 0)
                       return setAlert({ message: '필수옵션만 선택해주세요.' });
-                    const gtagValue: any = selectProductOtherCustomerBuy;
                     fpixel.addToCart({
-                      content_ids: gtagValue?.id,
+                      content_ids: selectedOption[0]?.productId,
                       content_type: 'product',
                       contents: selectedOption.map(item => {
                         return {
-                          item_id: item.storeId,
+                          item_id: item.productId,
                           item_name: item.productName,
                           affiliation: '바로피쉬',
                           currency: 'KRW',
-                          quantity: item.stock,
+                          quantity: item.amount,
                           item_brand: item.storeName,
-                          price: totalPrice,
+                          price: (item.price + item.additionalPrice) * item.amount,
                         };
                       }),
                     });
