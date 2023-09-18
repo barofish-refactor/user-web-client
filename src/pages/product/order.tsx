@@ -351,8 +351,8 @@ const Order: NextPageWithLayout = () => {
                 // const nameMap = selectedOption.map(item => item.productName);
                 // 성공시 픽셀,ga
                 fpixel.purchase({
-                  content_ids: res.data.data?.id,
-                  value: formatToLocaleString(totalPrice),
+                  content_id: res.data.data?.id,
+                  value: totalPrice,
                   currency: 'KRW',
                   content_type: 'product',
                   contents: selectedOption.map(item => {
@@ -363,7 +363,7 @@ const Order: NextPageWithLayout = () => {
                       currency: 'KRW',
                       quantity: item.stock,
                       item_brand: item.storeName,
-                      price: formatToLocaleString(item.price),
+                      price: (item.price + item.additionalPrice) * item.amount,
                     };
                   }),
                 });
