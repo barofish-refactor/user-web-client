@@ -380,7 +380,7 @@ const Order: NextPageWithLayout = () => {
                   items: selectedOption.map(item => {
                     return {
                       item_id: item.storeId,
-                      item_name: item.name,
+                      item_name: selectedOption[0]?.productName + ' ' + item.name,
                       list_name: '해산물',
                       variant: '해산물',
                       affiliation: '바로피쉬',
