@@ -8,6 +8,7 @@ export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '수산물 전문 비교구매 플랫폼';
 
 export default function Head() {
+  const router = useRouter();
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const naverPublic = document.getElementById('naver_public');
@@ -20,7 +21,7 @@ export default function Head() {
      wcs_do(_nasa); } var _nasa = {};
      `;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+  }, [router]);
   return (
     <Fragment>
       <DefaultSeo
