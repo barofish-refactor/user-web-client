@@ -185,7 +185,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         },
       ],
     });
-    console.log(data, 'data');
+    // google ads
+    gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
 
     const handleRouteChange = () => {
       fpixel.view({ value });
