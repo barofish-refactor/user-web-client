@@ -14,10 +14,10 @@ export default function Head() {
     const script2 = document.createElement('script');
     script2.text = `
      if (!wcs_add) var wcs_add = {};
-     wcs_add["wa"] = "s_314396d7e444";  // 여기에 본인의 네이버 애널리틱스 코드를 넣으세요
+     wcs_add["wa"] = "s_314396d7e444"; 
      if (!_nasa) var _nasa = {};
      if (window.wcs) { wcs.inflow();
-     wcs_do(_nasa); } var _nasa = {}; // 초기화 구문
+     wcs_do(_nasa); } var _nasa = {};
      `;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
