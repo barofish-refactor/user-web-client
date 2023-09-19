@@ -8,18 +8,18 @@ export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '수산물 전문 비교구매 플랫폼';
 
 export default function Head() {
-  useEffect(() => {
-    const naverPublic = document.getElementById('naver_public');
-    const script2 = document.createElement('script');
-    script2.text = `
-     if (!wcs_add) var wcs_add = {};
-     wcs_add["wa"] = "s_49d23xxxxxxx";  // 여기에 본인의 네이버 애널리틱스 코드를 넣으세요
-     if (!_nasa) var _nasa = {};
-     if (window.wcs) { wcs.inflow();         
-     wcs_do(_nasa); } var _nasa = {}; // 초기화 구문
-     `;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+  // useEffect(() => {
+  //   const naverPublic = document.getElementById('naver_public');
+  //   const script2 = document.createElement('script');
+  //   script2.text = `
+  //    if (!wcs_add) var wcs_add = {};
+  //    wcs_add["wa"] = "s_49d23xxxxxxx";  // 여기에 본인의 네이버 애널리틱스 코드를 넣으세요
+  //    if (!_nasa) var _nasa = {};
+  //    if (window.wcs) { wcs.inflow();
+  //    wcs_do(_nasa); } var _nasa = {}; // 초기화 구문
+  //    `;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [location]);
   return (
     <Fragment>
       <DefaultSeo
@@ -46,7 +46,7 @@ export default function Head() {
       {/* Global Site Tag (gtag.js) - Google Analytics */}
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
-      <div id='naver_public' />
+      {/* <div id='naver_public' /> */}
     </Fragment>
   );
 }
