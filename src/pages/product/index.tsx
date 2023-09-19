@@ -32,7 +32,7 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { formatToBlob } from 'src/utils/functions';
+import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 interface Props {
@@ -160,7 +160,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       content_ids: data?.id,
       content_type: 'product',
       currency: 'KRW',
-      value: data?.discountPrice || data?.originPrice,
+      value:
+        formatToLocaleString(data?.discountPrice).replace(',', '.') ||
+        formatToLocaleString(data?.originPrice).replace(',', '.'),
       contents: {
         id: data?.id,
         name: data?.title,

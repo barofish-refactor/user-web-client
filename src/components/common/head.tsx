@@ -8,6 +8,20 @@ export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '수산물 전문 비교구매 플랫폼';
 
 export default function Head() {
+  const router = useRouter();
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const naverPublic = document.getElementById('naver_public');
+    const script2 = document.createElement('script');
+    script2.text = `
+     if (!wcs_add) var wcs_add = {};
+     wcs_add["wa"] = "s_314396d7e444"; 
+     if (!_nasa) var _nasa = {};
+     if (window.wcs) { wcs.inflow();
+     wcs_do(_nasa); } var _nasa = {};
+     `;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
   return (
     <Fragment>
       <DefaultSeo
@@ -34,6 +48,7 @@ export default function Head() {
       {/* Global Site Tag (gtag.js) - Google Analytics */}
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
+      <div id='naver_public' />
     </Fragment>
   );
 }
@@ -75,34 +90,6 @@ function PxixelScript() {
     </>
   );
 }
-
-// ads 광고
-// declare global {
-//   interface Window {
-//     adsbygoogle: any;
-//   }
-// }
-
-// function GAAdsIns() {
-//   useEffect(() => {
-//     (window.adsbygoogle = window.adsbygoogle || []).push({});
-//   }, []);
-
-//   return (
-//     <>
-//       <div className='googleAd-container'>
-//         <ins
-//           className='adsbygoogle'
-//           style={{ display: 'block' }}
-//           data-ad-format='fluid'
-//           data-ad-layout-key='-fb+5w+4e-db+86'
-//           data-ad-client='ca-pub-3131973401944410'
-//           data-ad-slot='5792448771'
-//         />
-//       </div>
-//     </>
-//   );
-// }
 
 function GAScript() {
   const router = useRouter();
