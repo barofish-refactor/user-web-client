@@ -330,7 +330,6 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
-
             onIamport({
               data: {
                 payMethod,
@@ -352,7 +351,7 @@ const Order: NextPageWithLayout = () => {
                 // 성공시 픽셀,ga
                 fpixel.purchase({
                   content_id: res.data.data?.id,
-                  value: totalPrice,
+                  value: formatToLocaleString(totalPrice).replace(',', '.'),
                   currency: 'KRW',
                   content_type: 'product',
                   contents: selectedOption.map(item => {
@@ -361,9 +360,11 @@ const Order: NextPageWithLayout = () => {
                       item_name: item.productName,
                       affiliation: '바로피쉬',
                       currency: 'KRW',
-                      quantity: item.stock,
+                      quantity: item.amount,
                       item_brand: item.storeName,
-                      price: (item.price + item.additionalPrice) * item.amount,
+                      price: formatToLocaleString(
+                        (item.price + item.additionalPrice) * item.amount,
+                      ).replace(',', '.'),
                     };
                   }),
                 });

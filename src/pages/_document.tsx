@@ -1,7 +1,21 @@
 import { Head, Html, Main, NextScript } from 'next/document';
 import Script from 'next/script';
+import { useEffect } from 'react';
 
 export default function Document() {
+  useEffect(() => {
+    const naverPublic = document.getElementById('naver_public');
+    const script2 = document.createElement('script');
+    script2.text = `
+     if (!wcs_add) var wcs_add = {};
+     wcs_add["wa"] = "s_49d23xxxxxxx";  // 여기에 본인의 네이버 애널리틱스 코드를 넣으세요
+     if (!_nasa) var _nasa = {};
+     if (window.wcs) { wcs.inflow();         
+     wcs_do(_nasa); } var _nasa = {}; // 초기화 구문
+     `;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
+
   return (
     <Html lang='ko'>
       <Head>
@@ -43,6 +57,7 @@ export default function Document() {
             `,
           }}
         />
+        <div id='naver_public' />
       </body>
     </Html>
   );
