@@ -12,7 +12,7 @@ import { client } from 'src/api/client';
 export type HeaderProps = ComponentProps<'header'>;
 
 export function Header({ className, ...props }: HeaderProps) {
-  const { data, error } = useQuery(queryKey.user, async () => {
+  const { data } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
       return res.data.data;
@@ -21,9 +21,15 @@ export function Header({ className, ...props }: HeaderProps) {
   console.log(data);
 
   return (
-    <header {...props} className={cm('sticky top-0 z-50', className)}>
+    <header {...props} className={cm('sticky top-0 z-50 space-y-0', className)}>
       {!data && <HeaderBanner />}
-      <div className='flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'>
+      <div
+        className={
+          !data
+            ? 'relative bottom-2 flex h-[56px] items-center  gap-3.5 bg-white pl-4 pr-[18px]'
+            : 'flex h-[56px] items-center  gap-3.5 bg-white pl-4 pr-[18px]'
+        }
+      >
         <Link href='/'>
           <Image
             unoptimized
