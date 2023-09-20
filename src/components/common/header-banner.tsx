@@ -6,7 +6,7 @@ export const HeaderBanner = () => {
   return (
     <button onClick={() => router.push('/login')}>
       <Image
-        src='/assets/icons/common/belt-banner.png'
+        src='/assets/icons/common/belt-banner.gif'
         style={{ objectFit: 'fill' }}
         width={400}
         height={208}

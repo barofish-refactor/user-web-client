@@ -19,14 +19,14 @@ export function Header({ className, ...props }: HeaderProps) {
     }
   });
   console.log(data);
-
   return (
     <header {...props} className={cm('sticky top-0 z-50 space-y-0', className)}>
       {!data && <HeaderBanner />}
       <div
+        style={{ paddingTop: '4px' }}
         className={
           !data
-            ? 'relative bottom-2 flex h-[56px] items-center  gap-3.5 bg-white pl-4 pr-[18px]'
+            ? 'relative bottom-2 flex h-[70px]  items-center gap-3.5 bg-white pl-4 pr-[18px]'
             : 'flex h-[56px] items-center  gap-3.5 bg-white pl-4 pr-[18px]'
         }
       >
