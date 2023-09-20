@@ -5,7 +5,13 @@ export const HeaderBanner = () => {
   const router = useRouter();
   return (
     <button onClick={() => router.push('/login')}>
-      <Image src='/assets/icons/common/belt-banner.png' width={375} height={208} alt='bannerAds' />
+      <Image
+        src='/assets/icons/common/belt-banner.png'
+        style={{ objectFit: 'fill' }}
+        width={400}
+        height={208}
+        alt='bannerAds'
+      />
     </button>
   );
 };
