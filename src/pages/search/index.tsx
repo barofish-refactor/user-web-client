@@ -13,6 +13,7 @@ import {
   type SaveProductPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
+import { HeaderBanner } from 'src/components/common/header-banner';
 import Layout from 'src/components/common/layout';
 import { HomeCurationItem, HomeProductList } from 'src/components/home';
 import { PopularSearchTerms, RecentSearches } from 'src/components/search';
@@ -226,11 +227,28 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       if (inView) fetchNextPage();
     },
   });
-
+  // 배너 확인용 유저
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    }
+  });
   return (
     <div className='max-md:w-[100vw]'>
       {/* header */}
-      <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
+      {!user && (
+        <div className='sticky top-0 z-50'>
+          <HeaderBanner />
+        </div>
+      )}
+      <div
+        className={
+          !user
+            ? 'sticky top-11 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'
+            : 'sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'
+        }
+      >
         <BackButton />
         <div className='ite ms-center flex h-[40px] flex-1 gap-2 rounded-md bg-grey-90 pl-3'>
           <button

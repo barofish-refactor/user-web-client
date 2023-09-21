@@ -7,6 +7,7 @@ import { Fragment, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { CartIcon } from 'src/components/common';
+import { HeaderBanner } from 'src/components/common/header-banner';
 import Layout from 'src/components/common/layout';
 import { StoreItem } from 'src/components/store';
 import { queryKey } from 'src/query-key';
@@ -109,11 +110,29 @@ const Store: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
+  // 배너 확인용 유저
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    }
+  });
 
   return (
     <div className='max-md:w-[100vw]'>
       {/* Header */}
-      <div className='sticky top-0 z-50 flex h-[56px] items-center gap-4 bg-white px-[18px]'>
+      {!user && (
+        <div className='sticky top-0 z-50'>
+          <HeaderBanner />
+        </div>
+      )}
+      <div
+        className={
+          !user
+            ? 'sticky top-11 z-50 flex h-[56px] items-center gap-4 bg-white px-[18px]'
+            : 'sticky top-0 z-50 flex h-[56px] items-center gap-4 bg-white px-[18px]'
+        }
+      >
         <div className='w-[13px]' />
         <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           스토어

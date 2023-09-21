@@ -7,6 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type Category, type CustomResponseListCategory } from 'src/api/swagger/data-contracts';
 import { CartIcon } from 'src/components/common';
+import { HeaderBanner } from 'src/components/common/header-banner';
 import Layout from 'src/components/common/layout';
 import { HomeProductList } from 'src/components/home';
 import { BackButton } from 'src/components/ui';
@@ -178,10 +179,27 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       if (inView) fetchNextPage();
     },
   });
-
+  // 배너 확인용 유저
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    }
+  });
   return (
     <div className='max-md:w-[100vw]'>
-      <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'>
+      {!user && (
+        <div className='sticky top-0 z-50'>
+          <HeaderBanner />
+        </div>
+      )}
+      <div
+        className={
+          !user
+            ? 'sticky top-11 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
+            : 'sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
+        }
+      >
         <BackButton />
         <p className='line-clamp-1 flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           {title}
