@@ -18,7 +18,6 @@ export function Header({ className, ...props }: HeaderProps) {
       return res.data.data;
     }
   });
-  console.log(data);
   return (
     <header {...props} className={cm('sticky top-0 z-50 space-y-0', className)}>
       {!data && <HeaderBanner />}

@@ -73,11 +73,11 @@ const ProductList = ({
                 <div className='absolute right-0 z-50 mt-1.5 flex w-[104px] flex-col items-start gap-[18px] rounded-lg bg-white py-3 pl-4 shadow-[0px_5px_10px_0px_rgba(0,0,0,0.15)]'>
                   {(
                     [
-                      { value: 'RECOMMEND' },
+                      // { value: 'RECOMMEND' },
                       { value: 'NEW' },
                       { value: 'SALES' },
                       { value: 'REVIEW' },
-                      { value: 'LIKE' },
+                      // { value: 'LIKE' },
                       { value: 'LOW_PRICE' },
                       { value: 'HIGH_PRICE' },
                     ] as { value: sortType }[]

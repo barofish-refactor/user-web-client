@@ -88,7 +88,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
           dataDto?.originPrice,
         )}원`}</p>
       )}
-      <div className='mt-1 flex items-center gap-0.5'>
+      {/* <div className='mt-1 flex items-center gap-0.5'>
         <Image
           unoptimized
           src='/assets/icons/common/speech-bubble.svg'
@@ -103,7 +103,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
         <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${
           dataDto?.reviewCount ?? 0
         }`}</p>
-      </div>
+      </div> */}
     </Link>
   );
 };
