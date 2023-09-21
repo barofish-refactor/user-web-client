@@ -20,7 +20,6 @@ const Login: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-
   return (
     <div className='relative flex flex-1 flex-col justify-between pb-6 pt-[15dvb]'>
       <button

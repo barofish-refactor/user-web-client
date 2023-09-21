@@ -9,6 +9,7 @@ import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type SimpleStore } from 'src/api/swagger/data-contracts';
 import { CartIcon } from 'src/components/common';
+import { HeaderBanner } from 'src/components/common/header-banner';
 import Layout from 'src/components/common/layout';
 import { HomeProductList } from 'src/components/home';
 import { StarIcon } from 'src/components/icons';
@@ -164,11 +165,28 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       }
     }
   }, [data]);
-
+  // 배너 확인용 유저
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    }
+  });
   return (
     <div className='max-md:w-[100vw]'>
       {/* header */}
-      <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
+      {!user && (
+        <div className='sticky top-0 z-50'>
+          <HeaderBanner />
+        </div>
+      )}
+      <div
+        className={
+          !user
+            ? 'sticky top-11 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'
+            : 'sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'
+        }
+      >
         <BackButton />
         <div className='flex items-center gap-4'>
           <button

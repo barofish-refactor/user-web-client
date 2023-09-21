@@ -35,6 +35,7 @@ import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
+import { HeaderBanner } from 'src/components/common/header-banner';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -198,6 +199,13 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       router.events.off('routeChangeComplete', handleRouteChange);
     };
   }, [data, headTitle, router.events]);
+  // 배너 확인용 유저
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    }
+  });
 
   return (
     <>
@@ -249,7 +257,19 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         </div>
 
         {/* header */}
-        <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'>
+        {!user && (
+          <div className='sticky top-0 z-50'>
+            <HeaderBanner />
+          </div>
+        )}
+
+        <div
+          className={
+            !user
+              ? 'sticky top-11 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'
+              : 'sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'
+          }
+        >
           <BackButton />
           <div className='flex items-center gap-4'>
             <Link href='/product/cart'>
