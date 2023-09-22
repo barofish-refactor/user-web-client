@@ -91,6 +91,7 @@ const Order: NextPageWithLayout = () => {
   const [shippingAddress, setShippingAddress] = useState<DeliverPlace>();
   const [point, setPoint] = useState<string>('');
   const [isOpenProduct, setIsOpenProduct] = useState<boolean>(false);
+  const [isOpenProductPoint, setIsOpenProductPoint] = useState<boolean>(false);
   const [isCheck, setIsCheck] = useState<boolean>(false);
   const [selectCoupon, setSelectCoupon] = useState<Coupon>();
   const [isOpenPayList, setIsOpenPayList] = useState<boolean>(true);
@@ -175,16 +176,14 @@ const Order: NextPageWithLayout = () => {
 
   /** 구매 적립금 */
   const buyPoint =
-    Math.round(Math.floor((Math.max(totalPrice, 0) / 100) * (user?.grade?.pointRate ?? 1)) / 10) *
-    10;
+    Math.round(Math.floor(Math.max(totalPrice, 0) * (user?.grade?.pointRate ?? 1)) / 10) * 10;
   /** 상품 적립금 */
   const productPoint = Math.floor(
     selectedOption.length > 0
-      ? selectedOption
-          .map(v => (((v.price + v.additionalPrice) * v.amount) / 100) * v.pointRate)
-          .reduce((a, b) => a + b, 0)
+      ? selectedOption.map(v => v.price * v.amount * v.pointRate).reduce((a, b) => a + b, 0)
       : 0,
   );
+
   /** 후기 작성 적립금 */
   const imageReviewPoint = pointData?.imageReviewPoint;
   /** 예상 적립 금액 */
@@ -464,6 +463,7 @@ const Order: NextPageWithLayout = () => {
       });
     }
   }, [options, router.isReady]);
+  console.log(selectedOption);
 
   return (
     <div className='pb-[100px] max-md:w-[100vw]'>
@@ -986,20 +986,55 @@ const Order: NextPageWithLayout = () => {
               buyPoint,
             )}원`}</p>
             <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
-              {`(${user?.grade?.name ?? '멸치'} 등급 : 구매 적립 ${user?.grade?.pointRate ?? 1}%)`}
+              {`(${user?.grade?.name ?? '멸치'} 등급 : 구매 적립 ${
+                Number(user?.grade?.pointRate) * 100 ?? 1
+              }%)`}
             </p>
           </div>
         </div>
-        <div className='mt-4 flex items-start justify-between'>
-          <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+        {/* <button
+          className='flex h-[68px] w-full items-center gap-1.5 px-4'
+          onClick={() => setIsOpenProduct(!isOpenProduct)}
+        ></button> */}
+        <button
+          className='flex h-[50px] w-full items-center justify-between'
+          onClick={() => setIsOpenProductPoint(!isOpenProductPoint)}
+        >
+          <p className='flex text-[16px] font-medium leading-[24px] -tracking-[0.03em]  text-grey-50'>
             상품적립
+            <Image
+              unoptimized
+              src='/assets/icons/common/chevron-mypage.svg'
+              alt='chevron'
+              width={24}
+              height={24}
+              className={cm(!isOpenProductPoint ? 'rotate-90' : 'rotate-[270deg]')}
+            />
           </p>
           <div className='flex flex-col items-end'>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
-              productPoint,
-            )}원`}</p>
+            <p className=' text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              {`${formatToLocaleString(productPoint)}원`}
+            </p>
           </div>
-        </div>
+        </button>
+        {isOpenProductPoint &&
+          selectedOption.map((item, idx) => {
+            return (
+              <Fragment key={idx}>
+                <div className='flex items-center justify-between'>
+                  <p className='text-[14px] font-medium leading-[10px] -tracking-[0.03em] text-grey-50'>
+                    {item.productName}
+                  </p>
+                  <p className='text-[14px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
+                    Math.floor(Number(item.price * item.amount * item.pointRate)),
+                  )}원`}</p>
+                </div>
+                <p className='mb-2 mt-1 text-[14px] font-medium leading-[10px] -tracking-[0.03em] text-grey-50'>
+                  옵션: {item.name}
+                </p>
+              </Fragment>
+            );
+          })}
         <div className='mt-4 flex items-center justify-between'>
           <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
             후기작성

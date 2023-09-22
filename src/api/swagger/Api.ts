@@ -110,6 +110,7 @@ import {
   DeleteRecommendCompareSetData,
   DeleteReportsData,
   DeleteReportsPayload,
+  DeleteReviewByUser1Data,
   DeleteReviewByUserData,
   DeleteSaveProductsData,
   DeleteSaveProductsPayload,
@@ -123,6 +124,7 @@ import {
   FindEmailPayload,
   GetData,
   GetFormData,
+  GetReviewsData,
   GithubWebhookCallbackData,
   GithubWebhookCallbackPayload,
   JoinAppleSnsData,
@@ -220,6 +222,7 @@ import {
   SelectPointRuleData,
   SelectProductCountByUserData,
   SelectProductData,
+  SelectProductListByUser1Data,
   SelectProductListByUserData,
   SelectProductListData,
   SelectProductListForExcelData,
@@ -350,6 +353,20 @@ import {
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags review-controller-v-2
+   * @name DeleteReviewByUser
+   * @request POST:/api/v2/review/{id}
+   * @response `200` `DeleteReviewByUserData` OK
+   */
+  deleteReviewByUser = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteReviewByUserData, any>({
+      path: `/api/v2/review/${id}`,
+      method: 'POST',
+      ...params,
+    });
   /**
    * No description
    *
@@ -2035,6 +2052,82 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags review-controller-v-2
+   * @name GetReviews
+   * @request GET:/api/v2/review/product/{id}
+   * @response `200` `GetReviewsData` OK
+   */
+  getReviews = (
+    id: number,
+    query?: {
+      /** @default "RECENT" */
+      orderType?: 'BEST' | 'RECENT';
+      /**
+       * @format int32
+       * @default 0
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<GetReviewsData, any>({
+      path: `/api/v2/review/product/${id}`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-controller-v-2
+   * @name SelectProductListByUser
+   * @request GET:/api/v2/product/list
+   * @response `200` `SelectProductListByUserData` OK
+   */
+  selectProductListByUser = (
+    query?: {
+      /**
+       * @format int32
+       * @default 1
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+      /** @default "RECOMMEND" */
+      sortby?: 'RECOMMEND' | 'NEW' | 'SALES' | 'REVIEW' | 'LIKE' | 'LOW_PRICE' | 'HIGH_PRICE';
+      categoryIds?: string;
+      filterFieldIds?: string;
+      typeIds?: string;
+      locationIds?: string;
+      processIds?: string;
+      usageIds?: string;
+      storageIds?: string;
+      /** @format int32 */
+      curationId?: number;
+      /** @default "" */
+      keyword?: string;
+      /** @format int32 */
+      storeId?: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectProductListByUserData, any>({
+      path: `/api/v2/product/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags verification-controller
    * @name VerifyCodeWithImpUid
    * @request GET:/api/v1/verification/verify/{impUid}
@@ -2890,12 +2983,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller
-   * @name DeleteReviewByUser
+   * @name DeleteReviewByUser1
    * @request DELETE:/api/v1/review/{id}
-   * @response `200` `DeleteReviewByUserData` OK
+   * @response `200` `DeleteReviewByUser1Data` OK
    */
-  deleteReviewByUser = (id: number, params: RequestParams = {}) =>
-    this.request<DeleteReviewByUserData, any>({
+  deleteReviewByUser1 = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteReviewByUser1Data, any>({
       path: `/api/v1/review/${id}`,
       method: 'DELETE',
       ...params,
@@ -3191,11 +3284,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags product-controller
-   * @name SelectProductListByUser
+   * @name SelectProductListByUser1
    * @request GET:/api/v1/product/list
-   * @response `200` `SelectProductListByUserData` OK
+   * @response `200` `SelectProductListByUser1Data` OK
    */
-  selectProductListByUser = (
+  selectProductListByUser1 = (
     query?: {
       /**
        * @format int32
@@ -3225,7 +3318,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectProductListByUserData, any>({
+    this.request<SelectProductListByUser1Data, any>({
       path: `/api/v1/product/list`,
       method: 'GET',
       query: query,
