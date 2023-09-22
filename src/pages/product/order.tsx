@@ -463,7 +463,6 @@ const Order: NextPageWithLayout = () => {
       });
     }
   }, [options, router.isReady]);
-  console.log(selectedOption);
 
   return (
     <div className='pb-[100px] max-md:w-[100vw]'>
