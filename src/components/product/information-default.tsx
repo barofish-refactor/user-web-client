@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ChevronIcon } from 'src/components/icons';
 import { calcDiscountRate, formatToLocaleString, setDeliverDate } from 'src/utils/functions';
@@ -11,6 +11,14 @@ interface Props {
 
 /** 상품 상세 - 기본 정보 */
 const InformationDefault = ({ data }: Props) => {
+  const [point, setPoint] = useState<number>(0);
+
+  useEffect(() => {
+    if (data?.discountPrice && data?.pointRate) {
+      const dataPoint = data?.discountPrice * data?.pointRate;
+      setPoint(dataPoint);
+    }
+  }, [data?.discountPrice, data?.pointRate]);
   return (
     <div className=''>
       <div className='px-4 pb-5 pt-[15px]'>
@@ -39,6 +47,9 @@ const InformationDefault = ({ data }: Props) => {
             <p className='-mt-[5px] text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-black'>{`${formatToLocaleString(
               data?.discountPrice,
             )}원`}</p>
+            <p className='-mt-[5px] text-[15px] font-bold leading-[30px] -tracking-[0.03em] text-grey-70'>{`${formatToLocaleString(
+              point,
+            )}원 적립`}</p>
           </div>
         </div>
       </div>
