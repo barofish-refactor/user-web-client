@@ -104,6 +104,19 @@ const Cart: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      if (res.data.code === 'FORBIDDEN') {
+        router.replace('/login');
+        return;
+      }
+      setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.errorMsg);
+    }
+  });
 
   const { data: selectProductOtherCustomerBuy } = useQuery(
     queryKey.orderRecommend.list(data?.map(x => x.product?.id).join(',')),
@@ -219,6 +232,19 @@ const Cart: NextPageWithLayout = () => {
       setSectionCart(result);
     }
   }, [data, isLoading]);
+
+  /** 구매 적립금 */
+  const buyPoint =
+    Math.round(Math.floor(Math.max(totalPrice, 0) * (user?.grade?.pointRate ?? 1)) / 10) * 10;
+
+  /** 상품 적립금 */
+  const productPoint = Math.floor(
+    selectedItem.length > 0
+      ? selectedItem
+          .map((v: any) => v.option?.discountPrice * v.amount * v.option.pointRate)
+          .reduce((a, b) => a + b, 0)
+      : 0,
+  );
 
   return (
     <div className='pb-[100px] max-md:w-[100vw]'>
@@ -415,6 +441,14 @@ const Cart: NextPageWithLayout = () => {
                     </p>
                     <p className='text-[14px] font-bold leading-[22px] -tracking-[0.03em] text-grey-10'>
                       {`${formatToLocaleString(sectionTotal)}원`}
+                    </p>
+                  </div>
+                  <div className='flex items-center justify-between'>
+                    <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+                      적립금
+                    </p>
+                    <p className='text-[14px] font-bold leading-[22px] -tracking-[0.03em] text-grey-10'>
+                      {`${formatToLocaleString(buyPoint + productPoint)}원`}
                     </p>
                   </div>
                   <div className='flex items-center justify-between'>

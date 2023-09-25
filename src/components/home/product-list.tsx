@@ -129,6 +129,7 @@ const ProductList = ({
               alt='filter'
               width={15}
               height={10}
+              loading='lazy'
               src={
                 filter && filter.length > 0
                   ? '/assets/icons/common/filter-on.svg'
@@ -169,6 +170,7 @@ function Empty() {
             alt='error'
             width={40}
             height={40}
+            loading='lazy'
           />
           <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
             상품이 없습니다.
