@@ -1,8 +1,6 @@
 import { type ComponentProps } from 'react';
 import { Footer, type FooterProps } from 'src/components/common/footer';
 import { Header, type HeaderProps } from 'src/components/common/header';
-import PhotoSheet from 'src/components/common/photo-sheet';
-import Toast from 'src/components/common/toast';
 import cm from 'src/utils/class-merge';
 import dynamic from 'next/dynamic';
 
@@ -12,6 +10,9 @@ export const Confirm = dynamic(() => import('src/components/common/confirm'));
 export const BottomSheet = dynamic(() => import('src/components/common/bottom-sheet'));
 export const BottomConfirm = dynamic(() => import('src/components/common/bottom-confirm'));
 export const OptionBottomSheet = dynamic(() => import('src/components/common/option-bottom-sheet'));
+export const Toast = dynamic(() => import('src/components/common/toast'));
+export const PhotoSheet = dynamic(() => import('src/components/common/photo-sheet'));
+
 type Optional<T> = T & { disable?: boolean };
 
 interface Props extends ComponentProps<'main'> {
