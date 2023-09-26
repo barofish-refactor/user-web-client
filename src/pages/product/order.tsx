@@ -1025,7 +1025,7 @@ const Order: NextPageWithLayout = () => {
                     {item.productName}
                   </p>
                   <p className='text-[14px] font-medium leading-[24px] -tracking-[0.03em] text-grey-60'>{`${formatToLocaleString(
-                    Math.floor(item.price * item.amount * item.pointRate),
+                    Math.floor(item.price * item.pointRate) * item.amount,
                   )}원`}</p>
                 </div>
                 <p className='mb-2 mt-2 text-[14px] font-medium leading-[10px] -tracking-[0.03em] text-grey-60'>
