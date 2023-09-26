@@ -32,6 +32,7 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import 'swiper/css';
 import 'swiper/css/free-mode';
+// import { headers } from 'next/dist/client/components/headers';
 
 const IMAGE_MAX_COUNT = 10;
 

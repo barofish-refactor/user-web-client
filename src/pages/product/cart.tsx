@@ -471,14 +471,6 @@ const Cart: NextPageWithLayout = () => {
             </div>
             <div className='flex items-center justify-between'>
               <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
-                총 적립금
-              </p>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
-                {`${formatToLocaleString(buyPoint + productPoint)}원`}
-              </p>
-            </div>
-            <div className='flex items-center justify-between'>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 총 배송비
               </p>
               <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
@@ -493,6 +485,14 @@ const Cart: NextPageWithLayout = () => {
               <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-black'>{`${formatToLocaleString(
                 totalPrice + totalDelivery,
               )}원`}</p>
+            </div>
+            <div className='flex items-center justify-between'>
+              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                총 적립금
+              </p>
+              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                {`${formatToLocaleString(buyPoint + productPoint)}원`}
+              </p>
             </div>
           </div>
           <div className='h-2 bg-grey-90' />

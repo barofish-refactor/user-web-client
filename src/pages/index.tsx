@@ -32,6 +32,7 @@ const Home: NextPageWithLayout = () => {
   const { filter, setFilter } = useFilterStore();
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [defaultCurationAbbreviation, setDefaultCurationAbbreviation] = useState<Curation[]>([]);
 
   const { data, isLoading, refetch } = useQuery(queryKey.main, async () => {
@@ -166,7 +167,6 @@ const Home: NextPageWithLayout = () => {
             )}
           />
           <div className='h-[1px] bg-[#F4F4F4]' />
-
           {isLoading ? (
             <div className='h-[50vh]' />
           ) : (
