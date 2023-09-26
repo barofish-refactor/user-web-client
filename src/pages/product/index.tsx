@@ -281,7 +281,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
         {/* content */}
         <ProductBanner image={data?.images ?? []} />
-        <ProductInformationDefault data={data} />
+        <ProductInformationDefault data={data} user={user} />
         {/* <ProductCompare /> */}
 
         {/* Tab Content */}

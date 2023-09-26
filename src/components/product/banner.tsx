@@ -54,7 +54,7 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
               <Image
                 unoptimized
                 src='/assets/icons/common/chevron-banner.svg'
-                alt=''
+                alt='상세'
                 width={16}
                 height={16}
                 className='rotate-180'
@@ -69,10 +69,9 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
               <Image
                 unoptimized
                 src='/assets/icons/common/chevron-banner.svg'
-                alt=''
+                alt='상세'
                 width={16}
                 height={16}
-                className=''
               />
             </div>
           </button>

@@ -35,7 +35,7 @@ const Footer = () => {
             <Image
               unoptimized
               src='/assets/icons/common/chevron-footer.svg'
-              alt=''
+              alt='footer'
               width={13}
               height={8}
               className={cm({ 'rotate-180': showInfo })}

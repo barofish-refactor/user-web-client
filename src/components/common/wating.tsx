@@ -12,7 +12,7 @@ const Wating = ({ title }: Props) => {
         <Image
           unoptimized
           src='/assets/icons/common/alert-wating.svg'
-          alt=''
+          alt='alert'
           width={48}
           height={48}
         />

@@ -32,6 +32,7 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import 'swiper/css';
 import 'swiper/css/free-mode';
+// import { headers } from 'next/dist/client/components/headers';
 
 const IMAGE_MAX_COUNT = 10;
 
@@ -77,7 +78,7 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
           queryClient.invalidateQueries(queryKey.review.lists);
           setAlert({
             message: '리뷰를 등록했습니다.',
-            onClick: () => router.back(),
+            onClick: () => router.push('/mypage/order'),
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })

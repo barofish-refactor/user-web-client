@@ -22,6 +22,7 @@ const SubBanner = ({ data }: Props) => {
         width={375}
         height={208}
         alt='subBanner'
+        loading='lazy'
         className={cm('aspect-[343/129] w-full rounded-lg object-cover', {
           'cursor-pointer':
             ['CURATION', 'CATEGORY', 'NOTICE'].includes(data.type ?? '') || data.link,

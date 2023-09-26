@@ -8,20 +8,6 @@ export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '수산물 전문 비교구매 플랫폼';
 
 export default function Head() {
-  const router = useRouter();
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const naverPublic = document.getElementById('naver_public');
-    const script2 = document.createElement('script');
-    script2.text = `
-     if (!wcs_add) var wcs_add = {};
-     wcs_add["wa"] = "s_314396d7e444"; 
-     if (!_nasa) var _nasa = {};
-     if (window.wcs) { wcs.inflow();
-     wcs_do(_nasa); } var _nasa = {};
-     `;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
   return (
     <Fragment>
       <DefaultSeo
@@ -30,7 +16,7 @@ export default function Head() {
         additionalMetaTags={[
           {
             name: 'viewport',
-            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0',
+            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
           },
           {
             name: 'naver-site-verification',
@@ -48,7 +34,6 @@ export default function Head() {
       {/* Global Site Tag (gtag.js) - Google Analytics */}
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
-      <div id='naver_public' />
     </Fragment>
   );
 }
@@ -119,7 +104,6 @@ function GAScript() {
   gtag('config', 'AW-11315318272');
   gtag('config', '${gtag.GA_TRACKING_ID}' , {
     page_path: window.location.pathname,
-    'debug_mode': true,
   });
   `,
         }}

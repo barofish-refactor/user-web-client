@@ -181,7 +181,7 @@ export function MypageOrderDetail({ id }: Props) {
                   src='/assets/icons/common/chevron-mypage.svg'
                   width={24}
                   height={24}
-                  alt=''
+                  alt='mypage'
                   className='rotate-90 group-open:-rotate-90'
                 />
               </div>

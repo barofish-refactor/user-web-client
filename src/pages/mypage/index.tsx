@@ -194,7 +194,7 @@ const MyPage: NextPageWithLayout = () => {
               priority
               draggable={false}
               src={banner[0].image ?? ''}
-              alt=''
+              alt='banner'
               className='aspect-[343/140] w-full object-cover'
             />
           </button>

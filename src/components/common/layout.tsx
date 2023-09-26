@@ -1,19 +1,17 @@
 import { type ComponentProps } from 'react';
-import {
-  Alert,
-  BottomConfirm,
-  BottomSheet,
-  Confirm,
-  OptionBottomSheet,
-  PcBanner,
-} from 'src/components/common';
-
 import { Footer, type FooterProps } from 'src/components/common/footer';
 import { Header, type HeaderProps } from 'src/components/common/header';
 import PhotoSheet from 'src/components/common/photo-sheet';
 import Toast from 'src/components/common/toast';
 import cm from 'src/utils/class-merge';
+import dynamic from 'next/dynamic';
 
+export const PcBanner = dynamic(() => import('src/components/common/pc-banner'));
+export const Alert = dynamic(() => import('src/components/common/alert'));
+export const Confirm = dynamic(() => import('src/components/common/confirm'));
+export const BottomSheet = dynamic(() => import('src/components/common/bottom-sheet'));
+export const BottomConfirm = dynamic(() => import('src/components/common/bottom-confirm'));
+export const OptionBottomSheet = dynamic(() => import('src/components/common/option-bottom-sheet'));
 type Optional<T> = T & { disable?: boolean };
 
 interface Props extends ComponentProps<'main'> {

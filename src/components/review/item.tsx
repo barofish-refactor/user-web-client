@@ -197,7 +197,6 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           )}`}</p>
         </button>
       </div>
-
       <div className='mt-[15px] h-[1px] bg-[#F2F2F2]' />
     </div>
   );
