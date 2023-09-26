@@ -8,7 +8,7 @@ export const HeaderBanner = () => {
       <Image
         src='/assets/icons/common/belt-banner.webp'
         style={{ objectFit: 'fill' }}
-        width={420}
+        width={400}
         height={200}
         loading='lazy'
         alt='bannerAds'

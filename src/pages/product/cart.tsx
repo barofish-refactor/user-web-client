@@ -358,7 +358,7 @@ const Cart: NextPageWithLayout = () => {
                               <Image
                                 unoptimized
                                 src={v.product?.image ?? ''}
-                                alt=''
+                                alt='cartImge'
                                 width={70}
                                 height={70}
                                 className='rounded'
@@ -443,14 +443,7 @@ const Cart: NextPageWithLayout = () => {
                       {`${formatToLocaleString(sectionTotal)}원`}
                     </p>
                   </div>
-                  <div className='flex items-center justify-between'>
-                    <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
-                      적립금
-                    </p>
-                    <p className='text-[14px] font-bold leading-[22px] -tracking-[0.03em] text-grey-10'>
-                      {`${formatToLocaleString(buyPoint + productPoint)}원`}
-                    </p>
-                  </div>
+
                   <div className='flex items-center justify-between'>
                     <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
                       배송비
@@ -475,6 +468,14 @@ const Cart: NextPageWithLayout = () => {
               <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
                 totalPrice,
               )}원`}</p>
+            </div>
+            <div className='flex items-center justify-between'>
+              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                총 적립금
+              </p>
+              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                {`${formatToLocaleString(buyPoint + productPoint)}원`}
+              </p>
             </div>
             <div className='flex items-center justify-between'>
               <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>

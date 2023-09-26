@@ -9,7 +9,7 @@ import {
   HomeAbbreviationCuration,
   HomeBanner,
   HomeCurationList,
-  HomeCurationTip,
+  // HomeCurationTip,
   HomeFooter,
   HomeProductList,
   HomeTab,

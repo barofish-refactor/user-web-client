@@ -53,7 +53,7 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
             ) : (
               <Image
                 unoptimized
-                alt=''
+                alt='checkBox'
                 width={24}
                 height={24}
                 src={

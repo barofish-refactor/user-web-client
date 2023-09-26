@@ -66,6 +66,7 @@ const ProductList = ({
                   alt='chevron'
                   width={8}
                   height={5}
+                  loading='lazy'
                   className={cm({ 'rotate-180': isShowSort })}
                 />
               </button>

@@ -204,7 +204,7 @@ function Row({
       <Image
         unoptimized
         src='/assets/icons/common/chevron-mypage.svg'
-        alt=''
+        alt='mypageImge'
         width={24}
         height={24}
         className={`${href || onClick ? '' : 'invisible'}`}

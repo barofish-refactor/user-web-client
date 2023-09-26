@@ -614,7 +614,7 @@ const Order: NextPageWithLayout = () => {
                   <Image
                     unoptimized
                     src={x.storeImage}
-                    alt=''
+                    alt='cartImg'
                     width={28}
                     height={28}
                     className='h-7 w-7 rounded-full border border-grey-90 object-cover'
@@ -639,7 +639,7 @@ const Order: NextPageWithLayout = () => {
                       <div className='mt-[13px] flex items-center gap-3'>
                         <Image
                           unoptimized
-                          alt=''
+                          alt='productImage'
                           width={70}
                           height={70}
                           className='h-[70px] w-[70px] rounded object-cover'
@@ -1098,7 +1098,7 @@ function BusinessInformation() {
             <Image
               unoptimized
               src='/assets/icons/common/chevron-footer.svg'
-              alt=''
+              alt='footerImg'
               width={13}
               height={8}
               className={cm({ 'rotate-180': showInfo })}

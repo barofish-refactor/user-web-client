@@ -1,5 +1,4 @@
 import { Head, Html, Main, NextScript } from 'next/document';
-import Script from 'next/script';
 
 export default function Document() {
   return (
@@ -23,26 +22,10 @@ export default function Document() {
           content='T3lWWvNBN9VLNavR3ZtyKsKoat_QW1rBqsfxDBo_FAs'
         />
         <meta name='naver-site-verification' content='1e575d2a85af7f25e9fddd1ce448ecc7bc99335d' />
-        <Script id='google-tag-manager' strategy='afterInteractive'>
-          {`
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer', 'GTM-P8Z6CV7');`}
-        </Script>
       </Head>
       <body>
         <Main />
         <NextScript />
-        <noscript
-          dangerouslySetInnerHTML={{
-            __html: `
-            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P8Z6CV7"
-            height="0" width="0" style="display:none;visibility:hidden"></iframe>
-            `,
-          }}
-        />
       </body>
     </Html>
   );
