@@ -30,7 +30,8 @@ const CurationItem = ({
 }: Props) => {
   return (
     <div className={cm('px-4 py-[30px]', className)}>
-      <div className='flex items-center justify-between'>
+      {/* 설명 부분 showViewAll */}
+      {/* <div className='flex items-center justify-between'>
         <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
           {data.title}
         </p>
@@ -56,10 +57,10 @@ const CurationItem = ({
             </div>
           </Link>
         )}
-      </div>
-      <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
+      </div> */}
+      {/* <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         {data.description}
-      </p>
+      </p> */}
       {data.type === 'SQUARE' ? (
         <HomeTableCuration
           data={data.products?.filter(x => x.state === 'ACTIVE') ?? []}

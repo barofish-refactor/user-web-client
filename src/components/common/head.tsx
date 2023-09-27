@@ -16,7 +16,7 @@ export default function Head() {
         additionalMetaTags={[
           {
             name: 'viewport',
-            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
+            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0',
           },
           {
             name: 'naver-site-verification',
@@ -31,7 +31,6 @@ export default function Head() {
           type: 'website',
         }}
       />
-      {/* Global Site Tag (gtag.js) - Google Analytics */}
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
     </Fragment>
