@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Fragment } from 'react';
 import { type Curation } from 'src/api/swagger/data-contracts';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -25,38 +24,40 @@ const CurationAbbreviation = ({ data }: Props) => {
     >
       {data.map((v, idx) => {
         return (
-          <Fragment key={`mainTab${idx}`}>
-            <SwiperSlide className='mr-2.5 !w-[70px] last-of-type:mr-0'>
-              <Link
-                className='flex h-[95px] w-[70px] flex-col items-center justify-between'
-                href={
-                  v.id !== -2
-                    ? {
-                        pathname: '/search/product-result',
-                        query: { type: 'curation', id: v.id },
-                      }
-                    : {
-                        pathname: '/tip',
-                      }
-                }
-              >
-                <div className='h-[70px] w-[70px] overflow-hidden rounded-full bg-primary-90'>
-                  <Image
-                    priority
-                    src={v.image ?? ''}
-                    alt={v.shortName ?? ''}
-                    width={70}
-                    height={70}
-                    style={{ width: '70px', height: '70px' }}
-                    className='object-cover'
-                  />
-                </div>
-                <p className='line-clamp-1 w-full text-center text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
-                  {v.shortName ?? ''}
-                </p>
-              </Link>
-            </SwiperSlide>
-          </Fragment>
+          <SwiperSlide
+            key={`mainTab${idx}`}
+            className='mr-2.5 !w-[70px] last-of-type:mr-0'
+            style={{ position: 'relative', top: '12px' }}
+          >
+            <Link
+              className='flex h-[95px] w-[70px] flex-col items-center justify-between'
+              href={
+                v.id !== -2
+                  ? {
+                      pathname: '/search/product-result',
+                      query: { type: 'curation', id: v.id },
+                    }
+                  : {
+                      pathname: '/tip',
+                    }
+              }
+            >
+              <div className='h-[70px] w-[70px] overflow-hidden rounded-full bg-primary-90'>
+                <Image
+                  priority
+                  src={v.image ?? ''}
+                  alt={v.shortName ?? ''}
+                  width={70}
+                  height={70}
+                  style={{ width: '70px', height: '70px' }}
+                  className='object-cover'
+                />
+              </div>
+              <p className='line-clamp-1 w-full text-center text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
+                {v.shortName ?? ''}
+              </p>
+            </Link>
+          </SwiperSlide>
         );
       })}
     </Swiper>
