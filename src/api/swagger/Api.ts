@@ -110,8 +110,8 @@ import {
   DeleteRecommendCompareSetData,
   DeleteReportsData,
   DeleteReportsPayload,
-  DeleteReviewByUser1Data,
   DeleteReviewByUserData,
+  DeleteReviewData,
   DeleteSaveProductsData,
   DeleteSaveProductsPayload,
   DeleteSearchFilterData,
@@ -309,6 +309,8 @@ import {
   UpdateProductPayload,
   UpdateRecommendCompareSetData,
   UpdateRecommendCompareSetPayload,
+  UpdateReview1Data,
+  UpdateReview1Payload,
   UpdateReviewData,
   UpdateReviewPayload,
   UpdateSearchFilterFieldData,
@@ -357,14 +359,30 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller-v-2
-   * @name DeleteReviewByUser
+   * @name DeleteReview
    * @request POST:/api/v2/review/{id}
-   * @response `200` `DeleteReviewByUserData` OK
+   * @response `200` `DeleteReviewData` OK
    */
-  deleteReviewByUser = (id: number, params: RequestParams = {}) =>
-    this.request<DeleteReviewByUserData, any>({
+  deleteReview = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteReviewData, any>({
       path: `/api/v2/review/${id}`,
       method: 'POST',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags review-controller-v-2
+   * @name UpdateReview
+   * @request POST:/api/v2/review/update/{id}
+   * @response `200` `UpdateReviewData` OK
+   */
+  updateReview = (id: number, data: UpdateReviewPayload, params: RequestParams = {}) =>
+    this.request<UpdateReviewData, any>({
+      path: `/api/v2/review/update/${id}`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**
@@ -955,12 +973,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller
-   * @name UpdateReview
+   * @name UpdateReview1
    * @request POST:/api/v1/review/update/{id}
-   * @response `200` `UpdateReviewData` OK
+   * @response `200` `UpdateReview1Data` OK
    */
-  updateReview = (id: number, data: UpdateReviewPayload, params: RequestParams = {}) =>
-    this.request<UpdateReviewData, any>({
+  updateReview1 = (id: number, data: UpdateReview1Payload, params: RequestParams = {}) =>
+    this.request<UpdateReview1Data, any>({
       path: `/api/v1/review/update/${id}`,
       method: 'POST',
       body: data,
@@ -2983,12 +3001,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller
-   * @name DeleteReviewByUser1
+   * @name DeleteReviewByUser
    * @request DELETE:/api/v1/review/{id}
-   * @response `200` `DeleteReviewByUser1Data` OK
+   * @response `200` `DeleteReviewByUserData` OK
    */
-  deleteReviewByUser1 = (id: number, params: RequestParams = {}) =>
-    this.request<DeleteReviewByUser1Data, any>({
+  deleteReviewByUser = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteReviewByUserData, any>({
       path: `/api/v1/review/${id}`,
       method: 'DELETE',
       ...params,
