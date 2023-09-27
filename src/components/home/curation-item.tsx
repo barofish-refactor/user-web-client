@@ -31,7 +31,7 @@ const CurationItem = ({
   return (
     <div
       className={cm(
-        data.title?.includes('최상단') ? 'px-4 pb-[30px] pt-[5px]' : 'px-4 py-[30px]',
+        data.title?.includes('최상단') ? 'px-4 pb-[30px] pt-[6px]' : 'px-4 py-[30px]',
         className,
       )}
     >
