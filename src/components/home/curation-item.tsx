@@ -29,37 +29,48 @@ const CurationItem = ({
   onDeleteSaveProductsMutate,
 }: Props) => {
   return (
-    <div className={cm('px-4 py-[30px]', className)}>
-      <div className='flex items-center justify-between'>
-        <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
-          {data.title}
-        </p>
-        {showViewAll && (
-          <Link
-            className=''
-            href={{
-              pathname: '/search/product-result',
-              query: { type: 'curation', id: data.id },
-            }}
-          >
-            <div className='flex h-[30px] items-center gap-1'>
-              <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
-                전체보기
-              </p>
-              <Image
-                unoptimized
-                src='/assets/icons/common/chevron.svg'
-                alt='chevron'
-                width={12}
-                height={12}
-              />
-            </div>
-          </Link>
-        )}
-      </div>
-      <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
-        {data.description}
-      </p>
+    <div
+      className={cm(
+        data.title?.includes('최상단') ? 'px-4 pb-[30px] pt-[5px]' : 'px-4 py-[30px]',
+        className,
+      )}
+    >
+      {/* 설명 부분 showViewAll */}
+      {data.title?.includes('최상단') ? null : (
+        <>
+          <div className='flex items-center justify-between'>
+            <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+              {data.title}
+            </p>
+            {showViewAll && (
+              <Link
+                className=''
+                href={{
+                  pathname: '/search/product-result',
+                  query: { type: 'curation', id: data.id },
+                }}
+              >
+                <div className='flex h-[30px] items-center gap-1'>
+                  <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+                    전체보기
+                  </p>
+                  <Image
+                    unoptimized
+                    src='/assets/icons/common/chevron.svg'
+                    alt='chevron'
+                    width={12}
+                    height={12}
+                  />
+                </div>
+              </Link>
+            )}
+          </div>
+          <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
+            {data.description}
+          </p>
+        </>
+      )}
+
       {data.type === 'SQUARE' ? (
         <HomeTableCuration
           data={data.products?.filter(x => x.state === 'ACTIVE') ?? []}

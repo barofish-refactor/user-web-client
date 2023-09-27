@@ -60,7 +60,6 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       enabled: !!id && type === 'curation',
     },
   );
-
   useEffect(() => {
     if (curationData && !curationLoading) {
       setTitle(curationData.title ?? curationData.shortName ?? '');

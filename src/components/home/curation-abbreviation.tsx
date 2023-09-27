@@ -24,7 +24,11 @@ const CurationAbbreviation = ({ data }: Props) => {
     >
       {data.map((v, idx) => {
         return (
-          <SwiperSlide key={`mainTab${idx}`} className='mr-2.5 !w-[70px] last-of-type:mr-0'>
+          <SwiperSlide
+            key={`mainTab${idx}`}
+            className='mr-2.5 !w-[70px] last-of-type:mr-0'
+            style={{ position: 'relative', top: '12px' }}
+          >
             <Link
               className='flex h-[95px] w-[70px] flex-col items-center justify-between'
               href={

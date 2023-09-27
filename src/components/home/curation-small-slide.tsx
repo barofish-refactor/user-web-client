@@ -4,8 +4,9 @@ import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data
 import { ProductSmallSlideItem } from 'src/components/common';
 import { useAlertStore } from 'src/store';
 import cm from 'src/utils/class-merge';
-import { FreeMode } from 'swiper';
+import { FreeMode, Grid } from 'swiper';
 import 'swiper/css';
+import 'swiper/css/grid';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 interface Props {
@@ -34,11 +35,16 @@ const CurationSmallSlide = ({ data, className, onClick }: Props) => {
 
   return (
     <Swiper
-      slidesPerView={2.5}
-      modules={[FreeMode]}
-      spaceBetween={11}
+      slidesPerView={2}
+      // slidesPerColumnFill="row"
+      modules={[FreeMode, Grid]}
+      spaceBetween={16}
       className={cm('mt-5', className)}
       style={{ marginInline: '-16px', paddingInline: '16px' }}
+      grid={{
+        rows: 2,
+        fill: 'row',
+      }}
       freeMode={{
         momentumRatio: 0.3,
         momentumBounceRatio: 0.5,
@@ -47,7 +53,7 @@ const CurationSmallSlide = ({ data, className, onClick }: Props) => {
     >
       {data.map((v, idx) => {
         return (
-          <SwiperSlide key={idx} className=''>
+          <SwiperSlide key={idx}>
             <ProductSmallSlideItem
               imageOptimize
               data={v}

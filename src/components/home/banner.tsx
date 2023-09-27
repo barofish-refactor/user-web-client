@@ -41,6 +41,7 @@ const Banner = ({ data }: Props) => {
         {data.map((v, idx) => {
           return (
             <SwiperSlide key={v.id} className='aspect-[375/270] w-full'>
+              <div className='swiper-lazy-preloader swiper-lazy-preloader-white' />
               <Image
                 priority={idx === 0}
                 src={v.image ?? ''}

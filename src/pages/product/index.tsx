@@ -110,7 +110,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   };
 
   const headTitle = `${data?.title} - ${HEAD_NAME}`;
-  const headDescription = `${data?.title} - ${HEAD_DESCRIPTION}`;
+  // const headDescription = `${data?.title} - ${HEAD_DESCRIPTION}`;
 
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
@@ -164,14 +164,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       value:
         formatToLocaleString(data?.discountPrice).replace(',', '.') ||
         formatToLocaleString(data?.originPrice).replace(',', '.'),
-      contents: {
-        id: data?.id,
-        name: data?.title,
-        affiliation: '바로피쉬',
-        currency: 'KRW',
-        quantity: 1,
-        price: data?.discountPrice || data?.originPrice,
-      },
     };
     gtag('event', 'view_item', {
       items: [
@@ -206,7 +198,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-
+  const testtext =
+    '해산물은 주로 해양 환경에서 얻어지는 다양한 식품으로, 이것은 주로 생선, 조개류, 게, 새우, 해조류 등의 바다 생물을 포함합니다. 이러한 해산물은 다양한 크기와 종류로 나타나며, 각각 특유의 맛과 영양성분을 가지고 있습니다. 해산물은 고단백질과 다양한 미네랄, 오메가-3 지방산과 같은 건강에 이로운 영양소를 풍부하게 함유하고 있어 식품의 한 종류로서 널리 소비됩니다.해산물은 많은 문화에서 다양한 요리로 준비되며, 그 중에서도 회, 스시, 해산물 요리, 찜 요리, 그리고 바비큐와 같은 다양한 조리 방식으로 손쉽게 즐길 수 있습니다. 또한 해산물은 레스토랑의 주요 메뉴 아이템 중 하나로 자리하며, 해산물 시장은 식품 산업에서 중요한 부분을 차지하고 있습니다.  이러한 이유로 해산물은 맛과 건강을 동시에 즐길 수 있는 다재다능한 식재료로 여겨지며, 수많은 사람들에게 사랑받고 있습니다.';
   return (
     <>
       {data && (
@@ -217,7 +210,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           />
           <meta property='product:availability' content='in stock' />
           <meta property='product:brand' content={data?.store?.name} />
-          <meta property='product:condition' content='basic' />
+          <meta property='product:condition' content='new' />
           <meta property='product:plural_title' content={headTitle} />
           <meta property='product:price:currency' content='KRW' />
           <meta
@@ -234,10 +227,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       <div className='pb-[80px] max-md:w-[100vw]'>
         <DefaultSeo
           title={headTitle}
-          description={headDescription}
+          description={testtext}
           openGraph={{
             title: headTitle,
-            description: headDescription,
+            description: testtext,
             images: data?.images?.map(v => {
               return {
                 url: v,

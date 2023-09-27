@@ -1,4 +1,4 @@
-.product-cart {
+/* .product-cart {
   @apply absolute bottom-2 right-2 aspect-square h-9 w-9 overflow-hidden rounded-full bg-[url(/assets/icons/common/cart-product.svg)] bg-cover backdrop-blur-[2.5px];
 }
 
@@ -69,4 +69,4 @@
   width: 75% !important;
   color: var(--color-grey-10);
   padding: 14px 14px 14px 14px;
-}
+} */
