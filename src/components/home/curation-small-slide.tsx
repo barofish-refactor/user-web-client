@@ -3,7 +3,7 @@ import { client } from 'src/api/client';
 import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
 import { ProductSmallSlideItem } from 'src/components/common';
 import { useAlertStore } from 'src/store';
-// import cm from 'src/utils/class-merge';
+import cm from 'src/utils/class-merge';
 import { FreeMode, Grid } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/grid';
@@ -38,7 +38,7 @@ const CurationSmallSlide = ({ data, className, onClick }: Props) => {
       // slidesPerColumnFill="row"
       modules={[FreeMode, Grid]}
       spaceBetween={16}
-      // className={cm('mt-5', className)}
+      className={cm('mt-5', className)}
       style={{ marginInline: '-16px', paddingInline: '16px' }}
       grid={{
         rows: 2,
