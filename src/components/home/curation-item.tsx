@@ -29,7 +29,7 @@ const CurationItem = ({
   onDeleteSaveProductsMutate,
 }: Props) => {
   return (
-    <div className={cm('px-4 py-[30px]', className)}>
+    <div className={cm('px-4 py-[20px]', className)}>
       {/* 설명 부분 showViewAll */}
       {/* <div className='flex items-center justify-between'>
         <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
