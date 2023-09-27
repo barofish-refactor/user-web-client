@@ -44,11 +44,14 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
     queryKey.category,
     async () => {
       const { selectCategories } = await client();
+      console.log(selectCategories, 'dd');
+
       const res = await selectCategories();
       return res.data;
     },
     { initialData },
   );
+  console.log(data);
 
   const { data: curationData, isLoading: curationLoading } = useQuery(
     queryKey.curation.detail(id),
@@ -90,7 +93,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectProductListByUser({
+      ).selectProductListByUser1({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         ...{
           categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),

@@ -22,6 +22,18 @@ export interface CustomResponseBoolean {
   errorMsg?: string;
 }
 
+export interface UpdateReviewReq {
+  content?: string;
+  evaluations?: ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[];
+}
+
+export interface CustomResponseObject {
+  isSuccess?: boolean;
+  code?: string;
+  data?: object;
+  errorMsg?: string;
+}
+
 export interface VerifyCodeReq {
   target?: string;
   verificationNumber?: string;
@@ -207,13 +219,6 @@ export interface SnsJoinReq {
   phone?: string;
 }
 
-export interface CustomResponseObject {
-  isSuccess?: boolean;
-  code?: string;
-  data?: object;
-  errorMsg?: string;
-}
-
 export interface AppleJoinReq {
   loginId?: string;
   name?: string;
@@ -388,7 +393,10 @@ export interface Product {
   descriptionImages?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
-  /** @format float */
+  /**
+   * @format float
+   * @max 0
+   */
   pointRate?: number;
   /** @format int32 */
   representOptionItemId?: number;
@@ -785,11 +793,6 @@ export interface AddSearchFilterFiledReq {
   /** @format int32 */
   searchFilterId?: number;
   field?: string;
-}
-
-export interface UpdateReviewReq {
-  content?: string;
-  evaluations?: ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[];
 }
 
 export interface CustomResponseReviewDto {
@@ -1536,6 +1539,7 @@ export interface Curation {
   /** @format int32 */
   sortNo?: number;
   curationProductMaps?: CurationProductMap[];
+  state?: 'ACTIVE' | 'INACTIVE';
 }
 
 export interface CurationProductMap {
@@ -1566,6 +1570,7 @@ export interface CurationDto {
   type?: 'SQUARE' | 'S_SLIDER' | 'L_SLIDER';
   /** @format int32 */
   sortNo?: number;
+  state?: 'ACTIVE' | 'INACTIVE';
   products?: ProductListDto[];
 }
 
@@ -1891,6 +1896,7 @@ export interface ReviewDtoV2 {
   /** @format date-time */
   createdAt?: string;
   images?: string;
+  imageUrls?: string[];
   /** @format int64 */
   likeSum?: number;
 }
@@ -2986,7 +2992,14 @@ export interface DeleteBasketReq {
 
 export type PortOneCallbackData = object;
 
-export type DeleteReviewByUserData = CustomResponseBoolean;
+export type DeleteReviewData = CustomResponseBoolean;
+
+export interface UpdateReviewPayload {
+  data: UpdateReviewReq;
+  images?: File[];
+}
+
+export type UpdateReviewData = CustomResponseObject;
 
 export type VerifyCodeData = CustomResponseInteger;
 
@@ -3258,13 +3271,13 @@ export interface AddSearchFilter1Payload {
 
 export type AddSearchFilter1Data = CustomResponseSearchFilterDto;
 
-export interface UpdateReviewPayload {
+export interface UpdateReview1Payload {
   data: UpdateReviewReq;
   existImages: string[];
   newImages: File[];
 }
 
-export type UpdateReviewData = CustomResponseReviewDto;
+export type UpdateReview1Data = CustomResponseReviewDto;
 
 export type UnlikeReviewByUserData = CustomResponseBoolean;
 
@@ -3467,6 +3480,7 @@ export interface UpdateCurationPayload {
   title?: string;
   description?: string;
   type?: 'SQUARE' | 'S_SLIDER' | 'L_SLIDER';
+  state?: 'ACTIVE' | 'INACTIVE';
 }
 
 export type UpdateCurationData = CustomResponseCuration;
@@ -3484,6 +3498,7 @@ export interface CreateCurationPayload {
   title?: string;
   description?: string;
   type?: 'SQUARE' | 'S_SLIDER' | 'L_SLIDER';
+  state?: 'ACTIVE' | 'INACTIVE';
 }
 
 export type CreateCurationData = CustomResponseCuration;
@@ -3713,7 +3728,7 @@ export type SelectSearchFilterListData = CustomResponseListSearchFilterDto;
 
 export type SelectReviewData = CustomResponseReviewDto;
 
-export type DeleteReviewByUser1Data = CustomResponseBoolean;
+export type DeleteReviewByUserData = CustomResponseBoolean;
 
 export type SelectReviewListWithStoreIdData = CustomResponsePageReviewDto;
 
