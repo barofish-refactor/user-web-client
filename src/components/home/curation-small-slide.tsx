@@ -32,14 +32,15 @@ const CurationSmallSlide = ({ data, className, onClick }: Props) => {
       })
       .catch(error => console.log(error));
   };
+
   return (
     <Swiper
       slidesPerView={2}
       // slidesPerColumnFill="row"
       modules={[FreeMode, Grid]}
       spaceBetween={16}
-      // className={cm('mt-5', className)}
-      // style={{ marginInline: '-16px', paddingInline: '16px' }}
+      className={cm('mt-5', className)}
+      style={{ marginInline: '-16px', paddingInline: '16px' }}
       grid={{
         rows: 2,
         fill: 'row',
