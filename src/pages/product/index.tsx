@@ -219,10 +219,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               initialData?.discountPrice?.toString() || initialData?.originPrice?.toString()
             }`}
           />
-          <meta property='product:item_group_id' content={String(data?.id)} />
-          <meta property='product:retailer_item_id' content={String(data?.id)} />
+          <meta property='product:item_group_id' content={data?.id?.toString()} />
+          <meta property='product:retailer_item_id' content={data?.id?.toString()} />
         </Head>
       )}
+
       {/* <Head></Head> */}
       <div className='pb-[80px] max-md:w-[100vw]'>
         <DefaultSeo
