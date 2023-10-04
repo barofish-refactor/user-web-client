@@ -81,7 +81,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectProductListByUser1({
+      ).selectProductListByUser({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         sortby: sort,
         page: pageParam,
@@ -323,7 +323,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
               handleRemoveKeyword={handleRemoveKeyword}
               handleClearKeywords={handleClearKeywords}
             />
-            <PopularSearchTerms data={rankData.data ?? []} setSearchText={onSearch} />
+            {/* <PopularSearchTerms data={rankData.data ?? []} setSearchText={onSearch} /> */}
           </>
         ) : searchState === 'searching' ? (
           <div className=''>
