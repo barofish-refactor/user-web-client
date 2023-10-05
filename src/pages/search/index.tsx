@@ -15,7 +15,7 @@ import {
 import { ContentType } from 'src/api/swagger/http-client';
 import { HeaderBanner } from 'src/components/common/header-banner';
 import Layout from 'src/components/common/layout';
-import { HomeCurationItem, HomeProductList, HomeSmallSlideCuration } from 'src/components/home';
+import { HomeCurationItem, HomeProductList } from 'src/components/home';
 import { PopularSearchTerms, RecentSearches } from 'src/components/search';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -392,6 +392,14 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
           </div>
         )}
       </div>
+      {}
+      <>
+        {curationData
+          ?.filter(item => item.title?.includes('검색'))
+          .map((item, idx) => (
+            <TemporaryCurationItem key={idx} data={item} />
+          ))}
+      </>
     </div>
   );
 };
