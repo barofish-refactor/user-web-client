@@ -415,6 +415,7 @@ const BottomSheet = ({}: Props) => {
                 </p>
                 {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
                   <HomeSmallSlideCuration
+                    title=''
                     className='mt-4'
                     data={selectProductOtherCustomerBuy ?? []}
                     onClick={() => initClear()}
