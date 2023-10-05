@@ -184,8 +184,6 @@ const Order: NextPageWithLayout = () => {
       : 0,
   );
 
-  console.log(productPoint, '적립금');
-
   /** 후기 작성 적립금 */
   const imageReviewPoint = pointData?.imageReviewPoint;
   /** 예상 적립 금액 */

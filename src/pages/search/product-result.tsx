@@ -91,7 +91,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectProductListByUser({
+      ).selectProductListByUser1({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         ...{
           categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
