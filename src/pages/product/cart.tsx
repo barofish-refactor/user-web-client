@@ -502,7 +502,11 @@ const Cart: NextPageWithLayout = () => {
               다른 고객이 함께 구매한 상품
             </p>
             {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
-              <HomeSmallSlideCuration className='mt-4' data={selectProductOtherCustomerBuy ?? []} />
+              <HomeSmallSlideCuration
+                title=''
+                className='mt-4'
+                data={selectProductOtherCustomerBuy ?? []}
+              />
             ) : (
               <div className='flex h-[200px] flex-col items-center justify-center'>
                 <Image

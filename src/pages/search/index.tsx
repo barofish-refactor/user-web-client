@@ -25,7 +25,7 @@ import { formatToBlob } from 'src/utils/functions';
 import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
 import { VARIABLES } from 'src/variables';
-
+import { TemporaryCurationItem } from 'src/components/common/temporary-curation-item';
 const perView = 10;
 
 interface Props {
@@ -48,15 +48,15 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
   const [sort, setSort] = useState<sortType>('RECOMMEND'); // default: 추천순
 
-  const { data: rankData } = useQuery(
-    queryKey.topSearchKeywords,
-    async () => {
-      const { selectTopSearchKeywords } = await client();
-      const res = await selectTopSearchKeywords();
-      return res.data;
-    },
-    { initialData },
-  );
+  // const { data: rankData } = useQuery(
+  //   queryKey.topSearchKeywords,
+  //   async () => {
+  //     const { selectTopSearchKeywords } = await client();
+  //     const res = await selectTopSearchKeywords();
+  //     return res.data;
+  //   },
+  //   { initialData },
+  // );
 
   const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
     const res = await (await client()).selectMainCurationList();
@@ -234,6 +234,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
+
   return (
     <div className='max-md:w-[100vw]'>
       {/* header */}
@@ -391,6 +392,14 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
           </div>
         )}
       </div>
+      {}
+      <>
+        {curationData
+          ?.filter(item => item.title?.includes('검색'))
+          .map((item, idx) => (
+            <TemporaryCurationItem key={idx} data={item} />
+          ))}
+      </>
     </div>
   );
 };

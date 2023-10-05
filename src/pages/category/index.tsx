@@ -70,6 +70,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
                 />
               </button>
               <div className='h-[1px] bg-grey-90' />
+
               {selectedId === v.id && (
                 <div className='grid grid-cols-2 gap-y-0.5 bg-grey-90'>
                   {defaultCategoryList.concat(v.categoryList ?? []).map((subItem, idx) => {
