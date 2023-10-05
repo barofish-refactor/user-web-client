@@ -449,6 +449,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
           </p>
           {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
             <HomeSmallSlideCuration
+              title=''
               className='mt-4'
               data={selectProductOtherCustomerBuy ?? []}
               onClick={() => setIsVisible(false)}

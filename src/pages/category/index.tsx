@@ -35,6 +35,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
         카테고리
       </p>
       <div className='h-[1px] bg-grey-90' />
+
       {data.data
         ?.filter(v => v.categoryId === null)
         .map(v => {
@@ -70,6 +71,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
                 />
               </button>
               <div className='h-[1px] bg-grey-90' />
+
               {selectedId === v.id && (
                 <div className='grid grid-cols-2 gap-y-0.5 bg-grey-90'>
                   {defaultCategoryList.concat(v.categoryList ?? []).map((subItem, idx) => {

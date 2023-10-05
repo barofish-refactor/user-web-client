@@ -78,7 +78,10 @@ const CurationItem = ({
           onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
         />
       ) : data.type === 'S_SLIDER' ? (
-        <HomeSmallSlideCuration data={data.products?.filter(x => x.state === 'ACTIVE') ?? []} />
+        <HomeSmallSlideCuration
+          title={data.title}
+          data={data.products?.filter(x => x.state === 'ACTIVE') ?? []}
+        />
       ) : (
         <HomeLargeSlideCuration data={data.products?.filter(x => x.state === 'ACTIVE') ?? []} />
       )}

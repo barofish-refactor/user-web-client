@@ -44,14 +44,12 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
     queryKey.category,
     async () => {
       const { selectCategories } = await client();
-      console.log(selectCategories, 'dd');
 
       const res = await selectCategories();
       return res.data;
     },
     { initialData },
   );
-  console.log(data);
 
   const { data: curationData, isLoading: curationLoading } = useQuery(
     queryKey.curation.detail(id),
@@ -63,6 +61,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       enabled: !!id && type === 'curation',
     },
   );
+
   useEffect(() => {
     if (curationData && !curationLoading) {
       setTitle(curationData.title ?? curationData.shortName ?? '');
@@ -89,23 +88,42 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       },
       sortby: sort,
     }),
+
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
-      const res = await (
-        await client()
-      ).selectProductListByUser1({
-        filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
-        ...{
-          categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
-          curationId: type === 'curation' ? Number(id) : undefined,
-        },
-        sortby: sort,
-        page: pageParam,
-        take: perView,
-      });
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else setAlert({ message: res.data.errorMsg ?? '' });
+      if (type === 'all') {
+        const res = await (
+          await client()
+        ).selectProductListByUser({
+          // filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
+          // ...{
+          //   categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
+          //   curationId: type === 'all' ? Number(id) : undefined,
+          // },
+          sortby: sort,
+          page: pageParam,
+          take: perView,
+        });
+        if (res.data.isSuccess) {
+          return res.data.data;
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      } else {
+        const res = await (
+          await client()
+        ).selectProductListByUser1({
+          filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
+          ...{
+            categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
+            curationId: type === 'curation' ? Number(id) : undefined,
+          },
+          sortby: sort,
+          page: pageParam,
+          take: perView,
+        });
+        if (res.data.isSuccess) {
+          return res.data.data;
+        } else setAlert({ message: res.data.errorMsg ?? '' });
+      }
     },
     {
       // enabled: !!id || !!selectedCategoryId,
@@ -116,20 +134,23 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       },
     },
   );
-
+  console.log(productData, 'product');
   useEffect(() => {
-    if (id && subItemId && data.data) {
+    if (type === 'all') {
+      setSelectedTabIndex(-1);
+    }
+    if (id && subItemId && data.data && type !== 'all') {
+      console.log(data.data, id, subItemId);
+
       const idx = (data.data.filter(x => x.id === Number(id))[0].categoryList ?? []).findIndex(
         x => x.id === Number(subItemId),
       );
-
-      setSelectedTabIndex(idx + 1);
 
       if (idx > 2) refSwiper.current?.swiper.slideTo(idx);
     } else {
       setSelectedTabIndex(0);
     }
-  }, [id, subItemId, data]);
+  }, [id, subItemId, data, type]);
 
   useEffect(() => {
     if (type === 'category') {

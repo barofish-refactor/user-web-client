@@ -15,7 +15,7 @@ import {
 import { ContentType } from 'src/api/swagger/http-client';
 import { HeaderBanner } from 'src/components/common/header-banner';
 import Layout from 'src/components/common/layout';
-import { HomeCurationItem, HomeProductList } from 'src/components/home';
+import { HomeCurationItem, HomeProductList, HomeSmallSlideCuration } from 'src/components/home';
 import { PopularSearchTerms, RecentSearches } from 'src/components/search';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -25,7 +25,7 @@ import { formatToBlob } from 'src/utils/functions';
 import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
 import { VARIABLES } from 'src/variables';
-
+import { TemporaryCurationItem } from 'src/components/common/temporary-curation-item';
 const perView = 10;
 
 interface Props {
@@ -81,7 +81,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectProductListByUser({
+      ).selectProductListByUser1({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         sortby: sort,
         page: pageParam,
@@ -234,6 +234,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
+
   return (
     <div className='max-md:w-[100vw]'>
       {/* header */}
@@ -323,7 +324,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
               handleRemoveKeyword={handleRemoveKeyword}
               handleClearKeywords={handleClearKeywords}
             />
-            <PopularSearchTerms data={rankData.data ?? []} setSearchText={onSearch} />
+            {/* <PopularSearchTerms data={rankData.data ?? []} setSearchText={onSearch} /> */}
           </>
         ) : searchState === 'searching' ? (
           <div className=''>

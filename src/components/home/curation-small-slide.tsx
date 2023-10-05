@@ -11,12 +11,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 interface Props {
   data: ProductListDto[];
+  title: string | undefined;
   className?: string;
   onClick?: () => void;
 }
 
 /** 홈화면 - 큐레이션 (슬라이드 - 소) */
-const CurationSmallSlide = ({ data, className, onClick }: Props) => {
+const CurationSmallSlide = ({ data, title, className, onClick }: Props) => {
   const { setAlert } = useAlertStore();
 
   const { mutateAsync: addBasket, isLoading } = useMutation(
@@ -36,13 +37,12 @@ const CurationSmallSlide = ({ data, className, onClick }: Props) => {
   return (
     <Swiper
       slidesPerView={2}
-      // slidesPerColumnFill="row"
       modules={[FreeMode, Grid]}
       spaceBetween={16}
       className={cm('mt-5', className)}
       style={{ marginInline: '-16px', paddingInline: '16px' }}
       grid={{
-        rows: 2,
+        rows: title?.includes('검색') ? 3 : 2,
         fill: 'row',
       }}
       freeMode={{
