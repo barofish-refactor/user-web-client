@@ -22,9 +22,11 @@ export const TemporaryCurationItem = ({ data, onMutate, onDeleteSaveProductsMuta
   return (
     <div className='px-4 py-[30px]'>
       <div className='flex items-center justify-between'>
-        <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
-          이번 주말엔 요걸로 한 잔?
-        </p>
+        {data && (
+          <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+            이번 주말엔 요걸로 한 잔?
+          </p>
+        )}
       </div>
       {data.type === 'SQUARE' ? (
         <HomeTableCuration
