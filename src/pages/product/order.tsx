@@ -180,9 +180,11 @@ const Order: NextPageWithLayout = () => {
   /** 상품 적립금 */
   const productPoint = Math.floor(
     selectedOption.length > 0
-      ? selectedOption.map(v => v.price * v.amount * v.pointRate).reduce((a, b) => a + b, 0)
+      ? selectedOption.map(v => v.price * v.pointRate * v.amount).reduce((a, b) => a + b, 0)
       : 0,
   );
+
+  console.log(productPoint, '적립금');
 
   /** 후기 작성 적립금 */
   const imageReviewPoint = pointData?.imageReviewPoint;

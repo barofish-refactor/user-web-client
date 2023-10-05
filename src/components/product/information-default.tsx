@@ -17,11 +17,16 @@ const InformationDefault = ({ data, user }: Props) => {
   useEffect(() => {
     if (data?.discountPrice && data?.pointRate) {
       // 데이터 확인
+      console.log(Math.floor(data?.discountPrice * data?.pointRate), 'dataPoint');
       if (user && user.grade?.pointRate) {
         // 유저 확인
-        const userDataPoint = Math.floor(
-          data?.discountPrice * user.grade?.pointRate + data?.discountPrice * data?.pointRate,
-        );
+        const userDataPoint =
+          Math.round(
+            Math.floor(Math.max(data?.discountPrice, 0) * (user?.grade?.pointRate ?? 1)) / 10,
+          ) *
+            10 +
+          Math.floor(data?.discountPrice * data?.pointRate);
+
         setPoint(userDataPoint);
       } else {
         // 유저가 아니라면
@@ -30,6 +35,7 @@ const InformationDefault = ({ data, user }: Props) => {
       }
     }
   }, [data?.discountPrice, data?.pointRate, user]);
+
   return (
     <div className=''>
       <div className='px-4 pb-5 pt-[15px]'>

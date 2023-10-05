@@ -319,7 +319,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
         {/* 하단 부분 */}
         <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
-          <button
+          {/* <button
             className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
             onClick={() => {
               if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
@@ -338,7 +338,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                   : '/assets/icons/product/product-bookmark-off.svg'
               }
             />
-          </button>
+          </button> */}
           <button
             className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
             onClick={() => {

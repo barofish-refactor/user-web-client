@@ -35,24 +35,6 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
         카테고리
       </p>
       <div className='h-[1px] bg-grey-90' />
-      <button className='flex h-[56px] w-full items-center gap-5 px-4'>
-        <Link
-          key={`subItem${defaultCategoryList[0].id}`}
-          className={cm('ml-[50px] flex h-[38px] items-center ')}
-          href={{
-            pathname: '/search/product-result',
-            query: {
-              id: 0,
-              subItemId: defaultCategoryList[0].id,
-              type: 'all',
-            },
-          }}
-        >
-          <p className='flex-1 text-start text-[16px] font-medium -tracking-[0.01em] text-grey-20'>
-            {defaultCategoryList[0].name ?? ''}
-          </p>
-        </Link>
-      </button>
       {data.data
         ?.filter(v => v.categoryId === null)
         .map(v => {
