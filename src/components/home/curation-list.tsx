@@ -23,8 +23,9 @@ export default function CurationList({ mainData }: Props) {
   return (
     <>
       {curationData
-        ?.filter(x => x.title && x.title.length > 0)
+        ?.filter(x => x.title && x.title.length > 0 && !x.title.includes('검색'))
         .map((v, idx) => {
+          console.log(v, 'v');
           return (
             <div key={v.id}>
               {(v.products ?? []).length > 0 && <HomeCurationItem data={v} />}

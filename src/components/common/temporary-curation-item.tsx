@@ -1,5 +1,3 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import {
   type DeleteSaveProductsPayload,
   type SaveProductPayload,
@@ -10,7 +8,6 @@ import {
   HomeSmallSlideCuration,
   HomeTableCuration,
 } from 'src/components/home';
-import cm from 'src/utils/class-merge';
 
 interface Props {
   data: CurationDto;
@@ -21,13 +18,7 @@ interface Props {
 }
 
 /** 홈화면 - 큐레이션 Item (type 처리) */
-export const TemporaryCurationItem = ({
-  data,
-  className,
-  showViewAll = true,
-  onMutate,
-  onDeleteSaveProductsMutate,
-}: Props) => {
+export const TemporaryCurationItem = ({ data, onMutate, onDeleteSaveProductsMutate }: Props) => {
   return (
     <div className='px-4 py-[30px]'>
       <div className='flex items-center justify-between'>
