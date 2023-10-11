@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
 import { ReviewForm } from 'src/components/review';
-import { RetouchReviewForm } from 'src/components/review/retouchForm';
+// import { ReviewForm } from 'src/components/review';
+// import { RetouchReviewForm } from 'src/components/review/retouchForm';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
@@ -30,7 +31,7 @@ const MypageReviewModify: NextPageWithLayout = () => {
   );
   console.log(data, '2');
   // subId={Number(subId)}
-  return <RetouchReviewForm order={data} />;
+  return <ReviewForm />;
 };
 
 MypageReviewModify.getLayout = page => (
