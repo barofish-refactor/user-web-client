@@ -28,7 +28,7 @@ const MypageReviewWrite: NextPageWithLayout = () => {
       enabled: !!v,
     },
   );
-
+  console.log(data, '1');
   return <ReviewForm order={data} subId={Number(subId)} />;
 };
 

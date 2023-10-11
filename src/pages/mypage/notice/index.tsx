@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { client } from 'src/api/client';
@@ -36,29 +37,32 @@ const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
   if (!data || data.length === 0) return <Empty />;
 
   return (
-    <article className='grid gap-6 p-4 pb-10'>
-      {data.map(v => {
-        return (
-          <Link
-            key={v.id}
-            href={{ pathname: '/mypage/notice/[id]', query: { id: v.id } }}
-            className='space-y-3'
-          >
-            <div className='flex items-center justify-between gap-2'>
-              <h3 className='line-clamp-1 flex-1 font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                {v.title}
-              </h3>
-              <time className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
-                {formatToUtc(v.createdAt, 'yyyy.MM.dd')}
-              </time>
-            </div>
-            {/* <p className='line-clamp-2 whitespace-pre-line text-[14px] leading-[22px] -tracking-[0.03em] text-grey-10'>
+    <>
+      <DefaultSeo title='공지사항 | 바로피쉬' description='notice' />
+      <article className='grid gap-6 p-4 pb-10'>
+        {data.map(v => {
+          return (
+            <Link
+              key={v.id}
+              href={{ pathname: '/mypage/notice/[id]', query: { id: v.id } }}
+              className='space-y-3'
+            >
+              <div className='flex items-center justify-between gap-2'>
+                <h3 className='line-clamp-1 flex-1 font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                  {v.title}
+                </h3>
+                <time className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+                  {formatToUtc(v.createdAt, 'yyyy.MM.dd')}
+                </time>
+              </div>
+              {/* <p className='line-clamp-2 whitespace-pre-line text-[14px] leading-[22px] -tracking-[0.03em] text-grey-10'>
               {v.content}
             </p> */}
-          </Link>
-        );
-      })}
-    </article>
+            </Link>
+          );
+        })}
+      </article>
+    </>
   );
 };
 

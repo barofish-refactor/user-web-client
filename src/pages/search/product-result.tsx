@@ -1,5 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
@@ -186,65 +188,81 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
+
   return (
-    <div className='max-md:w-[100vw]'>
-      {!user && (
-        <div className='sticky top-0 z-50'>
-          <HeaderBanner />
-        </div>
+    <>
+      {curationData && (
+        <DefaultSeo
+          title={curationData.title}
+          description={curationData.description}
+          openGraph={{
+            images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
+            title: curationData.title,
+            description: curationData.description,
+            siteName: '',
+            type: 'website',
+          }}
+        />
       )}
-      <div
-        className={
-          !user
-            ? 'sticky top-11 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
-            : 'sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
-        }
-      >
-        <BackButton />
-        <p className='line-clamp-1 flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-          {title}
-        </p>
-        <Link href='/product/cart'>
-          <CartIcon />
-        </Link>
+      <div className='max-md:w-[100vw]'>
+        {!user && (
+          <div className='sticky top-0 z-50'>
+            <HeaderBanner />
+          </div>
+        )}
+        <div
+          className={
+            !user
+              ? 'sticky top-11 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
+              : 'sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
+          }
+        >
+          <BackButton />
+          <p className='line-clamp-1 flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+            {title}
+          </p>
+          <Link href='/product/cart'>
+            <CartIcon />
+          </Link>
+        </div>
+        {type === 'category' ? (
+          <Swiper ref={refSwiper} freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
+            {[{ id: -1, name: '전체보기' } as Category]
+              .concat(data.data?.filter(x => x.id === Number(id))[0].categoryList ?? [])
+              .map((v, idx) => {
+                return (
+                  <SwiperSlide key={`mainTab${idx}`} className='h-full w-1/4'>
+                    <button className='w-full' onClick={() => setSelectedTabIndex(idx)}>
+                      <div className='flex h-full w-full flex-col justify-between'>
+                        <p
+                          className={cm(
+                            'text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
+                            { 'font-semibold text-primary-50': selectedTabIndex === idx },
+                          )}
+                        >
+                          {v.name}
+                        </p>
+                        <div
+                          className={cm('h-[2.5px]', { 'bg-primary-50': selectedTabIndex === idx })}
+                        />
+                      </div>
+                    </button>
+                  </SwiperSlide>
+                );
+              })}
+          </Swiper>
+        ) : null}
+        <HomeProductList
+          storeType={type === 'curation' ? 'curation' : 'category'}
+          storeId={type === 'curation' ? Number(id) : selectedCategoryId}
+          dataDto={productData?.pages ?? []}
+          filter={dummyFilter}
+          sort={sort}
+          setSort={setSort}
+        />
+        <div ref={ref} className='pb-10' />
       </div>
-      {type === 'category' ? (
-        <Swiper ref={refSwiper} freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
-          {[{ id: -1, name: '전체보기' } as Category]
-            .concat(data.data?.filter(x => x.id === Number(id))[0].categoryList ?? [])
-            .map((v, idx) => {
-              return (
-                <SwiperSlide key={`mainTab${idx}`} className='h-full w-1/4'>
-                  <button className='w-full' onClick={() => setSelectedTabIndex(idx)}>
-                    <div className='flex h-full w-full flex-col justify-between'>
-                      <p
-                        className={cm(
-                          'text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
-                          { 'font-semibold text-primary-50': selectedTabIndex === idx },
-                        )}
-                      >
-                        {v.name}
-                      </p>
-                      <div
-                        className={cm('h-[2.5px]', { 'bg-primary-50': selectedTabIndex === idx })}
-                      />
-                    </div>
-                  </button>
-                </SwiperSlide>
-              );
-            })}
-        </Swiper>
-      ) : null}
-      <HomeProductList
-        storeType={type === 'curation' ? 'curation' : 'category'}
-        storeId={type === 'curation' ? Number(id) : selectedCategoryId}
-        dataDto={productData?.pages ?? []}
-        filter={dummyFilter}
-        sort={sort}
-        setSort={setSort}
-      />
-      <div ref={ref} className='pb-10' />
-    </div>
+    </>
   );
 };
 

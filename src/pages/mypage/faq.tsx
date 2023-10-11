@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
@@ -52,25 +53,28 @@ const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
   if (!data || data.length === 0) return <Empty />;
 
   return (
-    <article className='pb-10 pt-2'>
-      {data.map((v, i) => (
-        <details key={v.id} className='group border-b border-b-grey-90'>
-          <summary className='flex justify-between gap-2 p-4 text-[14px]'>
-            <h3 className='line-clamp-1 flex-1 font-semibold leading-[22px] -tracking-[0.03em] text-grey-20 group-open:line-clamp-none'>
-              Q. {v.title}
-            </h3>
-            <ChevronIcon
-              width={24}
-              height={24}
-              className='-rotate-90 self-start group-open:rotate-90'
-            />
-          </summary>
-          <div className='whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
-            {content[i] && <div dangerouslySetInnerHTML={{ __html: content[i] }} className='' />}
-          </div>
-        </details>
-      ))}
-    </article>
+    <>
+      <DefaultSeo title='FAQ | 바로피쉬' description='자주 물어보는 질문' />
+      <article className='pb-10 pt-2'>
+        {data.map((v, i) => (
+          <details key={v.id} className='group border-b border-b-grey-90'>
+            <summary className='flex justify-between gap-2 p-4 text-[14px]'>
+              <h3 className='line-clamp-1 flex-1 font-semibold leading-[22px] -tracking-[0.03em] text-grey-20 group-open:line-clamp-none'>
+                Q. {v.title}
+              </h3>
+              <ChevronIcon
+                width={24}
+                height={24}
+                className='-rotate-90 self-start group-open:rotate-90'
+              />
+            </summary>
+            <div className='whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+              {content[i] && <div dangerouslySetInnerHTML={{ __html: content[i] }} className='' />}
+            </div>
+          </details>
+        ))}
+      </article>
+    </>
   );
 };
 

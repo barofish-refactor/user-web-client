@@ -3,7 +3,7 @@ import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
 import Head from 'next/head';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
@@ -15,7 +15,10 @@ import {
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
 import { CartIcon } from 'src/components/common';
-import { HEAD_DESCRIPTION, HEAD_NAME } from 'src/components/common/head';
+import {
+  // HEAD_DESCRIPTION,
+  HEAD_NAME,
+} from 'src/components/common/head';
 import Layout from 'src/components/common/layout';
 import {
   ProductBanner,

@@ -34,7 +34,6 @@ export function AppleButton() {
         const jwt = decodeToken(res.authorization.id_token);
         const fullName = res.user?.name;
         const name = (fullName?.lastName ?? '') + (fullName?.firstName ?? '');
-        console.log(fullName, name);
         if ('sub' in jwt) {
           loginUser({
             data: formatToBlob<JoinSnsUserPayload['data']>(

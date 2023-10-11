@@ -1,6 +1,7 @@
 // import { GetServerSideProps } from 'next';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link, { type LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
@@ -72,71 +73,87 @@ const MyPage: NextPageWithLayout = () => {
   }, [id, router, setAlert]);
 
   return (
-    <div className='max-md:w-[100vw]'>
-      <div className='flex items-center justify-between px-4 pt-6'>
-        <div className='flex flex-col items-start gap-1'>
-          <Link href='/mypage/info' className='flex items-center'>
-            <span
-              className={clsx(
-                'mr-2 inline-flex rounded border px-2 py-0.5 text-[12px] font-medium leading-[18px] -tracking-[0.03em]',
-                {
-                  'border-primary-60 text-primary-50': !user?.grade || user?.grade?.pointRate === 1,
-                  'border-[#561BFF] text-[#561BFF]': user?.grade?.pointRate === 2,
-                  'border-[#BA27FF] text-[#BA27FF]': user?.grade?.pointRate === 3,
-                  'border-[#FF3868] text-[#FF3868]': user?.grade?.pointRate === 4,
-                },
-              )}
-            >
-              {user?.grade?.name ?? '멸치'}
-            </span>
-            <p className='mr-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
-              {!isLoading
-                ? user?.nickname && user.nickname.length > 0
-                  ? user.nickname
-                  : '내 정보를 입력해주세요.'
-                : ' '}
-            </p>
-            <Image
-              unoptimized
-              src='/assets/icons/common/chevron-category.svg'
-              alt='chevron'
-              width={24}
-              height={24}
-              className='rotate-90'
-            />
-          </Link>
-          <div className='flex items-center gap-4 rounded bg-grey-90 px-2 py-0.5'>
-            <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
-              적립금
-            </span>
-            <strong className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
-              {formatToLocaleString(user?.point)}원
-            </strong>
+    <>
+      <DefaultSeo
+        title='마이페이지 | 바로피쉬'
+        description='UserMyPage'
+        openGraph={{
+          images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
+          title: '마이페이지 | 바로피쉬',
+          description: 'UserMyPage',
+          siteName: 'MyPage',
+          type: 'website',
+        }}
+      />
+      <div className='max-md:w-[100vw]'>
+        <div className='flex items-center justify-between px-4 pt-6'>
+          <div className='flex flex-col items-start gap-1'>
+            <Link href='/mypage/info' className='flex items-center'>
+              <span
+                className={clsx(
+                  'mr-2 inline-flex rounded border px-2 py-0.5 text-[12px] font-medium leading-[18px] -tracking-[0.03em]',
+                  {
+                    'border-primary-60 text-primary-50':
+                      !user?.grade || user?.grade?.pointRate === 1,
+                    'border-[#561BFF] text-[#561BFF]': user?.grade?.pointRate === 2,
+                    'border-[#BA27FF] text-[#BA27FF]': user?.grade?.pointRate === 3,
+                    'border-[#FF3868] text-[#FF3868]': user?.grade?.pointRate === 4,
+                  },
+                )}
+              >
+                {user?.grade?.name ?? '멸치'}
+              </span>
+              <p className='mr-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+                {!isLoading
+                  ? user?.nickname && user.nickname.length > 0
+                    ? user.nickname
+                    : '내 정보를 입력해주세요.'
+                  : ' '}
+              </p>
+              <Image
+                unoptimized
+                src='/assets/icons/common/chevron-category.svg'
+                alt='chevron'
+                width={24}
+                height={24}
+                className='rotate-90'
+              />
+            </Link>
+            <div className='flex items-center gap-4 rounded bg-grey-90 px-2 py-0.5'>
+              <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
+                적립금
+              </span>
+              <strong className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
+                {formatToLocaleString(user?.point)}원
+              </strong>
+            </div>
           </div>
+          <Image
+            unoptimized
+            alt='profile'
+            width={54}
+            height={54}
+            className='aspect-square rounded-full object-cover'
+            src={
+              !!user?.profileImage ? user.profileImage : '/assets/icons/common/default-profile.png'
+            }
+          />
         </div>
-        <Image
-          unoptimized
-          alt='profile'
-          width={54}
-          height={54}
-          className='aspect-square rounded-full object-cover'
-          src={
-            !!user?.profileImage ? user.profileImage : '/assets/icons/common/default-profile.png'
-          }
-        />
-      </div>
-      <div className='rounded-b-2xl px-4 pb-4 pt-6 shadow-[0px_4px_5px_rgba(0,0,0,0.04)]'>
-        <div className='flex h-[61px] items-center justify-evenly rounded-lg bg-grey-90'>
-          <Link href='/mypage/notification' className='flex w-[60px] flex-col items-center gap-0.5'>
-            <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
-              {formatToLocaleString(user?.notificationCount)}
-            </strong>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
-              알림
-            </p>
-          </Link>
-          <div className='h-6 w-[1px] bg-[#E2E2E2]' />
-          {/* <Link href='/compare/storage' className='flex w-[60px] flex-col items-center gap-0.5'>
+        <div className='rounded-b-2xl px-4 pb-4 pt-6 shadow-[0px_4px_5px_rgba(0,0,0,0.04)]'>
+          <div className='flex h-[61px] items-center justify-evenly rounded-lg bg-grey-90'>
+            <Link
+              href='/mypage/notification'
+              className='flex w-[60px] flex-col items-center gap-0.5'
+            >
+              <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
+                {formatToLocaleString(user?.notificationCount)}
+              </strong>
+              <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
+                알림
+              </p>
+            </Link>
+            <div className='h-6 w-[1px] bg-[#E2E2E2]' />
+            {/* <Link href='/compare/storage' className='flex w-[60px] flex-col items-center gap-0.5'>
             <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(user?.saveProductCount)}
             </strong>
@@ -145,77 +162,78 @@ const MyPage: NextPageWithLayout = () => {
             </p>
           </Link>
           <div className='h-6 w-[1px] bg-[#E2E2E2]' /> */}
-          <Link href='/product/cart' className='flex w-[60px] flex-col items-center gap-0.5'>
-            <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
-              {formatToLocaleString(cartCount)}
-            </strong>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
-              장바구니
-            </p>
-          </Link>
-          <div className='h-6 w-[1px] bg-[#E2E2E2]' />
-          <Link href='/mypage/recent' className='flex w-[60px] flex-col items-center gap-0.5'>
-            <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
-              {formatToLocaleString(recentData.length)}
-            </strong>
-            <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
-              최근본상품
-            </p>
-          </Link>
+            <Link href='/product/cart' className='flex w-[60px] flex-col items-center gap-0.5'>
+              <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
+                {formatToLocaleString(cartCount)}
+              </strong>
+              <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
+                장바구니
+              </p>
+            </Link>
+            <div className='h-6 w-[1px] bg-[#E2E2E2]' />
+            <Link href='/mypage/recent' className='flex w-[60px] flex-col items-center gap-0.5'>
+              <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
+                {formatToLocaleString(recentData.length)}
+              </strong>
+              <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
+                최근본상품
+              </p>
+            </Link>
+          </div>
         </div>
-      </div>
-      {banner && banner.length > 0 && (
-        <div className='p-4'>
-          <button
-            className={cm(
-              'relative flex h-[140px] w-full flex-col items-start justify-between overflow-hidden rounded-lg px-4 pb-4 pt-6 text-start shadow-[0px_4px_10px_rgba(0,0,0,0.08)]',
-              banner[0].link && banner[0].link.length > 0 ? 'cursor-pointer' : 'cursor-default',
-            )}
-            onClick={() => {
-              const link = banner[0].link;
-              const productionUrl = VARIABLES.PRODUCTION_URL;
+        {banner && banner.length > 0 && (
+          <div className='p-4'>
+            <button
+              className={cm(
+                'relative flex h-[140px] w-full flex-col items-start justify-between overflow-hidden rounded-lg px-4 pb-4 pt-6 text-start shadow-[0px_4px_10px_rgba(0,0,0,0.08)]',
+                banner[0].link && banner[0].link.length > 0 ? 'cursor-pointer' : 'cursor-default',
+              )}
+              onClick={() => {
+                const link = banner[0].link;
+                const productionUrl = VARIABLES.PRODUCTION_URL;
 
-              if (link && link.length > 0) {
-                if (link.includes(productionUrl))
-                  return router.push(link.replace(productionUrl, ''));
+                if (link && link.length > 0) {
+                  if (link.includes(productionUrl))
+                    return router.push(link.replace(productionUrl, ''));
 
-                if (window.ReactNativeWebView) {
-                  requestPermission('link', `${link}`);
-                } else {
-                  return window.open(`${link}`, '_blank');
+                  if (window.ReactNativeWebView) {
+                    requestPermission('link', `${link}`);
+                  } else {
+                    return window.open(`${link}`, '_blank');
+                  }
+                  return;
                 }
-                return;
-              }
-            }}
-          >
-            <Image
-              unoptimized
-              fill
-              priority
-              draggable={false}
-              src={banner[0].image ?? ''}
-              alt='banner'
-              className='aspect-[343/140] w-full object-cover'
-            />
-          </button>
-        </div>
-      )}
-      <hr className='border-t-8 border-grey-90' />
-      <NavLink href='/mypage/order'>주문내역</NavLink>
-      <NavLink href='/mypage/order/refund'>취소 환불 교환 내역</NavLink>
-      <NavLink href='/mypage/coupon'>쿠폰함</NavLink>
-      <NavLink href='/mypage/pay-method'>결제수단 관리</NavLink>
-      <NavLink href='/mypage/inquiry'>상품 문의내역</NavLink>
-      <NavLink href='/mypage/review'>구매후기</NavLink>
-      <hr className='border-t-8 border-grey-90' />
-      <NavLink href='/mypage/notice'>공지사항</NavLink>
-      <NavLink href='/mypage/faq'>FAQ</NavLink>
-      <NavLink href='/contact'>1:1 문의</NavLink>
-      <hr className='border-t-8 border-grey-90' />
-      <NavLink href='/privacy'>개인정보처리 방침</NavLink>
-      <NavLink href='/terms-of-service'>이용약관</NavLink>
-      {/* <NavLink href='/marketing'>마케팅 수신 동의</NavLink> */}
-    </div>
+              }}
+            >
+              <Image
+                unoptimized
+                fill
+                priority
+                draggable={false}
+                src={banner[0].image ?? ''}
+                alt='banner'
+                className='aspect-[343/140] w-full object-cover'
+              />
+            </button>
+          </div>
+        )}
+        <hr className='border-t-8 border-grey-90' />
+        <NavLink href='/mypage/order'>주문내역</NavLink>
+        <NavLink href='/mypage/order/refund'>취소 환불 교환 내역</NavLink>
+        <NavLink href='/mypage/coupon'>쿠폰함</NavLink>
+        <NavLink href='/mypage/pay-method'>결제수단 관리</NavLink>
+        <NavLink href='/mypage/inquiry'>상품 문의내역</NavLink>
+        <NavLink href='/mypage/review'>구매후기</NavLink>
+        <hr className='border-t-8 border-grey-90' />
+        <NavLink href='/mypage/notice'>공지사항</NavLink>
+        <NavLink href='/mypage/faq'>FAQ</NavLink>
+        <NavLink href='/contact'>1:1 문의</NavLink>
+        <hr className='border-t-8 border-grey-90' />
+        <NavLink href='/privacy'>개인정보처리 방침</NavLink>
+        <NavLink href='/terms-of-service'>이용약관</NavLink>
+        {/* <NavLink href='/marketing'>마케팅 수신 동의</NavLink> */}
+      </div>
+    </>
   );
 };
 

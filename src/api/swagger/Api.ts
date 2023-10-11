@@ -222,8 +222,8 @@ import {
   SelectPointRuleData,
   SelectProductCountByUserData,
   SelectProductData,
-  SelectProductListByUser1Data,
   SelectProductListByUserData,
+  SelectProductListByUserV2Data,
   SelectProductListData,
   SelectProductListForExcelData,
   SelectProductListWithIdsData,
@@ -309,10 +309,10 @@ import {
   UpdateProductPayload,
   UpdateRecommendCompareSetData,
   UpdateRecommendCompareSetPayload,
-  UpdateReview1Data,
-  UpdateReview1Payload,
   UpdateReviewData,
   UpdateReviewPayload,
+  UpdateReviewV2Data,
+  UpdateReviewV2Payload,
   UpdateSearchFilterFieldData,
   UpdateSearchFilterFieldPayload,
   UpdateSiteInfoData,
@@ -373,12 +373,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller-v-2
-   * @name UpdateReview
+   * @name UpdateReviewV2
    * @request POST:/api/v2/review/update/{id}
-   * @response `200` `UpdateReviewData` OK
+   * @response `200` `UpdateReviewV2Data` OK
    */
-  updateReview = (id: number, data: UpdateReviewPayload, params: RequestParams = {}) =>
-    this.request<UpdateReviewData, any>({
+  updateReviewV2 = (id: number, data: UpdateReviewV2Payload, params: RequestParams = {}) =>
+    this.request<UpdateReviewV2Data, any>({
       path: `/api/v2/review/update/${id}`,
       method: 'POST',
       body: data,
@@ -973,12 +973,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller
-   * @name UpdateReview1
+   * @name UpdateReview
    * @request POST:/api/v1/review/update/{id}
-   * @response `200` `UpdateReview1Data` OK
+   * @response `200` `UpdateReviewData` OK
    */
-  updateReview1 = (id: number, data: UpdateReview1Payload, params: RequestParams = {}) =>
-    this.request<UpdateReview1Data, any>({
+  updateReview = (id: number, data: UpdateReviewPayload, params: RequestParams = {}) =>
+    this.request<UpdateReviewData, any>({
       path: `/api/v1/review/update/${id}`,
       method: 'POST',
       body: data,
@@ -2103,11 +2103,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags product-controller-v-2
-   * @name SelectProductListByUser
+   * @name SelectProductListByUserV2
    * @request GET:/api/v2/product/list
-   * @response `200` `SelectProductListByUserData` OK
+   * @response `200` `SelectProductListByUserV2Data` OK
    */
-  selectProductListByUser = (
+  selectProductListByUserV2 = (
     query?: {
       /**
        * @format int32
@@ -2137,7 +2137,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectProductListByUserData, any>({
+    this.request<SelectProductListByUserV2Data, any>({
       path: `/api/v2/product/list`,
       method: 'GET',
       query: query,
@@ -3302,11 +3302,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags product-controller
-   * @name SelectProductListByUser1
+   * @name SelectProductListByUser
    * @request GET:/api/v1/product/list
-   * @response `200` `SelectProductListByUser1Data` OK
+   * @response `200` `SelectProductListByUserData` OK
    */
-  selectProductListByUser1 = (
+  selectProductListByUser = (
     query?: {
       /**
        * @format int32
@@ -3336,7 +3336,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectProductListByUser1Data, any>({
+    this.request<SelectProductListByUserData, any>({
       path: `/api/v1/product/list`,
       method: 'GET',
       query: query,

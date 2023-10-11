@@ -65,6 +65,7 @@ export function ReviewPhoto({ id, type }: Props) {
       if (inView) fetchNextPage();
     },
   });
+  console.log(data);
 
   return (
     <div>

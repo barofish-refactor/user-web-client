@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { Controller, useForm } from 'react-hook-form';
 import { NumberFormatBase, PatternFormat } from 'react-number-format';
@@ -225,6 +226,7 @@ const MypagePayMethodCreate: NextPageWithLayout = () => {
 
 MypagePayMethodCreate.getLayout = page => (
   <Layout className='flex flex-col' footerProps={{ disable: true }} headerProps={{ disable: true }}>
+    <DefaultSeo title='결제수단 생성 | 바로피쉬' description='PayMethod Create' />
     <div className='flex flex-1 flex-col'>
       <header className='title-header'>
         <BackButton />

@@ -1,3 +1,4 @@
+import { DefaultSeo } from 'next-seo';
 import { Policy, type PolicyProps } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { getServerSidePolicy } from 'src/server';
@@ -9,6 +10,7 @@ export const getServerSideProps = getServerSidePolicy('HTML_TERM_OF_SERVICE');
 
 TermsOfService.getLayout = page => (
   <Layout footerProps={{ disable: true }} headerProps={{ disable: true }}>
+    <DefaultSeo title='이용약관 | 바로피쉬' description='contect' />
     {page}
   </Layout>
 );

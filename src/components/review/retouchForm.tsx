@@ -2,37 +2,25 @@
   수정의 경우 [id]값으로 조회하여 값을 미리 불러온다.
   상품 조회를 위해 ?productId 등으로 상품을 조회
 */
-
 import clsx from 'clsx';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { type SyntheticEvent, useEffect, useRef } from 'react';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { inputClassName, submitButtonClassName } from 'src/components/form';
 import { type FileType } from 'src/types/common';
-import {
-  calcDiscountRate,
-  formatToBlob,
-  formatToLocaleString,
-  setSquareBrackets,
-} from 'src/utils/functions';
+import { formatToBlob, setSquareBrackets } from 'src/utils/functions';
 import { asyncUploads } from 'src/utils/upload';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
-import {
-  type AddReviewByUserPayload,
-  type OrderDto,
-  type OrderProductDto,
-} from 'src/api/swagger/data-contracts';
+import { type UpdateReviewPayload } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import 'swiper/css';
 import 'swiper/css/free-mode';
-// import { headers } from 'next/dist/client/components/headers';
 
 const IMAGE_MAX_COUNT = 10;
 
@@ -50,71 +38,116 @@ type FormType = {
   description: string;
 };
 
-export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number }) {
+export function RetouchReviewForm({ order }: { order?: any; subId?: number }) {
   const queryClient = useQueryClient();
   const form = useForm<FormType>({
-    defaultValues: { description: '', images: [], selectKeywords: [] },
+    defaultValues: { description: '', images: [], selectKeywords: order?.evaluations },
   });
+  useEffect(() => {
+    if (order && order.evaluations) {
+      form.setValue('selectKeywords', order?.evaluations);
+    }
+    if (order && order.content) {
+      form.setValue('description', order?.content);
+    }
+    if (order && order.images) {
+      form.setValue('images', order?.images);
+    }
+  }, [form, order]);
   const { handleSubmit, register } = form;
   const { setAlert } = useAlertStore();
   const router = useRouter();
-  const [productInfo, setProductInfo] = useState<OrderProductDto>();
-  console.log(subId);
+  // const [productInfo, setProductInfo] = useState<OrderProductDto>();
 
-  const { mutateAsync: addReviewByUser, isLoading } = useMutation(
-    async (args: AddReviewByUserPayload) =>
-      await (await client()).addReviewByUser(args, { type: ContentType.FormData }),
+  const { mutateAsync: updateReview, isLoading } = useMutation(
+    async (args: UpdateReviewPayload) =>
+      await (await client()).updateReview(order?.id, args, { type: ContentType.FormData }),
   );
+  console.log(order, 'order');
 
-  const onMutate = ({ data, images }: AddReviewByUserPayload) => {
+  const onMutate = ({ data, existImages, newImages }: UpdateReviewPayload) => {
     if (isLoading) return;
-    addReviewByUser({
-      data: formatToBlob<AddReviewByUserPayload['data']>(data, true),
-      images,
+    console.log(data, existImages, newImages);
+
+    updateReview({
+      data: formatToBlob<UpdateReviewPayload['data']>(data, true),
+      newImages,
+      existImages,
     })
       .then(res => {
         if (res.data.isSuccess) {
+          console.log(res, 'res');
           queryClient.invalidateQueries(queryKey.order.lists);
           queryClient.invalidateQueries(queryKey.myReview);
           queryClient.invalidateQueries(queryKey.review.lists);
           setAlert({
-            message: '리뷰를 등록했습니다.',
+            message: '리뷰를 수정했습니다.',
             onClick: () => router.push('/mypage/order'),
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => console.log(error));
   };
-
+  //
   const onSubmit = handleSubmit(data => {
     if (data.description.trim().length === 0) return setAlert({ message: '내용을 입력해 주세요' });
     // if (data.images.length === 0) return setAlert({ message: '사진을 등록해 주세요' });
+    // const arrString = data.images.filter(
+    //   (x: any) => typeof x !== 'object' && x.toString() !== '',
+    // ) as unknown as string[];
+    // const arrObject = data.images.filter(x => typeof x !== 'string') as unknown as File[];
+
+    // const existingImages = formatToBlob(
+    //   data.images.filter((v: any) => !v.file).map(v => v),
+    //   true,
+    // );
+    // const existingImages = formatToBlob(
+    //   data.images
+    //     .filter((v: any) => typeof v !== 'object' && v.toString() !== '')
+    //     .map(v => v) as unknown as string[],
+    //   true,
+    // );
+    const img = data.images.filter(v => v.toString() !== '');
+    const newImages = img.filter((v: any) => !!v.file).map(v => v.file as File);
+    console.log(img);
+
+    const existingImages = formatToBlob(
+      img.filter(v => !v.file).map(v => v.preview),
+      true,
+    );
+    console.log(existingImages, 'existingImages');
+
     onMutate({
       data: {
-        orderProductInfoId: productInfo ? productInfo.id : order?.productInfos?.[0].id,
         content: data.description,
         evaluations: data.selectKeywords as ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[],
-        userId: order?.user?.userId,
-        productId: productInfo ? productInfo.product?.id : order?.productInfos?.[0].product?.id,
       },
+      newImages,
+      existImages:
+        img.length === 0
+          ? []
+          : formatToBlob(
+              img.filter(v => !v.file && v.toString() !== '').map(v => v.preview),
+              true,
+            ), //  arrObject.length === 0 ? null :
+
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      images: data.images.map(x => x.file!),
     });
   });
 
-  useEffect(() => {
-    if (order && subId) {
-      const tmp = order.productInfos?.filter(v => v.id === Number(subId));
-      if (tmp && tmp.length > 0) setProductInfo(tmp[0]);
-    }
-  }, [order, subId]);
-
+  // useEffect(() => {
+  //   if (order ) {
+  //     const tmp = order.productInfos?.filter(v => v.id === Number(subId));
+  //     if (tmp && tmp.length > 0) setProductInfo(tmp[0]);
+  //   }
+  // }, [order]);
+  [''];
   return (
     <FormProvider {...form}>
       <form className='flex flex-1 flex-col justify-between' onSubmit={onSubmit}>
         <div>
-          <Product data={productInfo ?? order?.productInfos?.[0] ?? undefined} />
-          <SelectKeywords />
+          <Product data={order} />
+          <SelectKeywords data={order} />
           <div className='pt-8'>
             <h3 className='px-4 font-bold leading-[24px] -tracking-[0.03em]'>리뷰를 남겨주세요</h3>
             <p className='px-4 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
@@ -133,7 +166,7 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
         </div>
         <div className='px-4 pb-6 pt-2'>
           <button type='submit' className={submitButtonClassName}>
-            {`${true ? '등록하기' : '수정하기'}`}
+            {`${true ? '수정하기' : '등록하기'}`}
           </button>
         </div>
       </form>
@@ -141,15 +174,15 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
   );
 }
 
-function Product({ data }: { data?: OrderProductDto }) {
+function Product({ data }: { data?: any }) {
   return (
     <div className='p-4'>
       <div className='flex items-center gap-[13px] rounded-lg bg-grey-90 p-2'>
-        {data?.product?.image && (
+        {data?.simpleProduct?.image && (
           <Image
             unoptimized
             priority
-            src={data?.product?.image}
+            src={data?.simpleProduct?.image}
             alt='product'
             width={72}
             height={72}
@@ -158,13 +191,13 @@ function Product({ data }: { data?: OrderProductDto }) {
         )}
         <div className='flex-1'>
           <h4 className='line-clamp-1 text-[13px] font-bold leading-[16px] -tracking-[0.05em]'>
-            {`${setSquareBrackets(data?.product?.storeName)} ${data?.product?.title}`}
+            {`${setSquareBrackets(data?.store?.name)} ${data?.simpleProduct?.title}`}
             {/* {data?.product?.title ?? ''} */}
           </h4>
-          <p className='mt-0.5 line-clamp-1 text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
+          {/* <p className='mt-0.5 line-clamp-1 text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
             {data?.optionName ?? '기본'} {data?.amount ?? 0}개
-          </p>
-          <div className='flex items-center gap-0.5'>
+          </p> */}
+          {/* <div className='flex items-center gap-0.5'>
             {(data?.product?.originPrice ?? 0) !== 0 && (
               <strong className='font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>
                 {calcDiscountRate(data?.product?.originPrice, data?.product?.discountPrice)}%
@@ -173,15 +206,17 @@ function Product({ data }: { data?: OrderProductDto }) {
             <strong className='font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>
               {formatToLocaleString(data?.product?.discountPrice, { suffix: '원' })}
             </strong>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
   );
 }
 
-function SelectKeywords() {
+function SelectKeywords({ data }: any) {
   const { control } = useFormContext<FormType>();
+
+  // defaultValues: { description: '', images: [], selectKeywords: [] }
   return (
     <div className='bg-grey-90 px-4 py-8'>
       <h3 className='font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
@@ -190,14 +225,16 @@ function SelectKeywords() {
       <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
         해당 상품에 대한 키워드를 골라주세요. (중복 가능)
       </p>
+
       <ul className='flex flex-wrap gap-2 pt-4'>
         {keywords.map(v => (
           <li key={v.text} className='rounded-lg bg-white shadow-[0px_2px_4px_rgba(0,0,0,0.15)]'>
             <Controller
               control={control}
               name='selectKeywords'
+              defaultValue={data?.evaluations}
               render={({ field: { value, onChange } }) => {
-                const isActive = value.find(v2 => v2 === v.value);
+                const isActive = value?.find((v2: any) => v2 === v.value);
                 return (
                   <button
                     type='button'
@@ -208,7 +245,7 @@ function SelectKeywords() {
                     )}
                     onClick={() => {
                       if (isActive) {
-                        onChange(value.filter(v2 => v2 !== v.value));
+                        onChange(value.filter((v2: string) => v2 !== v.value));
                       } else {
                         onChange([...value, v.value]);
                       }
@@ -262,21 +299,34 @@ function Images() {
           momentumVelocityRatio: 0.5,
         }}
       >
-        {images.map(v => (
-          <SwiperSlide key={v.id}>
-            <button
-              type='button'
-              className='absolute right-2.5 top-2.5 z-10 h-6 w-6 bg-[url(/assets/icons/review/circle-close.svg)] bg-cover'
-              onClick={() =>
-                setValue(
-                  'images',
-                  images.filter(v2 => v2.id !== v.id),
-                )
-              }
-            />
-            <Image unoptimized fill src={v.previewUrl} alt='' className='object-cover' />
-          </SwiperSlide>
-        ))}
+        {images.map(v => {
+          if (v.toString() === '') return null;
+          return (
+            <SwiperSlide key={v.id}>
+              <button
+                type='button'
+                className='absolute right-2.5 top-2.5 z-10 h-6 w-6 bg-[url(/assets/icons/review/circle-close.svg)] bg-cover'
+                onClick={() =>
+                  setValue(
+                    'images',
+                    images.filter(v2 => v2 !== v),
+                  )
+                }
+              />
+              <Image
+                unoptimized
+                fill
+                src={v.toString()}
+                alt=''
+                className='object-cover'
+                onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+                  if (v.toString() === '') return;
+                  e.currentTarget.src = v.previewUrl;
+                }}
+              />
+            </SwiperSlide>
+          );
+        })}
         {images.length < IMAGE_MAX_COUNT && (
           <SwiperSlide>
             <button
@@ -292,11 +342,9 @@ function Images() {
               accept='image/*'
               onChange={e => {
                 if (!e.target.files) return;
-
-                asyncUploads(e).then(res =>
-                  setValue('images', [...images, ...(res ?? [])].slice(0, IMAGE_MAX_COUNT)),
-                );
-
+                asyncUploads(e).then(res => {
+                  setValue('images', [...images, ...(res ?? [])].slice(0, IMAGE_MAX_COUNT));
+                });
                 e.target.value = '';
               }}
             />

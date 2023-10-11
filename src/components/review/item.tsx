@@ -17,6 +17,7 @@ import {
 import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { queryKey } from 'src/query-key';
+import { ReviewDots } from './dots';
 
 interface Props {
   data: ReviewDto;
@@ -85,8 +86,11 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           </div>
         </div>
         {isMine ? (
-          // <ReviewDots onUpdate={() => { router.push({ pathname: '/mypage/review/[id]', query: { id: data.id } }) }} />
-          <></>
+          <ReviewDots
+            onUpdate={() => {
+              router.push({ pathname: '/mypage/review/[id]', query: { id: data.id } });
+            }}
+          />
         ) : (
           <button
             className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'

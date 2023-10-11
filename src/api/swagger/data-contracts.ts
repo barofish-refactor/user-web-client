@@ -393,10 +393,7 @@ export interface Product {
   descriptionImages?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
-  /**
-   * @format float
-   * @max 0
-   */
+  /** @format float */
   pointRate?: number;
   /** @format int32 */
   representOptionItemId?: number;
@@ -442,6 +439,7 @@ export interface Review {
   isDeleted?: boolean;
   evaluations?: ReviewEvaluation[];
   deleted?: boolean;
+  imageUrls?: string[];
 }
 
 export interface ReviewEvaluation {
@@ -1858,10 +1856,10 @@ export interface PageReviewDtoV2 {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -1913,32 +1911,6 @@ export interface SortObject {
   unsorted?: boolean;
 }
 
-export interface CustomResponsePageProductListDto {
-  isSuccess?: boolean;
-  code?: string;
-  data?: PageProductListDto;
-  errorMsg?: string;
-}
-
-export interface PageProductListDto {
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-  pageable?: PageableObject;
-  /** @format int32 */
-  size?: number;
-  content?: ProductListDto[];
-  /** @format int32 */
-  number?: number;
-  sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
-}
-
 export interface CustomResponseString {
   isSuccess?: boolean;
   code?: string;
@@ -1972,10 +1944,10 @@ export interface PageUserInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -1984,6 +1956,32 @@ export interface CustomResponseListTopBar {
   code?: string;
   data?: TopBar[];
   errorMsg?: string;
+}
+
+export interface CustomResponsePageProductListDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: PageProductListDto;
+  errorMsg?: string;
+}
+
+export interface PageProductListDto {
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  pageable?: PageableObject;
+  /** @format int32 */
+  size?: number;
+  content?: ProductListDto[];
+  /** @format int32 */
+  number?: number;
+  sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
+  empty?: boolean;
 }
 
 export interface CustomResponseLong {
@@ -2020,10 +2018,10 @@ export interface PageTip {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2067,10 +2065,10 @@ export interface PageStoreDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2151,10 +2149,10 @@ export interface PageOrderProductInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2177,10 +2175,10 @@ export interface PageSettlementDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2280,10 +2278,10 @@ export interface PageReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2306,10 +2304,10 @@ export interface PageReportDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2386,10 +2384,10 @@ export interface PageSimpleProductDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2428,10 +2426,10 @@ export interface PageOrderDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2487,10 +2485,10 @@ export interface PageNotification {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2513,10 +2511,10 @@ export interface PageNotice {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2586,10 +2584,10 @@ export interface PageInquiryDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2724,10 +2722,10 @@ export interface PageCurationDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2775,10 +2773,10 @@ export interface PageCouponDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2924,10 +2922,10 @@ export interface PageAdminLogDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2950,10 +2948,10 @@ export interface PageAdmin {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2994,12 +2992,12 @@ export type PortOneCallbackData = object;
 
 export type DeleteReviewData = CustomResponseBoolean;
 
-export interface UpdateReviewPayload {
+export interface UpdateReviewV2Payload {
   data: UpdateReviewReq;
   images?: File[];
 }
 
-export type UpdateReviewData = CustomResponseObject;
+export type UpdateReviewV2Data = CustomResponseObject;
 
 export type VerifyCodeData = CustomResponseInteger;
 
@@ -3271,13 +3269,13 @@ export interface AddSearchFilter1Payload {
 
 export type AddSearchFilter1Data = CustomResponseSearchFilterDto;
 
-export interface UpdateReview1Payload {
+export interface UpdateReviewPayload {
   data: UpdateReviewReq;
-  existImages: string[];
-  newImages: File[];
+  existImages?: string[];
+  newImages?: File[];
 }
 
-export type UpdateReview1Data = CustomResponseReviewDto;
+export type UpdateReviewData = CustomResponseReviewDto;
 
 export type UnlikeReviewByUserData = CustomResponseBoolean;
 
@@ -3646,7 +3644,7 @@ export type AddAdminByMasterData = CustomResponseAdmin;
 
 export type GetReviewsData = CustomResponseProductReviewDto;
 
-export type SelectProductListByUserData = CustomResponsePageProductListDto;
+export type SelectProductListByUserV2Data = CustomResponseObject;
 
 export type VerifyCodeWithImpUidData = CustomResponseString;
 
@@ -3752,7 +3750,7 @@ export type SelectProductOptionListData = CustomResponseListOptionDto;
 
 export type SelectRecentViewListData = CustomResponseListProductListDto;
 
-export type SelectProductListByUser1Data = CustomResponsePageProductListDto;
+export type SelectProductListByUserData = CustomResponsePageProductListDto;
 
 export type SelectProductListWithIdsData = CustomResponseListProductListDto;
 

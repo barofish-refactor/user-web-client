@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { client } from 'src/api/client';
@@ -100,6 +101,7 @@ function Empty() {
 
 MypagePayMethod.getLayout = page => (
   <Layout className='flex flex-col' headerProps={{ disable: true }} footerProps={{ disable: true }}>
+    <DefaultSeo title='결제수단 관리 | 바로피쉬' description='PayMethod' />
     <div className='flex flex-1 flex-col pb-6'>
       <header className='title-header'>
         <BackButton />

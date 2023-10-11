@@ -17,7 +17,6 @@ const InformationDefault = ({ data, user }: Props) => {
   useEffect(() => {
     if (data?.discountPrice && data?.pointRate) {
       // 데이터 확인
-      console.log(Math.floor(data?.discountPrice * data?.pointRate), 'dataPoint');
       if (user && user.grade?.pointRate) {
         // 유저 확인
         const userDataPoint =

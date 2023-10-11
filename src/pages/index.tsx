@@ -139,7 +139,6 @@ const Home: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
-  console.log(curationData, 'dd');
 
   return (
     <div className='max-md:w-[100vw]'>
