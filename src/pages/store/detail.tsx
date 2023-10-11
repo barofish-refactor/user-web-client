@@ -188,7 +188,6 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           title={data.name}
           description='바로피쉬에 입점되어있는 믿을수있는 스토어'
           openGraph={{
-            images: [{ url: data.profileImage, alt: 'logo' }],
             title: data.name,
             description: data.oneLineDescription,
             siteName: '입점스토어',
