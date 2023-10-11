@@ -131,7 +131,6 @@ const Store: NextPageWithLayout = () => {
         title='스토어'
         description='바로피쉬에 입점되어있는 믿을수있는 스토어'
         openGraph={{
-          images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
           title: '스토어',
           description: '바로피쉬에 입점되어있는 믿을수있는 스토어,',
           siteName: '입점스토어',

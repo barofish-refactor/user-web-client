@@ -196,7 +196,6 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
           title={curationData.title}
           description={curationData.description}
           openGraph={{
-            images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
             title: curationData.title,
             description: curationData.description,
             siteName: '',
