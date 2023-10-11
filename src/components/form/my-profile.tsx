@@ -6,6 +6,7 @@ import { type FileType } from 'src/types/common';
 export const myProfileDefaultValue: FileType = {
   file: null,
   previewUrl: '/assets/icons/common/default-profile.png',
+  preview: '',
 };
 
 interface Props {
@@ -23,6 +24,7 @@ export function MyProfile({ defaultValue: defaultProp, onChange, readonly, value
     defaultProp: {
       file: defaultProp?.file ?? myProfileDefaultValue.file,
       previewUrl: defaultProp?.previewUrl || myProfileDefaultValue.previewUrl,
+      preview: '',
     },
     onChange,
   });
@@ -45,7 +47,12 @@ export function MyProfile({ defaultValue: defaultProp, onChange, readonly, value
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = () => setInnerValue({ file, previewUrl: reader.result as string });
+    reader.onload = () =>
+      setInnerValue({
+        preview: reader.result as string,
+        file,
+        previewUrl: reader.result as string,
+      });
     reader.readAsDataURL(file);
 
     e.target.value = '';
