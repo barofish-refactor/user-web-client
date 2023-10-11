@@ -63,11 +63,11 @@ export function RetouchReviewForm({ order }: { order?: any; subId?: number }) {
     async (args: UpdateReviewPayload) =>
       await (await client()).updateReview(order?.id, args, { type: ContentType.FormData }),
   );
-  console.log(order, 'order');
+  // console.log(order, 'order');
 
   const onMutate = ({ data, existImages, newImages }: UpdateReviewPayload) => {
     if (isLoading) return;
-    console.log(data, existImages, newImages);
+    // console.log(data, existImages, newImages);
 
     updateReview({
       data: formatToBlob<UpdateReviewPayload['data']>(data, true),
