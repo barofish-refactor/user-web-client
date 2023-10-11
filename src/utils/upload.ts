@@ -7,7 +7,7 @@ export async function asyncUploads(e: ChangeEvent<HTMLInputElement>) {
   return Promise.all(
     Array.from(files).map(
       (file, index) =>
-        new Promise<any>((resolve, reject) => {
+        new Promise<FileType>((resolve, reject) => {
           const reader = new FileReader();
           reader.onerror = reject;
           reader.onload = e =>

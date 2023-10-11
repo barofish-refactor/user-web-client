@@ -70,7 +70,6 @@ type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 };
 
 type FileType = {
-  preview: string;
   id?: string;
   file: File | null;
   previewUrl: string;

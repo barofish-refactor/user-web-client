@@ -127,3 +127,17 @@ export const useProductOptionStore = create<ProductOptionStore>()(set => ({
   setProductOption: productOption => set({ productOption }),
   clearProductOption: () => set({ productOption: null }),
 }));
+
+interface OrderDataStore {
+  orderData: {
+    data?: any;
+  } | null;
+  setOrderData: (orderData: OrderDataStore['orderData']) => void;
+  clearOrderData: () => void;
+}
+
+export const useOrderDataStore = create<OrderDataStore>()(set => ({
+  orderData: null,
+  setOrderData: orderData => set({ orderData }),
+  clearOrderData: () => set({ orderData: null }),
+}));
