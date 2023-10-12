@@ -26,11 +26,12 @@ const Complete: NextPageWithLayout = () => {
   const onComplete = () => {
     // 성공시 픽셀,ga
     fpixel.purchase({
-      ...ga,
+      ...orderFpData,
     });
     gtag.Purchase({
-      ...orderGaData?.data,
+      ...ga,
     });
+
     router.replace('/');
   };
   console.log(ga, 'ga');
