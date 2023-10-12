@@ -322,7 +322,7 @@ export function MypageOrderDetail({ id }: Props) {
               </span>
               <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-60'>
                 {`(${data?.user?.grade?.name ?? ''} 등급 : 구매 적립 ${
-                  data?.user?.grade?.pointRate ?? 1
+                  Number(data?.user?.grade?.pointRate) * 100 ?? 1
                 }%)`}
               </p>
             </div>

@@ -13,40 +13,40 @@ const Complete: NextPageWithLayout = () => {
   const { orderData } = useOrderDataStore();
   console.log(orderData);
 
+  const gaItme =
+    orderData &&
+    orderData?.data?.items?.map((ga: any) => {
+      return {
+        item_id: ga.item_id,
+        item_name: ga.item_name,
+        list_name: ga.list_name,
+        item_category: ga.item_category,
+        variant: ga.variant,
+        affiliation: ga.affiliation,
+        list_position: ga.list_position,
+        item_brand: ga.item_brand,
+        price: ga.price,
+        quantity: ga.quantity,
+      };
+    });
+  const fpItme =
+    orderData &&
+    orderData?.data?.itmes?.map((f: any) => {
+      console.log(f, 'ffff');
+      return {
+        item_id: f.item_id,
+        item_name: f.item_name,
+        affiliation: f.affiliation,
+        currency: f.currency,
+        quantity: f.quantity,
+        item_brand: f.item_brand,
+        price: f.fpPrice,
+      };
+    });
+  console.log(fpItme, 'fpItme1');
+  console.log(gaItme, 'gaItme1');
   const onComplete = () => {
     // 성공시 픽셀,ga
-
-    const gaItme =
-      orderData &&
-      orderData?.data?.items?.map((ga: any) => {
-        return {
-          item_id: ga.item_id,
-          item_name: ga.item_name,
-          list_name: ga.list_name,
-          item_category: ga.item_category,
-          variant: ga.variant,
-          affiliation: ga.affiliation,
-          list_position: ga.list_position,
-          item_brand: ga.item_brand,
-          price: ga.price,
-          quantity: ga.quantity,
-        };
-      });
-    const fpItme =
-      orderData &&
-      orderData?.data?.itmes?.map((f: any) => {
-        return {
-          item_id: f.item_id,
-          item_name: f.item_name,
-          affiliation: f.affiliation,
-          currency: f.currency,
-          quantity: f.quantity,
-          item_brand: f.item_brand,
-          price: f.fpPrice,
-        };
-      });
-    console.log(fpItme, 'fpItme');
-    console.log(gaItme, 'gaItme');
 
     fpixel.purchase({
       content_id: orderData?.data.content_id,
