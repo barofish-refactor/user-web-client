@@ -191,6 +191,57 @@ const Order: NextPageWithLayout = () => {
     () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
     [buyPoint, imageReviewPoint, productPoint],
   );
+  useEffect(() => {
+    if (!selectedOption) return;
+    setOrderGaData({
+      data: {
+        action: 'purchase',
+        value: totalPrice,
+        name: selectedOption[0]?.productName,
+        category: '상품',
+        currency: 'KRW',
+        transaction_id: new Date().toTimeString().split(' ')[0],
+        shipping: 4000,
+        tax: 0,
+        affiliation: '바로피쉬',
+        items: selectedOption.map(item => {
+          return {
+            item_id: item.storeId,
+            item_name: selectedOption[0]?.productName + ' ' + item.name,
+            list_name: '해산물',
+            item_category: 'product',
+            variant: '해산물',
+            affiliation: '바로피쉬',
+            list_position: '스토어',
+            item_brand: item.storeName,
+            price: (item.price + item.additionalPrice) * item.amount,
+            quantity: item.amount,
+          };
+        }),
+      },
+    });
+    setOrderFpData({
+      data: {
+        content_id: new Date().toTimeString().split(' ')[0],
+        value: formatToLocaleString(totalPrice).replace(',', '.'),
+        currency: 'KRW',
+        content_type: 'product',
+        items: selectedOption.map(item => {
+          return {
+            item_id: item.storeId,
+            item_name: selectedOption[0]?.productName + ' ' + item.name,
+            affiliation: '바로피쉬',
+            item_brand: item.storeName,
+            price: formatToLocaleString((item.price + item.additionalPrice) * item.amount).replace(
+              ',',
+              '.',
+            ),
+            quantity: item.amount,
+          };
+        }),
+      },
+    });
+  }, [selectedOption, setOrderFpData, setOrderGaData, totalPrice]);
 
   const onIamportResult = (
     orderId: string,
@@ -284,54 +335,6 @@ const Order: NextPageWithLayout = () => {
           return setAlert({ message: '계좌번호을 입력해 주세요.' });
       }
       const taxFreePrice = getTaxFreePrice();
-
-      setOrderGaData({
-        data: {
-          action: 'purchase',
-          value: totalPrice,
-          name: selectedOption[0]?.productName,
-          category: '상품',
-          currency: 'KRW',
-          transaction_id: new Date().toTimeString().split(' ')[0],
-          shipping: 4000,
-          tax: 0,
-          affiliation: '바로피쉬',
-          items: selectedOption.map(item => {
-            return {
-              item_id: item.storeId,
-              item_name: selectedOption[0]?.productName + ' ' + item.name,
-              list_name: '해산물',
-              item_category: 'product',
-              variant: '해산물',
-              affiliation: '바로피쉬',
-              list_position: '스토어',
-              item_brand: item.storeName,
-              price: (item.price + item.additionalPrice) * item.amount,
-              quantity: item.amount,
-            };
-          }),
-        },
-      });
-      setOrderFpData({
-        data: {
-          content_id: new Date().toTimeString().split(' ')[0],
-          value: formatToLocaleString(totalPrice).replace(',', '.'),
-          currency: 'KRW',
-          content_type: 'product',
-          items: selectedOption.map(item => {
-            return {
-              item_id: item.storeId,
-              item_name: selectedOption[0]?.productName + ' ' + item.name,
-              affiliation: '바로피쉬',
-              item_brand: item.storeName,
-              price: formatToLocaleString(
-                (item.price + item.additionalPrice) * item.amount,
-              ).replace(',', '.'),
-              quantity: item.amount,
-            };
-          }),
-        },
-      });
 
       orderProduct({
         products: selectedOption.map((x, i) => {
