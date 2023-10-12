@@ -357,6 +357,7 @@ const Order: NextPageWithLayout = () => {
                 }),
               },
             });
+            alert(orderId);
             setOrderFpData({
               data: {
                 content_id: res.data.data?.id,
@@ -392,6 +393,7 @@ const Order: NextPageWithLayout = () => {
                 name,
                 taxFree: taxFreePrice.sum,
               },
+
               onSuccess: async (vBankData?: vBankType) => {
                 onIamportResult(orderId, true, '', vBankData);
               },
