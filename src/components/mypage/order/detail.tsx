@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { client } from 'src/api/client';
 import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
+import cm from 'src/utils/class-merge';
 import { formatToLocaleString, formatToPhone, getDeliverFee } from 'src/utils/functions';
 import { parsePaymentWay2, parseProductInfoState } from 'src/utils/parse';
 
@@ -101,17 +102,17 @@ export function MypageOrderDetail({ id }: Props) {
       throw new Error(res.data.errorMsg);
     }
   });
+  console.log(section, 'section');
 
   /** 구매 적립금 */
   const buyPoint =
-    Math.round(
-      (Math.floor(Math.max(totalProductPrice ?? 0, 0) / 100) * (pointData?.pointRate ?? 1)) / 10,
-    ) * 10;
+    Math.round(Math.floor(Math.max(totalProductPrice ?? 0) * (pointData?.pointRate ?? 1)) / 10) *
+    10;
   /** 상품 적립금 */
   const productPoint = Math.floor(
     data?.productInfos
       ? data.productInfos
-          .map(v => ((v.price ?? 0) / 100) * (v.optionItem?.pointRate ?? 0))
+          .map((v: any) => v.price * v.optionItem?.pointRate * v.amount)
           .reduce((a, b) => a + b, 0)
       : 0,
   );
@@ -122,6 +123,8 @@ export function MypageOrderDetail({ id }: Props) {
     () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
     [buyPoint, imageReviewPoint, productPoint],
   );
+  const [isOpenProductPoint, setIsOpenProductPoint] = useState<boolean>(false);
+  console.log(data, 'data');
 
   return (
     <div>
@@ -190,7 +193,6 @@ export function MypageOrderDetail({ id }: Props) {
               {(section ?? []).map((v, idx) => {
                 const sectionDeliverFee = v.deliverFee;
                 const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
-
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
                     <div className='flex items-center justify-between'>
@@ -311,38 +313,73 @@ export function MypageOrderDetail({ id }: Props) {
         <hr className='border-t-8 border-grey-90' />
         <div className='px-4 py-[22px]'>
           <h3 className={headingClassName}>적립금 혜택</h3>
-          <div className='space-y-2.5 py-4'>
-            <div className='flex justify-between'>
-              <span className={labelClassName}>구매적립</span>
-              <div className='text-right'>
-                <span className={subValueClassName}>
-                  {formatToLocaleString(buyPoint, { suffix: '원' })}
-                </span>
-                <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-60'>
-                  {`(${data?.user?.grade?.name ?? ''} 등급 : 구매 적립 ${
-                    data?.user?.grade?.pointRate ?? 1
-                  }%)`}
-                </p>
-              </div>
-            </div>
-            <div className='flex justify-between'>
-              <span className={labelClassName}>상품적립</span>
-              <div className='flex flex-col items-end'>
-                <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
-                  productPoint,
-                )}원`}</p>
-              </div>
-            </div>
-            <div className='flex justify-between'>
-              <span className={labelClassName}>후기작성</span>
+          {/* <div className='space-y-2.5 py-4'> */}
+          <div className='flex justify-between'>
+            <span className={labelClassName}>구매적립</span>
+            <div className='text-right'>
               <span className={subValueClassName}>
-                {formatToLocaleString(imageReviewPoint, {
-                  prefix: '최대 ',
-                  suffix: '원',
-                })}
+                {formatToLocaleString(buyPoint, { suffix: '원' })}
               </span>
+              <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-60'>
+                {`(${data?.user?.grade?.name ?? ''} 등급 : 구매 적립 ${
+                  data?.user?.grade?.pointRate ?? 1
+                }%)`}
+              </p>
             </div>
           </div>
+          {/* <div className='flex justify-between'> */}
+          <button
+            className='flex h-[44px] w-full items-center justify-between'
+            onClick={() => setIsOpenProductPoint(!isOpenProductPoint)}
+          >
+            <p className='flex text-[16px] font-medium leading-[24px] -tracking-[0.03em]  text-grey-50'>
+              상품적립
+              <Image
+                unoptimized
+                src='/assets/icons/common/chevron-mypage.svg'
+                alt='chevron'
+                width={24}
+                height={24}
+                className={cm(!isOpenProductPoint ? 'rotate-90' : 'rotate-[270deg]')}
+              />
+            </p>
+            <div className='flex flex-col items-end'>
+              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
+                productPoint,
+              )}원`}</p>
+            </div>
+          </button>
+          {isOpenProductPoint &&
+            data?.productInfos?.map((item: any, idx) => {
+              return (
+                <Fragment key={idx}>
+                  <div className='flex items-center justify-between'>
+                    <p className='text-[14px] font-medium leading-[10px] -tracking-[0.03em] text-grey-50'>
+                      {item?.optionItem?.name}
+                    </p>
+                    <p className='text-[14px] font-medium leading-[24px] -tracking-[0.03em] text-grey-60'>{`${formatToLocaleString(
+                      Math.floor(item?.optionItem.discountPrice * item?.optionItem?.pointRate) *
+                        item?.amount,
+                    )}원`}</p>
+                  </div>
+                  <p className='mb-4 mt-4 text-[14px] font-medium leading-[10px] -tracking-[0.03em] text-grey-60'>
+                    옵션: {item.optionName}
+                  </p>
+                </Fragment>
+              );
+            })}
+          {/* </div> */}
+
+          <div className='flex justify-between'>
+            <span className={labelClassName}>후기작성</span>
+            <span className={subValueClassName}>
+              {formatToLocaleString(imageReviewPoint, {
+                prefix: '최대 ',
+                suffix: '원',
+              })}
+            </span>
+          </div>
+          {/* </div> */}
           <hr className='border-grey-90' />
           <div className='flex items-center justify-between pt-[22px]'>
             <h4 className={headingClassName}>적립 금액</h4>
