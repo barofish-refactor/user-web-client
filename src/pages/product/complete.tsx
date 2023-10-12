@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from 'src/components/common/layout';
 import { useOrderGaDataStore, useOrderFpDataStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
@@ -14,7 +14,10 @@ const Complete: NextPageWithLayout = () => {
   const { orderFpData } = useOrderFpDataStore();
   console.log({ ...orderGaData?.data }, '12');
   console.log({ ...orderFpData?.data }, '123');
-  alert(orderGaData?.data.transaction_id);
+  useEffect(() => {
+    if (orderGaData) alert(orderGaData?.data.transaction_id);
+  }, [orderGaData]);
+
   const onComplete = () => {
     // 성공시 픽셀,ga
     fpixel.purchase({
