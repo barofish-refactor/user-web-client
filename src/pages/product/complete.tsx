@@ -14,9 +14,9 @@ const Complete: NextPageWithLayout = () => {
   const { orderFpData } = useOrderFpDataStore();
   console.log({ ...orderGaData?.data }, '12');
   console.log({ ...orderFpData?.data }, '123');
+  alert(orderGaData?.data.transaction_id);
   const onComplete = () => {
     // 성공시 픽셀,ga
-
     fpixel.purchase({
       ...orderFpData?.data,
     });
