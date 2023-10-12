@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, Fragment } from 'react';

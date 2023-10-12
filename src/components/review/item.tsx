@@ -17,6 +17,7 @@ import {
 import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { queryKey } from 'src/query-key';
+import { ReviewDots } from './dots';
 
 interface Props {
   data: ReviewDto;
@@ -84,9 +85,12 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
             </p>
           </div>
         </div>
-        {isMine ? (
-          // <ReviewDots onUpdate={() => { router.push({ pathname: '/mypage/review/[id]', query: { id: data.id } }) }} />
-          <></>
+        {/* {isMine ? (
+          <ReviewDots
+            onUpdate={() => {
+              router.push({ pathname: '/mypage/review/[id]', query: { id: data.id } });
+            }}
+          />
         ) : (
           <button
             className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'
@@ -96,7 +100,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           >
             신고하기
           </button>
-        )}
+        )} */}
       </div>
       <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         {/* {`옵션 : ${'멸치 5kg'}`} */}

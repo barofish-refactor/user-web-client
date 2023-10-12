@@ -1,5 +1,6 @@
 import { type InfiniteData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
@@ -130,6 +131,7 @@ function Empty() {
 MypageOrder.getLayout = page => (
   <Layout footerProps={{ disable: true }} headerProps={{ disable: true }}>
     <div>
+      <DefaultSeo title='주문내역 | 바로피쉬' description='UserOrder' />
       <header className='title-header'>
         <BackButton />
         <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>주문 내역</h2>

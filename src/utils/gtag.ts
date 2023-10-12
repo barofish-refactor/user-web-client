@@ -20,6 +20,7 @@ type GTagEvent = {
   currency: string;
   items: any;
   tax: number;
+  affiliation: string;
 };
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/events

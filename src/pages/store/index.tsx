@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -126,6 +127,16 @@ const Store: NextPageWithLayout = () => {
           <HeaderBanner />
         </div>
       )}
+      <DefaultSeo
+        title='스토어'
+        description='바로피쉬에 입점되어있는 믿을수있는 스토어'
+        openGraph={{
+          title: '스토어',
+          description: '바로피쉬에 입점되어있는 믿을수있는 스토어,',
+          siteName: '입점스토어',
+          type: 'website',
+        }}
+      />
       <div
         className={
           !user

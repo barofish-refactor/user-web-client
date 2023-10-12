@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
@@ -74,6 +75,7 @@ const Contact: NextPageWithLayout = () => {
 
 Contact.getLayout = page => (
   <Layout footerProps={{ disable: true }} headerProps={{ disable: true }}>
+    <DefaultSeo title='1:1문의' description='contect' />
     {page}
   </Layout>
 );

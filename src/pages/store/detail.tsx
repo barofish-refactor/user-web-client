@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -172,6 +173,8 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
+  console.log(data);
+
   return (
     <div className='max-md:w-[100vw]'>
       {/* header */}
@@ -179,6 +182,18 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <div className='sticky top-0 z-50'>
           <HeaderBanner />
         </div>
+      )}
+      {data && (
+        <DefaultSeo
+          title={data.name}
+          description='바로피쉬에 입점되어있는 믿을수있는 스토어'
+          openGraph={{
+            title: data.name,
+            description: data.oneLineDescription,
+            siteName: '입점스토어',
+            type: 'website',
+          }}
+        />
       )}
       <div
         className={

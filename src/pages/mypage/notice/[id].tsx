@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
@@ -75,6 +76,7 @@ const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
 
 MypageNotice.getLayout = page => (
   <Layout className='flex flex-col' headerProps={{ disable: true }} footerProps={{ disable: true }}>
+    <DefaultSeo title='공지사항 | 바로피쉬' description='noticeDetail' />
     <div className='flex flex-1 flex-col'>
       <header className='title-header'>
         <BackButton />

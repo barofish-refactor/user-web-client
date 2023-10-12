@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { useState } from 'react';
 import { client } from 'src/api/client';
@@ -105,6 +106,7 @@ function Empty({ navType }: { navType: CouponNavType }) {
 
 MypageCoupon.getLayout = page => (
   <Layout className='flex flex-col' footerProps={{ disable: true }} headerProps={{ disable: true }}>
+    <DefaultSeo title='쿠폰함 | 바로피쉬' description='coupon' />
     <div className='flex flex-1 flex-col'>
       <header className='title-header'>
         <BackButton />

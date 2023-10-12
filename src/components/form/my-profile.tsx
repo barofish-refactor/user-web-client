@@ -45,7 +45,11 @@ export function MyProfile({ defaultValue: defaultProp, onChange, readonly, value
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = () => setInnerValue({ file, previewUrl: reader.result as string });
+    reader.onload = () =>
+      setInnerValue({
+        file,
+        previewUrl: reader.result as string,
+      });
     reader.readAsDataURL(file);
 
     e.target.value = '';

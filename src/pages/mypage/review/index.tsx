@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -45,24 +46,29 @@ const MypageReview: NextPageWithLayout = () => {
   if (data?.pages?.[0]?.empty) return <Empty />;
 
   return (
-    <div>
-      <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
-        <h3 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>내가 쓴 후기</h3>
-        <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
-          총 {formatToLocaleString(data?.pages?.[0]?.totalElements)}건
-        </span>
+    <>
+      <DefaultSeo title='구매후기' description='Review' />
+      <div>
+        <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
+          <h3 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>
+            내가 쓴 후기
+          </h3>
+          <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
+            총 {formatToLocaleString(data?.pages?.[0]?.totalElements)}건
+          </span>
+        </div>
+        <article className='px-4'>
+          {data?.pages.map((v, i) => (
+            <Fragment key={i}>
+              {v?.content?.map((v, idx) => (
+                <ReviewItem key={`${idx}${v.id}`} isMine data={v} refetch={refetch} />
+              ))}
+            </Fragment>
+          ))}
+          <div ref={ref} className='pb-10' />
+        </article>
       </div>
-      <article className='px-4'>
-        {data?.pages.map((v, i) => (
-          <Fragment key={i}>
-            {v?.content?.map((v, idx) => (
-              <ReviewItem key={`${idx}${v.id}`} isMine data={v} refetch={refetch} />
-            ))}
-          </Fragment>
-        ))}
-        <div ref={ref} className='pb-10' />
-      </article>
-    </div>
+    </>
   );
 };
 

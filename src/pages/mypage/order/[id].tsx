@@ -1,3 +1,4 @@
+import { DefaultSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import Layout from 'src/components/common/layout';
 import { MypageOrderDetail } from 'src/components/mypage/order';
@@ -12,6 +13,7 @@ const MypageOrderDynamic: NextPageWithLayout = () => {
 
 MypageOrderDynamic.getLayout = page => (
   <Layout footerProps={{ disable: true }} headerProps={{ disable: true }}>
+    <DefaultSeo title='주문 상세 | 바로피쉬' description='OrderDetail' />
     {page}
   </Layout>
 );
