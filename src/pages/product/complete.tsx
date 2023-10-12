@@ -26,7 +26,7 @@ const Complete: NextPageWithLayout = () => {
   const onComplete = () => {
     // 성공시 픽셀,ga
     fpixel.purchase({
-      ...orderFpData?.data,
+      ...ga,
     });
     gtag.Purchase({
       ...orderGaData?.data,
