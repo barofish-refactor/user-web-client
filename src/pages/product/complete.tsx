@@ -43,7 +43,7 @@ const Complete: NextPageWithLayout = () => {
         <div className='flex w-full flex-col items-center pt-[120px]'>
           <Image src='/assets/icons/product/complete.svg' alt='complete' width={73} height={73} />
           <p className='mt-8 text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-primary-50'>
-            주문이 완료되었습니다!
+            주문이 완료되었습니다{orderGaData?.data.transaction_id}!
           </p>
           <p className='mt-4 whitespace-pre text-center text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
             {`신선한 상품으로 빠르게 배송하겠습니다.\n이용해 주셔서 감사합니다.`}
