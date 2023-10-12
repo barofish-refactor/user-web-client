@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from 'src/components/common/layout';
 import { useOrderGaDataStore, useOrderFpDataStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
@@ -12,10 +12,15 @@ const Complete: NextPageWithLayout = () => {
   const router = useRouter();
   const { orderGaData } = useOrderGaDataStore();
   const { orderFpData } = useOrderFpDataStore();
+  const [ga, setGa] = useState<any>();
   console.log({ ...orderGaData?.data }, '12');
   console.log({ ...orderFpData?.data }, '123');
   useEffect(() => {
-    if (orderGaData) alert(orderGaData?.data.transaction_id);
+    const LocalData: any = localStorage.getItem('ga');
+    if (!LocalData) return;
+    const jsonData = JSON.parse(LocalData);
+    console.log(jsonData, 'jsonData');
+    setGa(jsonData);
   }, [orderGaData]);
 
   const onComplete = () => {
@@ -28,11 +33,12 @@ const Complete: NextPageWithLayout = () => {
     });
     router.replace('/');
   };
+  console.log(ga, 'ga');
 
   return (
     <>
       <DefaultSeo
-        title={`${orderGaData?.data.name[0] || '주문완료'} | 바로피쉬`}
+        title={`${orderGaData?.data.name || '주문완료'} | 바로피쉬`}
         description='contect'
       />
       <div className='pb-[80px] max-md:w-[100vw]'>
@@ -43,7 +49,7 @@ const Complete: NextPageWithLayout = () => {
         <div className='flex w-full flex-col items-center pt-[120px]'>
           <Image src='/assets/icons/product/complete.svg' alt='complete' width={73} height={73} />
           <p className='mt-8 text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-primary-50'>
-            주문이 완료되었습니다{orderGaData?.data.transaction_id}!
+            주문이 완료되었습니다{ga && ga?.action}!
           </p>
           <p className='mt-4 whitespace-pre text-center text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
             {`신선한 상품으로 빠르게 배송하겠습니다.\n이용해 주셔서 감사합니다.`}

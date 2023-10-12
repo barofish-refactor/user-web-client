@@ -193,6 +193,34 @@ const Order: NextPageWithLayout = () => {
   );
   useEffect(() => {
     if (!selectedOption) return;
+    localStorage.setItem(
+      'ga',
+      JSON.stringify({
+        action: 'purchase',
+        value: totalPrice,
+        name: selectedOption[0]?.productName,
+        category: '상품',
+        currency: 'KRW',
+        transaction_id: new Date().toTimeString().split(' ')[0],
+        shipping: 4000,
+        tax: 0,
+        affiliation: '바로피쉬',
+        items: selectedOption.map(item => {
+          return {
+            item_id: item.storeId,
+            item_name: selectedOption[0]?.productName + ' ' + item.name,
+            list_name: '해산물',
+            item_category: 'product',
+            variant: '해산물',
+            affiliation: '바로피쉬',
+            list_position: '스토어',
+            item_brand: item.storeName,
+            price: (item.price + item.additionalPrice) * item.amount,
+            quantity: item.amount,
+          };
+        }),
+      }),
+    );
     setOrderGaData({
       data: {
         action: 'purchase',
