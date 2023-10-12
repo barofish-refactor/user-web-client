@@ -128,16 +128,29 @@ export const useProductOptionStore = create<ProductOptionStore>()(set => ({
   clearProductOption: () => set({ productOption: null }),
 }));
 
-interface OrderDataStore {
-  orderData: {
+interface OrderGaDataStore {
+  orderGaData: {
     data?: any;
   } | null;
-  setOrderData: (orderData: OrderDataStore['orderData']) => void;
-  clearOrderData: () => void;
+  setOrderGaData: (orderData: OrderGaDataStore['orderGaData']) => void;
+  clearOrderGaData: () => void;
 }
 
-export const useOrderDataStore = create<OrderDataStore>()(set => ({
-  orderData: null,
-  setOrderData: orderData => set({ orderData }),
-  clearOrderData: () => set({ orderData: null }),
+export const useOrderGaDataStore = create<OrderGaDataStore>()(set => ({
+  orderGaData: null,
+  setOrderGaData: orderGaData => set({ orderGaData }),
+  clearOrderGaData: () => set({ orderGaData: null }),
+}));
+interface OrderFpDataStore {
+  orderFpData: {
+    data?: any;
+  } | null;
+  setOrderFpData: (orderGaData: OrderFpDataStore['orderFpData']) => void;
+  clearOrderFpData: () => void;
+}
+
+export const useOrderFpDataStore = create<OrderFpDataStore>()(set => ({
+  orderFpData: null,
+  setOrderFpData: orderFpData => set({ orderFpData }),
+  clearOrderFpData: () => set({ orderFpData: null }),
 }));

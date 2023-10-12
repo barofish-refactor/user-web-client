@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import Layout from 'src/components/common/layout';
-import { useOrderDataStore } from 'src/store';
+import { useOrderGaDataStore, useOrderFpDataStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import * as gtag from 'src/utils/gtag';
 import * as fpixel from 'src/utils/fpixel';
@@ -10,62 +10,18 @@ import { DefaultSeo } from 'next-seo';
 /** 주문 완료 */
 const Complete: NextPageWithLayout = () => {
   const router = useRouter();
-  const { orderData } = useOrderDataStore();
-  console.log(orderData);
-
+  const { orderGaData } = useOrderGaDataStore();
+  const { orderFpData } = useOrderFpDataStore();
+  console.log({ ...orderGaData?.data }, '12');
+  console.log({ ...orderFpData?.data }, '123');
   const onComplete = () => {
     // 성공시 픽셀,ga
 
-    const gaItme =
-      orderData &&
-      orderData?.data?.items?.map((ga: any) => {
-        return {
-          item_id: ga.item_id,
-          item_name: ga.item_name,
-          list_name: ga.list_name,
-          item_category: ga.item_category,
-          variant: ga.variant,
-          affiliation: ga.affiliation,
-          list_position: ga.list_position,
-          item_brand: ga.item_brand,
-          price: ga.price,
-          quantity: ga.quantity,
-        };
-      });
-    const fpItme =
-      orderData &&
-      orderData?.data?.itmes?.map((f: any) => {
-        return {
-          item_id: f.item_id,
-          item_name: f.item_name,
-          affiliation: f.affiliation,
-          currency: f.currency,
-          quantity: f.quantity,
-          item_brand: f.item_brand,
-          price: f.fpPrice,
-        };
-      });
-    console.log(fpItme, 'fpItme');
-    console.log(gaItme, 'gaItme');
-
     fpixel.purchase({
-      content_id: orderData?.data.content_id,
-      value: orderData?.data.fpValue,
-      currency: 'KRW',
-      content_type: orderData?.data.fpContent_type,
-      contents: fpItme,
+      ...orderFpData?.data,
     });
     gtag.Purchase({
-      action: 'purchase',
-      value: orderData?.data.value,
-      name: orderData?.data.name[0],
-      category: orderData?.data.category,
-      currency: orderData?.data.currency,
-      transaction_id: orderData?.data.content_id,
-      shipping: orderData?.data.shipping,
-      tax: orderData?.data.tax,
-      affiliation: '바로피쉬',
-      items: gaItme,
+      ...orderGaData?.data,
     });
     router.replace('/');
   };
@@ -73,7 +29,7 @@ const Complete: NextPageWithLayout = () => {
   return (
     <>
       <DefaultSeo
-        title={`${orderData?.data.name[0] || '주문완료'} | 바로피쉬`}
+        title={`${orderGaData?.data.name[0] || '주문완료'} | 바로피쉬`}
         description='contect'
       />
       <div className='pb-[80px] max-md:w-[100vw]'>

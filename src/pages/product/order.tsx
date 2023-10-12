@@ -20,7 +20,7 @@ import { type miniOptionState, type OptionState } from 'src/components/product/b
 import { type RefundAccountType } from 'src/components/product/refund-account';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useOrderDataStore } from 'src/store';
+import { useAlertStore, useOrderGaDataStore, useOrderFpDataStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import {
@@ -77,7 +77,8 @@ const Order: NextPageWithLayout = () => {
   const router = useRouter();
   const { options } = router.query;
   const { setAlert } = useAlertStore();
-  const { setOrderData } = useOrderDataStore();
+  const { setOrderGaData } = useOrderGaDataStore();
+  const { setOrderFpData } = useOrderFpDataStore();
   const [refundBankData, setRefundBankData] = useState<RefundAccountType>({
     name: '',
     bankCode: '',
@@ -329,20 +330,17 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
-            setOrderData({
+            setOrderGaData({
               data: {
                 action: 'purchase',
                 value: totalPrice,
-                name: selectedOption.map(item => item.productName),
+                name: selectedOption[0]?.productName,
                 category: '상품',
                 currency: 'KRW',
                 transaction_id: orderId,
                 shipping: 4000,
                 tax: 0,
                 affiliation: '바로피쉬',
-                fpContent_id: res.data.data?.id,
-                fpValue: formatToLocaleString(totalPrice).replace(',', '.'),
-                fpContent_type: 'product',
                 items: selectedOption.map(item => {
                   return {
                     item_id: item.storeId,
@@ -355,14 +353,30 @@ const Order: NextPageWithLayout = () => {
                     item_brand: item.storeName,
                     price: (item.price + item.additionalPrice) * item.amount,
                     quantity: item.amount,
-                    fpPrice: formatToLocaleString(
-                      (item.price + item.additionalPrice) * item.amount,
-                    ).replace(',', '.'),
                   };
                 }),
               },
             });
-
+            setOrderFpData({
+              data: {
+                content_id: res.data.data?.id,
+                value: formatToLocaleString(totalPrice).replace(',', '.'),
+                currency: 'KRW',
+                content_type: 'product',
+                items: selectedOption.map(item => {
+                  return {
+                    item_id: item.storeId,
+                    item_name: selectedOption[0]?.productName + ' ' + item.name,
+                    affiliation: '바로피쉬',
+                    item_brand: item.storeName,
+                    price: formatToLocaleString(
+                      (item.price + item.additionalPrice) * item.amount,
+                    ).replace(',', '.'),
+                    quantity: item.amount,
+                  };
+                }),
+              },
+            });
             onIamport({
               data: {
                 payMethod,

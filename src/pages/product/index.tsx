@@ -243,7 +243,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             }),
           }}
         />
-
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] w-full'>
           {isVisible && (
@@ -252,14 +251,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             </div>
           )}
         </div>
-
         {/* header */}
         {!user && (
           <div className='sticky top-0 z-50'>
             <HeaderBanner />
           </div>
         )}
-
         <div
           className={
             !user
@@ -275,12 +272,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <ShareButton />
           </div>
         </div>
-
         {/* content */}
         <ProductBanner image={data?.images ?? []} />
         <ProductInformationDefault data={data} user={user} />
         {/* <ProductCompare /> */}
-
         {/* Tab Content */}
         <ProductTab
           selectedTab={selectedTab}
@@ -319,7 +314,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             />
           )}
         </div>
-
         {/* 하단 부분 */}
         <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
           {/* <button
