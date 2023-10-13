@@ -12,6 +12,7 @@ import useWebview from 'src/utils/use-web-view';
 import { ContentType } from 'src/api/swagger/http-client';
 import 'src/styles/globals.css';
 import { type JoinSnsUserPayload } from 'src/api/swagger/data-contracts';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 type CustomAppProps = AppProps<any> & { Component: NextPageWithLayout };
 
@@ -100,7 +101,7 @@ export default function MyApp(props: CustomAppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* <ReactQueryDevtools initialIsOpen={false} position='top-right' /> */}
+      <ReactQueryDevtools initialIsOpen={false} position='top-right' />
       <Head />
       <Hydrate state={pageProps.dehydratedState}>{getLayout(<Component {...pageProps} />)}</Hydrate>
     </QueryClientProvider>

@@ -33,6 +33,7 @@ const MypageReview: NextPageWithLayout = () => {
       },
     },
   );
+  console.log(data, '리뷰');
 
   const { ref } = useInView({
     initialInView: false,
