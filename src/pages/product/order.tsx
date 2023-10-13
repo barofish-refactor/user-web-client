@@ -20,7 +20,7 @@ import { type miniOptionState, type OptionState } from 'src/components/product/b
 import { type RefundAccountType } from 'src/components/product/refund-account';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useOrderDataStore } from 'src/store';
+import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import {
@@ -77,7 +77,6 @@ const Order: NextPageWithLayout = () => {
   const router = useRouter();
   const { options } = router.query;
   const { setAlert } = useAlertStore();
-  const { setOrderData } = useOrderDataStore();
   const [refundBankData, setRefundBankData] = useState<RefundAccountType>({
     name: '',
     bankCode: '',
@@ -190,6 +189,60 @@ const Order: NextPageWithLayout = () => {
     () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
     [buyPoint, imageReviewPoint, productPoint],
   );
+  useEffect(() => {
+    if (!selectedOption) return;
+    localStorage.setItem(
+      'ga',
+      JSON.stringify({
+        action: 'purchase',
+        value: totalPrice,
+        name: selectedOption[0]?.productName,
+        category: '상품',
+        currency: 'KRW',
+        transaction_id: new Date().toTimeString().split(' ')[0],
+        shipping: 4000,
+        tax: 0,
+        affiliation: '바로피쉬',
+        items: selectedOption.map(item => {
+          return {
+            item_id: item.storeId,
+            item_name: selectedOption[0]?.productName + ' ' + item.name,
+            list_name: '해산물',
+            item_category: 'product',
+            variant: '해산물',
+            affiliation: '바로피쉬',
+            list_position: '스토어',
+            item_brand: item.storeName,
+            price: (item.price + item.additionalPrice) * item.amount,
+            quantity: item.amount,
+          };
+        }),
+      }),
+    );
+
+    localStorage.setItem(
+      'fp',
+      JSON.stringify({
+        content_id: new Date().toTimeString().split(' ')[0],
+        value: formatToLocaleString(totalPrice).replace(',', '.'),
+        currency: 'KRW',
+        content_type: 'product',
+        items: selectedOption.map(item => {
+          return {
+            item_id: item.storeId,
+            item_name: selectedOption[0]?.productName + ' ' + item.name,
+            affiliation: '바로피쉬',
+            item_brand: item.storeName,
+            price: formatToLocaleString((item.price + item.additionalPrice) * item.amount).replace(
+              ',',
+              '.',
+            ),
+            quantity: item.amount,
+          };
+        }),
+      }),
+    );
+  }, [selectedOption, totalPrice]);
 
   const onIamportResult = (
     orderId: string,
@@ -263,7 +316,6 @@ const Order: NextPageWithLayout = () => {
       sum: priceListAdd.reduce((a, b) => a + b, 0),
     };
   };
-  console.log(selectedOption);
 
   async function onPayment() {
     if (Number(point) !== 0 && Number(point) < 100) {
@@ -329,39 +381,6 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
-            setOrderData({
-              data: {
-                action: 'purchase',
-                value: totalPrice,
-                name: selectedOption.map(item => item.productName),
-                category: '상품',
-                currency: 'KRW',
-                transaction_id: orderId,
-                shipping: 4000,
-                tax: 0,
-                affiliation: '바로피쉬',
-                fpContent_id: res.data.data?.id,
-                fpValue: formatToLocaleString(totalPrice).replace(',', '.'),
-                fpContent_type: 'product',
-                items: selectedOption.map(item => {
-                  return {
-                    item_id: item.storeId,
-                    item_name: selectedOption[0]?.productName + ' ' + item.name,
-                    list_name: '해산물',
-                    item_category: 'product',
-                    variant: '해산물',
-                    affiliation: '바로피쉬',
-                    list_position: '스토어',
-                    item_brand: item.storeName,
-                    price: (item.price + item.additionalPrice) * item.amount,
-                    quantity: item.amount,
-                    fpPrice: formatToLocaleString(
-                      (item.price + item.additionalPrice) * item.amount,
-                    ).replace(',', '.'),
-                  };
-                }),
-              },
-            });
 
             onIamport({
               data: {
