@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
-import { ReviewForm } from 'src/components/review';
 import { RetouchReviewForm } from 'src/components/review/retouchForm';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -17,7 +15,6 @@ const MypageReviewModify: NextPageWithLayout = () => {
     queryKey.review.detail(id),
     async () => {
       const res = await (await client()).selectReview(Number(id));
-
       if (res.data.isSuccess) {
         return res.data.data;
       } else {

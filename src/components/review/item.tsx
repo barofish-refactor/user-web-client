@@ -48,7 +48,6 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       throw new Error(res.data.errorMsg);
     }
   });
-  console.log(data, 'data');
 
   const onLikeMutate = ({ id }: { id: number }) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
@@ -86,7 +85,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
             </p>
           </div>
         </div>
-        {isMine ? (
+        {/* {isMine ? (
           <ReviewDots
             id={data.id}
             onUpdate={() => {
@@ -102,7 +101,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           >
             신고하기
           </button>
-        )}
+        )} */}
       </div>
       <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         {/* {`옵션 : ${'멸치 5kg'}`} */}
