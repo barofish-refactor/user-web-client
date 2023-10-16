@@ -147,7 +147,7 @@ const ProductList = ({
       {title?.includes('캠핑') && storeType.includes('curation') && (
         <button style={{ marginTop: '20px' }}>
           <Image
-            src='/assets/icons/common/curation.jpg'
+            src='/assets/icons/common/curationA.jpg'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
             width={400}
             height={200}

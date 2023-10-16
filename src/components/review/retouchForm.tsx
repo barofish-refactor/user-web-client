@@ -245,7 +245,7 @@ function SelectKeywords({ data }: any) {
                       }
                     }}
                   >
-                    <Image unoptimized src={v.icon} width={16} height={16} alt='' />
+                    <Image unoptimized src={v.icon} width={16} height={16} alt='후기 이미지' />
                     <span>{v.text}</span>
                   </button>
                 );
