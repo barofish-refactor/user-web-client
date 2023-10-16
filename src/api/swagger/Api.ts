@@ -207,6 +207,7 @@ import {
   SelectMainStoreListData,
   SelectMyPageBannerData,
   SelectMyReviewListData,
+  SelectMyReviewListV2Data,
   SelectNoticeData,
   SelectNoticeListByAdminData,
   SelectNoticeListData,
@@ -240,6 +241,8 @@ import {
   SelectReviewListWithProductIdData,
   SelectReviewListWithStoreId1Data,
   SelectReviewListWithStoreIdData,
+  SelectReviewListWithStoreIdV21Data,
+  SelectReviewListWithStoreIdV2Data,
   SelectSaveProductListData,
   SelectScrapedStoreData,
   SelectSearchFilterData,
@@ -1010,6 +1013,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   likeReviewByUser = (id: number, params: RequestParams = {}) =>
     this.request<LikeReviewByUserData, any>({
       path: `/api/v1/review/like/${id}`,
+      method: 'POST',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags review-controller
+   * @name DeleteReviewByUser
+   * @request POST:/api/v1/review/delete/{id}
+   * @response `200` `DeleteReviewByUserData` OK
+   */
+  deleteReviewByUser = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteReviewByUserData, any>({
+      path: `/api/v1/review/delete/${id}`,
       method: 'POST',
       ...params,
     });
@@ -2071,6 +2088,69 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller-v-2
+   * @name SelectReviewListWithStoreIdV2
+   * @request GET:/api/v2/review/store
+   * @response `200` `SelectReviewListWithStoreIdV2Data` OK
+   */
+  selectReviewListWithStoreIdV2 = (
+    query?: {
+      /** @default "RECENT" */
+      orderType?: 'BEST' | 'RECENT';
+      /**
+       * @format int32
+       * @default 1
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectReviewListWithStoreIdV2Data, any>({
+      path: `/api/v2/review/store`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags review-controller-v-2
+   * @name SelectReviewListWithStoreIdV21
+   * @request GET:/api/v2/review/store/{id}
+   * @response `200` `SelectReviewListWithStoreIdV21Data` OK
+   */
+  selectReviewListWithStoreIdV21 = (
+    id: number,
+    query?: {
+      /** @default "RECENT" */
+      orderType?: 'BEST' | 'RECENT';
+      /**
+       * @format int32
+       * @default 1
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectReviewListWithStoreIdV21Data, any>({
+      path: `/api/v2/review/store/${id}`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags review-controller-v-2
    * @name GetReviews
    * @request GET:/api/v2/review/product/{id}
    * @response `200` `GetReviewsData` OK
@@ -2095,6 +2175,37 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<GetReviewsData, any>({
       path: `/api/v2/review/product/${id}`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags review-controller-v-2
+   * @name SelectMyReviewListV2
+   * @request GET:/api/v2/review/my
+   * @response `200` `SelectMyReviewListV2Data` OK
+   */
+  selectMyReviewListV2 = (
+    query?: {
+      /** @default "RECENT" */
+      orderType?: 'BEST' | 'RECENT';
+      /**
+       * @format int32
+       * @default 0
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectMyReviewListV2Data, any>({
+      path: `/api/v2/review/my`,
       method: 'GET',
       query: query,
       ...params,
@@ -2995,20 +3106,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<SelectReviewData, any>({
       path: `/api/v1/review/${id}`,
       method: 'GET',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags review-controller
-   * @name DeleteReviewByUser
-   * @request DELETE:/api/v1/review/{id}
-   * @response `200` `DeleteReviewByUserData` OK
-   */
-  deleteReviewByUser = (id: number, params: RequestParams = {}) =>
-    this.request<DeleteReviewByUserData, any>({
-      path: `/api/v1/review/${id}`,
-      method: 'DELETE',
       ...params,
     });
   /**
