@@ -188,6 +188,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
+  console.log(curationData);
 
   return (
     <>
@@ -252,7 +253,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
           </Swiper>
         ) : null}
         <HomeProductList
-          title={title}
+          title={curationData?.shortName}
           storeType={type === 'curation' ? 'curation' : 'category'}
           storeId={type === 'curation' ? Number(id) : selectedCategoryId}
           dataDto={productData?.pages ?? []}
