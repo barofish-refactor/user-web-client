@@ -87,6 +87,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
         </div>
         {/* {isMine ? (
           <ReviewDots
+            id={data.id}
             onUpdate={() => {
               router.push({ pathname: '/mypage/review/[id]', query: { id: data.id } });
             }}

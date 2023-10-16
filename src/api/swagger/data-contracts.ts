@@ -3271,7 +3271,7 @@ export type AddSearchFilter1Data = CustomResponseSearchFilterDto;
 
 export interface UpdateReviewPayload {
   data: UpdateReviewReq;
-  existImages?: string[];
+  imageUrlsToRemain?: string[];
   newImages?: File[];
 }
 

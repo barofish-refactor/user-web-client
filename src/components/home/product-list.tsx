@@ -22,6 +22,7 @@ interface Props {
   setSort?: (value: sortType) => void;
   onMutate?: (value: SaveProductPayload) => void;
   onDeleteSaveProductsMutate?: (value: DeleteSaveProductsPayload) => void;
+  title?: string;
 }
 
 /** 홈화면 - 상품 리스트 (신상품, 인기상품, ...) */
@@ -33,12 +34,14 @@ const ProductList = ({
   className,
   filter,
   sort,
+  title,
   setSort,
   onMutate,
   onDeleteSaveProductsMutate,
 }: Props) => {
   const { setFilter, setType, setIsOpen, clearFilter } = useFilterStore();
   const [isShowSort, setIsShowSort] = useState<boolean>();
+  console.log(dataDto, sort, filter, storeType, title);
 
   useEffect(() => {
     clearFilter();
@@ -50,6 +53,7 @@ const ProductList = ({
         <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-black'>{`총 ${formatToLocaleString(
           dataDto[0]?.totalElements ?? 0,
         )}건`}</p>
+
         <div className='flex items-center gap-[19px]'>
           {!type && (
             <div className='relative h-[22px] overflow-visible'>
@@ -140,6 +144,19 @@ const ProductList = ({
           </button>
         </div>
       </div>
+      {title?.includes('캠핑') && storeType.includes('curation') && (
+        <button style={{ marginTop: '20px' }}>
+          <Image
+            src='/assets/icons/common/curation.jpg'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='bannerAds'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
+        </button>
+      )}
       <div className='mt-5 grid grid-cols-2 gap-x-3 gap-y-5'>
         {(dataDto[0]?.totalElements ?? 0) > 0
           ? dataDto.map(x =>

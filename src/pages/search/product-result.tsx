@@ -252,6 +252,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
           </Swiper>
         ) : null}
         <HomeProductList
+          title={title}
           storeType={type === 'curation' ? 'curation' : 'category'}
           storeId={type === 'curation' ? Number(id) : selectedCategoryId}
           dataDto={productData?.pages ?? []}
