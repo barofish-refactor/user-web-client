@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
-import { type ReviewDto } from 'src/api/swagger/data-contracts';
+import { type ReviewDtoV2 } from 'src/api/swagger/data-contracts';
 import { useAlertStore } from 'src/store';
 import {
   calcDiscountRate,
@@ -20,14 +20,14 @@ import { queryKey } from 'src/query-key';
 import { ReviewDots } from './dots';
 
 interface Props {
-  data: ReviewDto;
+  data: any;
   isMine?: boolean;
   showInfo?: boolean;
   refetch: () => void;
 }
 
 /** 구매후기 */
-export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
+export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const router = useRouter();
   const { setAlert } = useAlertStore();
 
@@ -77,26 +77,26 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-1'>
           <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
-            {data.user?.nickname ?? ''}
+            {data?.userNickname ?? ''}
           </p>
           <div className='flex h-[22px] items-center justify-center rounded border border-[#6085EC] px-2'>
             <p className='text-[12px] font-medium -tracking-[0.03em] text-primary-50'>
-              {data.user?.grade?.name ?? ''}
+              {data?.userGrade ?? ''}
             </p>
           </div>
         </div>
         {isMine ? (
           <ReviewDots
-            id={data.id}
+            id={data.reviewId}
             onUpdate={() => {
-              router.push({ pathname: '/mypage/review/[id]', query: { id: data.id } });
+              router.push({ pathname: '/mypage/review/[id]', query: { id: data.reviewId } });
             }}
           />
         ) : (
           <button
             className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'
             onClick={() => {
-              router.push({ pathname: '/mypage/review/report', query: { v: data.id } });
+              router.push({ pathname: '/mypage/review/report', query: { v: data.reviewId } });
             }}
           >
             신고하기
@@ -105,7 +105,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       </div>
       <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         {/* {`옵션 : ${'멸치 5kg'}`} */}
-        {data?.simpleProduct?.title ?? ''}
+        {data?.productName ?? ''}
       </p>
       <Swiper
         freeMode
@@ -115,7 +115,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
         className='mt-4'
         style={{ marginInline: '-16px', paddingInline: '16px' }}
       >
-        {data.images
+        {data.imageUrls
           ?.filter(v => v !== '')
           .map((v, idx) => {
             return (
@@ -136,7 +136,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           })}
       </Swiper>
       <p className='mt-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
-        {data.content ?? ''}
+        {data.reviewContent ?? ''}
       </p>
       {showInfo && (
         <button
@@ -145,10 +145,12 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
             router.push({ pathname: '/product', query: { id: data.simpleProduct?.id } });
           }}
         >
-          {data.simpleProduct?.image && (
+          {data.productImage && (
             <Image
               unoptimized
-              src={data.simpleProduct?.image}
+              src={data.productImage}
+              placeholder='blur'
+              blurDataURL='./assets/icons/common/blurData.png'
               alt='product'
               className='rounded-lg'
               width={72}
@@ -157,20 +159,20 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           )}
           <div className='flex flex-1 flex-col truncate text-start'>
             <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
-              {data.store?.name ?? ''}
+              {data.storeName ?? ''}
             </p>
             <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
-              {`${setSquareBrackets(data.simpleProduct?.storeName)} ${data.simpleProduct?.title}`}
+              {`${setSquareBrackets(data?.storeName)} ${data?.productName}`}
             </p>
             <div className='flex items-center gap-0.5'>
-              {(data.simpleProduct?.originPrice ?? 0) !== 0 && (
+              {(data?.originPrice ?? 0) !== 0 && (
                 <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${calcDiscountRate(
-                  data?.simpleProduct?.originPrice,
-                  data?.simpleProduct?.discountPrice,
+                  data?.originPrice,
+                  data?.discountPrice,
                 )}%`}</p>
               )}
               <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>
-                {`${formatToLocaleString(data.simpleProduct?.discountPrice)}원`}
+                {`${formatToLocaleString(data.discountPrice)}원`}
               </p>
             </div>
           </div>

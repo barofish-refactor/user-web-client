@@ -20,6 +20,7 @@ export function ReviewDots({ onUpdate, id }: Props) {
   const { mutateAsync: deleteReview, isLoading } = useMutation(
     async (args: number) => await (await client()).deleteReviewByUser(args),
   );
+
   const onMutate = () => {
     if (!id) return;
     deleteReview(id)
