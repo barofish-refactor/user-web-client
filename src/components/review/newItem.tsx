@@ -6,7 +6,12 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
-import { type ReviewDtoV2 } from 'src/api/swagger/data-contracts';
+import {
+  PageReviewDtoV2,
+  ReviewDto,
+  UserReviewDto,
+  type ReviewDtoV2,
+} from 'src/api/swagger/data-contracts';
 import { useAlertStore } from 'src/store';
 import {
   calcDiscountRate,
@@ -71,6 +76,7 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
       })
       .catch(error => console.log(error));
   };
+  console.log(data, 'ddatea');
 
   return (
     <div className='py-4'>
@@ -116,8 +122,8 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
         style={{ marginInline: '-16px', paddingInline: '16px' }}
       >
         {data.imageUrls
-          ?.filter(v => v !== '')
-          .map((v, idx) => {
+          ?.filter((v: any) => v !== '')
+          .map((v: any, idx: number) => {
             return (
               <SwiperSlide key={`curation${idx}`} className=''>
                 <div className='relative overflow-hidden rounded-lg'>
