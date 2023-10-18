@@ -6,12 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
-import {
-  PageReviewDtoV2,
-  ReviewDto,
-  UserReviewDto,
-  type ReviewDtoV2,
-} from 'src/api/swagger/data-contracts';
+
 import { useAlertStore } from 'src/store';
 import {
   calcDiscountRate,

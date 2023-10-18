@@ -79,7 +79,7 @@ export function RetouchReviewForm({ order }: { order?: any; subId?: number }) {
           queryClient.invalidateQueries(queryKey.review.lists);
           setAlert({
             message: '리뷰를 수정했습니다.',
-            onClick: () => router.push('/mypage/order'),
+            onClick: () => router.push('/mypage/review'),
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
@@ -88,22 +88,6 @@ export function RetouchReviewForm({ order }: { order?: any; subId?: number }) {
   //
   const onSubmit = handleSubmit(data => {
     if (data.description.trim().length === 0) return setAlert({ message: '내용을 입력해 주세요' });
-    // if (data.images.length === 0) return setAlert({ message: '사진을 등록해 주세요' });
-    // const arrString = data.images.filter(
-    //   (x: any) => typeof x !== 'object' && x.toString() !== '',
-    // ) as unknown as string[];
-    // const arrObject = data.images.filter(x => typeof x !== 'string') as unknown as File[];
-
-    // const existingImages = formatToBlob(
-    //   data.images.filter((v: any) => !v.file).map(v => v),
-    //   true,
-    // );
-    // const existingImages = formatToBlob(
-    //   data.images
-    //     .filter((v: any) => typeof v !== 'object' && v.toString() !== '')
-    //     .map(v => v) as unknown as string[],
-    //   true,
-    // );
     const img = data.images.filter(v => v.toString() !== '');
 
     const newImages = img.filter((v: any) => !!v.file).map(v => v.file as File);
@@ -123,19 +107,12 @@ export function RetouchReviewForm({ order }: { order?: any; subId?: number }) {
         evaluations: data.selectKeywords as ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[],
       },
       newImages,
-      imageUrlsToRemain: existingImages, //  arrObject.length === 0 ? null :
+      imageUrlsToRemain: existingImages,
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     });
   });
 
-  // useEffect(() => {
-  //   if (order ) {
-  //     const tmp = order.productInfos?.filter(v => v.id === Number(subId));
-  //     if (tmp && tmp.length > 0) setProductInfo(tmp[0]);
-  //   }
-  // }, [order]);
-  [''];
   return (
     <FormProvider {...form}>
       <form className='flex flex-1 flex-col justify-between' onSubmit={onSubmit}>

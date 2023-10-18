@@ -1,7 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import router from 'next/router';
+
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
@@ -17,7 +17,7 @@ interface Props {
 export function ReviewDots({ onUpdate, id }: Props) {
   const queryClient = useQueryClient();
   const { setAlert } = useAlertStore();
-  const { mutateAsync: deleteReview, isLoading } = useMutation(
+  const { mutateAsync: deleteReview } = useMutation(
     async (args: number) => await (await client()).deleteReviewByUser(args),
   );
 

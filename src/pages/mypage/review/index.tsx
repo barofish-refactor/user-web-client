@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
-import { ReviewItem } from 'src/components/review';
+// import { ReviewItem } from 'src/components/review';
 import { NewReviewItem } from 'src/components/review/newItem';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
