@@ -5,7 +5,8 @@ import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
-import { ReviewItem } from 'src/components/review';
+// import { ReviewItem } from 'src/components/review';
+import { NewReviewItem } from 'src/components/review/newItem';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
@@ -19,7 +20,7 @@ const MypageReview: NextPageWithLayout = () => {
     queryKey.myReview,
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
-      const res = await (await client()).selectMyReviewList({ page: pageParam, take });
+      const res = await (await client()).selectMyReviewListV2({ page: pageParam, take });
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -29,7 +30,7 @@ const MypageReview: NextPageWithLayout = () => {
     {
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
+        return lastPage?.reviewCount === nextId ? nextId - 1 : nextId + 1;
       },
     },
   );
@@ -41,10 +42,11 @@ const MypageReview: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
+  console.log(data, 'data');
 
   if (isLoading) return null;
-  if (data?.pages?.[0]?.empty) return <Empty />;
-
+  // if (data?.pages?.length && data?.pages?.length <= 0) return <Empty />;
+  if (data?.pages?.[0]?.pagedReviews?.empty) return <Empty />;
   return (
     <>
       <DefaultSeo title='구매후기' description='Review' />
@@ -54,14 +56,14 @@ const MypageReview: NextPageWithLayout = () => {
             내가 쓴 후기
           </h3>
           <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
-            총 {formatToLocaleString(data?.pages?.[0]?.totalElements)}건
+            총 {formatToLocaleString(data?.pages?.[0]?.reviewCount)}건
           </span>
         </div>
         <article className='px-4'>
           {data?.pages.map((v, i) => (
             <Fragment key={i}>
-              {v?.content?.map((v, idx) => (
-                <ReviewItem key={`${idx}${v.id}`} isMine data={v} refetch={refetch} />
+              {v?.pagedReviews?.content?.map((v, idx) => (
+                <NewReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
               ))}
             </Fragment>
           ))}

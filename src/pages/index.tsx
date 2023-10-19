@@ -97,6 +97,8 @@ const Home: NextPageWithLayout = () => {
       enabled: Number(tab) !== 0,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
+        console.log(nextId);
+
         return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
       },
     },
