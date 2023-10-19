@@ -142,7 +142,7 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
         <button
           className='my-[18px] flex w-full items-center gap-[13px] rounded-lg bg-grey-90 p-2'
           onClick={() => {
-            router.push({ pathname: '/product', query: { id: data.simpleProduct?.id } });
+            router.push({ pathname: '/product', query: { id: data.productId } });
           }}
         >
           {data.productImage && (
