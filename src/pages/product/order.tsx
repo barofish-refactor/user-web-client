@@ -206,7 +206,7 @@ const Order: NextPageWithLayout = () => {
         items: selectedOption.map(item => {
           return {
             item_id: item.storeId,
-            item_name: selectedOption[0]?.productName + ' ' + item.name,
+            item_name: item.productName + ' ' + item.name,
             list_name: '해산물',
             item_category: 'product',
             variant: '해산물',
@@ -230,7 +230,7 @@ const Order: NextPageWithLayout = () => {
         items: selectedOption.map(item => {
           return {
             item_id: item.storeId,
-            item_name: selectedOption[0]?.productName + ' ' + item.name,
+            item_name: item.productName + ' ' + item.name,
             affiliation: '바로피쉬',
             item_brand: item.storeName,
             price: formatToLocaleString((item.price + item.additionalPrice) * item.amount).replace(

@@ -71,7 +71,6 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
       })
       .catch(error => console.log(error));
   };
-  console.log(data, 'ddatea');
 
   return (
     <div className='py-4'>

@@ -104,15 +104,23 @@ export function ReviewPhoto({ id, type }: Props) {
                 return (
                   <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
                     <Link href={{ pathname: '/store/review', query: { id: v.id } }}>
-                      <Image
-                        unoptimized
-                        width={100}
-                        height={100}
-                        src={v.images?.[0] ?? ''}
-                        alt='review'
-                        draggable={false}
-                        className='aspect-square w-full rounded-lg object-cover'
-                      />
+                      <div className='relative overflow-hidden'>
+                        <Image
+                          unoptimized
+                          width={100}
+                          height={100}
+                          src={v.images?.[0] ?? ''}
+                          alt='review'
+                          draggable={false}
+                          className='aspect-square w-full rounded-lg object-cover'
+                        />
+                        <div
+                          className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  p-[3px] text-white'
+                          style={{ background: 'rgba(111, 111, 111, 0.65)' }}
+                        >
+                          +{v.images?.length}
+                        </div>
+                      </div>
                     </Link>
                   </SwiperSlide>
                 );
