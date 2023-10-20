@@ -51,7 +51,7 @@ const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
                 <h3 className='line-clamp-1 flex-1 font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
                   {v.title}
                 </h3>
-                <time className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+                <time className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
                   {formatToUtc(v.createdAt, 'yyyy.MM.dd')}
                 </time>
               </div>

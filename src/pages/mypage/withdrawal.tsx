@@ -91,7 +91,7 @@ const MypageWithdrawal: NextPageWithLayout = () => {
           />
           <label
             htmlFor='check'
-            className='text-[13px] leading-[20px] -tracking-[0.03em] text-grey-40'
+            className='text-[15px] leading-[20px] -tracking-[0.03em] text-grey-40'
           >
             위 내용을 모두 이해하였으며 동의합니다.
           </label>

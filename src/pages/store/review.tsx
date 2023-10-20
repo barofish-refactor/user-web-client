@@ -67,7 +67,7 @@ const Review: NextPageWithLayout = () => {
     <div className='max-md:w-[100vw]'>
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
         <BackButton />
-        <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           후기 상세보기
         </p>
         <div className='w-6' />
@@ -78,24 +78,24 @@ const Review: NextPageWithLayout = () => {
       <ProductBanner isShowArrow image={data?.images ?? []} />
       <div className='p-4'>
         <div className='flex items-center gap-1'>
-          <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
             {data?.user?.nickname ?? ''}
           </p>
           <div className='flex h-[22px] items-center justify-center rounded border border-[#6085EC] px-2'>
-            <p className='text-[12px] font-medium -tracking-[0.03em] text-primary-50'>
+            <p className='text-[14px] font-medium -tracking-[0.03em] text-primary-50'>
               {data?.user?.grade?.name ?? ''}
             </p>
           </div>
         </div>
-        <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
+        <p className='mt-[7px] truncate text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
           {/* {`옵션 : ${data?.simpleProduct?.title ?? ''}`} */}
           {data?.simpleProduct?.title ?? ''}
         </p>
-        <p className='mt-4 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
+        <p className='mt-4 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
           {data?.content}
         </p>
         <div className='mt-[18px] flex items-center justify-between'>
-          <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-70'>{`${formatToUtc(
+          <p className='text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-grey-70'>{`${formatToUtc(
             data?.createdAt,
             'yyyy.MM.dd',
           )}`}</p>
@@ -114,8 +114,8 @@ const Review: NextPageWithLayout = () => {
               width={12}
               height={13}
             />
-            <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>도움돼요</p>
-            <p className='text-[12px] font-medium -tracking-[0.05em] text-grey-60'>{`${formatToLocaleString(
+            <p className='text-[14px] font-medium -tracking-[0.05em] text-grey-60'>도움돼요</p>
+            <p className='text-[14px] font-medium -tracking-[0.05em] text-grey-60'>{`${formatToLocaleString(
               data?.likeCount ?? 0,
             )}`}</p>
           </button>

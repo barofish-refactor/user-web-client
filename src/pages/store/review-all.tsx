@@ -54,7 +54,7 @@ const ReviewAll: NextPageWithLayout = () => {
     <div className='max-md:w-[100vw]'>
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
         <BackButton />
-        <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           사진 전체보기
         </p>
         <div className='w-6' />
@@ -112,7 +112,7 @@ function Empty() {
             width={40}
             height={40}
           />
-          <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+          <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
             사진 후기가 없습니다.
           </p>
         </div>

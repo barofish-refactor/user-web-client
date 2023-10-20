@@ -71,12 +71,12 @@ export function ReviewPhoto({ id, type }: Props) {
     <div>
       <div className='px-4 pb-6 pt-5'>
         <div className='flex items-center justify-between'>
-          <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
             사진 후기
           </p>
           <Link href={{ pathname: '/store/review-all', query: { id, type } }} className=''>
             <div className='flex h-[30px] items-center gap-1'>
-              <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+              <p className='whitespace-nowrap text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
                 전체보기
               </p>
               <Image
@@ -115,7 +115,7 @@ export function ReviewPhoto({ id, type }: Props) {
                           className='aspect-square w-full rounded-lg object-cover'
                         />
                         <div
-                          className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  p-[3px] text-white'
+                          className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
                           style={{ background: 'rgba(111, 111, 111, 0.65)' }}
                         >
                           +{v.images?.length}
@@ -131,14 +131,14 @@ export function ReviewPhoto({ id, type }: Props) {
       <div className='h-2 bg-grey-90' />
       {/* 후기 리스트 */}
       <div className='flex flex-col gap-[29px] px-[17px] py-5'>
-        <p className='text-[14px] font-bold leading-[20px] -tracking-[0.05em] text-grey-10'>{`후기 ${formatToLocaleString(
+        <p className='text-[16px] font-bold leading-[20px] -tracking-[0.05em] text-grey-10'>{`후기 ${formatToLocaleString(
           data?.pages[0]?.totalElements ?? 0,
         )}개`}</p>
         <div className='flex items-center gap-[9px]'>
           <button onClick={() => setSelectedSort(0)}>
             <p
               className={cm(
-                'text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
+                'text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
                 {
                   'font-bold text-primary-50': selectedSort === 0,
                 },
@@ -151,7 +151,7 @@ export function ReviewPhoto({ id, type }: Props) {
           <button onClick={() => setSelectedSort(1)}>
             <p
               className={cm(
-                'text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
+                'text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
                 {
                   'font-bold text-primary-50': selectedSort === 1,
                 },
@@ -192,7 +192,7 @@ function Empty() {
           width={40}
           height={40}
         />
-        <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           후기가 없습니다.
         </p>
       </div>

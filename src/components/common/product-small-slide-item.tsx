@@ -54,22 +54,22 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
           className='product-cart'
         /> */}
       </div>
-      <p className='mt-2 line-clamp-2 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+      <p className='mt-2 line-clamp-2 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
         {`${setSquareBrackets(data?.storeName)} ${data?.title}`}
       </p>
       <div className='mt-0.5 flex items-center gap-0.5'>
         {(data.originPrice ?? 0) !== 0 && (
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
             data.originPrice,
             data.discountPrice,
           )}%`}</p>
         )}
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+        <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
           data.discountPrice,
         )}원`}</p>
       </div>
       {(data.originPrice ?? 0) !== 0 && (
-        <p className='-mt-0.5 text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
+        <p className='-mt-0.5 text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
           data.originPrice,
         )}원`}</p>
       )}

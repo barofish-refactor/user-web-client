@@ -23,7 +23,7 @@ export const TemporaryCurationItem = ({ data, onMutate, onDeleteSaveProductsMuta
     <div className='px-4 py-[30px]'>
       <div className='flex items-center justify-between'>
         {data.products && data.products?.length > 0 && (
-          <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+          <p className='line-clamp-1 text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
             이번 주말엔 요걸로 한 잔?
           </p>
         )}

@@ -86,18 +86,18 @@ const Notice: NextPageWithLayout = () => {
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
                     <Image unoptimized src={icon} alt='' width={24} height={24} />
-                    <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                    <p className='text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
                       {v.title}
                     </p>
                   </div>
-                  <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+                  <p className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
                     {/* {`${formatToUtc(v.createdAt, 'M월 d일')}`} */}
                     {v.createdAt ? distanceFromNow(v.createdAt) : ''}
                   </p>
                 </div>
                 <p
                   dangerouslySetInnerHTML={{ __html: v.content ?? '' }}
-                  className='pl-8 pt-2.5 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'
+                  className='pl-8 pt-2.5 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'
                 />
               </button>
             );
@@ -120,7 +120,7 @@ function Empty() {
           width={40}
           height={40}
         />
-        <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
           {`등록된 알림이 없습니다.\n알림이 오면 빠르게 알려드리겠습니다 :)`}
         </p>
       </div>
@@ -133,7 +133,7 @@ Notice.getLayout = page => (
     <div className='flex flex-1 flex-col'>
       <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
         <BackButton />
-        <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>알림</p>
+        <p className='text-[18px] font-bold -tracking-[0.03em] text-grey-10'>알림</p>
         <div className='w-6' />
       </div>
       {page}

@@ -121,7 +121,7 @@ export function RetouchReviewForm({ order }: { order?: any; subId?: number }) {
           <SelectKeywords data={order} />
           <div className='pt-8'>
             <h3 className='px-4 font-bold leading-[24px] -tracking-[0.03em]'>리뷰를 남겨주세요</h3>
-            <p className='px-4 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+            <p className='px-4 text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
               좋았던 점이나 아쉬운 점을 적어주세요
             </p>
             <Images />
@@ -161,7 +161,7 @@ function Product({ data }: { data?: any }) {
           />
         )}
         <div className='flex-1'>
-          <h4 className='line-clamp-1 text-[13px] font-bold leading-[16px] -tracking-[0.05em]'>
+          <h4 className='line-clamp-1 text-[15px] font-bold leading-[16px] -tracking-[0.05em]'>
             {`${setSquareBrackets(data?.store?.name)} ${data?.simpleProduct?.title}`}
             {/* {data?.product?.title ?? ''} */}
           </h4>
@@ -193,7 +193,7 @@ function SelectKeywords({ data }: any) {
       <h3 className='font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
         어떤 점이 좋았나요?
       </h3>
-      <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
+      <p className='text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
         해당 상품에 대한 키워드를 골라주세요. (중복 가능)
       </p>
 
@@ -211,7 +211,7 @@ function SelectKeywords({ data }: any) {
                     type='button'
                     data-active={!!isActive}
                     className={clsx(
-                      'flex items-center gap-2 rounded-lg px-4 py-2.5 text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10',
+                      'flex items-center gap-2 rounded-lg px-4 py-2.5 text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10',
                       'data-[active=true]:bg-primary-90 data-[active=true]:shadow-[0px_0px_0px_1px_theme(colors.primary.50)]',
                     )}
                     onClick={() => {

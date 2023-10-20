@@ -255,10 +255,10 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             style={{ width: '83px', height: '83px' }}
           />
           <div className=''>
-            <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+            <p className='text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
               {data?.name ?? ''}
             </p>
-            <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
+            <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
               {data?.location ?? ''}
             </p>
             <div className='mt-[5px] flex flex-wrap gap-1'>
@@ -268,7 +268,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                     key={`tag${idx}`}
                     className='flex h-[22px] items-center justify-center rounded bg-grey-90 px-2'
                   >
-                    <p className='whitespace-pre text-[13px] font-medium -tracking-[0.03em] text-grey-40'>
+                    <p className='whitespace-pre text-[15px] font-medium -tracking-[0.03em] text-grey-40'>
                       {v}
                     </p>
                   </div>
@@ -318,7 +318,7 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                   width={40}
                   height={40}
                 />
-                <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                   준비중입니다.
                 </p>
               </div>

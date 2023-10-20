@@ -1,8 +1,8 @@
 import { formatToLocaleString } from 'src/utils/functions';
 
 const wrapClassName = 'flex flex-col items-center justify-center gap-0.5';
-const labelClassName = 'text-[12px] leading-[18px] -tracking-[0.03em] text-grey-50';
-const valueClassName = 'font-bold text-[18px] leading-[21.48px] -tracking-[0.03em] text-grey-10';
+const labelClassName = 'text-[14px] leading-[18px] -tracking-[0.03em] text-grey-50';
+const valueClassName = 'font-bold text-[20px] leading-[21.48px] -tracking-[0.03em] text-grey-10';
 
 interface Props {
   totalCount: number | undefined;

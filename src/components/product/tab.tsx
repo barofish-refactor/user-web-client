@@ -25,7 +25,7 @@ const Tab = ({ selectedTab, setSelectedTab, reviewCount }: Props) => {
           >
             <p
               className={cm(
-                'text-[14px] leading-[22px] -tracking-[0.03em]',
+                'text-[15px] leading-[22px] -tracking-[0.03em]',
                 isActive ? 'font-semibold text-primary-50' : 'font-medium text-grey-50',
               )}
             >

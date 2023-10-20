@@ -99,7 +99,7 @@ export function NaverButton() {
           height={14}
           className='absolute left-4'
         />
-        <p className='text-[16px] font-bold -tracking-[0.48px] text-white'>네이버로 계속하기</p>
+        <p className='text-[18px] font-bold -tracking-[0.48px] text-white'>네이버로 계속하기</p>
       </button>
     </>
   );

@@ -54,7 +54,7 @@ const TipDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-4 bg-white pl-4 pr-[18px]'>
         <BackButton />
         <div className='w-5' />
-        <p className='flex-1 whitespace-pre text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='flex-1 whitespace-pre text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           알아두면 좋은 정보
         </p>
         <Link href='/compare/storage'>
@@ -85,7 +85,7 @@ const TipDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           )}
         </div>
         <div className='px-4 pt-4'>
-          <p className='whitespace-pre-line text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-50'>
+          <p className='whitespace-pre-line text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-grey-50'>
             {data?.description}
           </p>
           <p className='mt-1.5 whitespace-pre-line text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-grey-10'>

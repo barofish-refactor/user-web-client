@@ -76,11 +76,11 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
     <div className='py-4'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-1'>
-          <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
             {data.user?.nickname ?? ''}
           </p>
           <div className='flex h-[22px] items-center justify-center rounded border border-[#6085EC] px-2'>
-            <p className='text-[12px] font-medium -tracking-[0.03em] text-primary-50'>
+            <p className='text-[14px] font-medium -tracking-[0.03em] text-primary-50'>
               {data.user?.grade?.name ?? ''}
             </p>
           </div>
@@ -94,7 +94,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           />
         ) : (
           <button
-            className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'
+            className='text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'
             onClick={() => {
               router.push({ pathname: '/mypage/review/report', query: { v: data.id } });
             }}
@@ -103,7 +103,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
           </button>
         )}
       </div>
-      <p className='mt-[7px] truncate text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
+      <p className='mt-[7px] truncate text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         {/* {`옵션 : ${'멸치 5kg'}`} */}
         {data?.simpleProduct?.title ?? ''}
       </p>
@@ -135,7 +135,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
             );
           })}
       </Swiper>
-      <p className='mt-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
+      <p className='mt-3 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
         {data.content ?? ''}
       </p>
       {showInfo && (
@@ -156,20 +156,20 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
             />
           )}
           <div className='flex flex-1 flex-col truncate text-start'>
-            <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
+            <p className='text-[15px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
               {data.store?.name ?? ''}
             </p>
-            <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
+            <p className='mt-0.5 truncate text-[15px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
               {`${setSquareBrackets(data.simpleProduct?.storeName)} ${data.simpleProduct?.title}`}
             </p>
             <div className='flex items-center gap-0.5'>
               {(data.simpleProduct?.originPrice ?? 0) !== 0 && (
-                <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${calcDiscountRate(
+                <p className='text-[18px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${calcDiscountRate(
                   data?.simpleProduct?.originPrice,
                   data?.simpleProduct?.discountPrice,
                 )}%`}</p>
               )}
-              <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>
+              <p className='text-[18px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>
                 {`${formatToLocaleString(data.simpleProduct?.discountPrice)}원`}
               </p>
             </div>

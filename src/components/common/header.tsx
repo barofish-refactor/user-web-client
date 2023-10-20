@@ -49,7 +49,7 @@ export function Header({ className, ...props }: HeaderProps) {
             width={24}
             height={24}
           />
-          <p className='line-clamp-1 text-[14px] font-normal -tracking-[0.03em] text-grey-80'>
+          <p className='line-clamp-1 text-[16px] font-normal -tracking-[0.03em] text-grey-80'>
             검색어를 입력해주세요.
           </p>
         </Link>

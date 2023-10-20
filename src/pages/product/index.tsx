@@ -359,7 +359,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               setIsVisible(true);
             }}
           >
-            <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>구매하기</p>
+            <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>구매하기</p>
           </button>
         </div>
       </div>

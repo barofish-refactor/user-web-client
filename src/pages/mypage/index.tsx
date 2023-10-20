@@ -91,7 +91,7 @@ const MyPage: NextPageWithLayout = () => {
             <Link href='/mypage/info' className='flex items-center'>
               <span
                 className={clsx(
-                  'mr-2 inline-flex rounded border px-2 py-0.5 text-[12px] font-medium leading-[18px] -tracking-[0.03em]',
+                  'mr-2 inline-flex rounded border px-2 py-0.5 text-[14px] font-medium leading-[18px] -tracking-[0.03em]',
                   {
                     'border-primary-60 text-primary-50':
                       !user?.grade || user?.grade?.pointRate === 1,
@@ -103,7 +103,7 @@ const MyPage: NextPageWithLayout = () => {
               >
                 {user?.grade?.name ?? '멸치'}
               </span>
-              <p className='mr-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+              <p className='mr-1 text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
                 {!isLoading
                   ? user?.nickname && user.nickname.length > 0
                     ? user.nickname
@@ -120,7 +120,7 @@ const MyPage: NextPageWithLayout = () => {
               />
             </Link>
             <div className='flex items-center gap-4 rounded bg-grey-90 px-2 py-0.5'>
-              <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
+              <span className='text-[14px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
                 적립금
               </span>
               <strong className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-20'>
@@ -145,7 +145,7 @@ const MyPage: NextPageWithLayout = () => {
               href='/mypage/notification'
               className='flex w-[60px] flex-col items-center gap-0.5'
             >
-              <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
+              <strong className='text-[20px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
                 {formatToLocaleString(user?.notificationCount)}
               </strong>
               <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
@@ -163,10 +163,10 @@ const MyPage: NextPageWithLayout = () => {
           </Link>
           <div className='h-6 w-[1px] bg-[#E2E2E2]' /> */}
             <Link href='/product/cart' className='flex w-[60px] flex-col items-center gap-0.5'>
-              <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
+              <strong className='text-[20px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
                 {formatToLocaleString(cartCount)}
               </strong>
-              <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
+              <p className='text-[14px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
                 장바구니
               </p>
             </Link>
@@ -175,7 +175,7 @@ const MyPage: NextPageWithLayout = () => {
               <strong className='text-[18px] font-bold leading-[21px] -tracking-[0.03em] text-grey-10'>
                 {formatToLocaleString(recentData.length)}
               </strong>
-              <p className='text-[12px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
+              <p className='text-[14px] font-normal leading-[18px] -tracking-[0.03em] text-grey-50'>
                 최근본상품
               </p>
             </Link>

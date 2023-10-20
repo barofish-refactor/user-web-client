@@ -259,7 +259,7 @@ const Cart: NextPageWithLayout = () => {
             height={24}
           />
         </button>
-        <p className='text-[16px] font-semibold -tracking-[0.03em] text-grey-10'>장바구니</p>
+        <p className='text-[18px] font-semibold -tracking-[0.03em] text-grey-10'>장바구니</p>
         <div className='w-6' />
       </div>
 
@@ -278,10 +278,10 @@ const Cart: NextPageWithLayout = () => {
                 }}
               />
               <div className='flex items-center gap-[5px]'>
-                <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                   전체선택
                 </p>
-                <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`(${
+                <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`(${
                   selectedItem.length
                 }/${data?.length ?? 0})`}</p>
               </div>
@@ -299,7 +299,7 @@ const Cart: NextPageWithLayout = () => {
                 setSelectedItem([]);
               }}
             >
-              <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20'>
                 선택삭제
               </p>
             </button>
@@ -330,7 +330,7 @@ const Cart: NextPageWithLayout = () => {
                     className='rounded-full border border-grey-90 object-cover'
                     style={{ width: '28px', height: '28px' }}
                   />
-                  <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                  <p className='text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
                     {x.store?.name ?? ''}
                   </p>
                 </div>
@@ -409,7 +409,7 @@ const Cart: NextPageWithLayout = () => {
                                   height={24}
                                 />
                               </button>
-                              <p className='min-w-[30px] text-center text-[16px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
+                              <p className='min-w-[30px] text-center text-[18px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
                                 {v.amount}
                               </p>
                               <button onClick={() => onPressPlus(v)}>
@@ -422,7 +422,7 @@ const Cart: NextPageWithLayout = () => {
                                 />
                               </button>
                             </div>
-                            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                            <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
                               {`${formatToLocaleString(getAdditionalPrice(v, true), {
                                 suffix: '원',
                               })}`}
@@ -462,24 +462,24 @@ const Cart: NextPageWithLayout = () => {
 
           <div className='flex flex-col gap-3.5 px-4 py-6'>
             <div className='flex items-center justify-between'>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 총 상품 금액
               </p>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
                 totalPrice,
               )}원`}</p>
             </div>
             <div className='flex items-center justify-between'>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 총 배송비
               </p>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 {totalDelivery === 0 ? '무료' : formatToLocaleString(totalDelivery) + '원'}
               </p>
             </div>
             <div className='h-[1px] bg-[#F7F7F7]' />
             <div className='flex items-center justify-between'>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 결제예정금액
               </p>
               <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-black'>{`${formatToLocaleString(
@@ -487,10 +487,10 @@ const Cart: NextPageWithLayout = () => {
               )}원`}</p>
             </div>
             <div className='flex items-center justify-between'>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 총 적립금
               </p>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 {`${formatToLocaleString(buyPoint + productPoint)}원`}
               </p>
             </div>
@@ -498,7 +498,7 @@ const Cart: NextPageWithLayout = () => {
           <div className='h-2 bg-grey-90' />
 
           <div className='px-4 py-6'>
-            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+            <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
               다른 고객이 함께 구매한 상품
             </p>
             {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
@@ -613,7 +613,7 @@ const Cart: NextPageWithLayout = () => {
             }
           }}
         >
-          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
+          <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
             {data && data?.length > 0
               ? `총 ${formatToLocaleString(totalPrice + totalDelivery)}원 주문하기`
               : '상품을 담아주세요'}

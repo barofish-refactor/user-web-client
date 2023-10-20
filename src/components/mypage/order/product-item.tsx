@@ -16,7 +16,7 @@ import { parseProductInfoState } from 'src/utils/parse';
 */
 
 const buttonClassName =
-  'rounded-sm border border-[#f2f2f2] text-[13px] leading-[20px] -tracking-[0.03em] text-grey-30 flex items-center justify-center';
+  'rounded-sm border border-[#f2f2f2] text-[15px] leading-[20px] -tracking-[0.03em] text-grey-30 flex items-center justify-center';
 
 interface Props {
   id: string | undefined;
@@ -90,7 +90,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
     <div className={clsx('last:pb-0', hasButtons ? 'pb-5' : 'pb-0')}>
       <p
         data-done={item.state !== 'DELIVERY_READY'}
-        className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50 data-[done=true]:text-grey-50'
+        className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50 data-[done=true]:text-grey-50'
       >
         {parseProductInfoState(item.state)}
       </p>
@@ -107,17 +107,17 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
           />
         </Link>
         <div className='flex-1'>
-          <h4 className='line-clamp-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-10'>
+          <h4 className='line-clamp-1 text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-10'>
             {item.product?.title ?? ''}
           </h4>
-          <p className='line-clamp-1 text-[13px] leading-[20px] -tracking-[0.03em] text-grey-40'>
+          <p className='line-clamp-1 text-[15px] leading-[20px] -tracking-[0.03em] text-grey-40'>
             {item.optionName ?? '기본'}
           </p>
           <div className='mt-0.5 flex items-center gap-1'>
-            <span className='text-[13px] leading-[20px] -tracking-[0.03em] text-grey-60'>
+            <span className='text-[15px] leading-[20px] -tracking-[0.03em] text-grey-60'>
               {formatToLocaleString(item.amount, { suffix: '개' })}
             </span>
-            <strong className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>
+            <strong className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
               {formatToLocaleString(item.price, { suffix: '원' })}
             </strong>
           </div>

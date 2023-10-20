@@ -52,10 +52,10 @@ const MypageReview: NextPageWithLayout = () => {
       <DefaultSeo title='구매후기' description='Review' />
       <div>
         <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
-          <h3 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>
+          <h3 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
             내가 쓴 후기
           </h3>
-          <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
+          <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
             총 {formatToLocaleString(data?.pages?.[0]?.reviewCount)}건
           </span>
         </div>
@@ -85,7 +85,7 @@ function Empty() {
           width={40}
           height={40}
         />
-        <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           구매 후기가 없습니다.
         </p>
       </div>

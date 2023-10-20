@@ -38,7 +38,7 @@ const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <p
-          className={cm('text-[14px] font-medium -tracking-[0.03em] text-grey-10', {
+          className={cm('text-[16px] font-medium -tracking-[0.03em] text-grey-10', {
             'text-grey-50': isOpen,
           })}
         >
@@ -76,7 +76,7 @@ const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
               >
                 <p
                   className={cm(
-                    'text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-30',
+                    'text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-30',
                     { 'opacity-70': isSoldOut },
                   )}
                 >
@@ -89,7 +89,7 @@ const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
                 </p>
                 <p
                   className={cm(
-                    'text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10',
+                    'text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10',
                     { 'opacity-70': isSoldOut },
                   )}
                 >

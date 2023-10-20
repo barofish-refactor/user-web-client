@@ -137,16 +137,16 @@ export function MypageOrderDetail({ id }: Props) {
         <div className='px-4 pb-[22px] pt-4'>
           <h3 className={headingClassName}>주문자 정보</h3>
           <div className='grid grid-cols-[64px,1fr] gap-x-2 gap-y-4 pt-4'>
-            <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+            <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
               이름
             </span>
-            <span className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-50'>
+            <span className='text-[16px] leading-[22px] -tracking-[0.03em] text-grey-50'>
               {data?.ordererName ?? ''}
             </span>
-            <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+            <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
               연락처
             </span>
-            <span className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-50'>
+            <span className='text-[16px] leading-[22px] -tracking-[0.03em] text-grey-50'>
               {formatToPhone(data?.ordererTel)}
             </span>
           </div>
@@ -163,7 +163,7 @@ export function MypageOrderDetail({ id }: Props) {
             <p className='font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
               {data?.deliverPlace?.address ?? ''}, {data?.deliverPlace?.addressDetail ?? ''}
             </p>
-            <p className='mt-1 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+            <p className='mt-1 text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
               {data?.deliverPlace?.deliverMessage ?? ''}
             </p>
           </div>
@@ -213,10 +213,10 @@ export function MypageOrderDetail({ id }: Props) {
                         </span>
                       </Link>
                       <div className='flex items-center gap-1'>
-                        <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
+                        <span className='text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
                           배송비
                         </span>
-                        <span className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+                        <span className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
                           {sectionDeliverFee === 0
                             ? '무료'
                             : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
@@ -237,19 +237,19 @@ export function MypageOrderDetail({ id }: Props) {
                             />
                           </Link>
                           <div className='flex flex-1 flex-col justify-center gap-1'>
-                            <h4 className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+                            <h4 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
                               {x.product?.title ?? ''}
                             </h4>
                             <div className='flex flex-wrap items-center'>
-                              <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                              <p className='text-[16px] leading-[22px] -tracking-[0.03em] text-grey-40'>
                                 {x.amount ?? 0}개
                               </p>
                               <div className='mx-1.5 h-[14px] w-[1px] bg-[#E2E2E2]' />
-                              <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                              <p className='text-[16px] leading-[22px] -tracking-[0.03em] text-grey-40'>
                                 {x.optionName ?? '기본'}
                               </p>
                               <div className='mx-1.5 h-[14px] w-[1px] bg-[#E2E2E2]' />
-                              <p className='text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+                              <p className='text-[16px] leading-[22px] -tracking-[0.03em] text-grey-40'>
                                 {parseProductInfoState(x.state)}
                               </p>
                             </div>

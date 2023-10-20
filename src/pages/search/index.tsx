@@ -269,7 +269,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
           </button>
           <input
             ref={inputRef}
-            className='flex-1 bg-grey-90 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
+            className='flex-1 bg-grey-90 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
             placeholder='검색어를 입력해주세요.'
             maxLength={50}
             value={searchText}
@@ -328,7 +328,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
           </>
         ) : searchState === 'searching' ? (
           <div className=''>
-            <p className='text-[12px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
+            <p className='text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
               상품 바로가기
             </p>
             <div className='flex flex-col'>
@@ -339,7 +339,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
                     className='flex h-[52px] items-end border-b border-b-grey-90 pb-3'
                     href={{ pathname: '/product', query: { id: v.id } }}
                   >
-                    <p className='line-clamp-1 text-start text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
+                    <p className='line-clamp-1 text-start text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
                       {`${v.title}`}
                     </p>
                   </Link>
@@ -375,7 +375,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
                 width={40}
                 height={40}
               />
-              <p className='whitespace-pre-wrap break-all text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+              <p className='whitespace-pre-wrap break-all text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                 {`‘${v}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
               </p>
             </div>

@@ -203,7 +203,7 @@ const BottomSheet = ({}: Props) => {
             <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' />
             {!isAddCart ? (
               <div className='flex w-full flex-col'>
-                <p className='self-center text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
+                <p className='self-center text-[18px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
                   옵션 선택
                 </p>
                 <div className='max-h-[560px] min-h-[280px]  overflow-y-scroll px-4 scrollbar-hide'>
@@ -211,7 +211,7 @@ const BottomSheet = ({}: Props) => {
                     {options.map((v, i) => {
                       return (
                         <div key={`${v.id}`} className='pt-3.5'>
-                          <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'>
+                          <p className='text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'>
                             {`${v.isNeeded ? '필수옵션' : '추가옵션'}`}
                           </p>
                           <ProductSelector
@@ -262,7 +262,7 @@ const BottomSheet = ({}: Props) => {
                           className='flex h-[100px] shrink-0 flex-col justify-between rounded-lg bg-[#F7F7F7] px-3 pb-3 pt-[12.5px]'
                         >
                           <div className='flex items-start justify-between gap-1'>
-                            <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                            <p className='line-clamp-1 flex-1 text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                               {`${v.name}`}{' '}
                               {v.additionalPrice !== 0 &&
                                 `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
@@ -285,7 +285,7 @@ const BottomSheet = ({}: Props) => {
                             </button>
                           </div>
                           {v.maxAvailableStock !== 999 && (
-                            <p className='text-[11px] leading-[16px] -tracking-[0.03em] text-grey-50'>
+                            <p className='text-[13px] leading-[16px] -tracking-[0.03em] text-grey-50'>
                               최대 주문 가능 수량 : {v.maxAvailableStock}
                             </p>
                           )}
@@ -300,7 +300,7 @@ const BottomSheet = ({}: Props) => {
                                   height={24}
                                 />
                               </button>
-                              <p className='min-w-[30px] text-center text-[16px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
+                              <p className='min-w-[30px] text-center text-[18px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
                                 {v.amount}
                               </p>
                               <button className='' onClick={() => onPressPlus(v)}>
@@ -313,7 +313,7 @@ const BottomSheet = ({}: Props) => {
                                 />
                               </button>
                             </div>
-                            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+                            <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
                               v.price + v.additionalPrice,
                             )}원`}</p>
                           </div>
@@ -325,8 +325,8 @@ const BottomSheet = ({}: Props) => {
                     <div className=''>
                       <div className='h-[1px] bg-grey-90' />
                       <div className='mt-[10.5px] flex items-center justify-between'>
-                        <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-40'>{`${selectedOption.length}개 상품`}</p>
-                        <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`총 ${formatToLocaleString(
+                        <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-40'>{`${selectedOption.length}개 상품`}</p>
+                        <p className='text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`총 ${formatToLocaleString(
                           totalPrice,
                         )}원`}</p>
                       </div>
@@ -385,7 +385,7 @@ const BottomSheet = ({}: Props) => {
                             });
                           }}
                         >
-                          <p className='text-[16px] font-bold -tracking-[0.03em] text-primary-50'>
+                          <p className='text-[18px] font-bold -tracking-[0.03em] text-primary-50'>
                             장바구니
                           </p>
                         </button>
@@ -405,12 +405,12 @@ const BottomSheet = ({}: Props) => {
                     height={50}
                     style={{ width: '50px', height: '50px' }}
                   />
-                  <p className='text-[14px] font-medium -tracking-[0.03em] text-grey-20'>
+                  <p className='text-[16px] font-medium -tracking-[0.03em] text-grey-20'>
                     장바구니에 상품을 담았습니다.
                   </p>
                 </div>
                 <div className='my-4 h-[1px] bg-grey-90' />
-                <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
                   다른 고객이 함께 구매한 상품
                 </p>
                 {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
@@ -429,7 +429,7 @@ const BottomSheet = ({}: Props) => {
                       width={40}
                       height={40}
                     />
-                    <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                    <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                       상품이 존재하지 않습니다.
                     </p>
                   </div>

@@ -209,17 +209,17 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
             )}
           </Link>
           <div className='flex-1'>
-            <h4 className='line-clamp-1 text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-10'>
+            <h4 className='line-clamp-1 text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-10'>
               {productInfo?.product?.title ?? ''}
             </h4>
-            <p className='line-clamp-1 text-[13px] leading-[20px] -tracking-[0.03em] text-grey-40'>
+            <p className='line-clamp-1 text-[15px] leading-[20px] -tracking-[0.03em] text-grey-40'>
               {productInfo?.optionName ?? '기본'}
             </p>
             <div className='mt-0.5 flex items-center gap-1'>
               <span className='text-[13px] leading-[20px] -tracking-[0.03em] text-grey-60'>
                 {formatToLocaleString(productInfo?.amount, { suffix: '개' })}
               </span>
-              <strong className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>
+              <strong className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
                 {formatToLocaleString(productInfo?.price, { suffix: '원' })}
               </strong>
             </div>
@@ -227,7 +227,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
         </div>
         <div className='flex flex-1 flex-col justify-between px-4 pt-6'>
           <div>
-            <h3 className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+            <h3 className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
               취소/환불 사유
             </h3>
             <div className='space-y-1.5 pt-3'>

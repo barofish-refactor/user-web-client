@@ -79,7 +79,7 @@ export function AppleButton() {
             height={18}
             className='absolute left-4'
           />
-          <p className='text-[16px] font-bold -tracking-[0.48px] text-white'>Apple로 계속하기</p>
+          <p className='text-[18px] font-bold -tracking-[0.48px] text-white'>Apple로 계속하기</p>
         </button>
       )}
     />

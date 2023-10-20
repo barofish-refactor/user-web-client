@@ -139,7 +139,7 @@ const MypageInfo: NextPageWithLayout = () => {
               }}
             />
             <div className='flex items-center justify-between border-b border-b-[#f2f2f2] py-5'>
-              <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+              <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
                 마케팅 수신 동의
               </span>
               <div className='flex items-center gap-1.5'>
@@ -158,12 +158,12 @@ const MypageInfo: NextPageWithLayout = () => {
                 />
                 <div className='flex items-center'>
                   <Link
-                    className='border-b border-b-grey-50 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'
+                    className='border-b border-b-grey-50 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'
                     href='/marketing'
                   >
                     마케팅 수신
                   </Link>
-                  <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
+                  <p className='text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-50'>
                     에 동의합니다.
                   </p>
                 </div>
@@ -171,7 +171,7 @@ const MypageInfo: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
-        <nav className='mt-[30px] flex items-center justify-center gap-4 text-[13px] leading-[20px] -tracking-[0.03em] text-grey-70'>
+        <nav className='mt-[30px] flex items-center justify-center gap-4 text-[15px] leading-[20px] -tracking-[0.03em] text-grey-70'>
           <button onClick={onLogout}>로그아웃</button>
           <div className='h-[14px] w-[1px] bg-grey-90' />
           <Link href='/mypage/withdrawal'>회원탈퇴</Link>

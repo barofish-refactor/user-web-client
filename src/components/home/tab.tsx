@@ -29,7 +29,7 @@ export default function Tab({ mainData }: Props) {
               <div className='flex h-full w-full flex-col justify-between'>
                 <p
                   className={cm(
-                    'text-center text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
+                    'text-center text-[17px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
                     { 'font-semibold text-primary-50': isSelected },
                   )}
                 >

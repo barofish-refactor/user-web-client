@@ -96,7 +96,7 @@ function Empty({ navType }: { navType: CouponNavType }) {
           width={40}
           height={40}
         />
-        <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           {navType === 'holding' ? '보유중인 쿠폰이 없습니다.' : '발급 가능한 쿠폰이 없습니다.'}
         </p>
       </div>

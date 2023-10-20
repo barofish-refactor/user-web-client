@@ -153,7 +153,7 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
         <BackButton />
-        <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>문의하기</p>
+        <p className='text-[18px] font-bold -tracking-[0.03em] text-grey-10'>문의하기</p>
         <div className='w-6' />
       </div>
 
@@ -169,28 +169,28 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
             height={72}
           />
           <div className='flex flex-1 flex-col truncate text-start'>
-            <p className='text-[13px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
+            <p className='text-[15px] font-bold leading-[16px] -tracking-[0.05em] text-grey-10'>
               {data?.store?.name ?? ''}
             </p>
-            <p className='mt-0.5 truncate text-[13px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
+            <p className='mt-0.5 truncate text-[15px] font-medium leading-[20px] -tracking-[0.05em] text-grey-30'>
               {/* {`${setSquareBrackets(data?.storeName)} ${data?.title}`} */}
               {data?.title}
             </p>
             <div className='flex items-center gap-0.5'>
               {(data?.originPrice ?? 0) !== 0 && (
-                <p className='text-[16px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${calcDiscountRate(
+                <p className='text-[18px] font-semibold leading-[19px] -tracking-[0.05em] text-teritory'>{`${calcDiscountRate(
                   data?.originPrice,
                   data?.discountPrice,
                 )}%`}</p>
               )}
-              <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>{`${formatToLocaleString(
+              <p className='text-[18px] font-bold leading-[22px] -tracking-[0.05em] text-grey-10'>{`${formatToLocaleString(
                 data?.discountPrice,
               )}원`}</p>
             </div>
           </div>
         </div>
 
-        <p className='mt-[26px] text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+        <p className='mt-[26px] text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
           문의유형
         </p>
         <Selector
@@ -214,7 +214,7 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
           onClick={() => setIsSecret(!isSecret)}
         >
           <CheckIcon isActive={isSecret} width={24} height={24} />
-          <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+          <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
             비밀글로 문의하기
           </p>
         </button>
@@ -232,7 +232,7 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
             }
           }}
         >
-          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
+          <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
             {inquiryId ? '수정하기' : '등록하기'}
           </p>
         </button>

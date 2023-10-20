@@ -27,7 +27,7 @@ const ProductCoupon = ({ setIsVisible, setCoupon, data, totalPrice }: Props) => 
             setIsVisible(false);
           }}
         />
-        <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>쿠폰함</p>
+        <p className='text-[16=8px] font-bold -tracking-[0.03em] text-grey-10'>쿠폰함</p>
         <div className='w-6' />
       </div>
       {/* content */}
@@ -79,7 +79,7 @@ function Empty() {
           width={40}
           height={40}
         />
-        <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           보유중인 쿠폰이 없습니다.
         </p>
       </div>

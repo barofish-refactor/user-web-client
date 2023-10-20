@@ -218,7 +218,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
           }
         >
           <BackButton />
-          <p className='line-clamp-1 flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='line-clamp-1 flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             {title}
           </p>
           <Link href='/product/cart'>
@@ -236,7 +236,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
                       <div className='flex h-full w-full flex-col justify-between'>
                         <p
                           className={cm(
-                            'text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
+                            'text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
                             { 'font-semibold text-primary-50': selectedTabIndex === idx },
                           )}
                         >

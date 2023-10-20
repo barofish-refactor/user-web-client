@@ -53,7 +53,7 @@ const CurationAbbreviation = ({ data }: Props) => {
                   className='object-cover'
                 />
               </div>
-              <p className='line-clamp-1 w-full text-center text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
+              <p className='line-clamp-1 w-full text-center text-[16px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
                 {v.shortName ?? ''}
               </p>
             </Link>
