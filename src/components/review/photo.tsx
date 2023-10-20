@@ -114,12 +114,14 @@ export function ReviewPhoto({ id, type }: Props) {
                           draggable={false}
                           className='aspect-square w-full rounded-lg object-cover'
                         />
-                        <div
-                          className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
-                          style={{ background: 'rgba(111, 111, 111, 0.65)' }}
-                        >
-                          +{v.images?.length}
-                        </div>
+                        {Number(v.images?.length) > 1 && (
+                          <div
+                            className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
+                            style={{ background: 'rgba(111, 111, 111, 0.65)' }}
+                          >
+                            +{v.images?.length}
+                          </div>
+                        )}
                       </div>
                     </Link>
                   </SwiperSlide>
