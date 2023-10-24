@@ -163,7 +163,6 @@ export function ReviewPhoto({ id, type }: Props) {
         </div>
       </div>
       <div className='h-[1px] bg-[#E2E2E2]' />
-
       {(data?.pages ?? []).filter(x => (x?.content ?? []).length > 0).map(x => x?.content)
         .length === 0 ? (
         Empty()

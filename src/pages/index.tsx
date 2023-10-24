@@ -5,6 +5,7 @@ import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type Curation } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
+import Loading from 'src/components/common/loading';
 import {
   HomeAbbreviationCuration,
   HomeBanner,
@@ -141,6 +142,9 @@ const Home: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
+  console.log(isLoading);
+
+  if (isLoading) return <Loading />;
 
   return (
     <div className='max-md:w-[100vw]'>
