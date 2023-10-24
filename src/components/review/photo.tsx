@@ -97,8 +97,8 @@ export function ReviewPhoto({ id, type }: Props) {
         >
           {data?.pages?.map((x, i) =>
             x?.content
-              ?.filter((v: { images: string[] }) => v.images?.[0] !== '')
-              .map((v: { id: any; images: string | any[] }, idx: any) => {
+              ?.filter((v: any) => v.images?.[0] !== '')
+              .map((v: any, idx: any) => {
                 return (
                   <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
                     <Link href={{ pathname: '/store/review', query: { id: v.id } }}>
@@ -170,7 +170,7 @@ export function ReviewPhoto({ id, type }: Props) {
       ) : (
         <div className='pb-[100px] pl-[17px] pr-[15px]'>
           {(data?.pages ?? []).map((x, i) =>
-            (x?.content ?? []).map((v: { id: any }, idx: number) => (
+            (x?.content ?? []).map((v: any, idx: number) => (
               <ReviewItem key={`${i}${idx}${v.id}`} data={v} showInfo={false} refetch={refetch} />
             )),
           )}
