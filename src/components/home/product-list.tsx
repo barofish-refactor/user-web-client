@@ -41,7 +41,6 @@ const ProductList = ({
 }: Props) => {
   const { setFilter, setType, setIsOpen, clearFilter } = useFilterStore();
   const [isShowSort, setIsShowSort] = useState<boolean>();
-  console.log(dataDto, sort, filter, storeType, title);
 
   useEffect(() => {
     clearFilter();

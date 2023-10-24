@@ -123,6 +123,7 @@ import {
   FindEmailData,
   FindEmailPayload,
   GetData,
+  GetExpectedArrivalDateData,
   GetFormData,
   GetReviewsData,
   GithubWebhookCallbackData,
@@ -2250,6 +2251,27 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectProductListByUserV2Data, any>({
       path: `/api/v2/product/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-controller-v-2
+   * @name GetExpectedArrivalDate
+   * @request GET:/api/v2/product/arrival-date/{id}
+   * @response `200` `GetExpectedArrivalDateData` OK
+   */
+  getExpectedArrivalDate = (
+    id: number,
+    query?: {
+      Authorization?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<GetExpectedArrivalDateData, any>({
+      path: `/api/v2/product/arrival-date/${id}`,
       method: 'GET',
       query: query,
       ...params,

@@ -342,7 +342,7 @@ const BottomSheet = ({}: Props) => {
                             if (selectedOption.filter(v => v.isNeeded === false).length > 0)
                               return setAlert({ message: '필수옵션만 선택해주세요.' });
                             fpixel.addToCart({
-                              content_ids: productOption.data?.id?.toString(),
+                              content_ids: productOption.data?.id,
                               content_type: 'product',
                               contents: selectedOption.map(item => {
                                 return {

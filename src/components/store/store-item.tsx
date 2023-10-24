@@ -28,7 +28,7 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
               <p className='line-clamp-1 text-[26px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
                 {data?.name}
               </p>
-              <p className='text-[20px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
+              <p className='text-[18px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
                 {data?.location}
               </p>
               <div className='mt-[5px] flex h-[22px] flex-wrap gap-1 overflow-hidden'>

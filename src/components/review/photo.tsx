@@ -65,8 +65,6 @@ export function ReviewPhoto({ id, type }: Props) {
       if (inView) fetchNextPage();
     },
   });
-  console.log(data);
-
   return (
     <div>
       <div className='px-4 pb-6 pt-5'>
@@ -99,8 +97,8 @@ export function ReviewPhoto({ id, type }: Props) {
         >
           {data?.pages?.map((x, i) =>
             x?.content
-              ?.filter(v => v.images?.[0] !== '')
-              .map((v, idx) => {
+              ?.filter((v: { images: string[] }) => v.images?.[0] !== '')
+              .map((v: { id: any; images: string | any[] }, idx: any) => {
                 return (
                   <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
                     <Link href={{ pathname: '/store/review', query: { id: v.id } }}>
@@ -119,7 +117,7 @@ export function ReviewPhoto({ id, type }: Props) {
                             className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
                             style={{ background: 'rgba(111, 111, 111, 0.65)' }}
                           >
-                            +{v.images?.length}
+                            +{Number(v.images?.length) - 1}
                           </div>
                         )}
                       </div>
@@ -172,7 +170,7 @@ export function ReviewPhoto({ id, type }: Props) {
       ) : (
         <div className='pb-[100px] pl-[17px] pr-[15px]'>
           {(data?.pages ?? []).map((x, i) =>
-            (x?.content ?? []).map((v, idx) => (
+            (x?.content ?? []).map((v: { id: any }, idx: number) => (
               <ReviewItem key={`${i}${idx}${v.id}`} data={v} showInfo={false} refetch={refetch} />
             )),
           )}

@@ -1,8 +1,12 @@
+import { useQuery } from '@tanstack/react-query';
+import { addDays } from 'date-fns';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
+import { client } from 'src/api/client';
 import { type UserInfoDto, type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ChevronIcon } from 'src/components/icons';
+import { queryKey } from 'src/query-key';
 import { calcDiscountRate, formatToLocaleString, setDeliverDate } from 'src/utils/functions';
 
 interface Props {
@@ -34,6 +38,41 @@ const InformationDefault = ({ data, user }: Props) => {
       }
     }
   }, [data?.discountPrice, data?.pointRate, user]);
+  const { data: deliver } = useQuery<any>([`${queryKey.deliverInfo}date`], async () => {
+    const res = await (await client()).getExpectedArrivalDate(data?.id as number);
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
+  console.log(deliver, 'deliver');
+  console.log(data, 'delsiver122ß');
+
+  const [timer, setTimer] = useState('');
+  // 시간 계산
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const deliverData = (hour: number, minute: number, second: number) => {
+    const valueHour = Number(data?.forwardingTime) - hour;
+    const valueMinute = 60 - minute;
+    const valueSecond = 60 - second;
+    const setSecond = valueSecond < 10 ? '0' + valueSecond.toString() : valueSecond;
+    const valueLast = valueHour + `:` + valueMinute + ':' + setSecond;
+    setTimer(valueLast);
+  };
+
+  useEffect(() => {
+    if (!deliver) return;
+    if (deliver?.calculatedExpectedArrivalDate > 1) return;
+    const value = addDays(new Date(), deliver.productExpectedArrivalDate);
+    const hour = value.getHours();
+    const minute = value.getMinutes();
+    const second = value.getSeconds();
+    const timer = setTimeout(() => {
+      deliverData(hour, minute, second);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [deliver, deliverData, timer]);
 
   return (
     <div className=''>
@@ -89,7 +128,20 @@ const InformationDefault = ({ data, user }: Props) => {
               발송안내
             </p>
             <p className='flex-1 text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
-              {`${setDeliverDate(1)} 도착예정`}
+              {deliver &&
+              deliver.productExpectedArrivalDate <= 1 &&
+              deliver.calculatedExpectedArrivalDate === 1
+                ? `${timer} 이내 주문시 ${setDeliverDate(
+                    deliver.calculatedExpectedArrivalDate,
+                  )} 도착예정`
+                : deliver && deliver.productExpectedArrivalDate <= 1
+                ? `${setDeliverDate(deliver.calculatedExpectedArrivalDate)} 도착예정`
+                : deliver &&
+                  `${setDeliverDate(
+                    deliver?.productExpectedArrivalDate,
+                  )}  이내 발송 예정 (일요일, 공휴일 제외)`}
+
+              {/* {deliver && `${setDeliverDate(deliver.productExpectedArrivalDate)} 도착예정`} */}
             </p>
           </div>
           <div className='flex items-start'>
@@ -126,22 +178,22 @@ const InformationDefault = ({ data, user }: Props) => {
           />
         )}
         <div className='flex-1 flex-col gap-1'>
-          <p className='text-[16px] font-bold leading-[22px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[18px] font-bold leading-[22px] -tracking-[0.03em] text-grey-10'>
             {data?.store?.name ?? ''}
           </p>
           <div className='flex items-center gap-[5px]'>
-            <p className='text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
+            <p className='text-[16px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
               {data?.store?.location ?? ''}
             </p>
             <div className='h-[11px] w-[1px] bg-grey-80' />
-            <p className='text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>{`후기 개수 ${formatToLocaleString(
-              0,
+            <p className='text-[16px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>{`후기 개수 ${formatToLocaleString(
+              data?.store?.reviewCount,
             )}`}</p>
           </div>
         </div>
         <Link href={{ pathname: '/store/detail', query: { id: data?.store?.storeId } }}>
           <div className='flex h-[34px] items-center justify-center rounded-lg bg-primary-90 px-2'>
-            <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-70'>스토어 보기</p>
+            <p className='text-[15px] font-bold -tracking-[0.03em] text-primary-70'>스토어 보기</p>
             <ChevronIcon className='rotate-180' width={18} height={18} />
           </div>
         </Link>

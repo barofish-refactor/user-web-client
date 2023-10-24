@@ -65,17 +65,23 @@ export function KakaoButton() {
               true,
             ),
           })
-            .then(res => {
+            .then((res: any) => {
+              console.log(res);
+
               if (res.data.isSuccess) {
-                setToken(res.data.data);
-                return true;
+                setToken(res.data.data.jwt);
+                return res.data.data.new;
               } else {
                 setAlert({ message: res.data.errorMsg ?? '' });
-                return false;
+                return null;
               }
             })
             .then(res => {
-              if (res) router.replace('/');
+              if (!res) {
+                router.replace('/');
+              } else {
+                router.replace('/signupComplete');
+              }
             })
             .catch(console.error);
         }

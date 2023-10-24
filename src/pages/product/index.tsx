@@ -185,14 +185,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     });
     // google ads
     gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
-
-    const handleRouteChange = () => {
-      fpixel.view({ value });
-    };
-    router.events.on('routeChangeComplete', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
+    fpixel.view({ value });
   }, [data, headTitle, router.events]);
   // 배너 확인용 유저
   const { data: user } = useQuery(queryKey.user, async () => {
@@ -235,7 +228,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           openGraph={{
             title: headTitle,
             description: testtext,
-            images: data?.images?.map(v => {
+            images: data?.images?.map((v: any) => {
               return {
                 url: v,
                 alt: headTitle,

@@ -393,6 +393,8 @@ export interface Product {
   descriptionImages?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
+  /** @format int32 */
+  forwardingTime?: number;
   /** @format float */
   pointRate?: number;
   /** @format int32 */
@@ -981,6 +983,8 @@ export interface ProductUpdateReq {
   /** @format int32 */
   expectedDeliverDay?: number;
   /** @format int32 */
+  forwardingTime?: number;
+  /** @format int32 */
   deliverBoxPerAmount?: number;
   descriptionContent?: string;
   needTaxation?: boolean;
@@ -1071,6 +1075,8 @@ export interface SimpleProductDto {
   state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
   /** @format int32 */
   expectedDeliverDay?: number;
+  /** @format int32 */
+  forwardingTime?: number;
   images?: string[];
   title?: string;
   /** @format int32 */
@@ -1156,6 +1162,8 @@ export interface ProductAddReq {
   deliveryInfo?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
+  /** @format int32 */
+  forwardingTime?: number;
   /** @format int32 */
   deliverBoxPerAmount?: number;
   descriptionContent?: string;
@@ -1879,10 +1887,19 @@ export interface ReviewDtoV2 {
   /** @format int32 */
   userId?: number;
   userName?: string;
+  userNickname?: string;
   userGrade?: string;
+  storeName?: string;
   /** @format int32 */
   productId?: number;
   productName?: string;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  discountPrice?: number;
+  productImage?: string;
+  /** @format int32 */
+  reviewId?: number;
   reviewContent?: string;
   /** @format date-time */
   createdAt?: string;
@@ -3686,6 +3703,8 @@ export type GetReviewsData = CustomResponseProductReviewDto;
 export type SelectMyReviewListV2Data = CustomResponseUserReviewDto;
 
 export type SelectProductListByUserV2Data = CustomResponseObject;
+
+export type GetExpectedArrivalDateData = CustomResponseObject;
 
 export type VerifyCodeWithImpUidData = CustomResponseString;
 
