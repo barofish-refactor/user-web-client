@@ -32,6 +32,8 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
           src={dataDto?.image ?? '/'}
           alt='image'
           draggable={false}
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+          placeholder='blur'
         />
         {onDeleteSaveProductsMutate && onMutate && dataDto && (
           <button

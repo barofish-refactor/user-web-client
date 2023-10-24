@@ -142,7 +142,6 @@ const Home: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
-  console.log(isLoading);
 
   if (isLoading) return <Loading />;
 

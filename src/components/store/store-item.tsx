@@ -18,6 +18,8 @@ const StoreItem = ({ data, buttonType, isSelected, onButtonClick }: Props) => {
         <div className='flex items-start justify-between'>
           <div className='flex flex-1 items-center gap-3'>
             <Image
+              blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+              placeholder='blur'
               src={data?.profileImage ?? '/'}
               alt='partner'
               width={83}

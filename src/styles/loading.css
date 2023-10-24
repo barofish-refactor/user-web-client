@@ -5,8 +5,7 @@
   align-items: center; /*요소는 세로 중앙 배치*/
   height: 100vh; /*웹 크기 변화에 따라 변경되는 반응형 수치*/
 }
-.lodingBoxs {
-}
+
 .lodingBoxs > span {
   display: inline-block; /* span 내부요소들을 한줄로 세우기 */
   width: 20px;

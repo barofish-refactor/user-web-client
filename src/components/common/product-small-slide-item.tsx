@@ -32,6 +32,8 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
         })}
       >
         <Image
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+          placeholder='blur'
           width={132}
           height={132}
           unoptimized={!imageOptimize}
@@ -47,7 +49,6 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
             setProductOption({ data });
           }}
         />
-
         {/* <Link
           href={{ pathname: '/product', query: { id: data.id, openState: 'open' } }}
           as={{ pathname: '/product', query: { id: data.id } }}

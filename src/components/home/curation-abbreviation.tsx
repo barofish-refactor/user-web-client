@@ -45,6 +45,8 @@ const CurationAbbreviation = ({ data }: Props) => {
               <div className='h-[70px] w-[70px] overflow-hidden rounded-full bg-primary-90'>
                 <Image
                   priority
+                  blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+                  placeholder='blur'
                   src={v.image ?? ''}
                   alt={v.shortName ?? ''}
                   width={70}

@@ -110,6 +110,8 @@ export function ReviewPhoto({ id, type }: Props) {
                           src={v.images?.[0] ?? ''}
                           alt='review'
                           draggable={false}
+                          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+                          placeholder='blur'
                           className='aspect-square w-full rounded-lg object-cover'
                         />
                         {Number(v.images?.length) > 1 && (

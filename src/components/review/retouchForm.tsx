@@ -153,6 +153,8 @@ function Product({ data }: { data?: any }) {
           <Image
             unoptimized
             priority
+            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+            placeholder='blur'
             src={data?.simpleProduct?.image}
             alt='product'
             width={72}

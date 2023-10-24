@@ -52,8 +52,8 @@ const InformationDefault = ({ data, user }: Props) => {
   const [timer, setTimer] = useState('');
   // 시간 계산
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const deliverData = (hour: number, minute: number, second: number) => {
-    const valueHour = Number(data?.forwardingTime) - hour;
+  const deliverData = (minute: number, second: number) => {
+    const valueHour = Number(data?.forwardingTime) - 12;
     const valueMinute = 60 - minute;
     const valueSecond = 60 - second;
     const setSecond = valueSecond < 10 ? '0' + valueSecond.toString() : valueSecond;
@@ -65,11 +65,11 @@ const InformationDefault = ({ data, user }: Props) => {
     if (!deliver) return;
     if (deliver?.calculatedExpectedArrivalDate > 1) return;
     const value = addDays(new Date(), deliver.productExpectedArrivalDate);
-    const hour = value.getHours();
+
     const minute = value.getMinutes();
     const second = value.getSeconds();
     const timer = setTimeout(() => {
-      deliverData(hour, minute, second);
+      deliverData(minute, second);
     }, 1000);
     return () => clearTimeout(timer);
   }, [deliver, deliverData, timer]);
@@ -140,7 +140,6 @@ const InformationDefault = ({ data, user }: Props) => {
                   `${setDeliverDate(
                     deliver?.productExpectedArrivalDate,
                   )}  이내 발송 예정 (일요일, 공휴일 제외)`}
-
               {/* {deliver && `${setDeliverDate(deliver.productExpectedArrivalDate)} 도착예정`} */}
             </p>
           </div>
@@ -168,6 +167,8 @@ const InformationDefault = ({ data, user }: Props) => {
         {data?.store?.profileImage && (
           <Image
             unoptimized
+            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+            placeholder='blur'
             src={data?.store?.profileImage}
             alt='store'
             draggable={false}

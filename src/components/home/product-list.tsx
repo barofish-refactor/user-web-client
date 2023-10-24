@@ -70,6 +70,8 @@ const ProductList = ({
                   width={8}
                   height={5}
                   loading='lazy'
+                  blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+                  placeholder='blur'
                   className={cm({ 'rotate-180': isShowSort })}
                 />
               </button>

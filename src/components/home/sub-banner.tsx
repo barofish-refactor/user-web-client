@@ -18,6 +18,8 @@ const SubBanner = ({ data }: Props) => {
     <div className='relative'>
       <Image
         // priority
+        blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+        placeholder='blur'
         src={data.image ?? ''}
         width={375}
         height={208}

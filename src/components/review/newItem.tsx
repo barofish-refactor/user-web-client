@@ -123,6 +123,8 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
                 <div className='relative overflow-hidden rounded-lg'>
                   <Image
                     unoptimized
+                    blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+                    placeholder='blur'
                     width={150}
                     height={150}
                     src={v}
