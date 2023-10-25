@@ -118,7 +118,9 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
               {formatToLocaleString(item.amount, { suffix: '개' })}
             </span>
             <strong className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
-              {formatToLocaleString(item.price, { suffix: '원' })}
+              {formatToLocaleString(item.product.discountPrice || item.product.originPrice, {
+                suffix: '원',
+              })}
             </strong>
           </div>
         </div>
