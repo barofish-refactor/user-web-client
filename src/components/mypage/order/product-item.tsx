@@ -85,6 +85,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
       },
     });
   };
+  console.log(item, 'itms');
 
   return (
     <div className={clsx('last:pb-0', hasButtons ? 'pb-5' : 'pb-0')}>
@@ -118,7 +119,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
               {formatToLocaleString(item.amount, { suffix: '개' })}
             </span>
             <strong className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
-              {formatToLocaleString(item.product.discountPrice || item.product.originPrice, {
+              {formatToLocaleString(item?.product?.discountPrice || item?.product?.originPrice, {
                 suffix: '원',
               })}
             </strong>
