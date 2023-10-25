@@ -46,14 +46,17 @@ const InformationDefault = ({ data, user }: Props) => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-  console.log(deliver, 'deliver');
-  console.log(data, 'delsiver122ß');
 
   const [timer, setTimer] = useState('');
   // 시간 계산
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const deliverData = (minute: number, second: number) => {
-    const valueHour = Number(data?.forwardingTime) - 12;
+  const deliverData = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minute = now.getMinutes();
+    const second = now.getSeconds();
+
+    const valueHour = Number(data?.forwardingTime) - hours - 1;
     const valueMinute = 60 - minute;
     const valueSecond = 60 - second;
     const setSecond = valueSecond < 10 ? '0' + valueSecond.toString() : valueSecond;
@@ -64,12 +67,8 @@ const InformationDefault = ({ data, user }: Props) => {
   useEffect(() => {
     if (!deliver) return;
     if (deliver?.calculatedExpectedArrivalDate > 1) return;
-    const value = addDays(new Date(), deliver.productExpectedArrivalDate);
-
-    const minute = value.getMinutes();
-    const second = value.getSeconds();
     const timer = setTimeout(() => {
-      deliverData(minute, second);
+      deliverData();
     }, 1000);
     return () => clearTimeout(timer);
   }, [deliver, deliverData, timer]);

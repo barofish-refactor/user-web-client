@@ -169,6 +169,7 @@ import {
   SelectAdminLogListData,
   SelectAdminMyInfoData,
   SelectAllReviewListByAdminData,
+  SelectAllReviewListByAdminV2Data,
   SelectBankCodeListData,
   SelectBannerData,
   SelectBannerListByAdminData,
@@ -2207,6 +2208,54 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectMyReviewListV2Data, any>({
       path: `/api/v2/review/my`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags review-controller-v-2
+   * @name SelectAllReviewListByAdminV2
+   * @request GET:/api/v2/review/management
+   * @response `200` `SelectAllReviewListByAdminV2Data` OK
+   */
+  selectAllReviewListByAdminV2 = (
+    query?: {
+      /**
+       * @format int32
+       * @default 0
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+      /** @default "createdAt" */
+      orderby?:
+        | 'orderId'
+        | 'productName'
+        | 'storeName'
+        | 'reviewerName'
+        | 'reviewerEmail'
+        | 'createdAt';
+      /** @default "DESC" */
+      orderType?: 'ASC' | 'DESC';
+      orderNo?: string;
+      productName?: string;
+      partnerName?: string;
+      reviewer?: string;
+      evaluation?: string;
+      /** @format date-time */
+      createdAtS?: string;
+      /** @format date-time */
+      createdAtE?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectAllReviewListByAdminV2Data, any>({
+      path: `/api/v2/review/management`,
       method: 'GET',
       query: query,
       ...params,

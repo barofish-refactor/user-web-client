@@ -130,7 +130,7 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
                     src={v}
                     alt='review'
                     draggable={false}
-                    className=' aspect-square w-full object-cover'
+                    className=' aspect-square w-[100%] object-cover'
                   />
                 </div>
               </SwiperSlide>

@@ -33,7 +33,7 @@ const Banner = ({ data }: Props) => {
         spaceBetween={16}
         className='aspect-[375/270]'
         autoplay={{
-          delay: 2000,
+          delay: 3500,
           disableOnInteraction: false,
         }}
         onSlideChange={v => setPageIndex(v.realIndex ?? 0)}

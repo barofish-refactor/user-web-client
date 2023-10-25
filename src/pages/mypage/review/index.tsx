@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
-// import { ReviewItem } from 'src/components/review';
+import { ReviewItem } from 'src/components/review';
 import { NewReviewItem } from 'src/components/review/newItem';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -20,6 +20,7 @@ const MypageReview: NextPageWithLayout = () => {
     queryKey.myReview,
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
+
       const res = await (await client()).selectMyReviewListV2({ page: pageParam, take });
       if (res.data.isSuccess) {
         return res.data.data;
@@ -30,7 +31,11 @@ const MypageReview: NextPageWithLayout = () => {
     {
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return lastPage?.reviewCount === nextId ? nextId - 1 : nextId + 1;
+
+        // return lastPage?.content?.length !== 0 ? nextId : -1;
+        return lastPage?.pagedReviews?.content?.length !== allPages[0]?.pagedReviews?.totalPages
+          ? nextId + 1
+          : -1;
       },
     },
   );
@@ -63,7 +68,7 @@ const MypageReview: NextPageWithLayout = () => {
           {data?.pages.map((v, i) => (
             <Fragment key={i}>
               {v?.pagedReviews?.content?.map((v, idx) => (
-                <NewReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
+                <ReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
               ))}
             </Fragment>
           ))}
