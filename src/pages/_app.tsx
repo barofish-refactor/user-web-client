@@ -13,7 +13,6 @@ import { ContentType } from 'src/api/swagger/http-client';
 import 'src/styles/globals.css';
 import { type JoinSnsUserPayload } from 'src/api/swagger/data-contracts';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import 'src/styles/loading.css';
 type CustomAppProps = AppProps<any> & { Component: NextPageWithLayout };
 
 export default function MyApp(props: CustomAppProps) {
