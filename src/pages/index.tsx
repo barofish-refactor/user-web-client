@@ -140,9 +140,7 @@ const Home: NextPageWithLayout = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
-  console.log(data);
-  console.log(curationData);
+  // if (isLoading) return <Loading />;
   return (
     <div className='max-md:w-[100vw]'>
       {/* Tab */}

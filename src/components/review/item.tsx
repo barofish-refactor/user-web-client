@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
-import { type ReviewDtoV2, type ReviewDto } from 'src/api/swagger/data-contracts';
+import { type ReviewDtoV2 } from 'src/api/swagger/data-contracts';
 import { useAlertStore } from 'src/store';
 import {
   calcDiscountRate,
@@ -129,7 +129,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
                     src={v}
                     alt='review'
                     draggable={false}
-                    className=' aspect-square w-full object-cover'
+                    className='aspect-square w-full object-cover'
                   />
                 </div>
               </SwiperSlide>
