@@ -22,7 +22,7 @@ const Footer = () => {
   return (
     <div className='pt-[62px]'>
       <div className='h-2 bg-grey-90' />
-      <p className='pl-[15px] pr-[13px] pt-[25px] text-[15px] font-medium leading-[18px] -tracking-[0.05em] text-[#969696]'>
+      <p className='pl-[15px] pr-[13px] pt-[25px] text-[13px] font-medium leading-[18px] -tracking-[0.05em] text-[#969696]'>
         (주) 맛신저는 통신판매중개자이며, 통신판매의 당사자가 아닙니다. 따라서 (주) 맛신저는 상품,
         거래정보 및 거래에 대하여 책임을 지지 않습니다.
       </p>

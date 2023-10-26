@@ -7,7 +7,7 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 
 const buttonClassName =
-  'w-full py-[12.5px] font-medium text-[13px] leading-[20px] -tracking-[0.03em]';
+  'w-full py-[12.5px] font-medium text-[15px] leading-[20px] -tracking-[0.03em]';
 
 interface Props {
   id: number | undefined;

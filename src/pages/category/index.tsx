@@ -31,7 +31,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
 
   return (
     <div className='pb-6 max-md:w-[100vw]'>
-      <p className='px-4 pb-4 pt-[25px] text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+      <p className='px-4 pb-4 pt-[25px] text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
         카테고리
       </p>
       <div className='h-[1px] bg-grey-90' />
@@ -89,7 +89,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
                           'ml-[14px] mr-[36px]': idx % 2 === 1,
                         })}
                       >
-                        <p className='text-[14px] font-normal -tracking-[0.03em] text-grey-20'>
+                        <p className='text-[16px] font-normal -tracking-[0.03em] text-grey-20'>
                           {subItem.name ?? ''}
                         </p>
                       </Link>

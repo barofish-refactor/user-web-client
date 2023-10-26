@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { type MouseEventHandler } from 'react';
 
 const buttonClassName =
-  'w-full py-[12.5px] font-medium text-[13px] leading-[20px] -tracking-[0.03em]';
+  'w-full py-[12.5px] font-medium text-[15px] leading-[20px] -tracking-[0.03em]';
 
 interface Props {
   isCanEdit: boolean;

@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type Api } from 'src/api/swagger/Api';
 import { ReviewItem } from 'src/components/review';
+import { NewReviewItem } from 'src/components/review/newItem';
 import { queryKey } from 'src/query-key';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString } from 'src/utils/functions';
@@ -31,7 +32,7 @@ export function ReviewPhoto({ id, type }: Props) {
 
   const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.review.list({ id, type, selectedSort }),
-    async ({ pageParam = 0 }) => {
+    async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
       const variables: Variables = [
         id,
@@ -41,9 +42,11 @@ export function ReviewPhoto({ id, type }: Props) {
           orderType: selectedSort === 0 ? 'BEST' : 'RECENT',
         },
       ];
+
       const res = await (type === 'product'
-        ? (await client()).selectReviewListWithProductId(...variables)
-        : (await client()).selectReviewListWithStoreId1(...variables));
+        ? (await client()).getReviews(...variables)
+        : (await client()).selectReviewListWithStoreIdV21(...variables));
+
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
@@ -53,10 +56,15 @@ export function ReviewPhoto({ id, type }: Props) {
     {
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        return lastPage?.content?.length !== 0 ? nextId : -1;
+
+        // return lastPage?.content?.length !== 0 ? nextId : -1;
+        return lastPage?.pagedReviews?.content?.length !== allPages[0]?.pagedReviews?.totalPages
+          ? nextId + 1
+          : -1;
       },
     },
   );
+  console.log('리뷰', data, 'ㅇㅇㅇㅇ');
 
   const { ref } = useInView({
     initialInView: false,
@@ -65,18 +73,16 @@ export function ReviewPhoto({ id, type }: Props) {
       if (inView) fetchNextPage();
     },
   });
-  console.log(data);
-
   return (
     <div>
       <div className='px-4 pb-6 pt-5'>
         <div className='flex items-center justify-between'>
-          <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
             사진 후기
           </p>
           <Link href={{ pathname: '/store/review-all', query: { id, type } }} className=''>
             <div className='flex h-[30px] items-center gap-1'>
-              <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+              <p className='whitespace-nowrap text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
                 전체보기
               </p>
               <Image
@@ -98,9 +104,9 @@ export function ReviewPhoto({ id, type }: Props) {
           style={{ marginInline: '-16px', paddingInline: '16px' }}
         >
           {data?.pages?.map((x, i) =>
-            x?.content
-              ?.filter(v => v.images?.[0] !== '')
-              .map((v, idx) => {
+            x?.pagedReviews?.content
+              ?.filter((v: any) => v.imageUrls?.[0] !== '')
+              .map((v: any, idx: any) => {
                 return (
                   <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
                     <Link href={{ pathname: '/store/review', query: { id: v.id } }}>
@@ -109,17 +115,19 @@ export function ReviewPhoto({ id, type }: Props) {
                           unoptimized
                           width={100}
                           height={100}
-                          src={v.images?.[0] ?? ''}
+                          src={v.imageUrls?.[0] ?? ''}
                           alt='review'
                           draggable={false}
                           className='aspect-square w-full rounded-lg object-cover'
                         />
-                        <div
-                          className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  p-[3px] text-white'
-                          style={{ background: 'rgba(111, 111, 111, 0.65)' }}
-                        >
-                          +{v.images?.length}
-                        </div>
+                        {Number(v.imageUrls?.length) > 1 && (
+                          <div
+                            className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
+                            style={{ background: 'rgba(111, 111, 111, 0.65)' }}
+                          >
+                            +{Number(v.imageUrls?.length) - 1}
+                          </div>
+                        )}
                       </div>
                     </Link>
                   </SwiperSlide>
@@ -131,14 +139,14 @@ export function ReviewPhoto({ id, type }: Props) {
       <div className='h-2 bg-grey-90' />
       {/* 후기 리스트 */}
       <div className='flex flex-col gap-[29px] px-[17px] py-5'>
-        <p className='text-[14px] font-bold leading-[20px] -tracking-[0.05em] text-grey-10'>{`후기 ${formatToLocaleString(
-          data?.pages[0]?.totalElements ?? 0,
+        <p className='text-[16px] font-bold leading-[20px] -tracking-[0.05em] text-grey-10'>{`후기 ${formatToLocaleString(
+          data?.pages[0]?.pagedReviews?.totalElements ?? 0,
         )}개`}</p>
         <div className='flex items-center gap-[9px]'>
           <button onClick={() => setSelectedSort(0)}>
             <p
               className={cm(
-                'text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
+                'text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
                 {
                   'font-bold text-primary-50': selectedSort === 0,
                 },
@@ -151,7 +159,7 @@ export function ReviewPhoto({ id, type }: Props) {
           <button onClick={() => setSelectedSort(1)}>
             <p
               className={cm(
-                'text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
+                'text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-grey-50',
                 {
                   'font-bold text-primary-50': selectedSort === 1,
                 },
@@ -163,14 +171,14 @@ export function ReviewPhoto({ id, type }: Props) {
         </div>
       </div>
       <div className='h-[1px] bg-[#E2E2E2]' />
-
-      {(data?.pages ?? []).filter(x => (x?.content ?? []).length > 0).map(x => x?.content)
-        .length === 0 ? (
+      {(data?.pages ?? [])
+        .filter(x => (x?.pagedReviews?.content ?? []).length > 0)
+        .map(x => x?.pagedReviews?.content).length === 0 ? (
         Empty()
       ) : (
         <div className='pb-[100px] pl-[17px] pr-[15px]'>
           {(data?.pages ?? []).map((x, i) =>
-            (x?.content ?? []).map((v, idx) => (
+            (x?.pagedReviews?.content ?? []).map((v: any, idx: number) => (
               <ReviewItem key={`${i}${idx}${v.id}`} data={v} showInfo={false} refetch={refetch} />
             )),
           )}
@@ -192,7 +200,7 @@ function Empty() {
           width={40}
           height={40}
         />
-        <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           후기가 없습니다.
         </p>
       </div>

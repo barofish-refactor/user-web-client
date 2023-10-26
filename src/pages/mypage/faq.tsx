@@ -58,7 +58,7 @@ const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
       <article className='pb-10 pt-2'>
         {data.map((v, i) => (
           <details key={v.id} className='group border-b border-b-grey-90'>
-            <summary className='flex justify-between gap-2 p-4 text-[14px]'>
+            <summary className='flex justify-between gap-2 p-4 text-[16px]'>
               <h3 className='line-clamp-1 flex-1 font-semibold leading-[22px] -tracking-[0.03em] text-grey-20 group-open:line-clamp-none'>
                 Q. {v.title}
               </h3>
@@ -89,7 +89,7 @@ function Empty() {
           width={40}
           height={40}
         />
-        <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
           {`등록된 FAQ가 없습니다.\n1:1 문의에 문의사항을 남겨주세요. :)`}
         </p>
       </div>

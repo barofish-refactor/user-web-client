@@ -32,6 +32,8 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
           src={dataDto?.image ?? '/'}
           alt='image'
           draggable={false}
+          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+          placeholder='blur'
         />
         {onDeleteSaveProductsMutate && onMutate && dataDto && (
           <button
@@ -69,22 +71,22 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
           className='product-cart'
         /> */}
       </div>
-      <p className='mt-2 line-clamp-2 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+      <p className='mt-2 line-clamp-2 text-start text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
         {`${setSquareBrackets(dataDto?.storeName)} ${dataDto?.title}`}
       </p>
       <div className='mt-0.5 flex items-center gap-0.5'>
         {(dataDto?.originPrice ?? 0) !== 0 && (
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
             dataDto?.originPrice,
             dataDto?.discountPrice,
           )}%`}</p>
         )}
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+        <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
           dataDto?.discountPrice,
         )}원`}</p>
       </div>
       {(dataDto?.originPrice ?? 0) !== 0 && (
-        <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
+        <p className='-mt-0.5 text-start text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
           dataDto?.originPrice,
         )}원`}</p>
       )}

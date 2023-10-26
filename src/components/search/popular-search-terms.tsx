@@ -44,9 +44,9 @@ const PopularSearchTerms = ({ data, setSearchText }: Props) => {
           />
         );
       case 'NONE':
-        return <p className='w-[15px] text-[16px] font-normal text-grey-10'>-</p>;
+        return <p className='w-[15px] text-[18px] font-normal text-grey-10'>-</p>;
       default:
-        return <p className='w-[15px] text-[16px] font-normal text-grey-10'>-</p>;
+        return <p className='w-[15px] text-[18px] font-normal text-grey-10'>-</p>;
     }
   };
 

@@ -18,7 +18,6 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, safeParse } from 'src/utils/parse';
-
 import 'swiper/css';
 
 const perView = 10;
@@ -34,7 +33,6 @@ const Home: NextPageWithLayout = () => {
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [defaultCurationAbbreviation, setDefaultCurationAbbreviation] = useState<Curation[]>([]);
-
   const { data, isLoading, refetch } = useQuery(queryKey.main, async () => {
     const res = await (await client()).selectMainItems();
     if (res.data.isSuccess) {
@@ -107,7 +105,6 @@ const Home: NextPageWithLayout = () => {
   useEffect(() => {
     if (filter) {
       setDummyFilter(filter);
-
       router.replace({
         pathname: '/',
         query: {
@@ -142,6 +139,7 @@ const Home: NextPageWithLayout = () => {
     },
   });
 
+  // if (isLoading) return <Loading />;
   return (
     <div className='max-md:w-[100vw]'>
       {/* Tab */}

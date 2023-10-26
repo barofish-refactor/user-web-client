@@ -41,13 +41,13 @@ const CurationTip = () => {
       <div className='flex items-center justify-between'>
         <p
           ref={ref}
-          className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'
+          className='line-clamp-1 text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'
         >
           {tipInfo?.title ?? ''}
         </p>
         <Link href='/tip' className=''>
           <div className='flex h-[30px] items-center gap-1'>
-            <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+            <p className='whitespace-nowrap text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
               전체보기
             </p>
             <Image
@@ -60,7 +60,7 @@ const CurationTip = () => {
           </div>
         </Link>
       </div>
-      <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
+      <p className='whitespace-pre-line text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         {tipInfo?.subTitle ?? ''}
       </p>
       <Swiper
@@ -82,10 +82,10 @@ const CurationTip = () => {
                     className='aspect-[294/419] w-full object-cover'
                   />
                   <div className='absolute inset-0 bg-[linear-gradient(180deg,rgba(111,111,111,0.9)0%,rgba(46,46,46,0.774)0.01%,rgba(67,67,67,0)59.58%)] px-5 py-6'>
-                    <p className='whitespace-pre-wrap break-keep text-[24px] font-bold leading-[36px] -tracking-[0.03em] text-white'>
+                    <p className='whitespace-pre-wrap break-keep text-[26px] font-bold leading-[36px] -tracking-[0.03em] text-white'>
                       {v.title}
                     </p>
-                    <p className='mt-[5px] whitespace-pre-wrap break-keep text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-white'>
+                    <p className='mt-[5px] whitespace-pre-wrap break-keep text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-white'>
                       {v.description}
                     </p>
                   </div>

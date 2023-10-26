@@ -123,6 +123,7 @@ import {
   FindEmailData,
   FindEmailPayload,
   GetData,
+  GetExpectedArrivalDateData,
   GetFormData,
   GetReviewsData,
   GithubWebhookCallbackData,
@@ -168,6 +169,7 @@ import {
   SelectAdminLogListData,
   SelectAdminMyInfoData,
   SelectAllReviewListByAdminData,
+  SelectAllReviewListByAdminV2Data,
   SelectBankCodeListData,
   SelectBannerData,
   SelectBannerListByAdminData,
@@ -2213,6 +2215,54 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags review-controller-v-2
+   * @name SelectAllReviewListByAdminV2
+   * @request GET:/api/v2/review/management
+   * @response `200` `SelectAllReviewListByAdminV2Data` OK
+   */
+  selectAllReviewListByAdminV2 = (
+    query?: {
+      /**
+       * @format int32
+       * @default 0
+       */
+      page?: number;
+      /**
+       * @format int32
+       * @default 10
+       */
+      take?: number;
+      /** @default "createdAt" */
+      orderby?:
+        | 'orderId'
+        | 'productName'
+        | 'storeName'
+        | 'reviewerName'
+        | 'reviewerEmail'
+        | 'createdAt';
+      /** @default "DESC" */
+      orderType?: 'ASC' | 'DESC';
+      orderNo?: string;
+      productName?: string;
+      partnerName?: string;
+      reviewer?: string;
+      evaluation?: string;
+      /** @format date-time */
+      createdAtS?: string;
+      /** @format date-time */
+      createdAtE?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SelectAllReviewListByAdminV2Data, any>({
+      path: `/api/v2/review/management`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags product-controller-v-2
    * @name SelectProductListByUserV2
    * @request GET:/api/v2/product/list
@@ -2250,6 +2300,27 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectProductListByUserV2Data, any>({
       path: `/api/v2/product/list`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags product-controller-v-2
+   * @name GetExpectedArrivalDate
+   * @request GET:/api/v2/product/arrival-date/{id}
+   * @response `200` `GetExpectedArrivalDateData` OK
+   */
+  getExpectedArrivalDate = (
+    id: number,
+    query?: {
+      Authorization?: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<GetExpectedArrivalDateData, any>({
+      path: `/api/v2/product/arrival-date/${id}`,
       method: 'GET',
       query: query,
       ...params,

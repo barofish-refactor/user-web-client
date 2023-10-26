@@ -379,6 +379,7 @@ export const setSquareBrackets = (value: Nullish<string>) => {
 /** 배송 날짜 세팅 */
 export const setDeliverDate = (expectedDeliverDay: number) => {
   let value = addDays(new Date(), expectedDeliverDay);
+
   // 12시 이후면 +1일
   if (value.getHours() >= 12) value = addDays(value, 1);
   // 일요일이면 +1일

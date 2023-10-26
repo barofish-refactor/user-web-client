@@ -39,7 +39,7 @@ const CurationItem = ({
       {data.title?.includes('최상단') ? null : (
         <>
           <div className='flex items-center justify-between'>
-            <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+            <p className='line-clamp-1 text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
               {data.title}
             </p>
             {showViewAll && (
@@ -51,7 +51,7 @@ const CurationItem = ({
                 }}
               >
                 <div className='flex h-[30px] items-center gap-1'>
-                  <p className='whitespace-nowrap text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+                  <p className='whitespace-nowrap text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
                     전체보기
                   </p>
                   <Image
@@ -65,7 +65,7 @@ const CurationItem = ({
               </Link>
             )}
           </div>
-          <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
+          <p className='whitespace-pre-line text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
             {data.description}
           </p>
         </>

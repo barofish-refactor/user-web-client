@@ -54,7 +54,7 @@ const ReviewReport: NextPageWithLayout = () => {
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
         <BackButton />
-        <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           신고하기
         </p>
         <div className='w-6' />
@@ -78,7 +78,7 @@ const ReviewReport: NextPageWithLayout = () => {
               >
                 {selectedItem === idx && <div className='h-2 w-2 rounded-full bg-white' />}
               </div>
-              <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+              <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                 {v}
               </p>
             </button>
@@ -90,7 +90,7 @@ const ReviewReport: NextPageWithLayout = () => {
           <textarea
             spellCheck={false}
             placeholder='신고 사유를 입력해주세요.'
-            className='min-h-[112px] w-full rounded-lg border-2 border-grey-90 px-4 py-2.5 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-70'
+            className='min-h-[112px] w-full rounded-lg border-2 border-grey-90 px-4 py-2.5 text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-70'
             value={content}
             onChange={e => setContent(e.target.value)}
           />
@@ -110,7 +110,7 @@ const ReviewReport: NextPageWithLayout = () => {
             });
           }}
         >
-          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>신고하기</p>
+          <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>신고하기</p>
         </button>
       </div>
     </div>

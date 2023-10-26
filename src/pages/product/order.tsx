@@ -501,22 +501,22 @@ const Order: NextPageWithLayout = () => {
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
         <BackButton />
-        <p className='text-[16px] font-bold -tracking-[0.03em] text-grey-10'>주문하기</p>
+        <p className='text-[18px] font-bold -tracking-[0.03em] text-grey-10'>주문하기</p>
         <div className='w-6' />
       </div>
 
       {/* 주문자 정보 */}
       <div className='flex flex-col gap-4 px-4 py-5'>
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           주문자 정보
         </p>
         <div className='flex items-center'>
-          <p className='w-[71px] text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='w-[71px] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
             이름
           </p>
           <input
             maxLength={10}
-            className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+            className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
             placeholder='이름을 입력해주세요'
             value={name}
             onChange={e => {
@@ -525,7 +525,7 @@ const Order: NextPageWithLayout = () => {
           />
         </div>
         <div className='flex items-center'>
-          <p className='w-[71px] text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='w-[71px] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
             연락처
           </p>
           <PatternFormat
@@ -534,7 +534,7 @@ const Order: NextPageWithLayout = () => {
             inputMode='numeric'
             spellCheck={false}
             value={phone}
-            className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+            className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
             onChange={e => setPhone(e.target.value)}
           />
         </div>
@@ -544,7 +544,7 @@ const Order: NextPageWithLayout = () => {
       {/* 배송지 */}
       <div className='flex flex-col px-4 py-[22px]'>
         <div className='flex items-center justify-between'>
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             배송지
           </p>
           <button
@@ -554,7 +554,7 @@ const Order: NextPageWithLayout = () => {
               history.pushState(location.href, '', '');
             }}
           >
-            <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>
+            <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>
               배송지 변경
             </p>
           </button>
@@ -562,25 +562,25 @@ const Order: NextPageWithLayout = () => {
         {shippingAddress && (
           <Fragment>
             <div className='mt-[22px] flex items-center gap-2'>
-              <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+              <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
                 {shippingAddress.name ?? ''}
               </p>
               {shippingAddress.isDefault === true && (
                 <div className='flex h-[22px] items-center justify-center rounded-full bg-primary-90 px-2'>
-                  <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-primary-60'>
+                  <p className='text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-primary-60'>
                     기본배송지
                   </p>
                 </div>
               )}
             </div>
-            <p className='mt-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+            <p className='mt-1 text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
               {`${shippingAddress.receiverName}, ${formatToPhone(shippingAddress.tel)}`}
             </p>
             <div className='my-2.5 h-[1px] bg-grey-90' />
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
               {`(${shippingAddress.postalCode}) ${shippingAddress.address} ${shippingAddress.addressDetail}`}
             </p>
-            <p className='mt-1 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+            <p className='mt-1 text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
               {/* 부재 시 연락주세요 */}
               {shippingAddress.deliverMessage}
             </p>
@@ -594,10 +594,10 @@ const Order: NextPageWithLayout = () => {
         className='flex h-[68px] w-full items-center gap-1.5 px-4'
         onClick={() => setIsOpenProduct(!isOpenProduct)}
       >
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           주문 상품
         </p>
-        <p className='line-clamp-1 flex-1 text-end text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+        <p className='line-clamp-1 flex-1 text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
           {/* {`${data?.data?.title}`}{`${product.length > 1 ? ' 외 1개' :''}`} */}
           {`${selectedOption[0]?.productName}`}
           {`${selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''}`}
@@ -628,15 +628,15 @@ const Order: NextPageWithLayout = () => {
                     height={28}
                     className='h-7 w-7 rounded-full border border-grey-90 object-cover'
                   />
-                  <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                  <p className='text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
                     {x.storeName}
                   </p>
                 </div>
                 <div className='flex items-center gap-1'>
-                  <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
+                  <p className='text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
                     배송비
                   </p>
-                  <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+                  <p className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
                     {deliverText}
                   </p>
                 </div>
@@ -655,16 +655,16 @@ const Order: NextPageWithLayout = () => {
                           src={v.productImage}
                         />
                         <div className='flex flex-col gap-1'>
-                          <p className='text-[14px] font-medium leading-[22px] text-grey-10'>
+                          <p className='text-[15px] font-medium leading-[22px] text-grey-10'>
                             {v.productName}
                           </p>
-                          <p className='text-[14px] font-medium leading-[22px] text-grey-40'>
+                          <p className='text-[15px] font-medium leading-[22px] text-grey-40'>
                             {v.name === '' ? '기본' : v.name} : {v.amount}개
                           </p>
                         </div>
                       </div>
                       <div className='mb-4 flex items-center justify-end'>
-                        <p className='text-[16px] font-bold leading-[24px] text-grey-10'>
+                        <p className='text-[18px] font-bold leading-[24px] text-grey-10'>
                           {formatToLocaleString((v.price + v.additionalPrice) * v.amount)}원
                         </p>
                       </div>
@@ -682,22 +682,22 @@ const Order: NextPageWithLayout = () => {
       {/* 쿠폰 */}
       <div className='px-4 py-[22px]'>
         <div className='flex items-center justify-between'>
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             쿠폰
           </p>
           <div className='flex items-center'>
-            <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
+            <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
               사용 가능 쿠폰
             </p>
-            <p className='whitespace-pre text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>{` ${
+            <p className='whitespace-pre text-[15px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>{` ${
               couponData?.length ?? 0
             }`}</p>
-            <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
+            <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
               장
             </p>
             {selectCoupon && (
               <button className='ml-1.5' onClick={() => setSelectCoupon(undefined)}>
-                <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
+                <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
                   적용 취소
                 </p>
               </button>
@@ -706,7 +706,7 @@ const Order: NextPageWithLayout = () => {
         </div>
         <div className='mt-4 flex items-center gap-2'>
           <div className='flex h-[44px] flex-1 items-center rounded-lg border border-grey-80 bg-grey-90 px-4'>
-            <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-60'>
+            <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-60'>
               {selectCoupon?.title ||
                 ((couponData ?? []).length > 0
                   ? '쿠폰을 선택해주세요'
@@ -722,7 +722,7 @@ const Order: NextPageWithLayout = () => {
               history.pushState(location.href, '', '');
             }}
           >
-            <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>쿠폰 선택</p>
+            <p className='text-[15px] font-semibold -tracking-[0.03em] text-grey-10'>쿠폰 선택</p>
           </button>
         </div>
       </div>
@@ -731,7 +731,7 @@ const Order: NextPageWithLayout = () => {
       {/* 적립금 */}
       <div className='px-4 py-[22px]'>
         <div className='flex items-center justify-between'>
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             적립금
           </p>
         </div>
@@ -753,14 +753,14 @@ const Order: NextPageWithLayout = () => {
             disabled={!user?.point}
             onClick={setAllPoint}
           >
-            <p className='text-[14px] font-semibold -tracking-[0.03em] text-grey-10'>모두 사용</p>
+            <p className='text-[15px] font-semibold -tracking-[0.03em] text-grey-10'>모두 사용</p>
           </button>
         </div>
         <div className='mt-2 flex items-center'>
           <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
             보유 적립금
           </p>
-          <p className='whitespace-pre text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>{` ${formatToLocaleString(
+          <p className='whitespace-pre text-[15px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>{` ${formatToLocaleString(
             user?.point,
           )}원`}</p>
         </div>
@@ -772,10 +772,10 @@ const Order: NextPageWithLayout = () => {
         className='flex h-[68px] w-full items-center gap-1.5 px-4'
         onClick={() => setIsOpenPayList(!isOpenPayList)}
       >
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           결제수단
         </p>
-        <p className='flex-1 text-end text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='flex-1 text-end text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
           {payMethod ? parseIamportPayMethod(payMethod) : '등록된 카드'}
         </p>
         <Image
@@ -845,7 +845,7 @@ const Order: NextPageWithLayout = () => {
                   )}
                   <p
                     className={cm(
-                      'text-[14px] font-medium -tracking-[0.03em]',
+                      'text-[15px] font-medium -tracking-[0.03em]',
                       (isActive && ![0, 3].includes(i)) ||
                         (i === 3 && isActive && selectedCard !== undefined)
                         ? 'text-grey-90'
@@ -878,10 +878,10 @@ const Order: NextPageWithLayout = () => {
                                 }}
                               >
                                 <div className='flex flex-col gap-1'>
-                                  <p className='line-clamp-1 shrink-0 break-all text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                                  <p className='line-clamp-1 shrink-0 break-all text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                                     {`${setSquareBrackets(x.cardName)} ${x.name}`}
                                   </p>
-                                  <p className='line-clamp-1 shrink-0 break-all text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+                                  <p className='line-clamp-1 shrink-0 break-all text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
                                     {x.cardNo}
                                   </p>
                                 </div>
@@ -907,7 +907,7 @@ const Order: NextPageWithLayout = () => {
                               width={40}
                               height={40}
                             />
-                            <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                            <p className='whitespace-pre text-center text-[15px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
                               등록된 카드가 없습니다.
                             </p>
                           </div>
@@ -931,46 +931,46 @@ const Order: NextPageWithLayout = () => {
       <div className='h-2 bg-grey-90' />
       {/* 결제 금액 */}
       <div className='px-4 py-[22px]'>
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           결제 금액
         </p>
         <div className='mt-4 flex flex-col gap-2.5'>
           <div className='flex items-center justify-between'>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
               주문금액
             </p>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
               totalPrice,
             )}원`}</p>
           </div>
           <div className='flex items-center justify-between'>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
               배송비
             </p>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
               totalDelivery === 0 ? '' : '+'
             }${formatToLocaleString(totalDelivery)}원`}</p>
           </div>
           <div className='flex items-center justify-between'>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
               쿠폰할인
             </p>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
               couponDiscountPoint === 0 ? '' : '-'
             }${formatToLocaleString(couponDiscountPoint)}원`}</p>
           </div>
           <div className='flex items-center justify-between'>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
               적립금사용
             </p>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
               Number(point) === 0 ? '' : '-'
             }${formatToLocaleString(point)}원`}</p>
           </div>
         </div>
         <div className='mb-[22px] mt-4 h-[1px] bg-grey-90' />
         <div className='flex items-start justify-between'>
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             최종 결제 금액
           </p>
           <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
@@ -982,15 +982,15 @@ const Order: NextPageWithLayout = () => {
 
       {/* 적립금 혜택 */}
       <div className='px-4 py-[22px]'>
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           적립금 혜택
         </p>
         <div className='mt-4 flex items-start justify-between'>
-          <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+          <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
             구매적립
           </p>
           <div className='flex flex-col items-end'>
-            <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
+            <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${formatToLocaleString(
               buyPoint,
             )}원`}</p>
             <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
@@ -1008,7 +1008,7 @@ const Order: NextPageWithLayout = () => {
           className='flex h-[50px] w-full items-center justify-between'
           onClick={() => setIsOpenProductPoint(!isOpenProductPoint)}
         >
-          <p className='flex text-[16px] font-medium leading-[24px] -tracking-[0.03em]  text-grey-50'>
+          <p className='flex text-[18px] font-medium leading-[24px] -tracking-[0.03em]  text-grey-50'>
             상품적립
             <Image
               unoptimized
@@ -1020,7 +1020,7 @@ const Order: NextPageWithLayout = () => {
             />
           </p>
           <div className='flex flex-col items-end'>
-            <p className=' text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+            <p className=' text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
               {`${formatToLocaleString(productPoint)}원`}
             </p>
           </div>
@@ -1044,16 +1044,16 @@ const Order: NextPageWithLayout = () => {
             );
           })}
         <div className='mt-4 flex items-center justify-between'>
-          <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
+          <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50'>
             후기작성
           </p>
-          <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`최대 ${formatToLocaleString(
+          <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`최대 ${formatToLocaleString(
             imageReviewPoint,
           )}원`}</p>
         </div>
         <div className='mb-[22px] mt-4 h-[1px] bg-grey-90' />
         <div className='flex items-start justify-between'>
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-black'>
+          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-black'>
             예상 적립 금액
           </p>
           <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-primary-50'>{`${formatToLocaleString(
@@ -1072,7 +1072,7 @@ const Order: NextPageWithLayout = () => {
           )}
           onClick={onPayment}
         >
-          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>
+          <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
             {`${formatToLocaleString(orderPrice)}원 결제하기`}
           </p>
         </button>

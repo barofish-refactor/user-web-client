@@ -54,7 +54,7 @@ const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
           <h3 className='line-clamp-1 flex-1 font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
             {data?.title}
           </h3>
-          <time className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
+          <time className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
             {formatToUtc(data?.createdAt, 'yyyy.MM.dd')}
           </time>
         </div>
@@ -65,7 +65,7 @@ const MypageNotice: NextPageWithLayout<Props> = ({ initialData }) => {
           {/* <p className='mt-3 whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
             {data?.content}
           </p> */}
-          <div className='mt-3 whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[14px] leading-[22px] -tracking-[0.03em] text-grey-40'>
+          <div className='mt-3 whitespace-pre-line border border-[#f2f2f2] bg-grey-90 px-8 py-5 text-[16px] leading-[22px] -tracking-[0.03em] text-grey-40'>
             <div dangerouslySetInnerHTML={{ __html: content }} className='' />
           </div>
         </div>

@@ -53,13 +53,13 @@ const Login: NextPageWithLayout = () => {
         </div>
         <div className='mt-[30px]'>
           <div className='relative flex justify-center'>
-            <h3 className='z-[1] bg-white px-2 text-center text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-[#C2C3C7]'>
+            <h3 className='z-[1] bg-white px-2 text-center text-[18px] font-medium leading-[22px] -tracking-[0.03em] text-[#C2C3C7]'>
               또는
             </h3>
             <hr className='absolute left-0 top-1/2 w-full -translate-y-1/2 border-[#D4D5D8]' />
           </div>
         </div>
-        <div className='flex items-center justify-center gap-4 pt-[18px] text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
+        <div className='flex items-center justify-center gap-4 pt-[18px] text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
           <Link href='/email'>이메일 로그인</Link>
           <div className='h-4 w-[1px] bg-grey-80' />
           <Link href='/signup'>이메일 회원가입</Link>
@@ -67,7 +67,7 @@ const Login: NextPageWithLayout = () => {
           <Link href='/reset-password'>비밀번호 찾기</Link>
         </div>
       </div>
-      <div className='flex items-center justify-center gap-1.5 text-[15px] font-semibold leading-[20px] -tracking-[0.39px]'>
+      <div className='flex items-center justify-center gap-1.5 text-[16px] font-semibold leading-[20px] -tracking-[0.39px]'>
         <span className='text-grey-50'>산지 마켓 판매자이신가요?</span>
         <button
           className='text-grey-20 underline underline-offset-2'

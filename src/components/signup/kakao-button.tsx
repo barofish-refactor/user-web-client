@@ -34,7 +34,7 @@ export function KakaoButton() {
             height={18}
             className='absolute left-4'
           />
-          <p className='ml-[3px] text-[16px] font-bold -tracking-[0.48px] text-secondary-10'>
+          <p className='ml-[3px] text-[18px] font-bold -tracking-[0.48px] text-secondary-10'>
             카카오로 3초만에 시작하기
           </p>
         </button>

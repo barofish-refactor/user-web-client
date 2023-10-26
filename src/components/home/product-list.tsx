@@ -41,7 +41,6 @@ const ProductList = ({
 }: Props) => {
   const { setFilter, setType, setIsOpen, clearFilter } = useFilterStore();
   const [isShowSort, setIsShowSort] = useState<boolean>();
-  console.log(dataDto, sort, filter, storeType, title);
 
   useEffect(() => {
     clearFilter();
@@ -50,7 +49,7 @@ const ProductList = ({
   return (
     <div className={cm('px-4 py-[16px]', className)} id='test'>
       <div className='flex items-center justify-between'>
-        <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-black'>{`총 ${formatToLocaleString(
+        <p className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-black'>{`총 ${formatToLocaleString(
           dataDto[0]?.totalElements ?? 0,
         )}건`}</p>
 
@@ -61,7 +60,7 @@ const ProductList = ({
                 className='flex h-[22px] items-center gap-[7px]'
                 onClick={() => setIsShowSort(!isShowSort)}
               >
-                <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+                <p className='text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
                   {parseSort(sort)}
                 </p>
                 <Image
@@ -71,6 +70,8 @@ const ProductList = ({
                   width={8}
                   height={5}
                   loading='lazy'
+                  blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+                  placeholder='blur'
                   className={cm({ 'rotate-180': isShowSort })}
                 />
               </button>
@@ -97,7 +98,7 @@ const ProductList = ({
                       >
                         <p
                           className={cm(
-                            'text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20',
+                            'text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-20',
                             { 'font-semibold text-primary-50': sort === v.value },
                           )}
                         >
@@ -123,7 +124,7 @@ const ProductList = ({
           >
             <p
               className={cm(
-                'text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10',
+                'text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10',
                 { 'text-primary-50': filter && filter.length > 0 },
               )}
             >
@@ -190,7 +191,7 @@ function Empty() {
             height={40}
             loading='lazy'
           />
-          <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
+          <p className='whitespace-pre text-center text-[16px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
             상품이 없습니다.
           </p>
         </div>

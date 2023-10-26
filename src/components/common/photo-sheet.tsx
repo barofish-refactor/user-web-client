@@ -31,7 +31,7 @@ const PhotoSheet = () => {
                 setPhoto(null);
               }}
             >
-              <p className='text-[16px] font-medium -tracking-[0.03em] text-grey-20'>사진 촬영</p>
+              <p className='text-[18px] font-medium -tracking-[0.03em] text-grey-20'>사진 촬영</p>
             </button>
             <button
               className='flex h-[56px] w-full items-center justify-center'
@@ -40,7 +40,7 @@ const PhotoSheet = () => {
                 setPhoto(null);
               }}
             >
-              <p className='text-[16px] font-medium -tracking-[0.03em] text-grey-20'>앨범</p>
+              <p className='text-[18px] font-medium -tracking-[0.03em] text-grey-20'>앨범</p>
             </button>
           </div>
         </div>

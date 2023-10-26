@@ -46,10 +46,10 @@ const Partner = () => {
 
   return (
     <div className='px-4 py-[30px]'>
-      <p className='line-clamp-1 text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+      <p className='line-clamp-1 text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
         믿고 구매할 수 있는 스토어 🏡
       </p>
-      <p className='whitespace-pre-line text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
+      <p className='whitespace-pre-line text-[15px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         바로피쉬에서 입증한 스토어에서 실패없는 수산물 쇼핑!
       </p>
 

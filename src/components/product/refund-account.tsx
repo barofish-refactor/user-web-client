@@ -39,12 +39,12 @@ const RefundAccount = ({ setRefundData }: Props) => {
 
   return (
     <div className='px-4 py-[22px]'>
-      <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+      <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
         환불받을 계좌
       </p>
       <div className='mt-4 flex flex-col gap-6'>
         <div className='flex flex-col gap-3'>
-          <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+          <p className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
             예금주명
           </p>
           <input
@@ -59,7 +59,7 @@ const RefundAccount = ({ setRefundData }: Props) => {
           />
         </div>
         <div className='flex flex-col gap-3'>
-          <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+          <p className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
             입금 은행
           </p>
           <Selector
@@ -74,7 +74,7 @@ const RefundAccount = ({ setRefundData }: Props) => {
           />
         </div>
         <div className='flex flex-col gap-3'>
-          <p className='text-[13px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
+          <p className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
             계좌번호
           </p>
           <NumericFormat
@@ -82,7 +82,7 @@ const RefundAccount = ({ setRefundData }: Props) => {
             allowNegative={false}
             maxLength={20}
             inputMode='numeric'
-            className='flex h-11 w-full items-center rounded-lg border border-grey-80 px-3 text-[14px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
+            className='flex h-11 w-full items-center rounded-lg border border-grey-80 px-3 text-[15px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
             placeholder='계좌번호를 입력해 주세요'
             onChange={e => {
               setRefundData(v => {

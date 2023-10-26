@@ -145,7 +145,7 @@ const Store: NextPageWithLayout = () => {
         }
       >
         <div className='w-[13px]' />
-        <p className='flex-1 text-center text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+        <p className='flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
           스토어
         </p>
         {/* <Link href='/compare/storage'>
@@ -182,7 +182,7 @@ const Store: NextPageWithLayout = () => {
             >
               <p
                 className={cm(
-                  'whitespace-pre text-[16px] leading-[24px] -tracking-[0.03em]',
+                  'whitespace-pre text-[18px] leading-[24px] -tracking-[0.03em]',
                   isActive ? 'font-semibold text-primary-50' : 'font-medium text-grey-50',
                 )}
               >
@@ -213,7 +213,7 @@ const Store: NextPageWithLayout = () => {
                 />
               </button>
               <input
-                className='flex-1 bg-grey-90 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-70'
+                className='flex-1 bg-grey-90 text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-70'
                 placeholder='찾는 스토어가 있으신가요?'
                 value={searchText}
                 onChange={e => {
@@ -256,7 +256,7 @@ const Store: NextPageWithLayout = () => {
                       }}
                     >
                       <p
-                        className={cm('text-[12px] font-bold -tracking-[0.03em] text-grey-50', {
+                        className={cm('text-[14px] font-bold -tracking-[0.03em] text-grey-50', {
                           'text-white': selectedSort === idx,
                         })}
                       >
@@ -294,7 +294,7 @@ const Store: NextPageWithLayout = () => {
       ) : (
         <Fragment>
           <div className='mt-6 flex items-center px-4'>
-            <p className='flex-1 text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-60'>
+            <p className='flex-1 text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-60'>
               {`즐겨찾는 스토어 ${formatToLocaleString(likedData?.length ?? 0)}`}
             </p>
             <button
@@ -312,7 +312,7 @@ const Store: NextPageWithLayout = () => {
             >
               <p
                 className={cm(
-                  'text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20',
+                  'text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20',
                   { 'text-primary-50': selectedLiked.length > 0 },
                 )}
               >
@@ -326,7 +326,7 @@ const Store: NextPageWithLayout = () => {
                   setSelectedLiked([]);
                 }}
               >
-                <p className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20'>
+                <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20'>
                   취소
                 </p>
               </button>

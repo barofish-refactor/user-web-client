@@ -45,6 +45,8 @@ const CurationAbbreviation = ({ data }: Props) => {
               <div className='h-[70px] w-[70px] overflow-hidden rounded-full bg-primary-90'>
                 <Image
                   priority
+                  blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
+                  placeholder='blur'
                   src={v.image ?? ''}
                   alt={v.shortName ?? ''}
                   width={70}
@@ -53,7 +55,7 @@ const CurationAbbreviation = ({ data }: Props) => {
                   className='object-cover'
                 />
               </div>
-              <p className='line-clamp-1 w-full text-center text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
+              <p className='line-clamp-1 w-full text-center text-[16px] font-medium leading-[20px] -tracking-[0.03em] text-grey-20'>
                 {v.shortName ?? ''}
               </p>
             </Link>

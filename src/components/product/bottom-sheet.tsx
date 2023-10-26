@@ -344,7 +344,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                     if (selectedOption.filter(v => v.isNeeded === false).length > 0)
                       return setAlert({ message: '필수옵션만 선택해주세요.' });
                     fpixel.addToCart({
-                      content_ids: selectedOption[0]?.productId.toString(),
+                      content_ids: selectedOption[0]?.productId,
                       content_type: 'product',
                       contents: selectedOption.map(item => {
                         return {
@@ -439,7 +439,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
               height={50}
               style={{ width: '50px', height: '50px' }}
             />
-            <p className='text-[14px] font-medium -tracking-[0.03em] text-grey-20'>
+            <p className='font-medium -tracking-[0.03em] text-[14x] text-grey-20'>
               장바구니에 상품을 담았습니다.
             </p>
           </div>

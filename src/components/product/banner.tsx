@@ -39,10 +39,10 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
         })}
       </Swiper>
       <div className='absolute bottom-[14px] right-[12px] z-10 flex h-[20px] w-10 items-center justify-center rounded-full bg-grey-10/[.6]'>
-        <p className='whitespace-pre text-[12px] font-semibold text-white'>{`${
+        <p className='whitespace-pre text-[14px] font-semibold text-white'>{`${
           image.length === 0 ? 0 : (isNaN(pageIndex) ? 0 : pageIndex) + 1
         } `}</p>
-        <p className='text-[12px] font-medium  text-[#DDDDDD]'>{`/ ${image.length}`}</p>
+        <p className='text-[14px] font-medium  text-[#DDDDDD]'>{`/ ${image.length}`}</p>
       </div>
       {isShowArrow && (
         <Fragment>

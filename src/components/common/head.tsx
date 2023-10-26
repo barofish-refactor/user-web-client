@@ -5,7 +5,7 @@ import { Fragment, useEffect } from 'react';
 import * as gtag from 'src/utils/gtag';
 import * as fpixel from 'src/utils/fpixel';
 export const HEAD_NAME = '바로피쉬';
-export const HEAD_DESCRIPTION = '실패없는 직거래 쇼핑은 여기서!';
+export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
 export default function Head() {
   return (
@@ -16,7 +16,7 @@ export default function Head() {
         additionalMetaTags={[
           {
             name: 'viewport',
-            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0',
+            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
           },
           {
             name: 'naver-site-verification',
