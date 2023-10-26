@@ -47,32 +47,32 @@ const InformationDefault = ({ data, user }: Props) => {
     }
   });
 
-  const [timer, setTimer] = useState('');
-  // 시간 계산
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const deliverData = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minute = now.getMinutes();
-    const second = now.getSeconds();
+  // const [timer, setTimer] = useState('');
+  // // 시간 계산
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // const deliverData = () => {
+  //   const now = new Date();
+  //   const hours = now.getHours();
+  //   const minute = now.getMinutes();
+  //   const second = now.getSeconds();
 
-    const valueHour = Number(data?.forwardingTime) - hours - 1;
-    const valueMinute = 60 - minute;
-    const valueSecond = 60 - second;
-    const setMinute = valueMinute < 10 ? '0' + valueMinute.toString() : valueMinute;
-    const setSecond = valueSecond < 10 ? '0' + valueSecond.toString() : valueSecond;
-    const valueLast = valueHour + `:` + setMinute + ':' + setSecond;
-    setTimer(valueLast);
-  };
+  //   const valueHour = Number(data?.forwardingTime) - hours - 1;
+  //   const valueMinute = 60 - minute;
+  //   const valueSecond = 60 - second;
+  //   const setMinute = valueMinute < 10 ? '0' + valueMinute.toString() : valueMinute;
+  //   const setSecond = valueSecond < 10 ? '0' + valueSecond.toString() : valueSecond;
+  //   const valueLast = valueHour + `:` + setMinute + ':' + setSecond;
+  //   setTimer(valueLast);
+  // };
 
-  useEffect(() => {
-    if (!deliver) return;
-    if (deliver?.calculatedExpectedArrivalDate > 1) return;
-    const timer = setTimeout(() => {
-      deliverData();
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [deliver, deliverData, timer]);
+  // useEffect(() => {
+  //   if (!deliver) return;
+  //   if (deliver?.calculatedExpectedArrivalDate > 1) return;
+  //   const timer = setTimeout(() => {
+  //     deliverData();
+  //   }, 1000);
+  //   return () => clearTimeout(timer);
+  // }, [deliver, deliverData, timer]);
 
   return (
     <div className=''>
@@ -128,7 +128,7 @@ const InformationDefault = ({ data, user }: Props) => {
               발송안내
             </p>
             <p className='flex-1 text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
-              {deliver &&
+              {/* {deliver &&
               deliver.productExpectedArrivalDate <= 1 &&
               deliver.calculatedExpectedArrivalDate === 1
                 ? `${timer} 이내 주문시 ${setDeliverDate(
@@ -139,8 +139,8 @@ const InformationDefault = ({ data, user }: Props) => {
                 : deliver &&
                   `${setDeliverDate(
                     deliver?.productExpectedArrivalDate,
-                  )}  이내 발송 예정 (일요일, 공휴일 제외)`}
-              {/* {deliver && `${setDeliverDate(deliver.productExpectedArrivalDate)} 도착예정`} */}
+                  )}  이내 발송 예정 (일요일, 공휴일 제외)`} */}
+              {deliver && `${setDeliverDate(deliver.productExpectedArrivalDate)} 도착예정`}
             </p>
           </div>
           <div className='flex items-start'>
