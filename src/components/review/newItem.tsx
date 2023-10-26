@@ -73,7 +73,7 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
   };
 
   return (
-    <div className='py-4'>
+    <div className='w-[100%] py-4'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-1'>
           <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>

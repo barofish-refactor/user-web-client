@@ -67,7 +67,7 @@ const MypageReview: NextPageWithLayout = () => {
           {data?.pages.map((v, i) => (
             <Fragment key={i}>
               {v?.pagedReviews?.content?.map((v, idx) => (
-                <ReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
+                <NewReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
               ))}
             </Fragment>
           ))}
