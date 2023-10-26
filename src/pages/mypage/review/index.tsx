@@ -47,7 +47,6 @@ const MypageReview: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
-  console.log(data, 'data');
 
   if (isLoading) return null;
   // if (data?.pages?.length && data?.pages?.length <= 0) return <Empty />;
