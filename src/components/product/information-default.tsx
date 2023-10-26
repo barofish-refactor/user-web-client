@@ -38,14 +38,14 @@ const InformationDefault = ({ data, user }: Props) => {
       }
     }
   }, [data?.discountPrice, data?.pointRate, user]);
-  const { data: deliver } = useQuery<any>([`${queryKey.deliverInfo}date`], async () => {
-    const res = await (await client()).getExpectedArrivalDate(data?.id as number);
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else {
-      throw new Error(res.data.code + ': ' + res.data.errorMsg);
-    }
-  });
+  // const { data: deliver } = useQuery<any>([`${queryKey.deliverInfo}date`], async () => {
+  //   const res = await (await client()).getExpectedArrivalDate(data?.id as number);
+  //   if (res.data.isSuccess) {
+  //     return res.data.data;
+  //   } else {
+  //     throw new Error(res.data.code + ': ' + res.data.errorMsg);
+  //   }
+  // });
 
   // const [timer, setTimer] = useState('');
   // // 시간 계산
@@ -140,7 +140,7 @@ const InformationDefault = ({ data, user }: Props) => {
                   `${setDeliverDate(
                     deliver?.productExpectedArrivalDate,
                   )}  이내 발송 예정 (일요일, 공휴일 제외)`} */}
-              {deliver && `${setDeliverDate(deliver.productExpectedArrivalDate)} 도착예정`}
+              {data?.expectedDeliverDay && `${setDeliverDate(data.expectedDeliverDay)} 도착예정`}
             </p>
           </div>
           <div className='flex items-start'>
