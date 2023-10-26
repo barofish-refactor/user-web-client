@@ -439,7 +439,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
               height={50}
               style={{ width: '50px', height: '50px' }}
             />
-            <p className='font-medium -tracking-[0.03em] text-[14x] text-grey-20'>
+            <p className='text-[14px] font-medium -tracking-[0.03em] text-grey-20'>
               장바구니에 상품을 담았습니다.
             </p>
           </div>
