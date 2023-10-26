@@ -59,8 +59,9 @@ const InformationDefault = ({ data, user }: Props) => {
     const valueHour = Number(data?.forwardingTime) - hours - 1;
     const valueMinute = 60 - minute;
     const valueSecond = 60 - second;
+    const setMinute = valueMinute < 10 ? '0' + valueMinute.toString() : valueMinute;
     const setSecond = valueSecond < 10 ? '0' + valueSecond.toString() : valueSecond;
-    const valueLast = valueHour + `:` + valueMinute + ':' + setSecond;
+    const valueLast = valueHour + `:` + setMinute + ':' + setSecond;
     setTimer(valueLast);
   };
 
