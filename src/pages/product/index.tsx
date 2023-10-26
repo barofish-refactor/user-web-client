@@ -239,7 +239,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             }),
           }}
         />
-
+        {/* bottomSheet : 옵션 선택 */}
+        <div className='sticky top-0 z-[100] w-full'>
+          {isVisible && (
+            <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
+              <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
+            </div>
+          )}
+        </div>
         {/* header */}
         {!user && (
           <div className='sticky top-0 z-50'>
@@ -350,14 +357,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           >
             <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>구매하기</p>
           </button>
-        </div>
-        {/* bottomSheet : 옵션 선택 */}
-        <div className='sticky top-0 z-[100] w-full'>
-          {isVisible && (
-            <div className='fixed top-0 z-[100] flex h-[100dvb] w-full flex-col justify-end bg-black/50'>
-              <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
-            </div>
-          )}
         </div>
       </div>
     </>
