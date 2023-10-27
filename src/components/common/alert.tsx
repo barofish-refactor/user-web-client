@@ -17,7 +17,7 @@ const Alert = () => {
   return (
     <div role='alertdialog' className='sticky top-0 z-[150] w-full'>
       {alert && (
-        <div className='absolute top-0 z-[150] flex h-[100dvb] w-full flex-col justify-center bg-black/40 px-4'>
+        <div className='absolute top-0 z-[150] flex h-[100vh] w-full flex-col justify-center bg-black/40 px-4'>
           <div
             ref={target}
             className={cm(

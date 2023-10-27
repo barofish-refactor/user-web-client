@@ -123,14 +123,12 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
                 <div className='relative overflow-hidden rounded-lg'>
                   <Image
                     unoptimized
-                    blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
-                    placeholder='blur'
                     width={150}
                     height={150}
                     src={v}
                     alt='review'
                     draggable={false}
-                    className=' aspect-square w-[100%] object-cover'
+                    className='aspect-square  object-cover'
                   />
                 </div>
               </SwiperSlide>
@@ -142,7 +140,7 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
       </p>
       {showInfo && (
         <button
-          className='my-[18px] flex w-full items-center gap-[13px] rounded-lg bg-grey-90 p-2'
+          className=' my-[18px] flex w-full items-center gap-[13px] rounded-lg bg-grey-90 p-2'
           onClick={() => {
             router.push({ pathname: '/product', query: { id: data.productId } });
           }}

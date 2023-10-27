@@ -48,7 +48,6 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       throw new Error(res.data.errorMsg);
     }
   });
-  console.log(data?.sameUserLike, 'data');
 
   const onLikeMutate = ({ id }: { id: number }) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');

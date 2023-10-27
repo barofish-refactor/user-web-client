@@ -2,7 +2,7 @@ import { type Config } from 'tailwindcss';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 import plugin from 'tailwindcss/plugin';
 
-/** 
+/**
  * TailwindCSS Config의 colors를 CSS Variables로 나타내줍니다.
  * @example
  * extractColorVars(theme('colors'))
@@ -13,9 +13,13 @@ import plugin from 'tailwindcss/plugin';
 function extractColorVars(colorObj: any, colorGroup = ''): Record<string, string> {
   return Object.keys(colorObj).reduce<Record<string, string>>((vars, colorKey) => {
     const value = colorObj[colorKey];
-    const cssVariable = colorKey === "DEFAULT" ? `--color${colorGroup}` : `--color${colorGroup}-${colorKey}`;
+    const cssVariable =
+      colorKey === 'DEFAULT' ? `--color${colorGroup}` : `--color${colorGroup}-${colorKey}`;
 
-    const newVars = typeof value === 'string' ? { [cssVariable]: value } : extractColorVars(value, `${colorGroup}-${colorKey}`);
+    const newVars =
+      typeof value === 'string'
+        ? { [cssVariable]: value }
+        : extractColorVars(value, `${colorGroup}-${colorKey}`);
 
     return { ...vars, ...newVars };
   }, {});
@@ -89,6 +93,7 @@ const config: Config = {
       center: true,
     },
     screens: {
+      ms: '500px',
       md: '768px',
       lg: '1200px',
     },
@@ -104,6 +109,5 @@ const config: Config = {
     }),
   ],
 };
-
 
 export default config;

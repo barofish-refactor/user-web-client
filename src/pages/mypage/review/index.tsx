@@ -31,6 +31,11 @@ const MypageReview: NextPageWithLayout = () => {
     {
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
+        console.log(
+          lastPage?.pagedReviews?.content?.length,
+          'lastPage',
+          allPages[0]?.pagedReviews?.totalPages,
+        );
 
         // return lastPage?.content?.length !== 0 ? nextId : -1;
         return lastPage?.pagedReviews?.content?.length !== allPages[0]?.pagedReviews?.totalPages
@@ -39,6 +44,7 @@ const MypageReview: NextPageWithLayout = () => {
       },
     },
   );
+  console.log(data, 'dddsa');
 
   const { ref } = useInView({
     initialInView: false,
@@ -47,7 +53,6 @@ const MypageReview: NextPageWithLayout = () => {
       if (inView) fetchNextPage();
     },
   });
-  console.log(data, 'data');
 
   if (isLoading) return null;
   // if (data?.pages?.length && data?.pages?.length <= 0) return <Empty />;
@@ -55,7 +60,7 @@ const MypageReview: NextPageWithLayout = () => {
   return (
     <>
       <DefaultSeo title='구매후기' description='Review' />
-      <div>
+      <div className='max-md:w-[100vw]'>
         <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
           <h3 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
             내가 쓴 후기
@@ -68,7 +73,7 @@ const MypageReview: NextPageWithLayout = () => {
           {data?.pages.map((v, i) => (
             <Fragment key={i}>
               {v?.pagedReviews?.content?.map((v, idx) => (
-                <ReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
+                <NewReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
               ))}
             </Fragment>
           ))}
