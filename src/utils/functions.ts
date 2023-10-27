@@ -381,9 +381,9 @@ export const setDeliverDate = (expectedDeliverDay: number) => {
   let value = addDays(new Date(), expectedDeliverDay);
 
   // 12시 이후면 +1일
-  if (value.getHours() >= 12) value = addDays(value, 1);
+  if (value.getHours() >= 12) value = addDays(value, 0);
   // 일요일이면 +1일
-  if (isSunday(value)) value = addDays(value, 1);
+  if (isSunday(value)) value = addDays(value, 0);
 
   return formatToUtc(value, 'M/d');
 };
