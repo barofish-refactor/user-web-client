@@ -71,6 +71,7 @@ const InformationDefault = ({ data, user }: Props) => {
     const timer = setTimeout(() => {
       deliverData();
     }, 1000);
+
     return () => clearTimeout(timer);
   }, [deliver, deliverData, timer]);
 
