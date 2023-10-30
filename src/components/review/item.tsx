@@ -77,7 +77,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-1'>
           <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
-            {data.userNickname ?? ''}
+            {data.userName ?? ''}
           </p>
           <div className='flex h-[22px] items-center justify-center rounded border border-[#6085EC] px-2'>
             <p className='text-[14px] font-medium -tracking-[0.03em] text-primary-50'>
