@@ -30,6 +30,7 @@ interface Props {
 export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const router = useRouter();
   const { setAlert } = useAlertStore();
+  console.log(data, 'data');
 
   const { mutateAsync: likeReviewByUser, isLoading } = useMutation(
     async (id: number) => await (await client()).likeReviewByUser(id),
@@ -77,7 +78,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-1'>
           <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-10'>
-            {data.userName ?? ''}
+            {data.userNickname ?? ''}
           </p>
           <div className='flex h-[22px] items-center justify-center rounded border border-[#6085EC] px-2'>
             <p className='text-[14px] font-medium -tracking-[0.03em] text-primary-50'>
