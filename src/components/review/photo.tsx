@@ -42,11 +42,9 @@ export function ReviewPhoto({ id, type }: Props) {
           orderType: selectedSort === 0 ? 'BEST' : 'RECENT',
         },
       ];
-
       const res = await (type === 'product'
         ? (await client()).getReviews(...variables)
         : (await client()).selectReviewListWithStoreIdV21(...variables));
-
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
