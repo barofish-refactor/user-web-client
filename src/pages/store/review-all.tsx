@@ -41,7 +41,6 @@ const ReviewAll: NextPageWithLayout = () => {
       },
     },
   );
-  console.log(data, 'store');
 
   const { ref } = useInView({
     initialInView: false,

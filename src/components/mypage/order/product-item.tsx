@@ -85,7 +85,6 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
       },
     });
   };
-  console.log(item, 'itms');
 
   return (
     <div className={clsx('last:pb-0', hasButtons ? 'pb-5' : 'pb-0')}>

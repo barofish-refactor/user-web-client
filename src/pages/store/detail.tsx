@@ -57,7 +57,6 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
-  console.log(data, 'ddddddd');
 
   const {
     data: productData,
@@ -174,7 +173,6 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-  console.log(data, 'dsds');
 
   return (
     <div className='max-md:w-[100vw]'>

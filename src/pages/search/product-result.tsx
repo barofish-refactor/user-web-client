@@ -188,7 +188,6 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-  console.log(curationData);
 
   return (
     <>

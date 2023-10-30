@@ -12,6 +12,7 @@ export function setToken(jwt: Jwt | undefined) {
   const option = { maxAge: TOKEN_MAX_AGE };
   setCookie(ACCESS_TOKEN, jwt?.accessToken, option);
   setCookie(REFRESH_TOKEN, jwt?.refreshToken, option);
+
   if (window.ReactNativeWebView) {
     window.ReactNativeWebView.postMessage(
       JSON.stringify({

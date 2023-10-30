@@ -64,7 +64,6 @@ export function ReviewPhoto({ id, type }: Props) {
       },
     },
   );
-  console.log('리뷰', data, 'ㅇㅇㅇㅇ');
 
   const { ref } = useInView({
     initialInView: false,

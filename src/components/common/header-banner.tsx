@@ -4,11 +4,11 @@ import { useRouter } from 'next/router';
 export const HeaderBanner = () => {
   const router = useRouter();
   return (
-    <button onClick={() => router.push('/login')}>
+    <button className='w-full' onClick={() => router.push('/login')}>
       <Image
         src='/assets/icons/common/belt-banner.webp'
         style={{ objectFit: 'fill' }}
-        width={400}
+        width={750}
         height={200}
         loading='lazy'
         alt='bannerAds'

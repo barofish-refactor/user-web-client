@@ -45,3 +45,4 @@ sst-env.d.ts
 
 # yarn
 yarn.lock
+.yarn

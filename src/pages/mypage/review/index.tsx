@@ -31,11 +31,6 @@ const MypageReview: NextPageWithLayout = () => {
     {
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
-        console.log(
-          lastPage?.pagedReviews?.content?.length,
-          'lastPage',
-          allPages[0]?.pagedReviews?.totalPages,
-        );
 
         // return lastPage?.content?.length !== 0 ? nextId : -1;
         return lastPage?.pagedReviews?.content?.length !== allPages[0]?.pagedReviews?.totalPages
@@ -44,7 +39,6 @@ const MypageReview: NextPageWithLayout = () => {
       },
     },
   );
-  console.log(data, 'dddsa');
 
   const { ref } = useInView({
     initialInView: false,

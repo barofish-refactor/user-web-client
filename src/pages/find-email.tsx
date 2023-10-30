@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { FormProvider, useForm } from 'react-hook-form';
 import { client } from 'src/api/client';
@@ -56,23 +57,27 @@ const FindEmail: NextPageWithLayout = () => {
   });
 
   return (
-    <div className='flex flex-1 flex-col'>
-      <header className='title-header'>
-        <BackButton />
-        <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
-          이메일 찾기
-        </h2>
-        <div className='h-6 w-6' />
-      </header>
-      <FormProvider {...form}>
-        <form className='flex flex-1 flex-col justify-between px-4 pb-6 pt-6' onSubmit={onSubmit}>
-          <PhoneField />
-          <button disabled={!isVerified} type='submit' className={submitButtonClassName}>
-            확인
-          </button>
-        </form>
-      </FormProvider>
-    </div>
+    <>
+      {' '}
+      <DefaultSeo title='바로피쉬 | 이메일 찾기' description='이메일 찾기' />
+      <div className='flex flex-1 flex-col'>
+        <header className='title-header'>
+          <BackButton />
+          <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
+            이메일 찾기
+          </h2>
+          <div className='h-6 w-6' />
+        </header>
+        <FormProvider {...form}>
+          <form className='flex flex-1 flex-col justify-between px-4 pb-6 pt-6' onSubmit={onSubmit}>
+            <PhoneField />
+            <button disabled={!isVerified} type='submit' className={submitButtonClassName}>
+              확인
+            </button>
+          </form>
+        </FormProvider>
+      </div>
+    </>
   );
 };
 
