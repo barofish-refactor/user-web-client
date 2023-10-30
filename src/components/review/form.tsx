@@ -59,7 +59,6 @@ export function ReviewForm({ order, subId }: { order?: OrderDto; subId?: number 
   const { setAlert } = useAlertStore();
   const router = useRouter();
   const [productInfo, setProductInfo] = useState<OrderProductDto>();
-  console.log(subId);
 
   const { mutateAsync: addReviewByUser, isLoading } = useMutation(
     async (args: AddReviewByUserPayload) =>

@@ -25,7 +25,6 @@ const MypageReviewModify: NextPageWithLayout = () => {
       enabled: !!id,
     },
   );
-  console.log(data, '2');
   // subId={Number(subId)}
   return <RetouchReviewForm order={data} />;
 };

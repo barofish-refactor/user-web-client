@@ -102,7 +102,6 @@ export function MypageOrderDetail({ id }: Props) {
       throw new Error(res.data.errorMsg);
     }
   });
-  console.log(section, 'section');
 
   /** 구매 적립금 */
   const buyPoint =
@@ -124,7 +123,6 @@ export function MypageOrderDetail({ id }: Props) {
     [buyPoint, imageReviewPoint, productPoint],
   );
   const [isOpenProductPoint, setIsOpenProductPoint] = useState<boolean>(false);
-  console.log(data, 'data');
 
   return (
     <div>

@@ -92,7 +92,6 @@ export function RetouchReviewForm({ order }: { order?: any; subId?: number }) {
 
     const newImages = img.filter((v: any) => !!v.file).map(v => v.file as File);
 
-    // console.log(img);
     const existingImages: any =
       img.length === 0
         ? []

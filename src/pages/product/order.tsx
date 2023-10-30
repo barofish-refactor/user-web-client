@@ -103,6 +103,7 @@ const Order: NextPageWithLayout = () => {
   );
 
   const [tmpOption, setTmpOption] = useState<OptionState[]>([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
   const totalPrice =

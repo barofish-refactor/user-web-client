@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { addDays } from 'date-fns';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
@@ -83,7 +82,7 @@ const InformationDefault = ({ data, user }: Props) => {
           {data?.title}
         </p>
         <p className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'>
-          {`${formatToLocaleString((data?.reviews ?? []).length)}개의 후기`}
+          {`${formatToLocaleString(data?.reviewCount)}개의 후기`}
         </p>
         <div className='mt-3 flex items-center justify-between'>
           <div>
