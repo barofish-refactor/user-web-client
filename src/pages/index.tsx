@@ -166,8 +166,8 @@ const Home: NextPageWithLayout = (props: any) => {
             data={
               data?.banners
                 ? data.banners
-                    .filter(x => x.state === 'ACTIVE')
-                    .sort((a, b) => {
+                    .filter((x: { state: string }) => x.state === 'ACTIVE')
+                    .sort((a: { sortNo: number }, b: { sortNo: number }) => {
                       if ((a.sortNo ?? -1) > (b.sortNo ?? -1)) return 1;
                       else if ((a.sortNo ?? -1) < (b.sortNo ?? -1)) return -1;
                       else return 0;
