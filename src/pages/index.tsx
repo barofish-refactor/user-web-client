@@ -23,7 +23,7 @@ import 'swiper/css';
 const perView = 10;
 
 /** 홈화면 */
-const Home: NextPageWithLayout = () => {
+const Home: NextPageWithLayout = (props: any) => {
   const router = useRouter();
   const { tab = 0, f } = router.query;
   const { setAlert } = useAlertStore();
@@ -33,19 +33,34 @@ const Home: NextPageWithLayout = () => {
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [defaultCurationAbbreviation, setDefaultCurationAbbreviation] = useState<Curation[]>([]);
-  const { data, isLoading, refetch } = useQuery(queryKey.main, async () => {
-    const res = await (await client()).selectMainItems();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else setAlert({ message: res.data.errorMsg ?? '' });
+  const { data, isLoading, refetch } = useQuery(
+    queryKey.main,
+    async () => {
+      const res = await (await client()).selectMainItems();
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else setAlert({ message: res.data.errorMsg ?? '' });
+    },
+    { initialData: props.posts2 },
+  );
+
+  const { data: curationData } = useQuery({
+    queryKey: queryKey.mainCuration,
+    queryFn: async () => {
+      const res = await (await client()).selectMainCurationList();
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else setAlert({ message: res.data.errorMsg ?? '' });
+    },
+    initialData: [props.posts],
   });
 
-  const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
-    const res = await (await client()).selectMainCurationList();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else setAlert({ message: res.data.errorMsg ?? '' });
-  });
+  // const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
+  //   const res = await (await client()).selectMainCurationList();
+  //   if (res.data.isSuccess) {
+  //     return res.data.data;
+  //   } else setAlert({ message: res.data.errorMsg ?? '' });
+  // });
 
   // 꿀팁 아이콘
   // const { data: tipInfo } = useQuery(queryKey.tipInfo, async () => {
@@ -100,6 +115,7 @@ const Home: NextPageWithLayout = () => {
       },
     },
   );
+  console.log(topBarData);
 
   useEffect(() => {
     if (filter) {
@@ -196,3 +212,21 @@ const Home: NextPageWithLayout = () => {
 Home.getLayout = page => <Layout>{page}</Layout>;
 
 export default Home;
+
+export async function getStaticProps() {
+  // Call an external API endpoint to get posts.
+  // You can use any data fetching library
+  const res = await (await client()).selectMainCurationList();
+  const res2 = await (await client()).selectMainItems();
+  const posts = res.data.data;
+  const posts2 = res2.data.data;
+
+  // By returning { props: { posts } }, the Blog component
+  // will receive `posts` as a prop at build time
+  return {
+    props: {
+      posts,
+      posts2,
+    },
+  };
+}
