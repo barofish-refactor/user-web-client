@@ -161,7 +161,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   useEffect(() => {
     if (!data) return;
     const value = {
-      content_ids: data?.id,
+      content_ids: [data?.id],
       content_type: 'product',
       currency: 'KRW',
       value:
@@ -201,9 +201,21 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     <>
       {data && (
         <Head>
+          <meta property='og:title' content={`${headTitle}`} />
+          <meta property='og:description' content={`${testtext}`} />
+          <meta property='og:price:currency' content='KRW' />
+          <meta property='og:image' content={`${data?.images ? data?.images[0] : ''}`} />
+
           <meta
             property='og:url'
             content={`https://barofish.com${router.pathname}?id=${router?.query.id}`}
+          />
+          <meta property='og:price:currency' content='KRW' />
+          <meta
+            property='og:price:amount'
+            content={`${
+              initialData?.discountPrice?.toString() || initialData?.originPrice?.toString()
+            }`}
           />
           <meta property='product:availability' content='in stock' />
           <meta property='product:brand' content={data?.store?.name} />
@@ -217,26 +229,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             }`}
           />
           <meta property='product:item_group_id' content={data?.id?.toString()} />
-          <meta property='product:retailer_item_id' content={data?.id?.toString()} />
+          <meta property='product:retailer_item_id' content={'facebook_' + data?.id?.toString()} />
         </Head>
       )}
 
       {/* <Head></Head> */}
       <div className='pb-[80px] max-md:w-[100vw]'>
-        <DefaultSeo
-          title={headTitle}
-          description={testtext}
-          openGraph={{
-            title: headTitle,
-            description: testtext,
-            images: data?.images?.map((v: any) => {
-              return {
-                url: v,
-                alt: headTitle,
-              };
-            }),
-          }}
-        />
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] w-full '>
           {isVisible && (

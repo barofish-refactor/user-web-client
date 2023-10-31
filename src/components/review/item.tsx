@@ -30,7 +30,6 @@ interface Props {
 export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const router = useRouter();
   const { setAlert } = useAlertStore();
-  console.log(data, 'data');
 
   const { mutateAsync: likeReviewByUser, isLoading } = useMutation(
     async (id: number) => await (await client()).likeReviewByUser(id),
