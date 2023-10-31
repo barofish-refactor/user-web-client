@@ -41,10 +41,8 @@ const Banner = ({ data }: Props) => {
         {data.map((v, idx) => {
           return (
             <SwiperSlide key={v.id} className='aspect-[375/270] w-full'>
-              <div className='swiper-lazy-preloader swiper-lazy-preloader-white' />
+              {/* <div className='swiper-lazy-preloader swiper-lazy-preloader-white' /> */}
               <Image
-                blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
-                placeholder='blur'
                 priority={idx === 0}
                 src={v.image ?? ''}
                 width={375}

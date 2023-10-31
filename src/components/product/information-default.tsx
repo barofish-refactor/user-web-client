@@ -37,7 +37,7 @@ const InformationDefault = ({ data, user }: Props) => {
       }
     }
   }, [data?.discountPrice, data?.pointRate, user]);
-  const { data: deliver } = useQuery<any>([`${queryKey.deliverInfo}date`], async () => {
+  const { data: deliver, refetch } = useQuery<any>([`${queryKey.deliverInfo}date`], async () => {
     const res = await (await client()).getExpectedArrivalDate(data?.id as number);
     if (res.data.isSuccess) {
       return res.data.data;
@@ -61,6 +61,9 @@ const InformationDefault = ({ data, user }: Props) => {
     const setMinute = valueMinute < 10 ? '0' + valueMinute.toString() : valueMinute;
     const setSecond = valueSecond < 10 ? '0' + valueSecond.toString() : valueSecond;
     const valueLast = valueHour + `:` + setMinute + ':' + setSecond;
+    if (Number(valueHour) < 0) {
+      return refetch();
+    }
     setTimer(valueLast);
   };
 

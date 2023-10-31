@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
-import { DefaultSeo } from 'next-seo';
 import Head from 'next/head';
 // import Image from 'next/image';
 import Link from 'next/link';
