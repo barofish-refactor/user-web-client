@@ -52,8 +52,9 @@ const Home: NextPageWithLayout = (props: any) => {
         return res.data.data;
       } else setAlert({ message: res.data.errorMsg ?? '' });
     },
-    initialData: [props.posts],
+    initialData: props.posts,
   });
+  console.log(curationData, 'curationData');
 
   // const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
   //   const res = await (await client()).selectMainCurationList();
@@ -115,7 +116,6 @@ const Home: NextPageWithLayout = (props: any) => {
       },
     },
   );
-  console.log(topBarData);
 
   useEffect(() => {
     if (filter) {
