@@ -30,6 +30,7 @@ const Banner = ({ data }: Props) => {
       <Swiper
         loop
         modules={[Autoplay]}
+        lazyPreloadPrevNext={3}
         spaceBetween={16}
         className='aspect-[375/270]'
         autoplay={{

@@ -38,6 +38,7 @@ import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import { HeaderBanner } from 'src/components/common/header-banner';
+import { DefaultSeo } from 'next-seo';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -200,8 +201,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     <>
       {data && (
         <Head>
-          <meta property='og:title' content={`${headTitle}`} />
-          <meta property='og:description' content={`${testtext}`} />
           <meta property='og:price:currency' content='KRW' />
           <meta property='og:image' content={`${data?.images ? data?.images[0] : ''}`} />
 
@@ -234,6 +233,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
       {/* <Head></Head> */}
       <div className='pb-[80px] max-md:w-[100vw]'>
+        <DefaultSeo
+          title={headTitle}
+          description={testtext}
+          openGraph={{
+            title: headTitle,
+            description: testtext,
+          }}
+        />
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] w-full '>
           {isVisible && (
