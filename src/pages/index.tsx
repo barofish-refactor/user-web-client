@@ -54,7 +54,6 @@ const Home: NextPageWithLayout = (props: any) => {
     },
     initialData: props.posts,
   });
-  console.log(curationData, 'curationData');
 
   // const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
   //   const res = await (await client()).selectMainCurationList();
@@ -178,7 +177,8 @@ const Home: NextPageWithLayout = (props: any) => {
           <HomeAbbreviationCuration
             data={defaultCurationAbbreviation.concat(
               (curationData ?? []).filter(
-                x => x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
+                (x: { shortName: string | any[]; products: any }) =>
+                  x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
               ),
             )}
           />
