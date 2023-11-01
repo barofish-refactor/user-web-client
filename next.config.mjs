@@ -17,12 +17,15 @@ const config = {
   reactStrictMode: false,
   experimental: {
     scrollRestoration: true,
+    cacheResponse: {
+      maxAgeSeconds: 60, // 캐시 유지 시간
+    },
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    minimumCacheTTL: 360,
+    minimumCacheTTL: 2592000,
     disableStaticImages: true,
     remotePatterns: [
       {
