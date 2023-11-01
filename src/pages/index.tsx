@@ -52,7 +52,7 @@ const Home: NextPageWithLayout = (props: any) => {
         return res.data.data;
       } else setAlert({ message: res.data.errorMsg ?? '' });
     },
-    initialData: [props.posts],
+    initialData: props.posts,
   });
 
   // const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
@@ -115,7 +115,6 @@ const Home: NextPageWithLayout = (props: any) => {
       },
     },
   );
-  console.log(topBarData);
 
   useEffect(() => {
     if (filter) {
@@ -178,7 +177,8 @@ const Home: NextPageWithLayout = (props: any) => {
           <HomeAbbreviationCuration
             data={defaultCurationAbbreviation.concat(
               (curationData ?? []).filter(
-                x => x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
+                (x: { shortName: string | any[]; products: any }) =>
+                  x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
               ),
             )}
           />

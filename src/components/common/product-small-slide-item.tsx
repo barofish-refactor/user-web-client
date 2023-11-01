@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { type SyntheticEvent } from 'react';
 import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
 import { useProductOptionStore } from 'src/store';
 import cm from 'src/utils/class-merge';
@@ -17,6 +18,10 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
   const router = useRouter();
   const { setProductOption } = useProductOptionStore();
   // const image = (data.images ?? '').replace('[', '').replace(']', '').split(',');
+  const handleImgError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    target.src = data.image ?? '';
+  };
 
   return (
     <button
@@ -41,6 +46,7 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
           alt='image'
           draggable={false}
           className='aspect-square w-full object-cover'
+          onError={handleImgError}
         />
         <div
           className='product-cart'
