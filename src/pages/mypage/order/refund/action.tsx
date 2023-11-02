@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -313,6 +314,7 @@ MypageOrderRefundAction.getLayout = page => (
     footerProps={{ disable: true }}
     headerProps={{ disable: true }}
   >
+    <DefaultSeo title='취소/환불/교환 내역 | 바로피쉬' description='취소/환불/교환 내역' />
     <div className='flex flex-1 flex-col'>{page}</div>
   </Layout>
 );

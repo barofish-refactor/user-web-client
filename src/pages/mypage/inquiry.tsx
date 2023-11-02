@@ -172,20 +172,23 @@ const MypageInquiry: NextPageWithLayout<Props> = ({ initialData }) => {
 
 function Empty() {
   return (
-    <div className='grid flex-1 place-items-center'>
-      <div className='flex flex-col items-center gap-2'>
-        <Image
-          unoptimized
-          src='/assets/icons/search/search-error.svg'
-          alt='up'
-          width={40}
-          height={40}
-        />
-        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-          문의내역이 없습니다.
-        </p>
+    <>
+      <DefaultSeo title='상품문의내역 | 바로피쉬' description='ProductInquiry' />
+      <div className='grid flex-1 place-items-center'>
+        <div className='flex flex-col items-center gap-2'>
+          <Image
+            unoptimized
+            src='/assets/icons/search/search-error.svg'
+            alt='up'
+            width={40}
+            height={40}
+          />
+          <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+            문의내역이 없습니다.
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -37,7 +37,7 @@ const InformationDefault = ({ data, user }: Props) => {
       }
     }
   }, [data?.discountPrice, data?.pointRate, user]);
-  const { data: deliver, refetch } = useQuery<any>([`${queryKey.deliverInfo}date`], async () => {
+  const { data: deliver, refetch } = useQuery<any>([`${queryKey.deliverInfoDate}`], async () => {
     const res = await (await client()).getExpectedArrivalDate(data?.id as number);
     if (res.data.isSuccess) {
       return res.data.data;

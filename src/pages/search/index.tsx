@@ -26,6 +26,7 @@ import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
 import { VARIABLES } from 'src/variables';
 import { TemporaryCurationItem } from 'src/components/common/temporary-curation-item';
+import { DefaultSeo } from 'next-seo';
 const perView = 10;
 
 interface Props {
@@ -236,171 +237,174 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   });
 
   return (
-    <div className='max-md:w-[100vw]'>
-      {/* header */}
-      {!user && (
-        <div className='sticky top-0 z-50'>
-          <HeaderBanner />
-        </div>
-      )}
-      <div
-        className={
-          !user
-            ? 'sticky top-11 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'
-            : 'sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'
-        }
-      >
-        <BackButton />
-        <div className='ite ms-center flex h-[40px] flex-1 gap-2 rounded-md bg-grey-90 pl-3'>
-          <button
-            onClick={() => {
-              if (searchText.trim() === '') return;
-              setSearchState('result');
-              handleAddKeyword(searchText);
-            }}
-          >
-            <Image
-              unoptimized
-              src='/assets/icons/common/search.svg'
-              alt='search'
-              width={24}
-              height={24}
-            />
-          </button>
-          <input
-            ref={inputRef}
-            className='flex-1 bg-grey-90 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
-            placeholder='검색어를 입력해주세요.'
-            maxLength={50}
-            value={searchText}
-            onChange={e => {
-              const text = e.target.value.replaceAll(REG_EXP.emoji, '');
-              setSearchText(text);
-              if (text.trim() === '') setSearchState('default');
-              else setSearchState('searching');
-            }}
-            onFocus={() => {
-              // if (searchText.trim() === '') setSearchState('default');
-              // else setSearchState('searching');
-            }}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                if (searchText.trim() === '') {
-                  router.replace('/search');
-                  setSearchState('default');
-                  return;
-                }
+    <>
+      <DefaultSeo title='검색 | 바로피쉬' description='바로피쉬 검색' />
+      <div className='max-md:w-[100vw]'>
+        {/* header */}
+        {!user && (
+          <div className='sticky top-0 z-50'>
+            <HeaderBanner />
+          </div>
+        )}
+        <div
+          className={
+            !user
+              ? 'sticky top-11 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'
+              : 'sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'
+          }
+        >
+          <BackButton />
+          <div className='ite ms-center flex h-[40px] flex-1 gap-2 rounded-md bg-grey-90 pl-3'>
+            <button
+              onClick={() => {
+                if (searchText.trim() === '') return;
                 setSearchState('result');
                 handleAddKeyword(searchText);
-              }
-            }}
-          />
-          <button
-            className='h-full cursor-default pr-3'
-            onClick={() => {
-              setSearchText('');
-              router.replace({ pathname: '/search' });
-            }}
-          >
-            <Image
-              unoptimized
-              src='/assets/icons/search/close-search.svg'
-              alt='delete'
-              width={16}
-              height={16}
-              className='cursor-pointer'
-            />
-          </button>
-        </div>
-      </div>
-      {/* content */}
-      <div className='p-4'>
-        {searchState === 'default' ? (
-          <>
-            <RecentSearches
-              recentData={recentData}
-              setSearchText={onSearch}
-              handleAddKeyword={handleAddKeyword}
-              handleRemoveKeyword={handleRemoveKeyword}
-              handleClearKeywords={handleClearKeywords}
-            />
-            {/* <PopularSearchTerms data={rankData.data ?? []} setSearchText={onSearch} /> */}
-          </>
-        ) : searchState === 'searching' ? (
-          <div className=''>
-            <p className='text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
-              상품 바로가기
-            </p>
-            <div className='flex flex-col'>
-              {(directData ?? []).map((v, idx) => {
-                return (
-                  <Link
-                    key={`searching${idx}`}
-                    className='flex h-[52px] items-end border-b border-b-grey-90 pb-3'
-                    href={{ pathname: '/product', query: { id: v.id } }}
-                  >
-                    <p className='line-clamp-1 text-start text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
-                      {`${v.title}`}
-                    </p>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        ) : isLoading ? null : searchData?.pages &&
-          searchData.pages.length > 0 &&
-          (searchData?.pages.filter(x => (x?.content ?? []).length > 0) ?? []).length > 0 ? (
-          <Fragment>
-            <HomeProductList
-              storeType='search'
-              storeId={undefined}
-              className='p-0.5'
-              dataDto={searchData?.pages ?? []}
-              filter={dummyFilter}
-              sort={sort}
-              setSort={setSort}
-              onMutate={onMutate}
-              onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
-            />
-            <div ref={ref} className='pb-10' />
-          </Fragment>
-        ) : (
-          // 검색 결과 없을 경우
-          <div className=''>
-            <div className='flex h-[176px] flex-col items-center justify-center gap-2 px-4'>
+              }}
+            >
               <Image
                 unoptimized
-                src='/assets/icons/search/search-error.svg'
-                alt='up'
-                width={40}
-                height={40}
+                src='/assets/icons/common/search.svg'
+                alt='search'
+                width={24}
+                height={24}
               />
-              <p className='whitespace-pre-wrap break-all text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-                {`‘${v}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
+            </button>
+            <input
+              ref={inputRef}
+              className='flex-1 bg-grey-90 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-80'
+              placeholder='검색어를 입력해주세요.'
+              maxLength={50}
+              value={searchText}
+              onChange={e => {
+                const text = e.target.value.replaceAll(REG_EXP.emoji, '');
+                setSearchText(text);
+                if (text.trim() === '') setSearchState('default');
+                else setSearchState('searching');
+              }}
+              onFocus={() => {
+                // if (searchText.trim() === '') setSearchState('default');
+                // else setSearchState('searching');
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  if (searchText.trim() === '') {
+                    router.replace('/search');
+                    setSearchState('default');
+                    return;
+                  }
+                  setSearchState('result');
+                  handleAddKeyword(searchText);
+                }
+              }}
+            />
+            <button
+              className='h-full cursor-default pr-3'
+              onClick={() => {
+                setSearchText('');
+                router.replace({ pathname: '/search' });
+              }}
+            >
+              <Image
+                unoptimized
+                src='/assets/icons/search/close-search.svg'
+                alt='delete'
+                width={16}
+                height={16}
+                className='cursor-pointer'
+              />
+            </button>
+          </div>
+        </div>
+        {/* content */}
+        <div className='p-4'>
+          {searchState === 'default' ? (
+            <>
+              <RecentSearches
+                recentData={recentData}
+                setSearchText={onSearch}
+                handleAddKeyword={handleAddKeyword}
+                handleRemoveKeyword={handleRemoveKeyword}
+                handleClearKeywords={handleClearKeywords}
+              />
+              {/* <PopularSearchTerms data={rankData.data ?? []} setSearchText={onSearch} /> */}
+            </>
+          ) : searchState === 'searching' ? (
+            <div className=''>
+              <p className='text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-grey-60'>
+                상품 바로가기
               </p>
+              <div className='flex flex-col'>
+                {(directData ?? []).map((v, idx) => {
+                  return (
+                    <Link
+                      key={`searching${idx}`}
+                      className='flex h-[52px] items-end border-b border-b-grey-90 pb-3'
+                      href={{ pathname: '/product', query: { id: v.id } }}
+                    >
+                      <p className='line-clamp-1 text-start text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
+                        {`${v.title}`}
+                      </p>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-            <div className='-mx-4 mt-4 h-2 bg-[#F2F2F2]' />
-            {curationData && curationData.length > 0 && (
-              <HomeCurationItem
-                className='mt-[30px] p-0'
-                data={curationData[0]}
-                showViewAll={false}
+          ) : isLoading ? null : searchData?.pages &&
+            searchData.pages.length > 0 &&
+            (searchData?.pages.filter(x => (x?.content ?? []).length > 0) ?? []).length > 0 ? (
+            <Fragment>
+              <HomeProductList
+                storeType='search'
+                storeId={undefined}
+                className='p-0.5'
+                dataDto={searchData?.pages ?? []}
+                filter={dummyFilter}
+                sort={sort}
+                setSort={setSort}
                 onMutate={onMutate}
                 onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
               />
-            )}
-          </div>
-        )}
+              <div ref={ref} className='pb-10' />
+            </Fragment>
+          ) : (
+            // 검색 결과 없을 경우
+            <div className=''>
+              <div className='flex h-[176px] flex-col items-center justify-center gap-2 px-4'>
+                <Image
+                  unoptimized
+                  src='/assets/icons/search/search-error.svg'
+                  alt='up'
+                  width={40}
+                  height={40}
+                />
+                <p className='whitespace-pre-wrap break-all text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                  {`‘${v}’의 검색결과가 없습니다.\n다른 키워드로 검색해보세요.`}
+                </p>
+              </div>
+              <div className='-mx-4 mt-4 h-2 bg-[#F2F2F2]' />
+              {curationData && curationData.length > 0 && (
+                <HomeCurationItem
+                  className='mt-[30px] p-0'
+                  data={curationData[0]}
+                  showViewAll={false}
+                  onMutate={onMutate}
+                  onDeleteSaveProductsMutate={onDeleteSaveProductsMutate}
+                />
+              )}
+            </div>
+          )}
+        </div>
+        {}
+        <>
+          {curationData
+            ?.filter(item => item.title?.includes('검색'))
+            .map((item, idx) => (
+              <TemporaryCurationItem key={idx} data={item} />
+            ))}
+        </>
       </div>
-      {}
-      <>
-        {curationData
-          ?.filter(item => item.title?.includes('검색'))
-          .map((item, idx) => (
-            <TemporaryCurationItem key={idx} data={item} />
-          ))}
-      </>
-    </div>
+    </>
   );
 };
 
