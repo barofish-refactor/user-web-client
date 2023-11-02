@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
@@ -67,6 +68,7 @@ function Empty() {
 
 MypageOrder.getLayout = page => (
   <Layout footerProps={{ disable: true }} headerProps={{ disable: true }}>
+    <DefaultSeo title='취소/환불/교환 내역 | 바로피쉬' description='취소/환불/교환 내역' />
     <div>
       <header className='title-header'>
         <BackButton />

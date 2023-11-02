@@ -239,7 +239,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           openGraph={{
             title: headTitle,
             description: testtext,
-            images: data?.images?.map((v: any) => {
+            images: data?.images?.map((v: string) => {
               return {
                 url: v,
                 alt: headTitle,

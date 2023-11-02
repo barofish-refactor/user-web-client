@@ -82,6 +82,7 @@ function Empty() {
 
 MypageRecent.getLayout = page => (
   <Layout headerProps={{ disable: true }} footerProps={{ disable: true }}>
+    <DefaultSeo title='최근 본 상품 | 바로피쉬' description='최근 본 상품' />
     {page}
   </Layout>
 );

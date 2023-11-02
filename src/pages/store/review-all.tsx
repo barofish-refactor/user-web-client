@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -51,52 +52,56 @@ const ReviewAll: NextPageWithLayout = () => {
   });
 
   return (
-    <div className='max-md:w-[100vw]'>
-      <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
-        <BackButton />
-        <p className='flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-          사진 전체보기
-        </p>
-        <div className='w-6' />
-      </div>
-
-      {/* content */}
-      {data?.pages
-        .map(x => x?.content?.filter(v => v.images?.[0] !== ''))
-        .map(x => x?.length ?? 0)
-        .reduce((a, b) => a + b) === 0 ? (
-        Empty()
-      ) : (
-        <div className='grid grid-cols-3 gap-[5px] p-4'>
-          <Fragment>
-            {data?.pages?.map(x =>
-              x?.content
-                ?.filter(v => v.images?.[0] !== '')
-                .map(v => {
-                  return (
-                    <Link
-                      key={`review${v.id}`}
-                      href={{ pathname: '/store/review', query: { id: v.id } }}
-                      className=''
-                    >
-                      <Image
-                        unoptimized
-                        width={110}
-                        height={110}
-                        src={v.images?.[0] ?? ''}
-                        alt='review'
-                        draggable={false}
-                        className='aspect-square w-full overflow-hidden rounded-lg object-cover'
-                      />
-                    </Link>
-                  );
-                }),
-            )}
-            <div ref={ref} className='pb-10' />
-          </Fragment>
+    <>
+      {' '}
+      <DefaultSeo title='전체리뷰사진 | 바로피쉬' description='전체리뷰사진' />
+      <div className='max-md:w-[100vw]'>
+        <div className='sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white px-4'>
+          <BackButton />
+          <p className='flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+            사진 전체보기
+          </p>
+          <div className='w-6' />
         </div>
-      )}
-    </div>
+
+        {/* content */}
+        {data?.pages
+          .map(x => x?.content?.filter(v => v.images?.[0] !== ''))
+          .map(x => x?.length ?? 0)
+          .reduce((a, b) => a + b) === 0 ? (
+          Empty()
+        ) : (
+          <div className='grid grid-cols-3 gap-[5px] p-4'>
+            <Fragment>
+              {data?.pages?.map(x =>
+                x?.content
+                  ?.filter(v => v.images?.[0] !== '')
+                  .map(v => {
+                    return (
+                      <Link
+                        key={`review${v.id}`}
+                        href={{ pathname: '/store/review', query: { id: v.id } }}
+                        className=''
+                      >
+                        <Image
+                          unoptimized
+                          width={110}
+                          height={110}
+                          src={v.images?.[0] ?? ''}
+                          alt='review'
+                          draggable={false}
+                          className='aspect-square w-full overflow-hidden rounded-lg object-cover'
+                        />
+                      </Link>
+                    );
+                  }),
+              )}
+              <div ref={ref} className='pb-10' />
+            </Fragment>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

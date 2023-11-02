@@ -1,7 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
-import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
@@ -63,6 +62,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       enabled: !!id && type === 'curation',
     },
   );
+
   useEffect(() => {
     if (curationData && !curationLoading) {
       setTitle(curationData.title ?? curationData.shortName ?? '');
@@ -191,18 +191,16 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
 
   return (
     <>
-      {curationData && (
-        <DefaultSeo
-          title={curationData.title}
-          description={curationData.description}
-          openGraph={{
-            title: curationData.title,
-            description: curationData.description,
-            siteName: '',
-            type: 'website',
-          }}
-        />
-      )}
+      <DefaultSeo
+        title={title + ' 검색결과'}
+        description='바로피쉬 검색결과'
+        // openGraph={{
+        //   title: curationData.title + '1',
+        //   description: curationData.description,
+        //   siteName: '',
+        //   type: 'website',
+        // }}
+      />
       <div className='max-md:w-[100vw]'>
         {!user && (
           <div className='sticky top-0 z-50'>

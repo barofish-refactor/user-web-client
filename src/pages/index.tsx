@@ -1,10 +1,11 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { type ReactElement, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
-import { type Curation } from 'src/api/swagger/data-contracts';
+import { type CurationDto, type Curation, type Main } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
+
 import {
   HomeAbbreviationCuration,
   HomeBanner,
@@ -16,14 +17,14 @@ import {
 } from 'src/components/home';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
-import { type NextPageWithLayout } from 'src/types/common';
+// import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, safeParse } from 'src/utils/parse';
 import 'swiper/css';
 
 const perView = 10;
 
 /** 홈화면 */
-const Home: NextPageWithLayout = (props: any) => {
+const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
   const router = useRouter();
   const { tab = 0, f } = router.query;
   const { setAlert } = useAlertStore();
@@ -41,7 +42,7 @@ const Home: NextPageWithLayout = (props: any) => {
         return res.data.data;
       } else setAlert({ message: res.data.errorMsg ?? '' });
     },
-    { initialData: props.posts2 },
+    { initialData: props.mainItem },
   );
 
   const { data: curationData } = useQuery({
@@ -52,7 +53,7 @@ const Home: NextPageWithLayout = (props: any) => {
         return res.data.data;
       } else setAlert({ message: res.data.errorMsg ?? '' });
     },
-    initialData: props.posts,
+    initialData: props.curation,
   });
 
   // const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
@@ -165,8 +166,8 @@ const Home: NextPageWithLayout = (props: any) => {
             data={
               data?.banners
                 ? data.banners
-                    .filter((x: { state: string }) => x.state === 'ACTIVE')
-                    .sort((a: { sortNo: number }, b: { sortNo: number }) => {
+                    .filter(x => x.state === 'ACTIVE')
+                    .sort((a, b) => {
                       if ((a.sortNo ?? -1) > (b.sortNo ?? -1)) return 1;
                       else if ((a.sortNo ?? -1) < (b.sortNo ?? -1)) return -1;
                       else return 0;
@@ -178,8 +179,7 @@ const Home: NextPageWithLayout = (props: any) => {
           <HomeAbbreviationCuration
             data={defaultCurationAbbreviation.concat(
               (curationData ?? []).filter(
-                (x: { shortName: string | any[]; products: any }) =>
-                  x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
+                x => x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
               ),
             )}
           />
@@ -187,7 +187,9 @@ const Home: NextPageWithLayout = (props: any) => {
           {isLoading ? (
             <div className='h-[50vh]' />
           ) : (
-            <HomeCurationList mainData={data} mainRefetch={refetch} />
+            <>
+              <HomeCurationList mainData={data} mainRefetch={refetch} />
+            </>
           )}
           {/* 알아두면 좋은 정보 */}
           {/* <HomeCurationTip /> */}
@@ -210,7 +212,7 @@ const Home: NextPageWithLayout = (props: any) => {
   );
 };
 
-Home.getLayout = page => <Layout>{page}</Layout>;
+Home.getLayout = (page: ReactElement) => <Layout>{page}</Layout>;
 
 export default Home;
 
@@ -219,15 +221,15 @@ export async function getStaticProps() {
   // You can use any data fetching library
   const res = await (await client()).selectMainCurationList();
   const res2 = await (await client()).selectMainItems();
-  const posts = res.data.data;
-  const posts2 = res2.data.data;
+  const curation = res.data.data;
+  const mainItem = res2.data.data;
 
   // By returning { props: { posts } }, the Blog component
   // will receive `posts` as a prop at build time
   return {
     props: {
-      posts,
-      posts2,
+      curation,
+      mainItem,
     },
   };
 }

@@ -115,6 +115,8 @@ export const queryKey = {
   recent: getQueryKeys('recent'),
   /** 배송 */
   deliverInfo: ['deliverInfo'],
+  /** 배송시간 */
+  deliverInfoDate: ['deliverInfoDate'],
   /** 카카오 문의 */
   kakao: ['kakao'],
   /** 입점 문의 */
