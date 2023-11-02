@@ -239,6 +239,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           openGraph={{
             title: headTitle,
             description: testtext,
+            images: data?.images?.map((v: any) => {
+              return {
+                url: v,
+                alt: headTitle,
+              };
+            }),
           }}
         />
         {/* bottomSheet : 옵션 선택 */}

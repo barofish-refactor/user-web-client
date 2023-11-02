@@ -174,6 +174,7 @@ const Home: NextPageWithLayout = (props: any) => {
                 : []
             }
           />
+
           <HomeAbbreviationCuration
             data={defaultCurationAbbreviation.concat(
               (curationData ?? []).filter(
