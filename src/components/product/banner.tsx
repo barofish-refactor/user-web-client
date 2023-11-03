@@ -13,11 +13,14 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
   const refSwiper = useRef<SwiperRef>(null);
   const [pageIndex, setPageIndex] = useState<number>(0);
 
+  const blurDataURL =
+    'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
   return (
     <div className='relative'>
       <Swiper
         ref={refSwiper}
         loop
+        lazyPreloadPrevNext={image.length < 1 ? image.length : 0}
         spaceBetween={16}
         className=''
         onSlideChange={v => setPageIndex(v.realIndex)}
@@ -33,6 +36,8 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
                 src={v}
                 alt='product'
                 className='aspect-square w-full object-cover'
+                blurDataURL={blurDataURL}
+                placeholder='blur'
               />
             </SwiperSlide>
           );
@@ -44,7 +49,7 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
         } `}</p>
         <p className='text-[14px] font-medium  text-[#DDDDDD]'>{`/ ${image.length}`}</p>
       </div>
-      {isShowArrow && (
+      {isShowArrow && image.length > 1 && (
         <Fragment>
           <button
             className='absolute left-4 top-1/2 z-20 -translate-y-1/2'

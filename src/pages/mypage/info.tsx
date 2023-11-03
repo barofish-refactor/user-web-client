@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link, { type LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
@@ -233,6 +234,7 @@ MypageInfo.getLayout = page => (
     headerProps={{ disable: true }}
     footerProps={{ disable: true }}
   >
+    <DefaultSeo title='내정보 | 바로피쉬' description='내 정보' />
     {page}
   </Layout>
 );

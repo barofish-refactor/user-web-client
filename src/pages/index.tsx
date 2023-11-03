@@ -187,9 +187,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
           {isLoading ? (
             <div className='h-[50vh]' />
           ) : (
-            <>
-              <HomeCurationList mainData={data} mainRefetch={refetch} />
-            </>
+            <HomeCurationList mainData={data} mainRefetch={refetch} />
           )}
           {/* 알아두면 좋은 정보 */}
           {/* <HomeCurationTip /> */}

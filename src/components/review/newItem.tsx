@@ -71,6 +71,9 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
       })
       .catch(error => console.log(error));
   };
+  const blurDataURL =
+    'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
+  console.log(data.imageUrls.length, 'data.imageUrls.length');
 
   return (
     <div className='py-4'>
@@ -111,6 +114,7 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
         freeMode
         slidesPerView={2.2}
         modules={[FreeMode]}
+        lazyPreloadPrevNext={data.imageUrls.length}
         spaceBetween={11}
         className='mt-4'
         style={{ marginInline: '-16px', paddingInline: '16px' }}
@@ -129,6 +133,8 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
                     alt='review'
                     draggable={false}
                     className='aspect-square  object-cover'
+                    blurDataURL={blurDataURL}
+                    placeholder='blur'
                   />
                 </div>
               </SwiperSlide>

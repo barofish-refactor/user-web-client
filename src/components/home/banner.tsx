@@ -18,6 +18,8 @@ interface Props {
 const Banner = ({ data }: Props) => {
   const router = useRouter();
   const [pageIndex, setPageIndex] = useState<number>(0);
+  const blurDataURL =
+    'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
 
   useEffect(() => {
     if (data.length > 0) {
@@ -49,6 +51,8 @@ const Banner = ({ data }: Props) => {
                 width={375}
                 height={208}
                 alt='banner'
+                blurDataURL={blurDataURL}
+                placeholder='blur'
                 className={cm('aspect-[375/270] w-full object-cover', {
                   'cursor-pointer':
                     ['CURATION', 'CATEGORY', 'NOTICE'].includes(v.type ?? '') || v.link,

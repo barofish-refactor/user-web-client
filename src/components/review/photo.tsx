@@ -13,7 +13,7 @@ import { formatToLocaleString } from 'src/utils/functions';
 import { FreeMode } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
+import { type ReviewDtoV2 } from 'src/api/swagger/data-contracts';
 type Instance = InstanceType<typeof Api>;
 type RequestInstance = Instance['selectReviewListWithProductId'];
 type Variables = NonNullable<Parameters<RequestInstance>>;
@@ -103,10 +103,10 @@ export function ReviewPhoto({ id, type }: Props) {
           {data?.pages?.map((x, i) =>
             x?.pagedReviews?.content
               ?.filter((v: any) => v.imageUrls?.[0] !== '')
-              .map((v: any, idx: any) => {
+              .map((v: any, idx: number) => {
                 return (
-                  <SwiperSlide key={`reviews${i}${idx}${v.id}`} className=''>
-                    <Link href={{ pathname: '/store/review', query: { id: v.id } }}>
+                  <SwiperSlide key={`reviews${i}${idx}${v.reviewId}`} className=''>
+                    <Link href={{ pathname: '/store/review', query: { id: v.reviewId } }}>
                       <div className='relative overflow-hidden'>
                         <Image
                           unoptimized
