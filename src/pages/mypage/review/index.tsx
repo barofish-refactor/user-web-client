@@ -5,6 +5,7 @@ import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
+import Skeleton from 'src/components/common/skeleton';
 import { ReviewItem } from 'src/components/review';
 import { NewReviewItem } from 'src/components/review/newItem';
 import { BackButton } from 'src/components/ui';
@@ -48,7 +49,21 @@ const MypageReview: NextPageWithLayout = () => {
     },
   });
 
-  if (isLoading) return null;
+  if (isLoading)
+    return (
+      <>
+        <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
+          <h3 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
+            내가 쓴 후기
+          </h3>
+          <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
+            loding...
+          </span>
+        </div>
+        <Skeleton />
+        <Skeleton />
+      </>
+    );
   // if (data?.pages?.length && data?.pages?.length <= 0) return <Empty />;
   if (data?.pages?.[0]?.pagedReviews?.empty) return <Empty />;
   return (
