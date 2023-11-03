@@ -12,6 +12,7 @@ interface Props {
 const Banner = ({ image, isShowArrow = false }: Props) => {
   const refSwiper = useRef<SwiperRef>(null);
   const [pageIndex, setPageIndex] = useState<number>(0);
+
   const blurDataURL =
     'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
   return (
@@ -48,7 +49,7 @@ const Banner = ({ image, isShowArrow = false }: Props) => {
         } `}</p>
         <p className='text-[14px] font-medium  text-[#DDDDDD]'>{`/ ${image.length}`}</p>
       </div>
-      {isShowArrow && (
+      {isShowArrow && image.length > 1 && (
         <Fragment>
           <button
             className='absolute left-4 top-1/2 z-20 -translate-y-1/2'
