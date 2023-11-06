@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { client } from 'src/api/client';
 import { type Coupon } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
+import Skeleton from 'src/components/common/skeleton';
 import { CouponList, CouponNav, CouponTotalCount, type CouponNavType } from 'src/components/coupon';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -16,30 +17,32 @@ const MypageCoupon: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
 
   // 보유 쿠폰
-  const { data: downloadedCoupon, refetch: downloadedRefetch } = useQuery(
-    queryKey.downloadedCoupon.lists,
-    async () => {
-      const res = await (await client()).selectDownloadedCoupon();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        throw new Error('[selectDownloadedCoupon]' + res.data.code + ': ' + res.data.errorMsg);
-      }
-    },
-  );
+  const {
+    data: downloadedCoupon,
+    refetch: downloadedRefetch,
+    isLoading: isDownloaded,
+  } = useQuery(queryKey.downloadedCoupon.lists, async () => {
+    const res = await (await client()).selectDownloadedCoupon();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error('[selectDownloadedCoupon]' + res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
 
   // 발급 가능한 쿠폰
-  const { data: canDownloadCoupon, refetch: canDownloadRefetch } = useQuery(
-    queryKey.canDownloadCoupon.lists,
-    async () => {
-      const res = await (await client()).selectCanDownloadCoupon();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        throw new Error('[selectCanUseCoupon]' + res.data.code + ': ' + res.data.errorMsg);
-      }
-    },
-  );
+  const {
+    data: canDownloadCoupon,
+    refetch: canDownloadRefetch,
+    isLoading: isCanDownload,
+  } = useQuery(queryKey.canDownloadCoupon.lists, async () => {
+    const res = await (await client()).selectCanDownloadCoupon();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error('[selectCanUseCoupon]' + res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
 
   // 발급 받기
   const { mutateAsync: selectDownloadCoupon, isLoading: isAddLoading } = useMutation(
@@ -60,7 +63,14 @@ const MypageCoupon: NextPageWithLayout = () => {
   };
 
   const data = navType === 'holding' ? downloadedCoupon ?? [] : canDownloadCoupon ?? [];
-
+  if (isDownloaded && isCanDownload)
+    return (
+      <>
+        <CouponNav navType={navType} setNavType={setNavType} />
+        <Skeleton />
+        <Skeleton />
+      </>
+    );
   return (
     <>
       <CouponNav navType={navType} setNavType={setNavType} />

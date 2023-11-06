@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -452,7 +453,12 @@ const Compare: NextPageWithLayout<Props> = ({}) => {
   );
 };
 
-Compare.getLayout = page => <Layout headerProps={{ disable: true }}>{page}</Layout>;
+Compare.getLayout = page => (
+  <Layout headerProps={{ disable: true }}>
+    <DefaultSeo title='비교하기 | 바로피쉬' description='비교하기' />
+    {page}
+  </Layout>
+);
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const { selectMain } = await client();

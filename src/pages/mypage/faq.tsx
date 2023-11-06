@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import { type Notice } from 'src/api/swagger/data-contracts';
+import Skeleton from 'src/components/common/skeleton';
 import { ChevronIcon } from 'src/components/icons';
 import { FaqLayout } from 'src/components/mypage/faq';
 import { queryKey } from 'src/query-key';
@@ -19,7 +20,7 @@ const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
   const { setAlert } = useAlertStore();
   const [content, setContent] = useState<string[]>([]);
 
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     queryKey.faq.lists,
     async () => {
       const res = await (await client()).selectNoticeList({ type: 'FAQ' });
@@ -49,7 +50,13 @@ const MypageFaq: NextPageWithLayout<Props> = ({ initialData }) => {
       });
     }
   }, [data]);
-
+  if (isLoading)
+    return (
+      <>
+        <Skeleton noImgs />
+        <Skeleton noImgs />
+      </>
+    );
   if (!data || data.length === 0) return <Empty />;
 
   return (

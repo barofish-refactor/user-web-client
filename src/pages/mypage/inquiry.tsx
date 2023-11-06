@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { client } from 'src/api/client';
 import { type InquiryDto } from 'src/api/swagger/data-contracts';
+import Skeleton from 'src/components/common/skeleton';
 import { InquiryLayout } from 'src/components/mypage/inquiry';
 import { InquiryDots } from 'src/components/product';
 import { queryKey } from 'src/query-key';
@@ -25,7 +26,11 @@ const MypageInquiry: NextPageWithLayout<Props> = ({ initialData }) => {
   const [openIndex, setOpenIndex] = useState<number>();
   const { setConfirm } = useConfirmStore();
 
-  const { data, refetch } = useQuery(
+  const {
+    data,
+    isLoading: isLoadingData,
+    refetch,
+  } = useQuery(
     queryKey.inquiry.lists,
     async () => {
       const res = await (await client()).selectInquiryListWithUserId();
@@ -57,7 +62,13 @@ const MypageInquiry: NextPageWithLayout<Props> = ({ initialData }) => {
         console.log(error);
       });
   };
-
+  if (isLoadingData)
+    return (
+      <>
+        <Skeleton />
+        <Skeleton />
+      </>
+    );
   if (!data || data.length === 0) return <Empty />;
 
   return (

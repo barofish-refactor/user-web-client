@@ -71,6 +71,8 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       })
       .catch(error => console.log(error));
   };
+  const blurDataURL =
+    'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
 
   return (
     <div className='py-4'>
@@ -113,6 +115,7 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
         modules={[FreeMode]}
         spaceBetween={11}
         className='mt-4'
+        lazyPreloadPrevNext={Number(data.imageUrls?.length) < 1 ? data.imageUrls?.length : 0}
         style={{ marginInline: '-16px', paddingInline: '16px' }}
       >
         {data.imageUrls
@@ -129,6 +132,8 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
                     alt='review'
                     draggable={false}
                     className='aspect-square w-full object-cover'
+                    blurDataURL={blurDataURL}
+                    placeholder='blur'
                   />
                 </div>
               </SwiperSlide>
@@ -153,6 +158,8 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
               className='rounded-lg'
               width={72}
               height={72}
+              blurDataURL={blurDataURL}
+              placeholder='blur'
             />
           )}
           <div className='flex flex-1 flex-col truncate text-start'>

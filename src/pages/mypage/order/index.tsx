@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type OrderDto } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
+import Skeleton from 'src/components/common/skeleton';
 import { MypageOrderListItem, MypageOrderStatistics } from 'src/components/mypage/order';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -21,7 +22,7 @@ interface Props {
 /** 마이페이지/주문 내역 */
 const MypageOrder: NextPageWithLayout<Props> = ({}) => {
   const { setAlert } = useAlertStore();
-  const { data, hasNextPage, fetchNextPage, isFetched } = useInfiniteQuery(
+  const { data, hasNextPage, isLoading, fetchNextPage, isFetched } = useInfiniteQuery(
     queryKey.order.lists,
     async ({ pageParam = 0 }) => {
       if (pageParam === -1) return;
@@ -88,6 +89,18 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
       if (inView) fetchNextPage();
     },
   });
+  if (isLoading)
+    return (
+      <>
+        <MypageOrderStatistics
+          totalCount={countData}
+          deliveryDoneCount={deliveryDoneCount ?? 0}
+          cancelRefundCount={cancelRefundCount ?? 0}
+        />
+        <Skeleton />
+        <Skeleton />
+      </>
+    );
 
   return (
     <section className='pb-6'>

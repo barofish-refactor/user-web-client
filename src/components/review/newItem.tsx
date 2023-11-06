@@ -73,7 +73,6 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
   };
   const blurDataURL =
     'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
-  console.log(data.imageUrls.length, 'data.imageUrls.length');
 
   return (
     <div className='py-4'>
@@ -114,7 +113,7 @@ export function NewReviewItem({ data, isMine, showInfo = true, refetch }: Props)
         freeMode
         slidesPerView={2.2}
         modules={[FreeMode]}
-        lazyPreloadPrevNext={data.imageUrls.length}
+        lazyPreloadPrevNext={data.imageUrls.length < 1 ? data.imageUrls.length : 0}
         spaceBetween={11}
         className='mt-4'
         style={{ marginInline: '-16px', paddingInline: '16px' }}

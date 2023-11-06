@@ -24,6 +24,7 @@ import { VARIABLES } from 'src/variables';
 import { getCookie } from 'cookies-next';
 import Link from 'next/link';
 import { DefaultSeo } from 'next-seo';
+import Skeleton from 'src/components/common/skeleton';
 
 export interface SectionBasketType {
   index: number;
@@ -246,6 +247,27 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
+  if (isLoading)
+    return (
+      <>
+        <div className='pb-[100px] max-md:w-[100vw]'>
+          <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
+            <button onClick={router.back}>
+              <Image
+                unoptimized
+                src='/assets/icons/common/close-base.svg'
+                alt='close'
+                width={24}
+                height={24}
+              />
+            </button>
+            <p className='text-[18px] font-semibold -tracking-[0.03em] text-grey-10'>장바구니</p>
+            <div className='w-6' />
+          </div>
+          <Skeleton />
+        </div>
+      </>
+    );
 
   return (
     <>

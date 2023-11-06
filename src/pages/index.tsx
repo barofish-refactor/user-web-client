@@ -5,7 +5,6 @@ import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type CurationDto, type Curation, type Main } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
-
 import {
   HomeAbbreviationCuration,
   HomeBanner,
@@ -154,9 +153,8 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     },
   });
 
-  // if (isLoading) return <Loading />;
   return (
-    <div className='max-md:w-[100vw]'>
+    <main className='max-md:w-[100vw]'>
       {/* Tab */}
       <HomeTab mainData={data} />
       {/* Content - 바로추천 */}
@@ -206,7 +204,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
         </div>
       )}
       <HomeFooter />
-    </div>
+    </main>
   );
 };
 

@@ -151,7 +151,6 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
 
   return (
     <>
-      {' '}
       <DefaultSeo title='상품문의 | 바로피쉬' description='상품문의' />
       <div className='pb-[100px] max-md:w-[100vw]'>
         {/* header */}
