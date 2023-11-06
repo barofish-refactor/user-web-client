@@ -1,14 +1,14 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
 import Skeleton from 'src/components/common/skeleton';
-import { ReviewItem } from 'src/components/review';
+// import { ReviewItem } from 'src/components/review';
 import { NewReviewItem } from 'src/components/review/newItem';
-import { BackButton } from 'src/components/ui';
+import { LinkButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToLocaleString } from 'src/utils/functions';
@@ -17,13 +17,15 @@ const take = 10;
 
 /** 마이페이지/구매 후기 */
 const MypageReview: NextPageWithLayout = () => {
+  const [isSkeleton, setIsSkeleton] = useState(false);
   const { data, isLoading, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.myReview,
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
-
+      setIsSkeleton(prev => !prev);
       const res = await (await client()).selectMyReviewListV2({ page: pageParam, take });
       if (res.data.isSuccess) {
+        setIsSkeleton(prev => !prev);
         return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -49,21 +51,21 @@ const MypageReview: NextPageWithLayout = () => {
     },
   });
 
-  if (isLoading) return null;
-  // (
-  //     <>
-  //       <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
-  //         <h3 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
-  //           내가 쓴 후기
-  //         </h3>
-  //         <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
-  //           loding...
-  //         </span>
-  //       </div>
-  //       <Skeleton />
-  //       <Skeleton />
-  //     </>
-  //   );
+  if (isLoading)
+    return (
+      <>
+        <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
+          <h3 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
+            내가 쓴 후기
+          </h3>
+          <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
+            loding...
+          </span>
+        </div>
+        <Skeleton />
+        <Skeleton />
+      </>
+    );
   // if (data?.pages?.length && data?.pages?.length <= 0) return <Empty />;
   if (data?.pages?.[0]?.pagedReviews?.empty) return <Empty />;
   return (
@@ -86,6 +88,7 @@ const MypageReview: NextPageWithLayout = () => {
               ))}
             </Fragment>
           ))}
+          {isSkeleton && <Skeleton />}
           <div ref={ref} className='pb-10' />
         </article>
       </div>
@@ -116,7 +119,7 @@ MypageReview.getLayout = page => (
   <Layout className='flex flex-col' headerProps={{ disable: true }} footerProps={{ disable: true }}>
     <div className='flex flex-1 flex-col'>
       <header className='title-header'>
-        <BackButton />
+        <LinkButton link='/mypage' />
         <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>구매 후기</h2>
         <div className='h-6 w-6' />
       </header>

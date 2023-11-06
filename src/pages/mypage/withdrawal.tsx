@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { deleteCookie } from 'cookies-next';
+import { DefaultSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
@@ -114,6 +115,7 @@ MypageWithdrawal.getLayout = page => (
     footerProps={{ disable: true }}
     headerProps={{ disable: true }}
   >
+    <DefaultSeo title='회원탈퇴 | 바로피쉬' description='회원탈퇴' />
     {page}
   </Layout>
 );

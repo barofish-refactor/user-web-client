@@ -3,6 +3,7 @@ import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
+import Skeleton from 'src/components/common/skeleton';
 import { MypageOrderListItem } from 'src/components/mypage/order';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -10,7 +11,7 @@ import { type NextPageWithLayout } from 'src/types/common';
 
 /** 마이페이지 - 취소/환불/교환 내역 */
 const MypageOrder: NextPageWithLayout = () => {
-  const { data, isFetched } = useQuery(queryKey.order.list('canceled'), async () => {
+  const { data, isLoading, isFetched } = useQuery(queryKey.order.list('canceled'), async () => {
     const res = await (await client()).selectCanceledOrderList();
     if (res.data.isSuccess) {
       return res.data;
@@ -34,6 +35,14 @@ const MypageOrder: NextPageWithLayout = () => {
       staleTime: Infinity,
     },
   );
+  if (isLoading) {
+    return (
+      <>
+        <Skeleton />
+        <Skeleton />
+      </>
+    );
+  }
 
   return (
     <section className='pb-6'>

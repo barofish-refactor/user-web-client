@@ -14,3 +14,16 @@ export function BackButton({ onBack }: Props) {
     />
   );
 }
+interface LinkProps {
+  link: string;
+}
+export function LinkButton({ link }: LinkProps) {
+  const router = useRouter();
+  return (
+    <button
+      type='button'
+      className='aspect-square h-6 w-6 bg-[url(/assets/icons/common/arrow-back.svg)] bg-cover'
+      onClick={() => router.push(`${link}`)}
+    />
+  );
+}

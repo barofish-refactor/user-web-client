@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { client } from 'src/api/client';
 import { type Notice } from 'src/api/swagger/data-contracts';
+import Skeleton from 'src/components/common/skeleton';
 import { NoticeLayout } from 'src/components/mypage/notice';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
@@ -18,7 +19,7 @@ interface Props {
 const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
   const { setAlert } = useAlertStore();
 
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     queryKey.notice.lists,
     async () => {
       const res = await (await client()).selectNoticeList({ type: 'NOTICE' });
@@ -33,7 +34,13 @@ const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
-
+  if (isLoading)
+    return (
+      <>
+        <Skeleton noImgs={false} />
+        <Skeleton noImgs={false} />
+      </>
+    );
   if (!data || data.length === 0) return <Empty />;
 
   return (

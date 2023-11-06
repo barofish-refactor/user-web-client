@@ -45,6 +45,8 @@ const ProductList = ({
   useEffect(() => {
     clearFilter();
   }, [clearFilter]);
+  const blurDataURL =
+    'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
 
   return (
     <div className={cm('px-4 py-[16px]', className)} id='test'>
@@ -154,6 +156,8 @@ const ProductList = ({
             height={200}
             loading='lazy'
             alt='bannerAds'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
         </button>

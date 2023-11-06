@@ -136,6 +136,7 @@ function Empty() {
 
 Notice.getLayout = page => (
   <Layout className='flex flex-col' headerProps={{ disable: true }} footerProps={{ disable: true }}>
+    <DefaultSeo title='알림 | 바로피쉬' description='알림' />
     <div className='flex flex-1 flex-col'>
       <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
         <BackButton />
