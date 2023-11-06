@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import cm from 'src/utils/class-merge';
 
 interface Props {
@@ -7,6 +8,9 @@ interface Props {
 }
 
 const Tab = ({ selectedTab, setSelectedTab, reviewCount }: Props) => {
+  const router = useRouter();
+  const { id } = router.query;
+
   return (
     <div className='mt-3 flex w-full items-center justify-between border-b border-b-[#F2F2F2] px-3'>
       {['상품상세', `후기 ${reviewCount}`, '문의', '배송'].map((v, idx) => {
@@ -21,6 +25,13 @@ const Tab = ({ selectedTab, setSelectedTab, reviewCount }: Props) => {
             )}
             onClick={() => {
               setSelectedTab(idx);
+              sessionStorage.setItem(
+                'productView',
+                JSON.stringify({
+                  id,
+                  tabId: idx,
+                }),
+              );
             }}
           >
             <p

@@ -144,6 +144,9 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       setSavedFilter([]);
     }
   }, [f, router.isReady]);
+  useEffect(() => {
+    sessionStorage.removeItem('productView');
+  }, []);
 
   const { ref } = useInView({
     initialInView: false,
