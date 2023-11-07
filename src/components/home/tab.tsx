@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { type Main } from 'src/api/swagger/data-contracts';
-import { useFilterStore, useTabNumberStore } from 'src/store';
+import { useFilterStore } from 'src/store';
 import cm from 'src/utils/class-merge';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';

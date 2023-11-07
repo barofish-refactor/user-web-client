@@ -15,7 +15,7 @@ import {
   HomeTab,
 } from 'src/components/home';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useFilterStore, type indexFilterType, useTabNumberStore } from 'src/store';
+import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 // import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, safeParse } from 'src/utils/parse';
 import 'swiper/css';
