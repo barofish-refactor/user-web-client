@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import { type ReactElement, useEffect, useState } from 'react';
+import { type ReactElement, useEffect, useState, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type CurationDto, type Curation, type Main } from 'src/api/swagger/data-contracts';
@@ -15,7 +15,7 @@ import {
   HomeTab,
 } from 'src/components/home';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
+import { useAlertStore, useFilterStore, type indexFilterType, useTabNumberStore } from 'src/store';
 // import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, safeParse } from 'src/utils/parse';
 import 'swiper/css';
@@ -156,6 +156,31 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     },
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const browserPreventEvent = () => {
+    if (router.asPath === '/') return;
+    console.log(location.href, 'location.href');
+    if (router.asPath.includes('tab')) {
+      // let url = location.href.substring(0, location.href.length - 1);
+      // url = url + tabNum?.number.toString();
+      router.replace({ pathname: '/', query: null });
+      // history.pushState(null, '', '/');
+      console.log(tab, 'ddds');
+    }
+  };
+  console.log(router.asPath, 'tab', tab);
+  useEffect(() => {
+    if (router.asPath === '/') return;
+    history.pushState(null, '', location.href);
+    window.addEventListener('popstate', () => {
+      browserPreventEvent();
+    });
+    return () => {
+      window.removeEventListener('popstate', () => {
+        browserPreventEvent();
+      });
+    };
+  }, [browserPreventEvent, router.asPath]);
   return (
     <main className='max-md:w-[100vw]'>
       {/* Tab */}

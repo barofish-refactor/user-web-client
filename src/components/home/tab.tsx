@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { type Main } from 'src/api/swagger/data-contracts';
-import { useFilterStore } from 'src/store';
+import { useFilterStore, useTabNumberStore } from 'src/store';
 import cm from 'src/utils/class-merge';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,25 +14,6 @@ export default function Tab({ mainData }: Props) {
   const { clearFilter } = useFilterStore();
   const router = useRouter();
   const { tab = 0 } = router.query;
-  const [tabnum, setTabnum] = useState(0);
-  const browserPreventEvent = useCallback(() => {
-    if (tabnum !== 0) {
-      console.log(location.href[location.href.length - 1]);
-      let url = location.href.substring(0, location.href.length - 1);
-      url = url + tab.toString();
-      history.pushState(null, '', url);
-    }
-  }, [tab, tabnum]);
-  useEffect(() => {
-    window.addEventListener('popstate', () => {
-      browserPreventEvent();
-    });
-    return () => {
-      window.removeEventListener('popstate', () => {
-        browserPreventEvent();
-      });
-    };
-  }, [browserPreventEvent]);
   return (
     <Swiper freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
       {[{ id: 0, name: '바로추천' }, ...(mainData?.topBars ?? [])].map((v, idx) => {
@@ -43,7 +24,6 @@ export default function Tab({ mainData }: Props) {
               className='w-full'
               onClick={() => {
                 clearFilter();
-                setTabnum(idx);
                 router.replace({ pathname: '/', query: idx === 0 ? undefined : { tab: idx } });
               }}
             >
