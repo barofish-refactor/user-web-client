@@ -16,13 +16,13 @@ export default function Tab({ mainData }: Props) {
   const { tab = 0 } = router.query;
   const [tabnum, setTabnum] = useState(0);
   const browserPreventEvent = useCallback(() => {
-    if (tab !== 0) {
+    if (tabnum !== 0) {
       console.log(location.href[location.href.length - 1]);
       let url = location.href.substring(0, location.href.length - 1);
       url = url + tab.toString();
       history.pushState(null, '', url);
     }
-  }, [tab]);
+  }, [tab, tabnum]);
   useEffect(() => {
     window.addEventListener('popstate', () => {
       browserPreventEvent();
