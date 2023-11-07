@@ -4,7 +4,7 @@ import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { CartIcon } from 'src/components/common';
@@ -118,7 +118,9 @@ const Store: NextPageWithLayout = () => {
       return res.data.data;
     }
   });
-
+  useEffect(() => {
+    sessionStorage.removeItem('storeView');
+  }, []);
   return (
     <div className='max-md:w-[100vw]'>
       {/* Header */}
