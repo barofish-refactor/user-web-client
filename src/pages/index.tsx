@@ -156,31 +156,58 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     },
   });
 
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // const browserPreventEvent = () => {
+  //   if (router.asPath === '/') return;
+  //   console.log(location.href, 'location.href');
+  //   if (router.asPath.includes('tab=')) {
+  //     // let url = location.href.substring(0, location.href.length - 1);
+  //     // url = url + tabNum?.number.toString();
+  //     router.replace({ pathname: '/', query: null });
+  //     // history.pushState(null, '', '/');
+  //     console.log(tab, 'ddds');
+  //   }
+  // };
+  // console.log(router.asPath, 'tab', tab);
+  // useEffect(() => {
+  //   if (router.asPath === '/') return;
+  //   history.pushState(null, '', location.href);
+  //   window.addEventListener('popstate', () => {
+  //     browserPreventEvent();
+  //   });
+  //   return () => {
+  //     window.removeEventListener('popstate', () => {
+  //       browserPreventEvent();
+  //     });
+  //   };
+  // }, [browserPreventEvent, router.asPath]);
+  const [memoryUrl, setMemoryUrl] = useState('/');
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const browserPreventEvent = () => {
-    if (router.asPath === '/') return;
-    console.log(location.href, 'location.href');
+  const handleBackButton = (e: any) => {
+    // 이벤트를 막기 위해 preventDefault()를 호출합니다.
+    e.preventDefault();
+
+    // 뒤로가기 이벤트를 처리할 코드를 작성하세요.
+    // 예를 들어, 모달을 닫거나 특정 동작을 수행할 수 있습니다.
     if (router.asPath.includes('tab')) {
-      // let url = location.href.substring(0, location.href.length - 1);
-      // url = url + tabNum?.number.toString();
+      // history.pushState(null, '', location.href);
       router.replace({ pathname: '/', query: null });
-      // history.pushState(null, '', '/');
-      console.log(tab, 'ddds');
     }
   };
-  console.log(router.asPath, 'tab', tab);
   useEffect(() => {
     if (router.asPath === '/') return;
     history.pushState(null, '', location.href);
-    window.addEventListener('popstate', () => {
-      browserPreventEvent();
-    });
+    // 뒤로가기 이벤트를 막기 위해 이벤트 리스너를 추가합니다.
+    window.addEventListener('popstate', handleBackButton);
+
+    // 컴포넌트가 언마운트될 때 이벤트 리스너를 제거합니다.
     return () => {
-      window.removeEventListener('popstate', () => {
-        browserPreventEvent();
-      });
+      window.removeEventListener('popstate', handleBackButton);
     };
-  }, [browserPreventEvent, router.asPath]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <main className='max-md:w-[100vw]'>
       {/* Tab */}

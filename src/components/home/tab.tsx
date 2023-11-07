@@ -14,6 +14,7 @@ export default function Tab({ mainData }: Props) {
   const { clearFilter } = useFilterStore();
   const router = useRouter();
   const { tab = 0 } = router.query;
+
   return (
     <Swiper freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
       {[{ id: 0, name: '바로추천' }, ...(mainData?.topBars ?? [])].map((v, idx) => {
