@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { type SimpleStore } from 'src/api/swagger/data-contracts';
 import cm from 'src/utils/class-merge';
 
@@ -8,6 +9,8 @@ interface Props {
 }
 
 const Tab = ({ data, selectedTab, setSelectedTab }: Props) => {
+  const router = useRouter();
+  const { id } = router.query;
   return (
     <div className='mt-1 flex w-full items-center justify-between border-b border-b-[#F2F2F2] px-[21.5px]'>
       {['방문일지', `판매상품 ${(data?.products ?? []).length}`, `후기 ${data?.reviewCount}`].map(
@@ -23,6 +26,13 @@ const Tab = ({ data, selectedTab, setSelectedTab }: Props) => {
               )}
               onClick={() => {
                 setSelectedTab(idx);
+                sessionStorage.setItem(
+                  'storeView',
+                  JSON.stringify({
+                    id,
+                    tabId: idx,
+                  }),
+                );
               }}
             >
               <p

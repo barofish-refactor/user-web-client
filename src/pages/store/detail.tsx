@@ -173,6 +173,17 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
+  useEffect(() => {
+    // 페이지 탭 기억
+    const getStoreView = sessionStorage.getItem('storeView');
+    const getStoreViewJson = JSON.parse(getStoreView as string);
+    if (!getStoreViewJson) return;
+    if (getStoreViewJson.id === id) {
+      setSelectedTab(getStoreViewJson.tabId);
+    } else {
+      sessionStorage.removeItem('storeView');
+    }
+  }, [id]);
 
   return (
     <div className='max-md:w-[100vw]'>
