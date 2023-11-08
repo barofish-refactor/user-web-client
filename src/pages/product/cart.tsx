@@ -231,6 +231,7 @@ const Cart: NextPageWithLayout = () => {
   useEffect(() => {
     if (data && !isLoading) {
       const result = changeSectionBasket(data);
+
       setSectionCart(result);
     }
   }, [data, isLoading]);
@@ -247,6 +248,7 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
+
   if (isLoading)
     return (
       <>
@@ -298,7 +300,8 @@ const Cart: NextPageWithLayout = () => {
                     if (typeof checked === 'boolean') {
                       const value = checked;
                       setIsAllCheck(value);
-                      setSelectedItem(value ? data : []);
+                      const filterData = data.filter(v => v.product?.state !== 'INACTIVE');
+                      setSelectedItem(value ? filterData : []);
                     }
                   }}
                 />
@@ -369,10 +372,13 @@ const Cart: NextPageWithLayout = () => {
                               <Checkbox
                                 checked={selectedItem.map(x => x.id).includes(v.id)}
                                 onCheckedChange={() => {
+                                  if (v.product?.state === 'INACTIVE')
+                                    return alert('판매중지 된 상품입니다.');
                                   const tmp = [...selectedItem];
                                   const findIndex = tmp.findIndex(x => x.id === v.id);
                                   if (findIndex > -1) tmp.splice(findIndex, 1);
                                   else tmp.push(v);
+
                                   setSelectedItem(tmp);
                                 }}
                               />
