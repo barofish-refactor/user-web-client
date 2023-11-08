@@ -308,8 +308,8 @@ const Cart: NextPageWithLayout = () => {
                           message: '구매할 수 는 상품이 포함되어 있습니다.\n 선택을 지워주세요.',
                         });
                       setIsAllCheck(value);
-
                       setSelectedItem(value ? data : []);
+
                     }
                   }}
                 />
@@ -384,6 +384,7 @@ const Cart: NextPageWithLayout = () => {
                                     return setAlert({
                                       message: '구매할 수 없는 상풉입니다.',
                                     });
+
                                   const tmp = [...selectedItem];
                                   const findIndex = tmp.findIndex(x => x.id === v.id);
                                   if (findIndex > -1) tmp.splice(findIndex, 1);
