@@ -270,7 +270,6 @@ const Cart: NextPageWithLayout = () => {
         </div>
       </>
     );
-  console.log(data);
 
   return (
     <>
@@ -301,15 +300,12 @@ const Cart: NextPageWithLayout = () => {
                     if (typeof checked === 'boolean') {
                       const value = checked;
                       const filterData = data.map(v => v?.product?.state);
-
-                      console.log(filterData, 'dd');
                       if (filterData.includes('INACTIVE'))
                         return setAlert({
-                          message: '구매할 수 는 상품이 포함되어 있습니다.\n 선택을 지워주세요.',
+                          message: '구매할 수 는 상품이 포함되어 있습니다.',
                         });
                       setIsAllCheck(value);
                       setSelectedItem(value ? data : []);
-
                     }
                   }}
                 />
