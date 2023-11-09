@@ -231,6 +231,7 @@ const Cart: NextPageWithLayout = () => {
   useEffect(() => {
     if (data && !isLoading) {
       const result = changeSectionBasket(data);
+
       setSectionCart(result);
     }
   }, [data, isLoading]);
@@ -247,6 +248,7 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
+
   if (isLoading)
     return (
       <>
@@ -297,6 +299,11 @@ const Cart: NextPageWithLayout = () => {
                   onCheckedChange={checked => {
                     if (typeof checked === 'boolean') {
                       const value = checked;
+                      const filterData = data.map(v => v?.product?.state);
+                      if (filterData.includes('INACTIVE'))
+                        return setAlert({
+                          message: '구매할 수 없는 상품이 포함되어 있습니다.',
+                        });
                       setIsAllCheck(value);
                       setSelectedItem(value ? data : []);
                     }
@@ -369,10 +376,16 @@ const Cart: NextPageWithLayout = () => {
                               <Checkbox
                                 checked={selectedItem.map(x => x.id).includes(v.id)}
                                 onCheckedChange={() => {
+                                  if (v.product?.state === 'INACTIVE')
+                                    return setAlert({
+                                      message: '구매할 수 없는 상풉입니다.',
+                                    });
+
                                   const tmp = [...selectedItem];
                                   const findIndex = tmp.findIndex(x => x.id === v.id);
                                   if (findIndex > -1) tmp.splice(findIndex, 1);
                                   else tmp.push(v);
+
                                   setSelectedItem(tmp);
                                 }}
                               />
@@ -380,6 +393,18 @@ const Cart: NextPageWithLayout = () => {
                                 href={{ pathname: '/product', query: { id: v.product?.id } }}
                                 className='flex flex-1 items-start gap-3'
                               >
+                                {v.product?.state?.includes('INACTIVE') && (
+                                  <Image
+                                    unoptimized
+                                    src='/assets/icons/product/soldout.png'
+                                    alt='판매중지'
+                                    width={70}
+                                    height={70}
+                                    className='absolute z-50'
+                                    style={{ width: '70px', height: '70px', objectFit: 'cover' }}
+                                  />
+                                )}
+
                                 <Image
                                   unoptimized
                                   src={v.product?.image ?? ''}
@@ -390,11 +415,23 @@ const Cart: NextPageWithLayout = () => {
                                   style={{ width: '70px', height: '70px', objectFit: 'cover' }}
                                 />
                                 <div className='flex flex-1 flex-col gap-1'>
-                                  <p className='line-clamp-2 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'>
+                                  <p
+                                    className={
+                                      v.product?.state === 'INACTIVE'
+                                        ? 'line-clamp-2 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10 line-through'
+                                        : 'line-clamp-2 text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-10'
+                                    }
+                                  >
                                     {v.product?.title ?? ''}
                                   </p>
-                                  <p className='text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-40'>
-                                    {v.option?.name ?? '기본'}{' '}
+                                  <p
+                                    className={
+                                      v.product?.state === 'INACTIVE'
+                                        ? 'text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-40 line-through'
+                                        : 'text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-40'
+                                    }
+                                  >
+                                    {v.option?.name ?? '기본'}
                                     {!v.product?.discountPrice ||
                                       ((v.option?.discountPrice ?? 0) -
                                         (v.product?.discountPrice ?? 0) !==
@@ -447,7 +484,13 @@ const Cart: NextPageWithLayout = () => {
                                   />
                                 </button>
                               </div>
-                              <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                              <p
+                                className={
+                                  v.product?.state === 'INACTIVE'
+                                    ? 'text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-error line-through'
+                                    : 'text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'
+                                }
+                              >
                                 {`${formatToLocaleString(getAdditionalPrice(v, true), {
                                   suffix: '원',
                                 })}`}

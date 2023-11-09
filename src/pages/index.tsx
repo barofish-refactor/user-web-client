@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import { type ReactElement, useEffect, useState } from 'react';
+import { type ReactElement, useEffect, useState, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type CurationDto, type Curation, type Main } from 'src/api/swagger/data-contracts';

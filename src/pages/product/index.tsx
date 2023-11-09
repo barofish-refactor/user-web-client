@@ -65,6 +65,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
+  console.log(data, 'data');
 
   const { data: deliverInfo } = useQuery(queryKey.deliverInfo, async () => {
     const res = await (await client()).selectSiteInfo('HTML_DELIVER_INFO');
@@ -352,7 +353,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             />
           </button> */}
           <button
-            className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+            disabled={data?.state === 'INACTIVE'}
+            className={
+              data?.state === 'ACTIVE'
+                ? 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+                : 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-grey-70'
+            }
             onClick={() => {
               if (data?.state !== 'ACTIVE') {
                 let message = '';
@@ -374,7 +380,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               setIsVisible(true);
             }}
           >
-            <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>구매하기</p>
+            <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
+              {data?.state === 'ACTIVE' ? '구매하기' : '상품 준비중'}
+            </p>
           </button>
         </div>
       </div>

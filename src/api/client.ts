@@ -5,7 +5,6 @@ import { VARIABLES } from 'src/variables';
 export async function client(args?: OptionsType & { token?: string }) {
   const { Api } = await import('src/api/swagger/Api');
   const accessToken = getCookie(VARIABLES.ACCESS_TOKEN, args);
-
   return new Api(
     accessToken
       ? {
