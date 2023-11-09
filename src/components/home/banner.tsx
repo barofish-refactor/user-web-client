@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type SyntheticEvent, useEffect, useState } from 'react';
 import { Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Image from 'next/image';
@@ -26,6 +26,10 @@ const Banner = ({ data }: Props) => {
       setPageIndex(0);
     }
   }, [data]);
+  const handleImgError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    target.src = '/assets/icons/common/default-image.png';
+  };
 
   return (
     <div className='relative'>
@@ -57,6 +61,7 @@ const Banner = ({ data }: Props) => {
                   'cursor-pointer':
                     ['CURATION', 'CATEGORY', 'NOTICE'].includes(v.type ?? '') || v.link,
                 })}
+                onError={handleImgError}
                 onClick={() => {
                   const link = v.link;
                   const productionUrl = VARIABLES.PRODUCTION_URL;
