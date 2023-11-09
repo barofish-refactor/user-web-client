@@ -302,7 +302,7 @@ const Cart: NextPageWithLayout = () => {
                       const filterData = data.map(v => v?.product?.state);
                       if (filterData.includes('INACTIVE'))
                         return setAlert({
-                          message: '구매할 수 는 상품이 포함되어 있습니다.',
+                          message: '구매할 수 없는 상품이 포함되어 있습니다.',
                         });
                       setIsAllCheck(value);
                       setSelectedItem(value ? data : []);
