@@ -378,7 +378,7 @@ const Cart: NextPageWithLayout = () => {
                                 onCheckedChange={() => {
                                   if (v.product?.state === 'INACTIVE')
                                     return setAlert({
-                                      message: '구매할 수 없는 상풉입니다.',
+                                      message: '구매할 수 없는 상품입니다.',
                                     });
 
                                   const tmp = [...selectedItem];
