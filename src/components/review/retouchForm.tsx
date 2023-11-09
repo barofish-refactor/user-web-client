@@ -293,7 +293,7 @@ function Images() {
                 className='object-cover'
                 onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
                   if (v.toString() === '') return;
-                  e.currentTarget.src = v.previewUrl;
+                  e.currentTarget.src = '/assets/icons/common/default-image.png';
                 }}
               />
             </SwiperSlide>

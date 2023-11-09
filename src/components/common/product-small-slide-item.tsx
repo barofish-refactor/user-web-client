@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { type SyntheticEvent } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
 import { useProductOptionStore } from 'src/store';
 import cm from 'src/utils/class-merge';
@@ -20,9 +20,8 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
   // const image = (data.images ?? '').replace('[', '').replace(']', '').split(',');
   const handleImgError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.currentTarget;
-    target.src = data.image ?? '';
+    target.src = '/assets/icons/common/default-image.png';
   };
-
   return (
     <button
       className='flex w-full flex-col text-start'
@@ -39,10 +38,10 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
         <Image
           blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8XQ8AAnsBfKyAV94AAAAASUVORK5CYII='
           placeholder='blur'
+          src={data.image ?? ''}
           width={132}
           height={132}
           unoptimized={!imageOptimize}
-          src={data.image ?? ''}
           alt='image'
           draggable={false}
           className='aspect-square w-full object-cover'

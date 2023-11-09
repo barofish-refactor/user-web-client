@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { type SyntheticEvent } from 'react';
 import {
   type DeleteSaveProductsPayload,
   type SaveProductPayload,
@@ -19,6 +20,11 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
   const { setProductOption } = useProductOptionStore();
   const blurDataURL =
     'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
+  const handleImgError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    target.src = '/assets/icons/common/default-image.png';
+  };
+
   return (
     <Link
       href={{ pathname: '/product', query: { id: dataDto?.id } }}
@@ -35,6 +41,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
           draggable={false}
           blurDataURL={blurDataURL}
           placeholder='blur'
+          onError={handleImgError}
         />
         {onDeleteSaveProductsMutate && onMutate && dataDto && (
           <button
