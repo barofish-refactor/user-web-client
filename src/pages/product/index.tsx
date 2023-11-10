@@ -65,7 +65,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
-  console.log(data, 'data');
 
   const { data: deliverInfo } = useQuery(queryKey.deliverInfo, async () => {
     const res = await (await client()).selectSiteInfo('HTML_DELIVER_INFO');

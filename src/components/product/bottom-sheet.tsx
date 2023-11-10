@@ -135,7 +135,10 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 price: data?.discountPrice ?? 0,
                 value: x.id?.toString() ?? '',
                 amount: x.amount ?? 0,
-                additionalPrice: (x.discountPrice ?? 0) - (data?.discountPrice ?? 0),
+                additionalPrice:
+                  Number(x?.discountPrice) > Number(data?.discountPrice)
+                    ? (x.discountPrice ?? 0) - (data?.discountPrice ?? 0)
+                    : (data?.discountPrice ?? 0) - (x.discountPrice ?? 0),
                 stock: x.amount ?? 999,
                 maxAvailableStock: x.maxAvailableAmount ?? 999,
               };
