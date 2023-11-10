@@ -258,7 +258,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
             </div>
             <div className='flex max-h-[280px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[15px] scrollbar-hide'>
               {selectedOption.map((v, idx) => {
-                console.log(v);
+                console.log(v, 'ㅇㅇㄴ');
 
                 return (
                   <div
@@ -268,7 +268,8 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                     <div className='flex items-start justify-between gap-1'>
                       <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
                         {`${v.name}`}{' '}
-                        {v.additionalPrice !== 0 &&
+                        {v.isNeeded &&
+                          v.additionalPrice !== 0 &&
                           `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
                             v.additionalPrice,
                           )}원)`}

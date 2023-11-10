@@ -28,8 +28,6 @@ interface Props {
 /** 상품 옵션 선택 Selector */
 const Selector = ({ index, list, placeHolder, className, setValue, isNeeded }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  console.log(list, 'dd');
-  console.log(isNeeded, 'dsc');
 
   return (
     <div className={cm('relative h-11 overflow-visible', className)}>
