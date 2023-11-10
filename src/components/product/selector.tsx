@@ -22,11 +22,14 @@ interface Props {
   placeHolder?: string;
   className?: string;
   setValue?: (value: ProductSelectorType) => void;
+  isNeeded?: boolean;
 }
 
 /** 상품 옵션 선택 Selector */
-const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
+const Selector = ({ index, list, placeHolder, className, setValue, isNeeded }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  console.log(list, 'dd');
+  console.log(isNeeded, 'dsc');
 
   return (
     <div className={cm('relative h-11 overflow-visible', className)}>
@@ -81,7 +84,8 @@ const Selector = ({ index, list, placeHolder, className, setValue }: Props) => {
                   )}
                 >
                   {`${v.option}`}{' '}
-                  {v.additionalPrice !== 0 &&
+                  {isNeeded &&
+                    v.additionalPrice !== 0 &&
                     `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
                       v.additionalPrice,
                     )}원)`}
