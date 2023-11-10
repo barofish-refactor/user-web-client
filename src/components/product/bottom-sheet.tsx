@@ -135,10 +135,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 price: data?.discountPrice ?? 0,
                 value: x.id?.toString() ?? '',
                 amount: x.amount ?? 0,
-                additionalPrice:
-                  Number(x?.discountPrice) > Number(data?.discountPrice)
-                    ? (x.discountPrice ?? 0) - (data?.discountPrice ?? 0)
-                    : (data?.discountPrice ?? 0) - (x.discountPrice ?? 0),
+                additionalPrice: (x.discountPrice ?? 0) - (data?.discountPrice ?? 0),
                 stock: x.amount ?? 999,
                 maxAvailableStock: x.maxAvailableAmount ?? 999,
               };
@@ -223,6 +220,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       index={i}
                       list={v.options}
                       className='mt-1.5'
+                      isNeeded={v.isNeeded}
                       placeHolder='옵션을 선택해주세요'
                       setValue={value => {
                         const tmp = [...selectedOption];
@@ -260,6 +258,8 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
             </div>
             <div className='flex max-h-[280px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[15px] scrollbar-hide'>
               {selectedOption.map((v, idx) => {
+                console.log(v);
+
                 return (
                   <div
                     key={`selected${idx}`}
