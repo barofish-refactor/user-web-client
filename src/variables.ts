@@ -12,9 +12,9 @@ export const VARIABLES = {
   ACCESS_TOKEN: 'barofish-atk',
   /** refreshToken 이름 */
   REFRESH_TOKEN: 'barofish-rtk',
-  TOKEN_MAX_AGE: 60 * 60 * 24 * 7, // 7 days
-  // 70,
+  TOKEN_MAX_AGE: 70,
 
+  // 60 * 60 * 24 * 7, // 7 days
   DAUM_POSTCODE_URL: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
   IS_MASTER:
     process.env.NODE_ENV === 'development'
