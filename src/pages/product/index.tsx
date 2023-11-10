@@ -20,6 +20,7 @@ import {
 } from 'src/components/common/head';
 import Layout from 'src/components/common/layout';
 import {
+  // Chat,
   ProductBanner,
   ProductBottomSheet,
   ProductInfoNotice,
@@ -296,7 +297,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           setSelectedTab={setSelectedTab}
           reviewCount={data?.reviewCount ?? 0}
         />
+
         <div className='min-h-[calc(100dvb-180px)]'>
+          {/* <Chat /> */}
           {selectedTab === 0 ? (
             <Fragment>
               <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />

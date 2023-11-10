@@ -10,5 +10,6 @@ export { default as ProductBottomSheet } from './bottom-sheet';
 export { default as ProductShippingAddress } from './shipping-address';
 export { default as ProductCoupon } from './coupon';
 export { default as ProductRefundAccount } from './refund-account';
+// export { default as Chat } from './chat';
 export * from './inquiry-dots';
 export * from './share-button';
