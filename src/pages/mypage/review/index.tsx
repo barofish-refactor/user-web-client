@@ -17,15 +17,12 @@ const take = 10;
 
 /** 마이페이지/구매 후기 */
 const MypageReview: NextPageWithLayout = () => {
-  const [isSkeleton, setIsSkeleton] = useState(false);
   const { data, isLoading, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.myReview,
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
-      setIsSkeleton(prev => !prev);
       const res = await (await client()).selectMyReviewListV2({ page: pageParam, take });
       if (res.data.isSuccess) {
-        setIsSkeleton(prev => !prev);
         return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -88,7 +85,6 @@ const MypageReview: NextPageWithLayout = () => {
               ))}
             </Fragment>
           ))}
-          {isSkeleton && <Skeleton />}
           <div ref={ref} className='pb-10' />
         </article>
       </div>
