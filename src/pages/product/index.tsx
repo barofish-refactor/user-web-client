@@ -40,6 +40,71 @@ import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import { HeaderBanner } from 'src/components/common/header-banner';
 import { DefaultSeo } from 'next-seo';
+// import { MyResponsiveRadar } from 'src/components/product/chat';
+// import { MyResponsiveBar } from 'src/components/product/line-chat';
+
+const datas = [
+  // 오각형 차트
+  {
+    taste: '기름진맛',
+    맛: 79,
+  },
+  {
+    taste: '단맛',
+    맛: 116,
+  },
+  {
+    taste: '담백한맛',
+    맛: 41,
+  },
+  {
+    taste: '감칠맛',
+    맛: 100,
+  },
+  {
+    taste: '짠맛',
+    맛: 47,
+  },
+];
+const lineData = [
+  // 막대 차트
+  {
+    texture: '단단함',
+    단단함: 10,
+    단단함Color: 'hsl(74, 70%, 50%)',
+    기본: 90,
+    기본Color: 'hsl(0, 5.154639175257728%, 61.96078431372549%)',
+  },
+  {
+    texture: '쫄깃함',
+    쫄깃함: 30,
+    Color: 'hsl(343, 70%, 50%)',
+    기본: 70,
+    기본Color: 'hsl(0, 5.154639175257728%, 61.96078431372549%)',
+  },
+  {
+    texture: '바스러짐',
+    바스러짐: 10,
+    Color: 'hsl(189, 70%, 50%)',
+    기본: 90,
+    기본Color: 'hsl(0, 5.154639175257728%, 61.96078431372549%)',
+  },
+  {
+    texture: '아삭',
+    아삭: 10,
+    Color: 'hsl(14, 70%, 50%)',
+    기본: 90,
+    기본Color: 'hsl(0, 5.154639175257728%, 61.96078431372549%)',
+  },
+  {
+    texture: '찰짐',
+    찰짐: 33,
+    Color: 'hsl(239, 70%, 50%)',
+    기본: 77,
+    기본Color: 'hsl(0, 5.154639175257728%, 61.96078431372549%)',
+  },
+];
+
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -299,7 +364,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         />
 
         <div className='min-h-[calc(100dvb-180px)]'>
-          {/* <Chat /> */}
+          {/* {datas && <MyResponsiveRadar data={datas} />}
+          {lineData && <MyResponsiveBar data={lineData} />} */}
+
           {selectedTab === 0 ? (
             <Fragment>
               <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />

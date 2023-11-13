@@ -27,7 +27,7 @@ const MyPage: NextPageWithLayout = () => {
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
-      if (res.data.code === 'FORBIDDEN') {
+      if (res.data.code === '101' || res.data.code === '102') {
         router.replace('/login');
         return;
       }

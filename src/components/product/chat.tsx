@@ -1,20 +1,50 @@
-// import React from 'react';
+// import dynamic from 'next/dynamic';
 
-// const Chart = () => {
+// const ResponsiveRadar = dynamic(() => import('@nivo/radar').then(m => m.ResponsiveRadar), {
+//   ssr: false,
+// });
+
+// export const MyResponsiveRadar = ({ data /* see data tab */ }: any) => {
 //   return (
-//     <TEChart
-//       type='radar'
-//       data={{
-//         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday '],
-//         datasets: [
+//     <div style={{ width: '100%', height: '300px' }}>
+//       <ResponsiveRadar
+//         data={data}
+//         keys={['맛']}
+//         indexBy='taste'
+//         valueFormat='>-.2f'
+//         margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
+//         // borderColor={{ from: 'color' }}
+//         borderColor='red'
+//         gridLabelOffset={36}
+//         dotSize={10}
+//         dotColor={{ theme: 'background' }}
+//         dotBorderWidth={2}
+//         // colors={{ scheme: 'accent' }}
+//         colors='red'
+//         blendMode='multiply'
+//         motionConfig='wobbly'
+//         legends={[
 //           {
-//             label: 'Traffic',
-//             data: [2112, 2343, 2545, 3423, 2365, 1985, 987],
+//             anchor: 'top-left',
+//             direction: 'column',
+//             translateX: -50,
+//             translateY: -40,
+//             itemWidth: 80,
+//             itemHeight: 20,
+//             itemTextColor: '#8e1bae',
+//             symbolSize: 12,
+//             symbolShape: 'circle',
+//             effects: [
+//               {
+//                 on: 'hover',
+//                 style: {
+//                   itemTextColor: '#d24646',
+//                 },
+//               },
+//             ],
 //           },
-//         ],
-//       }}
-//     />
+//         ]}
+//       />
+//     </div>
 //   );
 // };
-
-// export default Chart;
