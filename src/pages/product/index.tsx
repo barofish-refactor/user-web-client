@@ -13,7 +13,7 @@ import {
   type SimpleProductDto,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
-import { CartIcon } from 'src/components/common';
+import { CartIcon , Chat } from 'src/components/common';
 import {
   // HEAD_DESCRIPTION,
   HEAD_NAME,
@@ -29,7 +29,7 @@ import {
   ProductInquiry,
   ProductTab,
   ShareButton,
-} from 'src/components/product';
+ TastingInfo } from 'src/components/product';
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -40,37 +40,22 @@ import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import { HeaderBanner } from 'src/components/common/header-banner';
 import { DefaultSeo } from 'next-seo';
-// import { MyResponsiveRadar } from 'src/components/product/chat';
-import { MyResponsiveBar } from 'src/components/product/line-chat';
-
-const datas = [
-  // 오각형 차트
-  {
-    taste: '기름진맛',
-    맛: 79,
-  },
-  {
-    taste: '단맛',
-    맛: 116,
-  },
-  {
-    taste: '담백한맛',
-    맛: 41,
-  },
-  {
-    taste: '감칠맛',
-    맛: 100,
-  },
-  {
-    taste: '짠맛',
-    맛: 47,
-  },
-];
-
 interface Props {
   initialData: SimpleProductDto;
 }
-
+const datasets = [
+  {
+    id: 1,
+    label: '상품',
+    title: ['단단함', '부드러움', '말캉함', '물렁함', '느끼함'],
+    data: [10, 8, 3, 5, 9],
+  },
+];
+const test = {
+  난이도: '상',
+  바다향: '고',
+  추천: '찜',
+};
 /** 상품 상세 */
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
@@ -235,6 +220,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   }, [id]);
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
+
   return (
     <>
       {data && (
@@ -253,7 +239,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               initialData?.discountPrice?.toString() || initialData?.originPrice?.toString()
             }`}
           />
-          <meta property='product:availability' content='in stock' />
+          <meta
+            property='product:availability'
+            content={data?.state === 'INACTIVE' ? 'out of stock' : 'in stock'}
+          />
           <meta property='product:brand' content={data?.store?.name} />
           <meta property='product:condition' content='new' />
           <meta property='product:plural_title' content={headTitle} />
@@ -318,6 +307,13 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <ProductBanner image={data?.images ?? []} />
         <ProductInformationDefault data={data} user={user} />
         {/* <ProductCompare /> */}
+        {/* BARO’s 피쉬 노트 */}
+        {/* <div className='col mt-3 flex flex-col items-center'>
+          <div className=' items-center text-[16px] font-bold'>BARO’s 피쉬 노트</div>
+          <Chat datasets={datasets} type='product' />
+          <TastingInfo info={test} />
+        </div>
+        <div className='h-2 bg-grey-90' /> */}
         {/* Tab Content */}
         <ProductTab
           selectedTab={selectedTab}
@@ -326,9 +322,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         />
 
         <div className='min-h-[calc(100dvb-180px)]'>
-          {/* {datas && <MyResponsiveRadar data={datas} />} */}
-          {/* {lineData && <MyResponsiveBar data={lineData} />} */}
-
           {selectedTab === 0 ? (
             <Fragment>
               <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />

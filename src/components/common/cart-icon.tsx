@@ -1,13 +1,27 @@
 import { useQuery } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import Image from 'next/image';
+import router from 'next/router';
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
+// import { useAlertStore } from 'src/store';
+import { VARIABLES } from 'src/variables';
 
 const CartIcon = () => {
+  const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
+  // const { setAlert } = useAlertStore();
   const { data, isLoading } = useQuery(queryKey.cartCount, async () => {
     const { countBasket } = await client();
     const res = await countBasket();
-    return res.data.data;
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
+      deleteCookie(REFRESH_TOKEN);
+      deleteCookie(ACCESS_TOKEN);
+      return;
+    }
+    // setAlert({ message: res.data.errorMsg ?? '' });
+    // throw new Error(res.data.errorMsg);
   });
 
   return (

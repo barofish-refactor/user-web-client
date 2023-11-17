@@ -39,7 +39,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       const res = await (await client()).selectMainItems();
       if (res.data.isSuccess) {
         return res.data.data;
-      } else setAlert({ message: res.data.errorMsg ?? '' });
+      } else setAlert({ message: res.data.errorMsg + 'd' ?? '' });
     },
     { initialData: props.mainItem },
   );
@@ -50,7 +50,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       const res = await (await client()).selectMainCurationList();
       if (res.data.isSuccess) {
         return res.data.data;
-      } else setAlert({ message: res.data.errorMsg ?? '' });
+      } else setAlert({ message: res.data.errorMsg + 'q' ?? '' });
     },
     initialData: props.curation,
   });

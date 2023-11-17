@@ -14,14 +14,15 @@ import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString, requestPermission } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
+import { deleteCookie } from 'cookies-next';
 
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 /** 마이페이지 */
 const MyPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { id } = router.query;
   const { setAlert } = useAlertStore();
   const [recentData, setRecentData] = useState<string[]>([]); // 최근 본 상품
-
   const { data: user, isLoading } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
@@ -29,6 +30,10 @@ const MyPage: NextPageWithLayout = () => {
     } else {
       if (res.data.code === '101' || res.data.code === '102') {
         router.replace('/login');
+        return;
+      } else if (res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
         return;
       }
       setAlert({ message: res.data.errorMsg ?? '' });

@@ -18,7 +18,7 @@ const Partner = () => {
     const res = await (await client()).selectMainStoreList();
     if (res.data.isSuccess) {
       return res.data.data;
-    } else setAlert({ message: res.data.errorMsg ?? '' });
+    } else setAlert({ message: res.data.errorMsg + 'p' ?? '' });
   });
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(

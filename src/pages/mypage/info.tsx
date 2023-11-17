@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link, { type LinkProps } from 'next/link';
@@ -17,11 +18,13 @@ import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { formatToBlob, formatToPhone } from 'src/utils/functions';
 import useLogout from 'src/utils/use-logout';
+import { VARIABLES } from 'src/variables';
 
 const getDynamicEditHref = (type: MypageEditType): LinkProps['href'] => ({
   pathname: '/mypage/edit/[type]',
   query: { type },
 });
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 
 const MypageInfo: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
@@ -36,8 +39,12 @@ const MypageInfo: NextPageWithLayout = () => {
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
-      if (res.data.code === 'FORBIDDEN') {
+      if (res.data.code === '101' || res.data.code === '102') {
         router.replace('/login');
+        return;
+      } else if (res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
         return;
       }
       setAlert({ message: res.data.errorMsg ?? '' });

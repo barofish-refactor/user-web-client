@@ -70,6 +70,18 @@ export interface ResetPasswordReq {
   verificationId?: number;
 }
 
+export interface CustomResponseJwt {
+  isSuccess?: boolean;
+  code?: string;
+  data?: Jwt;
+  errorMsg?: string;
+}
+
+export interface Jwt {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
 export interface AddPaymentMethodReq {
   name?: string;
   cardNo?: string;
@@ -192,18 +204,6 @@ export interface UserLoginReq {
   loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
   loginId?: string;
   password?: string;
-}
-
-export interface CustomResponseJwt {
-  isSuccess?: boolean;
-  code?: string;
-  data?: Jwt;
-  errorMsg?: string;
-}
-
-export interface Jwt {
-  accessToken?: string;
-  refreshToken?: string;
 }
 
 export interface UserJoinReq {
@@ -406,8 +406,7 @@ export interface Product {
   descriptionImages?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
-  /** @format int32 */
-  forwardingTime?: number;
+  forwardingTime?: string;
   /** @format float */
   pointRate?: number;
   /** @format int32 */
@@ -995,8 +994,7 @@ export interface ProductUpdateReq {
   deliveryInfo?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
-  /** @format int32 */
-  forwardingTime?: number;
+  forwardingTime?: string;
   /** @format int32 */
   deliverBoxPerAmount?: number;
   descriptionContent?: string;
@@ -1088,8 +1086,7 @@ export interface SimpleProductDto {
   state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
   /** @format int32 */
   expectedDeliverDay?: number;
-  /** @format int32 */
-  forwardingTime?: number;
+  forwardingTime?: string;
   images?: string[];
   title?: string;
   /** @format int32 */
@@ -1175,8 +1172,7 @@ export interface ProductAddReq {
   deliveryInfo?: string;
   /** @format int32 */
   expectedDeliverDay?: number;
-  /** @format int32 */
-  forwardingTime?: number;
+  forwardingTime?: string;
   /** @format int32 */
   deliverBoxPerAmount?: number;
   descriptionContent?: string;
@@ -1892,12 +1888,12 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  unpaged?: boolean;
-  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  paged?: boolean;
+  unpaged?: boolean;
 }
 
 export interface ReviewDtoV2 {
@@ -1936,8 +1932,8 @@ export interface ReviewEvaluationSummaryDto {
 
 export interface SortObject {
   empty?: boolean;
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
 }
 
 export interface StoreReviewDto {
@@ -3127,6 +3123,13 @@ export interface ResetPasswordPayload {
 
 export type ResetPasswordData = CustomResponseBoolean;
 
+export interface RenewTokenPayload {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export type RenewTokenData = CustomResponseJwt;
+
 export interface AddPaymentMethodPayload {
   data: AddPaymentMethodReq;
 }
@@ -3975,6 +3978,8 @@ export type SelectCurationListData = CustomResponseListCurationDto;
 export type SelectCouponData = CustomResponseCouponDto;
 
 export type DeleteCouponData = CustomResponseBoolean;
+
+export type SelectUserCouponsData = CustomResponseListCoupon;
 
 export type SelectSystemCouponData = CustomResponseListCoupon;
 
