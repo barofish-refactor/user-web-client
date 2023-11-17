@@ -57,6 +57,7 @@ const Storage: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+  // console.log(data);
 
   const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
     async (args: DeleteSaveProductsPayload) =>
@@ -112,7 +113,7 @@ const Storage: NextPageWithLayout = () => {
       </div>
 
       {/* Tab */}
-      <div className='mt-4 flex w-full items-center justify-around border-b border-b-[#F7F7F7] px-[46px] md:justify-between'>
+      {/* <div className='mt-4 flex w-full items-center justify-around border-b border-b-[#F7F7F7] px-[46px] md:justify-between'>
         {['저장한 상품', '저장한 조합'].map((v, idx) => {
           const isActive = selectedTab === idx;
 
@@ -142,7 +143,7 @@ const Storage: NextPageWithLayout = () => {
             </button>
           );
         })}
-      </div>
+      </div> */}
 
       {selectedTab === 0 ? (
         (data ?? []).length === 0 ? (
@@ -211,7 +212,11 @@ const Storage: NextPageWithLayout = () => {
                         className='absolute left-2 top-2'
                         onClick={e => {
                           e.preventDefault();
+
                           const tmp = [...selectedItem];
+                          console.log(tmp, 'selectedItem', tmp.length);
+                          if (tmp.length >= 2)
+                            return setAlert({ message: '상품을 2개까지만 선택해주세요.' });
                           const findIndex = tmp.findIndex(x => v.id === x.id);
                           if (findIndex > -1) tmp.splice(findIndex, 1);
                           else tmp.push(v);
@@ -250,7 +255,7 @@ const Storage: NextPageWithLayout = () => {
                         v.originPrice,
                       )}원`}</p>
                     )}
-                    <div className='mt-1 flex items-center gap-0.5'>
+                    {/* <div className='mt-1 flex items-center gap-0.5'>
                       <Image
                         unoptimized
                         src='/assets/icons/common/speech-bubble.svg'
@@ -265,7 +270,8 @@ const Storage: NextPageWithLayout = () => {
                       <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${
                         v.reviewCount ?? 0
                       }`}</p>
-                    </div>
+                      안나오냐
+                    </div> */}
                   </Link>
                 );
               })}
@@ -334,6 +340,7 @@ const Storage: NextPageWithLayout = () => {
                         const findIndex = tmp.findIndex(x => v.compareSetId === x.compareSetId);
                         if (findIndex > -1) tmp.splice(findIndex, 1);
                         else tmp.push(v);
+
                         setSelectedSet(tmp);
                       }}
                     >
@@ -367,7 +374,7 @@ const Storage: NextPageWithLayout = () => {
                           />
                           <div className=''>
                             <p className='line-clamp-1 text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-                              {`${setSquareBrackets(x?.storeName)} ${x?.title}`}
+                              {`${setSquareBrackets(x?.storeName)} ${x?.title} `}
                             </p>
                             <div className='mt-0.5 flex items-center gap-0.5'>
                               {(x.originPrice ?? 0) !== 0 && (
@@ -385,7 +392,7 @@ const Storage: NextPageWithLayout = () => {
                                 x.originPrice,
                               )}원`}</p>
                             )}
-                            <div className='mt-1 flex items-center gap-0.5'>
+                            {/* <div className='mt-1 flex items-center gap-0.5'>
                               <Image
                                 unoptimized
                                 src='/assets/icons/common/speech-bubble.svg'
@@ -400,7 +407,7 @@ const Storage: NextPageWithLayout = () => {
                               <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${
                                 x.reviewCount ?? 0
                               }`}</p>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       );
@@ -430,7 +437,7 @@ const Storage: NextPageWithLayout = () => {
         <div className='fixed bottom-0 z-50 flex w-[375px] flex-col rounded-t-lg border-t border-t-grey-90 bg-white px-4 pb-7 pt-2.5 max-md:w-full'>
           <div className='h-1 w-9 self-center rounded-full bg-grey-80' />
           <p className='mt-[17px] text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-70'>
-            최대 3개까지 비교 가능해요
+            최대 2개까지 비교 가능해요
           </p>
 
           <Swiper
@@ -481,13 +488,14 @@ const Storage: NextPageWithLayout = () => {
           <button
             className='mt-5 flex h-[52px] w-full items-center justify-center rounded-lg bg-primary-50'
             onClick={() => {
-              if (![2, 3].includes(selectedItem.length))
-                return setAlert({ message: '상품 2~3개를 선택해주세요.' });
-              const list = new Set<number | undefined>(selectedItem.map(x => x.parentCategoryId));
-              if (Array.from(list).length > 1)
-                return setAlert({ message: '같은 카테고리의 상품끼리 비교 가능합니다.' });
+              if (![2].includes(selectedItem.length))
+                return setAlert({ message: '상품 2개를 선택해주세요.' });
+              // const list = new Set<number | undefined>(selectedItem.map(x => x.parentCategoryId));
+              // if (Array.from(list).length > 1)
+              //   return setAlert({ message: '같은 카테고리의 상품끼리 비교 가능합니다.' });
 
               // onAddCompareSetMutate(selectedItem.map(x => x.id ?? -1));
+
               router.push({
                 pathname: '/compare/[id]',
                 query: { id: selectedItem.map(x => x.id).join(','), type: 'list' },

@@ -1,15 +1,19 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useQuery,
+  // useMutation
+} from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import {
-  type AddCompareSetPayload,
+  // type AddCompareSetPayload,
   type CompareFilterDto,
   type CompareProductDto,
 } from 'src/api/swagger/data-contracts';
 import { CartIcon } from 'src/components/common';
+import Chat from 'src/components/common/chat';
 import Layout from 'src/components/common/layout';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -19,6 +23,21 @@ import cm from 'src/utils/class-merge';
 import { calcDiscountRate, formatToBlob, formatToLocaleString } from 'src/utils/functions';
 
 const initialTable: CompareProductDto[] = [{}];
+
+const datasets = [
+  {
+    id: 1,
+    label: '상품',
+    title: ['단단함', '부드러움', '말캉함', '물렁함', '느끼함'],
+    data: [10, 8, 3, 5, 9],
+  },
+  {
+    id: 2,
+    label: '상품2',
+    title: ['단단함', '부드러움', '말캉함', '물렁함', '느끼함'],
+    data: [6, 3, 3, 2, 6],
+  },
+];
 
 /** 비교하기 상세 */
 const CompareDetail: NextPageWithLayout = () => {
@@ -52,27 +71,28 @@ const CompareDetail: NextPageWithLayout = () => {
     },
   );
 
-  const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
-    async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
-  );
+  // const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
+  //   async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
+  // );
 
-  const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
-    if (isAddLoading) return;
-    addCompareSet(formatToBlob(args, true))
-      .then(res => {
-        if (res.data.isSuccess) {
-          setAlert({ message: '조합을 저장했습니다.', type: 'success' });
-        } else setAlert({ message: res.data.errorMsg ?? '' });
-      })
-      .catch(error => console.log(error));
-  };
+  // const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
+  //   if (isAddLoading) return;
+  //   addCompareSet(formatToBlob(args, true))
+  //     .then(res => {
+  //       if (res.data.isSuccess) {
+  //         setAlert({ message: '조합을 저장했습니다.', type: 'success' });
+  //       } else setAlert({ message: res.data.errorMsg ?? '' });
+  //     })
+  //     .catch(error => console.log(error));
+  // };
 
   useEffect(() => {
     if (!isLoading && set) {
       setCompareList(set[0].compareFilters ?? []);
     }
   }, [set, isLoading]);
-
+  // border border-[#E2E2E2]
+  // border-b border-r border-[#E2E2E2] bg-[#F7F7F7]
   return (
     <div className='pb-[140px] max-md:w-[100vw]'>
       {/* header */}
@@ -94,18 +114,18 @@ const CompareDetail: NextPageWithLayout = () => {
           선택한 상품을 한눈에 비교하세요.
         </p>
       </div>
-      <div className='pt-5'>
+      <div className='flex pt-5'>
         {set?.map((v, idx) => {
           return (
             <div
               key={`set${idx}`}
-              className={cm('bg-[#F7F9FA] px-6 py-4', { 'bg-white': idx === 1 })}
+              className={cm('w-[50%] bg-[#F7F9FA] px-6 py-4', { 'bg-white': idx === 1 })}
             >
               <Link
-                className='flex items-center gap-6'
+                className='flex flex-col items-center gap-6'
                 href={{ pathname: '/product', query: { id: v.id } }}
               >
-                <div className='relative h-[104px] w-[104px] overflow-hidden rounded-lg'>
+                <div className='relative h-[104px] w-[104px]  overflow-hidden rounded-lg'>
                   <Image
                     unoptimized
                     width={104}
@@ -119,8 +139,8 @@ const CompareDetail: NextPageWithLayout = () => {
                     <p className='text-[14px] font-bold text-white'>{idx + 1}</p>
                   </div>
                 </div>
-                <div className='flex flex-1 gap-6'>
-                  <div className='flex-1'>
+                <div className='flex flex-1 gap-6 '>
+                  <div className='flex-1 '>
                     <p className='text-[16px] font-bold leading-[22px] -tracking-[0.05em] text-black'>{`${
                       v.storeName ?? ''
                     }`}</p>
@@ -139,7 +159,7 @@ const CompareDetail: NextPageWithLayout = () => {
                       )}원`}</p>
                     </div>
                   </div>
-                  <div className='self-end'>
+                  {/* <div className='self-end'>
                     <Image
                       unoptimized
                       src='/assets/icons/common/chevron-compare.svg'
@@ -148,7 +168,7 @@ const CompareDetail: NextPageWithLayout = () => {
                       height={24}
                       draggable={false}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </Link>
             </div>
@@ -164,7 +184,7 @@ const CompareDetail: NextPageWithLayout = () => {
         </p>
       </div>
       <div className='flex flex-wrap gap-1.5 px-4 pt-5'>
-        {compareList.map((v, idx) => {
+        {/* {compareList.map((v, idx) => {
           return (
             <button
               key={`tag${idx}`}
@@ -189,64 +209,82 @@ const CompareDetail: NextPageWithLayout = () => {
               </p>
             </button>
           );
-        })}
+        })} */}
       </div>
       <div
-        className={cm(
-          'mx-4 mt-5 grid grid-cols-4 overflow-hidden rounded border border-[#E2E2E2]',
-          { 'grid-cols-3': set?.length === 2 },
-        )}
+        className={cm('mx-4 mt-5 grid grid-cols-4 overflow-hidden rounded ', {
+          'grid-cols-2': set?.length === 2,
+        })}
       >
         {[-2, -1].concat(selectedTag).map((x, i) =>
           initialTable.concat(set ?? []).map((v, idx) => {
-            if (idx === 0) {
-              const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
-              return (
-                <div
-                  key={`grid${i}/${idx}`}
-                  className={cm(
-                    'flex h-[42px] items-center border-b border-r border-[#E2E2E2] bg-[#F1F1F1] pl-3',
-                    { 'bg-[#F7F7F7]': i !== 0, 'border-b-0': i === selectedTag.length + 1 },
-                  )}
-                >
-                  <p className='text-[12px] font-bold -tracking-[0.03em] text-grey-20'>{text}</p>
-                </div>
-              );
-            }
+            if (idx === 0) return null;
+            // if (idx === 0) {
+            //   const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
+            //   return (
+            //     <div
+            //       key={`grid${i}/${idx}`}
+            //       className={cm(
+            //         'flex h-[42px] items-center border-b border-r border-[#E2E2E2] bg-[#F1F1F1] pl-3',
+            //         { 'bg-[#F7F7F7]': i !== 0, 'border-b-0': i === selectedTag.length + 1 },
+            //       )}
+            //     >
+            //       <p className='text-[12px] font-bold -tracking-[0.03em] text-grey-20'>{text}</p>
+            //     </div>
+            //   );
+            // }
             const compareValue =
               i > 1 ? v.filterValues?.filter(w => w.compareFilterId === compareList[x].id) : [];
 
+            const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
             return (
               <div
                 key={`grid${i}/${idx}`}
-                className={cm(
-                  'flex h-[42px] items-center border-b border-r border-[#E2E2E2] bg-[#F7F7F7] px-[7px]',
-                  {
-                    'bg-white': i !== 0,
-                    'border-b-0': i === selectedTag.length + 1,
-                    'border-r-0': idx === 3,
-                  },
-                )}
+                className={cm('flex h-[42px] items-center  px-[7px]', {
+                  'bg-white': i !== 0,
+                  'border-b-0': i === selectedTag.length + 1,
+                  'border-r-0': idx === 3,
+                })}
               >
                 {i === 0 ? (
-                  <div className='flex h-7 w-7 items-center justify-center rounded bg-[#1744BF]/90'>
+                  // className={
+                  //   idx === 1
+                  //     ? 'flex h-7 w-7 items-center justify-center rounded bg-[#1744BF]/90'
+                  //     : 'flex h-7 w-7 items-center justify-center rounded bg-[#849ee6]/90'
+                  // }
+                  <div
+                    className={cm('flex h-7 w-full items-center justify-start rounded pl-2', {
+                      'bg-[#1744BF]/90': idx === 1,
+                      'bg-[#849ee6]/90': idx === 2,
+                    })}
+                  >
                     <p className='text-[14px] font-bold -tracking-[0.03em] text-white'>{idx}</p>
                   </div>
                 ) : (
-                  <p className='line-clamp-1 text-[13px] font-medium -tracking-[0.05em] text-[#797979]'>
-                    {i === 1
-                      ? v.storeName ?? ''
-                      : (compareValue ?? []).length > 0
-                      ? compareValue?.[0].value ?? ''
-                      : ''}
-                  </p>
+                  <div className='flex-col pl-1'>
+                    <p className='mb-2 line-clamp-1 text-[13px] font-bold -tracking-[0.05em] text-[#797979]'>
+                      {text}
+                    </p>
+                    <p className='line-clamp-1 text-[13px] font-medium -tracking-[0.05em] text-[#797979]'>
+                      {/* {compareList[x].name} */}
+
+                      {i === 1
+                        ? v.storeName ?? ''
+                        : (compareValue ?? []).length > 0
+                        ? compareValue?.[0].value ?? ''
+                        : ''}
+                    </p>
+                  </div>
                 )}
               </div>
             );
           }),
         )}
       </div>
-      <div className='fixed bottom-0 z-50 w-[375px] bg-white px-4 pb-7 pt-2 max-md:w-full'>
+      <div className='flex items-center'>
+        <Chat datasets={datasets} type='compare' />
+      </div>
+      {/* <div className='fixed bottom-0 z-50 w-[375px] bg-white px-4 pb-7 pt-2 max-md:w-full'>
         <button
           className='flex h-[52px] w-full items-center justify-center rounded-lg border-0 bg-primary-50'
           onClick={() => {
@@ -255,7 +293,7 @@ const CompareDetail: NextPageWithLayout = () => {
         >
           <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>이 조합 저장하기</p>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

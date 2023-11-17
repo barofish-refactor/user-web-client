@@ -151,6 +151,8 @@ import {
   RejectCancelOrderData,
   RejectChangeProductData,
   RejectRefundOrderProductData,
+  RenewTokenData,
+  RenewTokenPayload,
   RequestChangeProductData,
   RequestChangeProductPayload,
   RequestCodeReq,
@@ -272,6 +274,7 @@ import {
   SelectTopBarListData,
   SelectTopSearchKeywordsData,
   SelectTrackingInfoData,
+  SelectUserCouponsData,
   SelectUserList1Data,
   SelectUserListData,
   SelectUserSelfInfoData,
@@ -447,6 +450,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   resetPassword = (data: ResetPasswordPayload, params: RequestParams = {}) =>
     this.request<ResetPasswordData, any>({
       path: `/api/v1/user/reset-password`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags user-controller
+   * @name RenewToken
+   * @request POST:/api/v1/user/renew-token
+   * @response `200` `RenewTokenData` OK
+   */
+  renewToken = (data: RenewTokenPayload, params: RequestParams = {}) =>
+    this.request<RenewTokenData, any>({
+      path: `/api/v1/user/renew-token`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -4401,6 +4420,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<DeleteCouponData, any>({
       path: `/api/v1/coupon/${id}`,
       method: 'DELETE',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags coupon-controller
+   * @name SelectUserCoupons
+   * @request GET:/api/v1/coupon/user/{userId}
+   * @response `200` `SelectUserCouponsData` OK
+   */
+  selectUserCoupons = (userId: number, params: RequestParams = {}) =>
+    this.request<SelectUserCouponsData, any>({
+      path: `/api/v1/coupon/user/${userId}`,
+      method: 'GET',
       ...params,
     });
   /**

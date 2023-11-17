@@ -1,30 +1,45 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { type ComponentProps } from 'react';
+import { useEffect, type ComponentProps, useState } from 'react';
 
 import cm from 'src/utils/class-merge';
 import { HeaderBanner } from './header-banner';
-import { useQuery } from '@tanstack/react-query';
-import { queryKey } from 'src/query-key';
-import { client } from 'src/api/client';
 import dynamic from 'next/dynamic';
+import { type CookieValueTypes , getCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
+import { useAlertStore } from 'src/store';
 export const CartIcon = dynamic(() => import('src/components/common/cart-icon'));
 export type HeaderProps = ComponentProps<'header'>;
 
 export function Header({ className, ...props }: HeaderProps) {
-  const { data } = useQuery(queryKey.user, async () => {
-    const res = await (await client()).selectUserSelfInfo();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    }
-  });
+  const [token, setToken] = useState<CookieValueTypes>();
+  useEffect(() => {
+    const { ACCESS_TOKEN } = VARIABLES;
+    const accessToken: CookieValueTypes = getCookie(ACCESS_TOKEN);
+    setToken(accessToken);
+  }, []);
+
+  // const { data } = useQuery(queryKey.user, async () => {
+  //   const res = await (await client()).selectUserSelfInfo();
+  //   if (res.data.isSuccess) {
+  //     return res.data.data;
+  //   } else {
+  //     if (res.data.code === '103') {
+  //       deleteCookie(ACCESS_TOKEN);
+  //       deleteCookie(REFRESH_TOKEN);
+  //       return;
+  //     }
+  //     setAlert({ message: res.data.errorMsg + '헤더' ?? '' });
+  //     throw new Error(res.data.errorMsg);
+  //   }
+  // });
   return (
     <header {...props} className={cm('sticky top-0 z-50 space-y-0', className)}>
-      {!data && <HeaderBanner />}
+      {!token && <HeaderBanner />}
       <div
         style={{ paddingTop: '4px' }}
         className={
-          !data
+          !token
             ? 'relative bottom-2 flex h-[70px]  items-center gap-3.5 bg-white pl-4 pr-[18px]'
             : 'flex h-[56px] items-center  gap-3.5 bg-white pl-4 pr-[18px]'
         }

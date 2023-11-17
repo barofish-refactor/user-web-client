@@ -133,4 +133,6 @@ export const queryKey = {
   bank: ['bank'],
   /** 탈퇴 약관 */
   withdraw: ['withdraw'],
+  /** 테이스팅 */
+  tasting: getQueryKeys('tasting'),
 };

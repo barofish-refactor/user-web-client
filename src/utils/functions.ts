@@ -1,10 +1,11 @@
-import { setCookie } from 'cookies-next';
+import { setCookie, getCookie } from 'cookies-next';
 import { addDays, isSunday, lightFormat } from 'date-fns';
 import { type BasketProductDto, type Jwt } from 'src/api/swagger/data-contracts';
 import { VARIABLES } from 'src/variables';
 import { REG_EXP } from './regex';
 import { type SectionOptionType, type SectionBasketType } from 'src/pages/product/cart';
 import { type OptionState } from 'src/components/product/bottom-sheet';
+import { client } from 'src/api/client';
 
 export function setToken(jwt: Jwt | undefined) {
   const { ACCESS_TOKEN, REFRESH_TOKEN, TOKEN_MAX_AGE } = VARIABLES;
@@ -21,6 +22,17 @@ export function setToken(jwt: Jwt | undefined) {
         refreshToken: jwt?.refreshToken,
       }),
     );
+  }
+}
+export async function getRenewToken() {
+  const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
+  const accessToken = getCookie(ACCESS_TOKEN);
+  const refreshToken = getCookie(REFRESH_TOKEN);
+  if (accessToken && refreshToken) {
+    const renewTokenResponse = await (
+      await client()
+    ).renewToken({ accessToken: String(accessToken), refreshToken: String(refreshToken) });
+    setToken(renewTokenResponse.data.data);
   }
 }
 
