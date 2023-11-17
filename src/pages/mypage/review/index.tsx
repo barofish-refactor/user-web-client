@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';

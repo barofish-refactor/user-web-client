@@ -5,9 +5,9 @@ import { useEffect, type ComponentProps, useState } from 'react';
 import cm from 'src/utils/class-merge';
 import { HeaderBanner } from './header-banner';
 import dynamic from 'next/dynamic';
-import { type CookieValueTypes , getCookie } from 'cookies-next';
+import { type CookieValueTypes, getCookie } from 'cookies-next';
 import { VARIABLES } from 'src/variables';
-import { useAlertStore } from 'src/store';
+// import { useAlertStore } from 'src/store';
 export const CartIcon = dynamic(() => import('src/components/common/cart-icon'));
 export type HeaderProps = ComponentProps<'header'>;
 

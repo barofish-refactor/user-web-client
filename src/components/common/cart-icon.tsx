@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { deleteCookie } from 'cookies-next';
 import Image from 'next/image';
-import router from 'next/router';
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
 // import { useAlertStore } from 'src/store';
