@@ -319,7 +319,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                         </button>
                       </div>
                       <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                        v.price + v.additionalPrice,
+                        (v.price + v.additionalPrice) * v.amount,
                       )}원`}</p>
                     </div>
                   </div>
