@@ -119,7 +119,11 @@ const CompareDetail: NextPageWithLayout = () => {
           return (
             <div
               key={`set${idx}`}
-              className={cm('w-[50%] bg-[#F7F9FA] px-6 py-4', { 'bg-white': idx === 1 })}
+              className={cm(
+                'w-[50%] bg-[#F7F9FA] px-6 py-4',
+                { 'bg-[#1744BF]/90': idx === 0 },
+                { 'bg-[#849ee6]/90': idx === 1 },
+              )}
             >
               <Link
                 className='flex flex-col items-center gap-6'
@@ -135,7 +139,13 @@ const CompareDetail: NextPageWithLayout = () => {
                     draggable={false}
                     className='aspect-square w-full object-cover'
                   />
-                  <div className='absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-br-lg bg-[#1744BF]/90'>
+                  <div
+                    className={cm(
+                      'absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-br-lg bg-[#1744BF]/90',
+                      { 'bg-[#1744BF]/90': idx === 0 },
+                      { 'bg-[#849ee6]/90': idx === 1 },
+                    )}
+                  >
                     <p className='text-[14px] font-bold text-white'>{idx + 1}</p>
                   </div>
                 </div>

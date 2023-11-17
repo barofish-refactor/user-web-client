@@ -10,6 +10,7 @@ import { useFilterStore, type indexFilterType } from 'src/store';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString } from 'src/utils/functions';
 import { parseSort, type sortType } from 'src/utils/parse';
+import ImageBox from './curation-imageBox';
 
 interface Props {
   storeType: 'category' | 'topBar' | 'curation' | 'store' | 'search';
@@ -147,7 +148,8 @@ const ProductList = ({
           </button>
         </div>
       </div>
-      {title?.includes('캠핑') && storeType.includes('curation') && (
+      <ImageBox title={title} storeType={storeType} />
+      {/* {title?.includes('캠핑') && storeType.includes('curation') && (
         <button style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationA.jpg'
@@ -161,7 +163,8 @@ const ProductList = ({
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
         </button>
-      )}
+      )} */}
+
       <div className='mt-5 grid grid-cols-2 gap-x-3 gap-y-5'>
         {(dataDto[0]?.totalElements ?? 0) > 0
           ? dataDto.map(x =>
