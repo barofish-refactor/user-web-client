@@ -22,6 +22,19 @@ import cm from 'src/utils/class-merge';
 import { calcDiscountRate, formatToBlob, formatToLocaleString } from 'src/utils/functions';
 
 // const initialTable: CompareProductDto[] = [{}];
+interface ChatProps {
+  tastes: {
+    taste: string;
+    score: number;
+  }[];
+  textures: {
+    texture: string;
+    score: number;
+  }[];
+  recommendedCookingWay: string;
+  difficultyLevelOfTrimming: string;
+  theScentOfTheSea: string;
+}
 
 /** 비교하기 상세 */
 const CompareDetail: NextPageWithLayout = () => {
@@ -30,8 +43,8 @@ const CompareDetail: NextPageWithLayout = () => {
 
   const { id, type } = router.query;
   const [selectedTag, setSelectedTag] = useState<number[]>([]);
-  console.log(id, 'idid', [id]);
-  const [chatData, setChatData] = useState();
+  const [chatData, setChatData] = useState<ChatProps[]>([]);
+  console.log(chatData, 'idid', [id]);
   const [compareList, setCompareList] = useState<CompareFilterDto[]>([]);
   const { data: set, isLoading } = useQuery(
     queryKey.compareSet.detail(id),
