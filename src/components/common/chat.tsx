@@ -27,17 +27,14 @@ interface Props {
     difficultyLevelOfTrimming: string;
     theScentOfTheSea: string;
   }[];
-  type: string;
-  name: string | string[];
 }
 
-const Chat = ({ type, data, name }: Props) => {
+const Chat = ({ data }: Props) => {
   const bgArr = ['rgb(23 68 191 / 0.8)', 'rgb(132 158 230 / 0.8)'];
-  console.log(name, 'name');
 
   const chartData = data.map((item, idx) => {
     return {
-      label: name[idx],
+      label: '',
       data: item.tastes.map(item => item.score),
       backgroundColor: bgArr[idx] ?? 'gray',
     };
@@ -95,7 +92,8 @@ const Chat = ({ type, data, name }: Props) => {
     // 위에 생기는 데이터 속성 label 타이틀을 지워줍니다.
     plugins: {
       legend: {
-        display: type !== 'product',
+        // type !== 'product'
+        display: false,
       },
     },
     // 기본 값은 가운데에서 펴져나가는 애니메이션 형태입니다.

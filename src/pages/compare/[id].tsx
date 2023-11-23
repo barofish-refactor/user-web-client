@@ -226,11 +226,7 @@ const CompareDetail: NextPageWithLayout = () => {
           );
         })}
       </div> */}
-      <div className='mb-10 flex items-center'>
-        {chatData && (
-          <Chat data={chatData} type='compare' name={set.map(item => item.productTitle)} />
-        )}
-      </div>
+      <div className='mb-10 flex items-center'>{chatData && <Chat data={chatData} />}</div>
       <div
         className={cm('mx-4  grid grid-cols-4 overflow-hidden rounded-b-lg  ', {
           'grid-cols-2': set?.length === 2,
