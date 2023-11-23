@@ -34,14 +34,14 @@ const gnbList: GnbType[] = [
     iconHeight: 22,
     paddingTop: 2,
   },
-  // {
-  //   title: '비교하기',
-  //   path: '/compare',
-  //   activeIcon: '/assets/icons/common/gnb-compare-active.svg',
-  //   inactiveIcon: '/assets/icons/common/gnb-compare.svg',
-  //   iconWidth: 33,
-  //   iconHeight: 36,
-  // },
+  {
+    title: '노트저장소',
+    path: '/compare',
+    activeIcon: '/assets/icons/common/gnb-compare-active.svg',
+    inactiveIcon: '/assets/icons/common/gnb-compare.svg',
+    iconWidth: 33,
+    iconHeight: 36,
+  },
   {
     title: '스토어',
     path: '/store',

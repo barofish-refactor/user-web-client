@@ -1,133 +1,146 @@
 import React from 'react';
+import cm from 'src/utils/class-merge';
+import Image from 'next/image';
+interface Props {
+  info?: {
+    difficultyLevelOfTrimming: string;
+    recommendedCookingWay: string;
+    theScentOfTheSea: string;
+  };
+  keyword?: {
+    texture: string;
+    score: number;
+  }[];
+}
 
-const TastingInfo = ({ info }: any) => {
+const TastingInfo = ({ info, keyword }: Props) => {
+  const spanClass = 'flex-low flex text-[16px] font-bold leading-[24px] mb-[10px]';
   return (
     <>
-      <div className='mb-[15px] flex flex-row'>
-        <span className='ml-2 mr-2 flex h-[34px] items-center justify-center rounded-lg bg-primary-90 px-2'>
-          <p className='text-[15px] font-bold text-primary-70'>부드러워요</p>
-        </span>
-        <span className='flex h-[34px] items-center justify-center rounded-lg bg-primary-90 px-2'>
-          <p className='text-[15px] font-bold text-primary-70'>뭐가 부드러워요</p>
-        </span>
-      </div>
-      <div className='ml-[20px] flex w-full flex-col items-start text-[18px]'>
-        <div className='mb-[10px] mt-3 '>
-          <span className=''>손질 난이도 :</span>
-          <span
-            className={
-              info.난이도.includes('상')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70  '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            상
-          </span>
-          <span
-            className={
-              info.난이도.includes('중')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70  '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            중
-          </span>
-          <span
-            className={
-              info.난이도.includes('하')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70  '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            하
-          </span>
+      <div className='ml-[20px] flex h-[180px] w-full flex-col items-start px-[20px] text-[18px]'>
+        <div className='mb-[10px] mt-3 flex w-[100%] flex-row'>
+          <div className='flex w-[50%] flex-col'>
+            <span className={spanClass}>
+              <Image
+                unoptimized
+                alt='heart'
+                width={2}
+                height={15}
+                src='/assets/icons/product/product-stick.svg'
+              />
+              &nbsp;손질 난이도{' '}
+            </span>
+            <div className='flex flex-row'>
+              {[1, 2, 3, 4, 5].map((item, idx) => {
+                let isClass;
+                if (idx < Number(info?.difficultyLevelOfTrimming)) {
+                  isClass = true;
+                } else {
+                  isClass = false;
+                }
+
+                return (
+                  <div
+                    key={idx}
+                    className={cm(
+                      ' mx-[1.5px] h-[18px]  w-[18px] justify-start rounded-full border border-grey-60',
+                      {
+                        'bg-[#5B83FF]': isClass,
+                      },
+                      {
+                        'bg-transparent': !isClass,
+                      },
+                    )}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div className='flex w-[50%] flex-col'>
+            <span className={spanClass}>
+              <Image
+                unoptimized
+                alt='heart'
+                width={2}
+                height={15}
+                src='/assets/icons/product/product-stick.svg'
+              />
+              &nbsp;식감{' '}
+            </span>
+            <div className='flex-low flex flex-wrap '>
+              {keyword &&
+                keyword.map((item: { texture: string }, idx: number) => {
+                  let itemText;
+                  if (idx === keyword.length - 1) {
+                    itemText = item.texture;
+                  } else {
+                    itemText = item.texture + ',';
+                  }
+
+                  return (
+                    <span key={idx} className='font-500  text-[15px]'>
+                      {itemText}
+                    </span>
+                  );
+                })}
+            </div>
+          </div>
         </div>
-        <div className='mb-[10px]'>
-          <span className=''>바다향 :</span>
-          <span
-            className={
-              info.바다향.includes('초')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70  '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            초
-          </span>
-          <span
-            className={
-              info.바다향.includes('중')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70  '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            중
-          </span>
-          <span
-            className={
-              info.바다향.includes('고')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70  '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            고
-          </span>
-        </div>
-        <div className='mb-[30px]'>
-          <span className=''>추천 조리법 :</span>
-          <span
-            className={
-              info.추천.includes('회')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70  '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            회
-          </span>
-          <span
-            className={
-              info.추천.includes('구이')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70 '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            구이
-          </span>
-          <span
-            className={
-              info.추천.includes('찜')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70 '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            찜
-          </span>
-          <span
-            className={
-              info.추천.includes('조림')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70 '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            조림
-          </span>
-          <span
-            className={
-              info.추천.includes('탕')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70 '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            탕
-          </span>
-          <span
-            className={
-              info.추천.includes('튀김')
-                ? 'ml-1 mr-1 rounded-[45%] border bg-primary-90 p-[3px] pl-[5px] pr-[5px] text-primary-70 '
-                : 'ml-1 mr-1 text-grey-50'
-            }
-          >
-            튀김
-          </span>
+        <div className='mb-[10px] mt-3 flex w-[100%] flex-row'>
+          <div className='flex w-[50%] flex-col'>
+            <span className={spanClass}>
+              <Image
+                unoptimized
+                alt='heart'
+                width={2}
+                height={15}
+                src='/assets/icons/product/product-stick.svg'
+              />
+              &nbsp;바다향{' '}
+            </span>
+            <div className='flex flex-row'>
+              {[1, 2, 3, 4, 5].map((item, idx) => {
+                let isClass;
+                if (idx < Number(info?.theScentOfTheSea)) {
+                  isClass = true;
+                } else {
+                  isClass = false;
+                }
+
+                return (
+                  <div
+                    key={idx}
+                    className={cm(
+                      ' mx-[1.5px] h-[18px]  w-[18px] justify-start rounded-full border border-grey-60',
+                      {
+                        'bg-[#5B83FF]': isClass,
+                      },
+                      {
+                        'bg-transparent': !isClass,
+                      },
+                    )}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div className='flex w-[50%] flex-col'>
+            <span className={spanClass}>
+              <Image
+                unoptimized
+                alt='heart'
+                width={2}
+                height={15}
+                src='/assets/icons/product/product-stick.svg'
+              />
+              &nbsp;추천조리법{' '}
+            </span>
+            <div className='flex-low flex'>
+              <span className='font-500 mx-[2px] text-[15px]'>
+                {info?.recommendedCookingWay ?? ''}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </>

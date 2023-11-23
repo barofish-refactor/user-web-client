@@ -14,28 +14,40 @@ import type { ChartOptions } from 'chart.js';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 interface Props {
-  datasets: {
-    id: number;
-    label: string;
-    title: string[];
-    data: number[];
+  data: {
+    tastes: {
+      taste: string;
+      score: number;
+    }[];
+    textures: {
+      texture: string;
+      score: number;
+    }[];
+    recommendedCookingWay: string;
+    difficultyLevelOfTrimming: string;
+    theScentOfTheSea: string;
   }[];
   type: string;
+  name: string | string[];
 }
 
-const Chat = ({ datasets, type }: Props) => {
-  const bgArr = ['rgb(23 68 191 / 0.9)', 'rgb(132 158 230 / 0.9)'];
-  const chartData = datasets.map((item, idx) => {
+const Chat = ({ type, data, name }: Props) => {
+  const bgArr = ['rgb(23 68 191 / 0.4)', 'rgb(132 158 230 / 0.2)'];
+  console.log(name, 'name');
+
+  const chartData = data.map((item, idx) => {
     return {
-      label: item.label,
-      data: item.data.map(data => data),
+      label: name[idx],
+      data: item.tastes.map(item => item.score),
       backgroundColor: bgArr[idx] ?? 'gray',
     };
   });
+  const labelName = data.map(item => item.tastes.map(item2 => item2.taste));
   const chartProps = {
-    labels: datasets[0].title,
+    labels: labelName[0],
     datasets: chartData,
   };
+  // console.log(labelName);
 
   const chartOptions: ChartOptions<'radar'> & ChartOptions = {
     elements: {
@@ -46,30 +58,35 @@ const Chat = ({ datasets, type }: Props) => {
       },
       // 데이터 꼭짓점.
       point: {
-        backgroundColor: 'gray',
+        backgroundColor: 'transparent',
+        pointStyle: 'cross',
       },
     },
     scales: {
       r: {
         ticks: {
-          stepSize: 2.5,
-          display: true,
+          stepSize: 5,
+          display: false,
+          color: '#dcdcdc',
+          backdropColor: '#dcdcdc',
         },
+
         grid: {
           color: 'gray',
         },
         // 라벨 속성 지정.
         pointLabels: {
           font: {
-            size: 10,
+            size: 14,
             weight: '700',
-
             family: 'Pretendard',
           },
-          color: 'grey',
+          // color: 'black',
         },
         angleLines: {
-          display: false,
+          display: true,
+          lineWidth: 1,
+          color: 'gray',
         },
         suggestedMin: 0,
         suggestedMax: 10,

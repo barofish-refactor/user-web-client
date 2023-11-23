@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
-// import Image from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
@@ -11,9 +11,10 @@ import {
   type DeleteSaveProductsPayload,
   type SaveProductPayload,
   type SimpleProductDto,
+  type DeleteTastingNoteToBasketPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
-import { CartIcon , Chat } from 'src/components/common';
+import { CartIcon, Chat } from 'src/components/common';
 import {
   // HEAD_DESCRIPTION,
   HEAD_NAME,
@@ -23,13 +24,15 @@ import {
   // Chat,
   ProductBanner,
   ProductBottomSheet,
+  ProductCompare,
   ProductInfoNotice,
   // ProductCompare,
   ProductInformationDefault,
   ProductInquiry,
   ProductTab,
   ShareButton,
- TastingInfo } from 'src/components/product';
+  TastingInfo,
+} from 'src/components/product';
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
@@ -43,19 +46,10 @@ import { DefaultSeo } from 'next-seo';
 interface Props {
   initialData: SimpleProductDto;
 }
-const datasets = [
-  {
-    id: 1,
-    label: '상품',
-    title: ['단단함', '부드러움', '말캉함', '물렁함', '느끼함'],
-    data: [10, 8, 3, 5, 9],
-  },
-];
-const test = {
-  난이도: '상',
-  바다향: '고',
-  추천: '찜',
-};
+interface SaveIsData extends SaveProductPayload {
+  isData: string;
+}
+
 /** 상품 상세 */
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
@@ -78,6 +72,19 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
+  console.log(data, 'data상품');
+  // const { data: tastingData, refetch: tastingRefetch } = useQuery(
+  //   queryKey.tasting.detail(id),
+  //   async () => {
+  //     const res = await (await client()).selectProduct(Number(id));
+  //     if (res.data.isSuccess) {
+  //       return res.data.data;
+  //     } else {
+  //       throw new Error(res.data.code + ': ' + res.data.errorMsg);
+  //     }
+  //   },
+
+  // );
 
   const { data: deliverInfo } = useQuery(queryKey.deliverInfo, async () => {
     const res = await (await client()).selectSiteInfo('HTML_DELIVER_INFO');
@@ -90,18 +97,23 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
     async (args: SaveProductPayload) =>
-      await (await client()).saveProduct(args, { type: ContentType.FormData }),
+      await (await client()).addTastingNoteToBasket(args, { type: ContentType.FormData }),
   );
 
-  const onSaveMutate = ({ data }: SaveProductPayload) => {
+  const onSaveMutate = ({ data, isData }: SaveIsData) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
     if (isSaveLoading) return;
+
+    if (!isData)
+      return setAlert({
+        message: '테이스팅노트 데이터가 없습니다.',
+      });
     saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
           setToast({
             text: '1개의 상품이 저장함에 담겼어요.',
-            onClick: () => router.push('/compare/storage'),
+            onClick: () => router.push('/compare'),
           });
           refetch();
         } else setAlert({ message: res.data.errorMsg ?? '' });
@@ -110,13 +122,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   };
 
   const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
-    async (args: DeleteSaveProductsPayload) =>
-      await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
+    async (args: DeleteTastingNoteToBasketPayload) =>
+      await (await client()).deleteTastingNoteToBasket(args, { type: ContentType.FormData }),
   );
 
-  const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
+  const onDeleteSaveProductsMutate = ({ data }: DeleteTastingNoteToBasketPayload) => {
     if (isDeleteLoading) return;
-    deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
+    console.log(' d', data);
+    deleteSaveProducts({ data: formatToBlob<DeleteTastingNoteToBasketPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
           refetch();
@@ -241,7 +254,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           />
           <meta
             property='product:availability'
-            content={data?.state === 'INACTIVE' ? 'out of stock' : 'in stock'}
+            content={data?.state === 'INACTIVE' ? 'discontinued' : 'in stock'}
           />
           <meta property='product:brand' content={data?.store?.name} />
           <meta property='product:condition' content='new' />
@@ -308,12 +321,22 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <ProductInformationDefault data={data} user={user} />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
-        {/* <div className='col mt-3 flex flex-col items-center'>
-          <div className=' items-center text-[16px] font-bold'>BARO’s 피쉬 노트</div>
-          <Chat datasets={datasets} type='product' />
-          <TastingInfo info={test} />
-        </div>
-        <div className='h-2 bg-grey-90' /> */}
+        {data && data.tastingNoteInfo && (
+          <div className='flex flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
+            <div className=' mt-3 items-center text-[16px] font-bold'>BARO’s 피쉬 노트</div>
+            <Chat type='product' data={[data.tastingNoteInfo]} name={data?.title} />
+            <TastingInfo
+              keyword={data.tastingNoteInfo.textures}
+              info={{
+                difficultyLevelOfTrimming: data.tastingNoteInfo.difficultyLevelOfTrimming,
+                recommendedCookingWay: data.tastingNoteInfo.recommendedCookingWay,
+                theScentOfTheSea: data.tastingNoteInfo.theScentOfTheSea,
+              }}
+            />
+          </div>
+        )}
+
+        {/* <div className='h-2 bg-grey-90' /> */}
         {/* Tab Content */}
         <ProductTab
           selectedTab={selectedTab}
@@ -355,12 +378,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         </div>
         {/* 하단 부분 */}
         <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
-          {/* <button
+          <button
             className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
             onClick={() => {
               if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
-              if (data?.isLike) onDeleteSaveProductsMutate({ data: { productIds: [Number(id)] } });
-              else onSaveMutate({ data: { productId: Number(id) } });
+              if (data?.isLike) onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
+              else onSaveMutate({ data: { productId: Number(id) }, isData: data.tastingNoteInfo });
             }}
           >
             <Image
@@ -374,7 +397,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                   : '/assets/icons/product/product-bookmark-off.svg'
               }
             />
-          </button> */}
+          </button>
           <button
             disabled={data?.state === 'INACTIVE'}
             className={

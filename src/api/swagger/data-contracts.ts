@@ -427,6 +427,9 @@ export interface Product {
   minOrderPrice?: number;
   reviews?: Review[];
   itemCode?: string;
+  difficultyLevelOfTrimming?: string;
+  theScentOfTheSea?: string;
+  recommendedCookingWay?: string;
   /** @format int32 */
   categoryId?: number;
 }
@@ -632,6 +635,31 @@ export interface TipInfo {
   name?: string;
   title?: string;
   subTitle?: string;
+}
+
+export interface TastingNoteCreateRequest {
+  /** @format int32 */
+  orderProductInfoId?: number;
+  /** @format int32 */
+  taste1?: number;
+  /** @format int32 */
+  taste2?: number;
+  /** @format int32 */
+  taste3?: number;
+  /** @format int32 */
+  taste4?: number;
+  /** @format int32 */
+  taste5?: number;
+  /** @format int32 */
+  texture1?: number;
+  /** @format int32 */
+  texture2?: number;
+  /** @format int32 */
+  texture3?: number;
+  /** @format int32 */
+  texture4?: number;
+  /** @format int32 */
+  texture5?: number;
 }
 
 export interface StoreStateUpdateReq {
@@ -1066,6 +1094,85 @@ export interface InquiryDto {
   isMine?: boolean;
 }
 
+export interface ProductTastingNoteInquiryDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  images?: string;
+  storeName?: string;
+  productTitle?: string;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
+  taste1?: string;
+  /** @format double */
+  taste1Score?: number;
+  taste2?: string;
+  /** @format double */
+  taste2Score?: number;
+  taste3?: string;
+  /** @format double */
+  taste3Score?: number;
+  taste4?: string;
+  /** @format double */
+  taste4Score?: number;
+  taste5?: string;
+  /** @format double */
+  taste5Score?: number;
+  texture1?: string;
+  /** @format double */
+  texture1Score?: number;
+  texture2?: string;
+  /** @format double */
+  texture2Score?: number;
+  texture3?: string;
+  /** @format double */
+  texture3Score?: number;
+  texture4?: string;
+  /** @format double */
+  texture4Score?: number;
+  texture5?: string;
+  /** @format double */
+  texture5Score?: number;
+  difficultyLevelOfTrimming?: string;
+  theScentOfTheSea?: string;
+  recommendedCookingWay?: string;
+  textures?: TastingNoteTextures;
+  tastes?: TastingNoteTastes;
+}
+
+export interface ProductTastingNoteResponse {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  image?: string;
+  productTitle?: string;
+  storeName?: string;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
+  tastes?: TastingNoteTaste[];
+  textures?: TastingNoteTexture[];
+  difficultyLevelOfTrimming?: string;
+  theScentOfTheSea?: string;
+  recommendedCookingWay?: string[];
+  productInfo?: ProductTastingNoteInquiryDto;
+}
+
 export interface ReviewTotalStatistic {
   /** @format int32 */
   taste?: number;
@@ -1113,7 +1220,6 @@ export interface SimpleProductDto {
   /** @format float */
   pointRate?: number;
   store?: SimpleStore;
-  isLike?: boolean;
   /** @format int32 */
   discountPrice?: number;
   /** @format int32 */
@@ -1126,6 +1232,29 @@ export interface SimpleProductDto {
   comparedProduct?: ProductListDto[];
   reviews?: ReviewDto[];
   inquiries?: InquiryDto[];
+  isLike?: boolean;
+  tastingNoteInfo?: ProductTastingNoteResponse;
+  tastingNote?: ProductTastingNoteResponse;
+}
+
+export interface TastingNoteTaste {
+  taste?: string;
+  /** @format double */
+  score?: number;
+}
+
+export interface TastingNoteTastes {
+  tastes?: TastingNoteTaste[];
+}
+
+export interface TastingNoteTexture {
+  texture?: string;
+  /** @format double */
+  score?: number;
+}
+
+export interface TastingNoteTextures {
+  textures?: TastingNoteTexture[];
 }
 
 export interface UpdateStateProductsReq {
@@ -1750,6 +1879,15 @@ export interface AddBasketReq {
   options?: AddBasketOptionReq[];
 }
 
+export interface BasketTastingNoteDeleteReq {
+  productId?: number[];
+}
+
+export interface BasketTastingNoteAddReq {
+  /** @format int32 */
+  productId?: number;
+}
+
 export interface BannerDto {
   /** @format int32 */
   id?: number;
@@ -1876,11 +2014,11 @@ export interface PageReviewDtoV2 {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2011,11 +2149,11 @@ export interface PageAdminReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2051,11 +2189,11 @@ export interface PageUserInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2084,11 +2222,11 @@ export interface PageProductListDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2125,12 +2263,19 @@ export interface PageTip {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
+}
+
+export interface CustomResponseListProductTastingNoteResponse {
+  isSuccess?: boolean;
+  code?: string;
+  data?: ProductTastingNoteResponse[];
+  errorMsg?: string;
 }
 
 export interface CustomResponseListStoreDto {
@@ -2172,11 +2317,11 @@ export interface PageStoreDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2256,11 +2401,11 @@ export interface PageOrderProductInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2282,11 +2427,11 @@ export interface PageSettlementDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2385,11 +2530,11 @@ export interface PageReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2411,11 +2556,11 @@ export interface PageReportDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2491,11 +2636,11 @@ export interface PageSimpleProductDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2533,11 +2678,11 @@ export interface PageOrderDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2592,11 +2737,11 @@ export interface PageNotification {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2618,11 +2763,11 @@ export interface PageNotice {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2691,11 +2836,11 @@ export interface PageInquiryDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2829,11 +2974,11 @@ export interface PageCurationDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2880,11 +3025,11 @@ export interface PageCouponDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3002,6 +3147,41 @@ export interface CustomResponseListBasketProductDto {
   errorMsg?: string;
 }
 
+export interface CustomResponseListTastingNoteCompareBasketProductDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: TastingNoteCompareBasketProductDto[];
+  errorMsg?: string;
+}
+
+export interface TastingNoteCompareBasketProductDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
+  image?: string;
+  title?: string;
+  isNeedTaxation?: boolean;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int64 */
+  reviewCount?: number;
+  isLike?: boolean;
+  /** @format int32 */
+  storeId?: number;
+  storeName?: string;
+  /** @format int32 */
+  minOrderPrice?: number;
+  storeImage?: string;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  parentCategoryId?: number;
+  tastingNoteExists?: boolean;
+}
+
 export interface AdminLogDto {
   id?: string;
   type?: 'USER' | 'PARTNER' | 'PRODUCT' | 'ORDER' | 'SETTLEMENT' | 'REPORT' | 'INQUIRY' | 'COUPON';
@@ -3029,11 +3209,11 @@ export interface PageAdminLogDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3055,11 +3235,11 @@ export interface PageAdmin {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3089,7 +3269,7 @@ export interface DeleteCompareSetReq {
 }
 
 export interface DeleteSaveProductReq {
-  productIds?: number[];
+  productId?: number[];
 }
 
 export interface DeleteBasketReq {
@@ -3236,6 +3416,8 @@ export interface AddTipPayload {
 }
 
 export type AddTipData = CustomResponseTip;
+
+export type CreateTastingNoteData = CustomResponseBoolean;
 
 export interface UpdateStoreStatePayload {
   data: StoreStateUpdateReq;
@@ -3702,6 +3884,18 @@ export interface AddBasketPayload {
 
 export type AddBasketData = CustomResponseBoolean;
 
+export interface DeleteTastingNoteToBasketPayload {
+  data: BasketTastingNoteDeleteReq;
+}
+
+export type DeleteTastingNoteToBasketData = CustomResponseBoolean;
+
+export interface AddTastingNoteToBasketPayload {
+  data: BasketTastingNoteAddReq;
+}
+
+export type AddTastingNoteToBasketData = CustomResponseBoolean;
+
 export interface UpdateBannerPayload {
   type?: 'NONE' | 'CURATION' | 'NOTICE' | 'CATEGORY' | 'MAIN' | 'PC_WEB' | 'MY_PAGE';
   /** @format binary */
@@ -3820,6 +4014,10 @@ export type DeleteTipData = CustomResponseBoolean;
 export type SelectTipList1Data = CustomResponsePageTip;
 
 export type SelectTipInfoData = CustomResponseTipInfo;
+
+export type GetMyProductTastingNotesData = CustomResponseObject;
+
+export type GetMyProductTastingNotes1Data = CustomResponseListProductTastingNoteResponse;
 
 export type SelectStoreListData = CustomResponseListStoreDto;
 
@@ -4024,6 +4222,8 @@ export type SelectCategoriesData = CustomResponseListCategory;
 export type SelectBasketData = CustomResponseListBasketProductDto;
 
 export type CountBasketData = CustomResponseInteger;
+
+export type GetTastingNoteBasketData = CustomResponseListTastingNoteCompareBasketProductDto;
 
 export type SelectBannerData = CustomResponseBannerDto;
 

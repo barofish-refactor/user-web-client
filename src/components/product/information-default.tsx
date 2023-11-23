@@ -202,7 +202,7 @@ const InformationDefault = ({ data, user }: Props) => {
           </div>
         </Link>
       </div>
-      <div className='h-2 bg-grey-90' />
+      {/* <div className='h-2 bg-grey-90' /> */}
     </div>
   );
 };
