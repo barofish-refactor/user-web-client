@@ -64,7 +64,6 @@ const CompareDetail: NextPageWithLayout = () => {
       enabled: !!id && !!type,
     },
   );
-  console.log(set, 'set');
 
   // const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
   //   async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
