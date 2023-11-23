@@ -30,7 +30,7 @@ const CompareNewItem = ({ data, onMutate, onDeleteSaveProductsMutate }: Props) =
           className='absolute right-1 top-1.5'
           onClick={e => {
             e.preventDefault();
-            if (data.isLike) onDeleteSaveProductsMutate({ data: { productIds: [data.id ?? -1] } });
+            if (data.isLike) onDeleteSaveProductsMutate({ data: { productId: [data.id ?? -1] } });
             else onMutate({ data: { productId: data.id } });
           }}
         >
