@@ -40,16 +40,19 @@ const CompareDetail: NextPageWithLayout = () => {
         ? (await client()).selectCompareSet(Number(id))
         : (await client()).getMyProductTastingNotes1({ productIds: String(id) }));
       if (res.data.isSuccess) {
-        const Data = res.data.data.map((item: any) => {
-          return {
-            tastes: item.tastes,
-            textures: item.textures,
-            recommendedCookingWay: item.recommendedCookingWay,
-            difficultyLevelOfTrimming: item.difficultyLevelOfTrimming,
-            theScentOfTheSea: item.theScentOfTheSea,
-          };
-        });
-        setChatData(Data);
+        if (res.data.data) {
+          const Data = res.data.data.map((item: any) => {
+            return {
+              tastes: item.tastes,
+              textures: item.textures,
+              recommendedCookingWay: item.recommendedCookingWay,
+              difficultyLevelOfTrimming: item.difficultyLevelOfTrimming,
+              theScentOfTheSea: item.theScentOfTheSea,
+            };
+          });
+          setChatData(Data);
+        }
+
         return res.data.data;
       } else {
         setAlert({
