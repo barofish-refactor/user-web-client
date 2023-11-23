@@ -233,7 +233,7 @@ const CompareDetail: NextPageWithLayout = () => {
         })}
       >
         {set &&
-          set.map((v, idx) => {
+          set.map((v: any, idx: number) => {
             // if (idx === 0) return null;
             // if (idx === 0) {
             //   const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
