@@ -278,7 +278,7 @@ const CompareDetail: NextPageWithLayout = () => {
                   <p className='mb-2 line-clamp-1 text-[13px] font-bold -tracking-[0.05em] text-[#3c3b3b]'>
                     식감
                   </p>
-                  {v.textures.map((item: { texture: string }, idx: number) => {
+                  {v.textures.map((item: any, idx: number) => {
                     return (
                       <p
                         key={idx}
