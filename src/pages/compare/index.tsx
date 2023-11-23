@@ -48,7 +48,6 @@ const Storage: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-  console.log(data, 'getTastingNoteBasket');
 
   const { data: set, refetch: setRefetch } = useQuery(queryKey.compareSet.lists, async () => {
     const res = await (await client()).selectCompareSetList();

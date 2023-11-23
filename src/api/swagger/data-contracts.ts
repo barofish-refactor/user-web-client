@@ -873,6 +873,7 @@ export interface ProductListDto {
   /** @format int32 */
   parentCategoryId?: number;
   filterValues?: ProductFilterValueDto[];
+  isTastingNoteExists?: boolean;
 }
 
 export interface ReviewDto {
@@ -2026,12 +2027,12 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
-  unpaged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  paged?: boolean;
+  unpaged?: boolean;
 }
 
 export interface ReviewDtoV2 {
@@ -2070,8 +2071,8 @@ export interface ReviewEvaluationSummaryDto {
 
 export interface SortObject {
   empty?: boolean;
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
 }
 
 export interface StoreReviewDto {
