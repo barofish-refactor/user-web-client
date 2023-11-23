@@ -24,6 +24,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
     const target = e.currentTarget;
     target.src = '/assets/icons/common/default-image.png';
   };
+  console.log(dataDto);
 
   return (
     <Link
@@ -49,7 +50,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
             onClick={e => {
               e.preventDefault();
               if (dataDto.isLike)
-                onDeleteSaveProductsMutate({ data: { productIds: [dataDto.id ?? -1] } });
+                onDeleteSaveProductsMutate({ data: { productId: [dataDto.id ?? -1] } });
               else onMutate({ data: { productId: dataDto.id } });
             }}
           >
