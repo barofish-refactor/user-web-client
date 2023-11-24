@@ -41,7 +41,17 @@ const Chat = ({ data }: Props) => {
       backgroundColor: bgArr[idx] ?? 'gray',
     };
   });
-  const labelName = data.map((item: any) => item?.tastes?.map((item2: any) => item2.taste));
+  const labelName = data.map((item: any) =>
+    item?.tastes?.map((item2: any) => {
+      let itemName;
+      if (item2.taste === 'oily') return (itemName = '기름진맛');
+      if (item2.taste === 'sweet') return (itemName = '단맛');
+      if (item2.taste === 'lightTaste') return (itemName = '담백한맛');
+      if (item2.taste === 'umami') return (itemName = '감칠맛');
+      if (item2.taste === 'salty') return (itemName = '짠맛');
+      return itemName;
+    }),
+  );
   const chartProps = {
     labels: labelName[0],
     datasets: chartData ?? '',

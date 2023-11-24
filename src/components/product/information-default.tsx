@@ -13,10 +13,11 @@ interface Props {
   data?: SimpleProductDto;
   user: UserInfoDto | undefined;
   setSelectedTab: (value: number) => void;
+  isTasting: number;
 }
 
 /** 상품 상세 - 기본 정보 */
-const InformationDefault = ({ data, user, setSelectedTab }: Props) => {
+const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) => {
   const [point, setPoint] = useState<number>(0);
   const router = useRouter();
   const { id } = router.query;
@@ -91,7 +92,11 @@ const InformationDefault = ({ data, user, setSelectedTab }: Props) => {
           className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'
           onClick={() => {
             setSelectedTab(1);
-            window.scrollTo({ top: 810, left: 0, behavior: 'auto' });
+            if (isTasting > 0) {
+              window.scrollTo({ top: 810, left: 0, behavior: 'auto' });
+            } else {
+              window.scrollTo({ top: 1300, left: 0, behavior: 'auto' });
+            }
             sessionStorage.setItem(
               'productView',
               JSON.stringify({

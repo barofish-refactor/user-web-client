@@ -75,6 +75,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
             <div className='flex-low flex flex-wrap '>
               {keyword &&
                 keyword.map((item: { texture: string }, idx: number) => {
+                  // let textChange= item
                   let itemText;
                   if (idx === keyword.length - 1) {
                     itemText = item.texture;

@@ -93,7 +93,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-  console.log(data, deliverInfo);
+  console.log(data);
 
   const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
     async (args: SaveProductPayload) =>
@@ -314,10 +314,15 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         </div>
         {/* content */}
         <ProductBanner image={data?.images ?? []} />
-        <ProductInformationDefault data={data} user={user} setSelectedTab={setSelectedTab} />
+        <ProductInformationDefault
+          data={data}
+          user={user}
+          setSelectedTab={setSelectedTab}
+          isTasting={data.tastingNoteInfo.length ?? 0}
+        />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
-        {data && data.tastingNoteInfo[0] && (
+        {data && data.tastingNoteInfo.length > 0 && (
           <div className='flex  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-10 items-center text-[16px] font-bold'>피쉬 테이스팅 노트</div>
             <Chat data={data.tastingNoteInfo} />
