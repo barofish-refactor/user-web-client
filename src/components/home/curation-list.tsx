@@ -30,7 +30,7 @@ export default function CurationList({ mainData }: Props) {
       console.log('dha');
       refetch();
       return;
-    } else setAlert({ message: res.data.errorMsg + 'd' ?? '' });
+    } else console.log(res.data.errorMsg);
   });
 
   return (

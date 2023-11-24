@@ -32,7 +32,7 @@ interface Props {
 }
 
 const Chat = ({ data }: Props) => {
-  const bgArr = ['rgb(23 68 191 / 0.8)', 'rgb(132 158 230 / 0.8)'];
+  const bgArr = ['rgb(91 131 255 / 0.8)', 'rgb(132 158 230 / 0.8)'];
 
   const chartData = data.map((item: { tastes: { score: number }[] }, idx: number) => {
     return {

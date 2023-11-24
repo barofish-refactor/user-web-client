@@ -35,7 +35,7 @@ const gnbList: GnbType[] = [
     paddingTop: 2,
   },
   {
-    title: '노트저장소',
+    title: '피쉬저장소',
     path: '/compare',
     activeIcon: '/assets/icons/common/gnb-compare-active.svg',
     inactiveIcon: '/assets/icons/common/gnb-compare.svg',

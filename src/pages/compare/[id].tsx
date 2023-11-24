@@ -44,7 +44,7 @@ const CompareDetail: NextPageWithLayout = () => {
   const { id, type } = router.query;
   const [selectedTag, setSelectedTag] = useState<number[]>([]);
   const [chatData, setChatData] = useState<ChatProps[]>([]);
-  console.log(chatData, 'idid', [id]);
+
   const [compareList, setCompareList] = useState<CompareFilterDto[]>([]);
   const { data: set, isLoading } = useQuery(
     queryKey.compareSet.detail(id),
@@ -102,7 +102,6 @@ const CompareDetail: NextPageWithLayout = () => {
   // }, [set, isLoading]);
   // border border-[#E2E2E2]
   // border-b border-r border-[#E2E2E2] bg-[#F7F7F7]
-  console.log(chatData, 'chatData');
 
   return (
     <div className='pb-[140px] max-md:w-[100vw]'>
@@ -110,7 +109,7 @@ const CompareDetail: NextPageWithLayout = () => {
       <div className='sticky top-0 z-50 flex h-[56px] items-center bg-white pl-4 pr-[18px]'>
         <BackButton />
         <p className='flex-1 text-center text-[16px] font-bold -tracking-[0.03em] text-grey-10'>
-          비교하기
+          피쉬 비교하기
         </p>
         <Link href='/product/cart'>
           <CartIcon />
@@ -147,7 +146,7 @@ const CompareDetail: NextPageWithLayout = () => {
                   <div
                     className={cm(
                       'absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-br-lg bg-[#1744BF]/90',
-                      { 'bg-[#1744BF]/90': idx === 0 },
+                      { 'bg-[#5B83FF]/90': idx === 0 },
                       { 'bg-[#849ee6]/90': idx === 1 },
                     )}
                   >
@@ -266,7 +265,7 @@ const CompareDetail: NextPageWithLayout = () => {
                   className={cm(
                     'mb-[10px] flex h-7 w-full items-center justify-start rounded pl-2',
                     {
-                      'bg-[#1744BF]/90': idx + 1 === 1,
+                      'bg-[#6F91F8]/90': idx + 1 === 1,
                       'bg-[#849ee6]/90': idx + 1 === 2,
                     },
                   )}
@@ -307,7 +306,7 @@ const CompareDetail: NextPageWithLayout = () => {
                           className={cm(
                             ' mx-[1.5px] h-[18px]  w-[18px] justify-start rounded-full border border-grey-60',
                             {
-                              'bg-[#5B83FF]': isClass,
+                              'bg-[#6F91F8]': isClass,
                             },
                             {
                               'bg-transparent': !isClass,

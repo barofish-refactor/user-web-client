@@ -24,7 +24,6 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
     const target = e.currentTarget;
     target.src = '/assets/icons/common/default-image.png';
   };
-  console.log(dataDto);
 
   return (
     <Link

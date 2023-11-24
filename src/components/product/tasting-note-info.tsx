@@ -24,7 +24,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
   return (
     <>
       <div className='ml-[20px] flex h-[180px] w-full flex-col items-start px-[20px] text-[18px]'>
-        <div className='mb-[10px] mt-3 flex w-[100%] flex-row'>
+        <div className='mb-[10px] flex w-[100%] flex-row'>
           <div className='flex w-[50%] flex-col'>
             <span className={spanClass}>
               <Image
@@ -92,7 +92,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
             </div>
           </div>
         </div>
-        <div className='mb-[10px] mt-3 flex w-[100%] flex-row'>
+        <div className='mb-[30px] mt-3 flex w-[100%] flex-row pb-3'>
           <div className='flex w-[50%] flex-col'>
             <span className={spanClass}>
               <Image

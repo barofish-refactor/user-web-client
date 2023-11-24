@@ -104,7 +104,7 @@ const Storage: NextPageWithLayout = () => {
       <div className='sticky top-0 z-50 flex h-[56px] items-center bg-white pl-4 pr-[18px]'>
         <BackButton />
         <p className='flex-1 text-center text-[16px] font-bold -tracking-[0.03em] text-grey-10'>
-          저장함
+          피쉬저장소
         </p>
         <Link href='/product/cart'>
           <CartIcon />
@@ -195,7 +195,7 @@ const Storage: NextPageWithLayout = () => {
               )}
             </div>
             <div className='mt-2.5 grid grid-cols-3 gap-x-1.5 gap-y-[22px] px-4'>
-              {(data ?? []).map((v, idx) => {
+              {(data ?? []).map((v: any, idx: number) => {
                 return (
                   <Link
                     key={`storage${idx}`}

@@ -23,8 +23,7 @@ const Partner = () => {
       deleteCookie(ACCESS_TOKEN);
       deleteCookie(REFRESH_TOKEN);
       return;
-    }
-    // else setAlert({ message: res.data.errorMsg + 'p' ?? '' });
+    } else console.log(res.data.errorMsg);
   });
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(
