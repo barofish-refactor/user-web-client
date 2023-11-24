@@ -37,11 +37,11 @@ const Chat = ({ data }: Props) => {
   const chartData = data.map((item: { tastes: { score: number }[] }, idx: number) => {
     return {
       label: '',
-      data: item.tastes.map((item: { score: number }) => item.score) ?? [],
+      data: item?.tastes?.map((item: { score: number }) => item.score) ?? [],
       backgroundColor: bgArr[idx] ?? 'gray',
     };
   });
-  const labelName = data.map((item: any) => item.tastes.map((item2: any) => item2.taste));
+  const labelName = data.map((item: any) => item?.tastes?.map((item2: any) => item2.taste));
   const chartProps = {
     labels: labelName[0],
     datasets: chartData ?? '',

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import { type UserInfoDto, type SimpleProductDto } from 'src/api/swagger/data-contracts';
@@ -11,12 +12,14 @@ import { calcDiscountRate, formatToLocaleString, setDeliverDate } from 'src/util
 interface Props {
   data?: SimpleProductDto;
   user: UserInfoDto | undefined;
+  setSelectedTab: (value: number) => void;
 }
 
 /** 상품 상세 - 기본 정보 */
-const InformationDefault = ({ data, user }: Props) => {
+const InformationDefault = ({ data, user, setSelectedTab }: Props) => {
   const [point, setPoint] = useState<number>(0);
-
+  const router = useRouter();
+  const { id } = router.query;
   useEffect(() => {
     if (data?.discountPrice && data?.pointRate) {
       // 데이터 확인
@@ -84,7 +87,20 @@ const InformationDefault = ({ data, user }: Props) => {
         <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
           {data?.title}
         </p>
-        <p className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'>
+        <p
+          className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'
+          onClick={() => {
+            setSelectedTab(1);
+            window.scrollTo({ top: 810, left: 0, behavior: 'auto' });
+            sessionStorage.setItem(
+              'productView',
+              JSON.stringify({
+                id,
+                tabId: 1,
+              }),
+            );
+          }}
+        >
           {`${formatToLocaleString(data?.reviewCount)}개의 후기`}
         </p>
         <div className='mt-3 flex items-center justify-between'>

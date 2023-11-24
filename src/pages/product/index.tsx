@@ -229,6 +229,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   }, [id]);
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
+  console.log(data.tastingNoteInfo.length);
 
   return (
     <>
@@ -314,19 +315,19 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         </div>
         {/* content */}
         <ProductBanner image={data?.images ?? []} />
-        <ProductInformationDefault data={data} user={user} />
+        <ProductInformationDefault data={data} user={user} setSelectedTab={setSelectedTab} />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
-        {data && data.tastingNoteInfo && (
+        {data && data.tastingNoteInfo[0] && (
           <div className='flex  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-10 items-center text-[16px] font-bold'>피쉬 테이스팅 노트</div>
             <Chat data={data.tastingNoteInfo} />
             <TastingInfo
-              keyword={data.tastingNoteInfo[0].textures}
+              keyword={data.tastingNoteInfo[0]?.textures ?? []}
               info={{
-                difficultyLevelOfTrimming: data.tastingNoteInfo[0].difficultyLevelOfTrimming,
-                recommendedCookingWay: data.tastingNoteInfo[0].recommendedCookingWay,
-                theScentOfTheSea: data.tastingNoteInfo[0].theScentOfTheSea,
+                difficultyLevelOfTrimming: data.tastingNoteInfo[0]?.difficultyLevelOfTrimming ?? '',
+                recommendedCookingWay: data.tastingNoteInfo[0]?.recommendedCookingWay ?? '',
+                theScentOfTheSea: data.tastingNoteInfo[0]?.theScentOfTheSea ?? '',
               }}
             />
           </div>
