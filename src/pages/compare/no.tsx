@@ -1,13 +1,13 @@
 // import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 // import { getCookie } from 'cookies-next';
-import { type GetServerSideProps } from 'next';
+// import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
 // import Image from 'next/image';
 // import Link from 'next/link';
 // import { useRouter } from 'next/router';
 // import { useState } from 'react';
 // import { useInView } from 'react-intersection-observer';
-import { client } from 'src/api/client';
+// import { client } from 'src/api/client';
 import {
   type CompareMain,
   // type DeleteSaveProductsPayload,
@@ -16,7 +16,7 @@ import {
 // import { ContentType } from 'src/api/swagger/http-client';
 // import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
-import { CompareNewItem } from 'src/components/compare';
+// import { CompareNewItem } from 'src/components/compare';
 // import { queryKey } from 'src/query-key';
 // import { useAlertStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';

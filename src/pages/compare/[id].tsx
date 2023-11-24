@@ -7,10 +7,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { client } from 'src/api/client';
-import {
-  // type AddCompareSetPayload,
-  type CompareFilterDto,
-} from 'src/api/swagger/data-contracts';
+import // type AddCompareSetPayload,
+// type CompareFilterDto,
+'src/api/swagger/data-contracts';
 import { CartIcon } from 'src/components/common';
 import Chat from 'src/components/common/chat';
 import Layout from 'src/components/common/layout';
@@ -19,7 +18,11 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
-import { calcDiscountRate, formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import {
+  calcDiscountRate,
+  formatToLocaleString,
+  // formatToBlob
+} from 'src/utils/functions';
 
 // const initialTable: CompareProductDto[] = [{}];
 interface ChatProps {
@@ -42,11 +45,11 @@ const CompareDetail: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
 
   const { id, type } = router.query;
-  const [selectedTag, setSelectedTag] = useState<number[]>([]);
+  // const [selectedTag, setSelectedTag] = useState<number[]>([]);
   const [chatData, setChatData] = useState<ChatProps[]>([]);
 
-  const [compareList, setCompareList] = useState<CompareFilterDto[]>([]);
-  const { data: set, isLoading } = useQuery(
+  // const [compareList, setCompareList] = useState<CompareFilterDto[]>([]);
+  const { data: set } = useQuery(
     queryKey.compareSet.detail(id),
     async () => {
       const res = await (type === 'id'
