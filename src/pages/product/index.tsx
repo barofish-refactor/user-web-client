@@ -309,6 +309,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <Link href='/product/cart'>
               <CartIcon />
             </Link>
+            [{}]
             <ShareButton />
           </div>
         </div>
@@ -320,13 +321,13 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         {data && data.tastingNoteInfo && (
           <div className='flex flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-3 items-center text-[16px] font-bold'>BARO’s 피쉬 노트</div>
-            <Chat data={[data.tastingNoteInfo] ?? []} />
+            <Chat data={data.tastingNoteInfo ?? []} />
             <TastingInfo
-              keyword={data.tastingNoteInfo.textures ?? []}
+              keyword={data.tastingNoteInfo[0].textures ?? []}
               info={{
-                difficultyLevelOfTrimming: data.tastingNoteInfo.difficultyLevelOfTrimming ?? '',
-                recommendedCookingWay: data.tastingNoteInfo.recommendedCookingWay ?? '',
-                theScentOfTheSea: data.tastingNoteInfo.theScentOfTheSea ?? '',
+                difficultyLevelOfTrimming: data.tastingNoteInfo[0].difficultyLevelOfTrimming ?? '',
+                recommendedCookingWay: data.tastingNoteInfo[0].recommendedCookingWay ?? '',
+                theScentOfTheSea: data.tastingNoteInfo[0].theScentOfTheSea ?? '',
               }}
             />
           </div>
