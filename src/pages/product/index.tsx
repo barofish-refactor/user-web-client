@@ -318,7 +318,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           data={data}
           user={user}
           setSelectedTab={setSelectedTab}
-          isTasting={data.tastingNoteInfo.length ?? 0}
+          isTasting={data.tastingNoteInfo ?? 0}
         />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
