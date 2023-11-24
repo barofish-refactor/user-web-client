@@ -1,111 +1,111 @@
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { getCookie } from 'cookies-next';
+// import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+// import { getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+// import Image from 'next/image';
+// import Link from 'next/link';
+// import { useRouter } from 'next/router';
+// import { useState } from 'react';
+// import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import {
   type CompareMain,
-  type DeleteSaveProductsPayload,
-  type SaveProductPayload,
+  // type DeleteSaveProductsPayload,
+  // type SaveProductPayload,
 } from 'src/api/swagger/data-contracts';
-import { ContentType } from 'src/api/swagger/http-client';
-import { CartIcon } from 'src/components/common';
+// import { ContentType } from 'src/api/swagger/http-client';
+// import { CartIcon } from 'src/components/common';
 import Layout from 'src/components/common/layout';
 import { CompareNewItem } from 'src/components/compare';
-import { queryKey } from 'src/query-key';
-import { useAlertStore, useToastStore } from 'src/store';
+// import { queryKey } from 'src/query-key';
+// import { useAlertStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import {
-  calcDiscountRate,
-  formatToBlob,
-  formatToLocaleString,
-  setSquareBrackets,
-} from 'src/utils/functions';
-import { VARIABLES } from 'src/variables';
+// import {
+//   calcDiscountRate,
+//   formatToBlob,
+//   formatToLocaleString,
+//   setSquareBrackets,
+// } from 'src/utils/functions';
+// import { VARIABLES } from 'src/variables';
 import 'swiper/css';
-import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Swiper, SwiperSlide } from 'swiper/react';
 
-const perView = 10;
+// const perView = 10;
 
 interface Props {
   initialData: CompareMain;
 }
 
-/** 비교하기 */
+// /** 비교하기 */
 const Compare: NextPageWithLayout<Props> = ({}) => {
-  const router = useRouter();
-  const { setAlert } = useAlertStore();
-  const { setToast } = useToastStore();
-  const [refreshIndex, setRefreshIndex] = useState<number>(0);
+  //   const router = useRouter();
+  //   const { setAlert } = useAlertStore();
+  //   const { setToast } = useToastStore();
+  //   const [refreshIndex, setRefreshIndex] = useState<number>(0);
 
-  const { data, refetch, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    queryKey.compareMain,
-    async ({ pageParam = 1 }) => {
-      if (pageParam === -1) return;
-      const res = await (await client()).selectMain({ page: pageParam, take: perView });
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
-      }
-    },
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        const nextId = allPages.length;
-        return lastPage?.newCompareProduct?.products?.length !== 0 ? nextId + 1 : -1;
-      },
-    },
-  );
+  //   const { data, refetch, hasNextPage, fetchNextPage } = useInfiniteQuery(
+  //     queryKey.compareMain,
+  //     async ({ pageParam = 1 }) => {
+  //       if (pageParam === -1) return;
+  //       const res = await (await client()).selectMain({ page: pageParam, take: perView });
+  //       if (res.data.isSuccess) {
+  //         return res.data.data;
+  //       } else {
+  //         throw new Error(res.data.code + ': ' + res.data.errorMsg);
+  //       }
+  //     },
+  //     {
+  //       getNextPageParam: (lastPage, allPages) => {
+  //         const nextId = allPages.length;
+  //         return lastPage?.newCompareProduct?.products?.length !== 0 ? nextId + 1 : -1;
+  //       },
+  //     },
+  //   );
 
-  const { mutateAsync: saveProduct, isLoading } = useMutation(
-    async (args: SaveProductPayload) =>
-      await (await client()).saveProduct(args, { type: ContentType.FormData }),
-  );
+  //   const { mutateAsync: saveProduct, isLoading } = useMutation(
+  //     async (args: SaveProductPayload) =>
+  //       await (await client()).saveProduct(args, { type: ContentType.FormData }),
+  //   );
 
-  const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
-    async (args: DeleteSaveProductsPayload) =>
-      await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
-  );
+  //   const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
+  //     async (args: DeleteSaveProductsPayload) =>
+  //       await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),
+  //   );
 
-  const onMutate = ({ data }: SaveProductPayload, isRefetch = true) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
-    if (isLoading) return;
-    saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
-      .then(res => {
-        if (res.data.isSuccess) {
-          setToast({
-            text: '1개의 상품이 저장함에 담겼어요.',
-            onClick: () => router.push('/compare/storage'),
-          });
-          if (isRefetch) refetch();
-        } else setAlert({ message: res.data.errorMsg ?? '' });
-      })
-      .catch(error => console.log(error));
-  };
+  //   const onMutate = ({ data }: SaveProductPayload, isRefetch = true) => {
+  //     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+  //     if (isLoading) return;
+  //     saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
+  //       .then(res => {
+  //         if (res.data.isSuccess) {
+  //           setToast({
+  //             text: '1개의 상품이 저장함에 담겼어요.',
+  //             onClick: () => router.push('/compare/storage'),
+  //           });
+  //           if (isRefetch) refetch();
+  //         } else setAlert({ message: res.data.errorMsg ?? '' });
+  //       })
+  //       .catch(error => console.log(error));
+  //   };
 
-  const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
-    if (isDeleteLoading) return;
-    deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
-      .then(res => {
-        if (res.data.isSuccess) {
-          refetch();
-        } else setAlert({ message: res.data.errorMsg ?? '' });
-      })
-      .catch(error => console.log(error));
-  };
+  //   const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
+  //     if (isDeleteLoading) return;
+  //     deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
+  //       .then(res => {
+  //         if (res.data.isSuccess) {
+  //           refetch();
+  //         } else setAlert({ message: res.data.errorMsg ?? '' });
+  //       })
+  //       .catch(error => console.log(error));
+  //   };
 
-  const { ref } = useInView({
-    initialInView: false,
-    skip: !hasNextPage,
-    onChange: inView => {
-      if (inView) fetchNextPage();
-    },
-  });
+  //   const { ref } = useInView({
+  //     initialInView: false,
+  //     skip: !hasNextPage,
+  //     onChange: inView => {
+  //       if (inView) fetchNextPage();
+  //     },
+  //   });
 
   return (
     <></>
@@ -461,11 +461,11 @@ Compare.getLayout = page => (
   </Layout>
 );
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectMain } = await client();
-  return {
-    props: { initialData: (await selectMain({ page: 1, take: perView })).data.data },
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const { selectMain } = await client();
+//   return {
+//     props: { initialData: (await selectMain({ page: 1, take: perView })).data.data },
+//   };
+// };
 
 export default Compare;
