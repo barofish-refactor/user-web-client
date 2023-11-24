@@ -309,7 +309,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <Link href='/product/cart'>
               <CartIcon />
             </Link>
-            [{}]
             <ShareButton />
           </div>
         </div>

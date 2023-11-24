@@ -14,19 +14,21 @@ import type { ChartOptions } from 'chart.js';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 interface Props {
-  data: {
-    tastes: {
-      taste: string;
-      score: number | string;
-    }[];
-    textures: {
-      texture: string;
-      score: number;
-    }[];
-    recommendedCookingWay: string;
-    difficultyLevelOfTrimming: string;
-    theScentOfTheSea: string;
-  }[];
+  data:
+    | {
+        tastes: {
+          taste: string;
+          score: number | string;
+        }[];
+        textures: {
+          texture: string;
+          score: number;
+        }[];
+        recommendedCookingWay: string;
+        difficultyLevelOfTrimming: string;
+        theScentOfTheSea: string;
+      }[]
+    | any;
 }
 
 const Chat = ({ data }: Props) => {
