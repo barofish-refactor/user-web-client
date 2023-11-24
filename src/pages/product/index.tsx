@@ -317,7 +317,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <ProductInformationDefault data={data} user={user} />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
-        {data && data.tastingNoteInfo && (
+        {data.tastingNoteInfo && (
           <div className='flex flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-3 items-center text-[16px] font-bold'>BARO’s 피쉬 노트</div>
             <Chat data={[data.tastingNoteInfo]} />
@@ -384,6 +384,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                   return setAlert({
                     message: '테이스팅노트 데이터가 없습니다.',
                   });
+
                 onSaveMutate({ data: { productId: Number(id) } });
               }
             }}
