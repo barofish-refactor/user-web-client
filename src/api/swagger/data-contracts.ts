@@ -873,7 +873,7 @@ export interface ProductListDto {
   /** @format int32 */
   parentCategoryId?: number;
   filterValues?: ProductFilterValueDto[];
-  isTastingNoteExists?: boolean;
+  tastingNoteExists?: boolean;
 }
 
 export interface ReviewDto {
