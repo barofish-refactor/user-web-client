@@ -320,18 +320,17 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         {data && data.tastingNoteInfo && (
           <div className='flex  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-10 items-center text-[16px] font-bold'>피쉬 테이스팅 노트</div>
-            <Chat data={data.tastingNoteInfo ?? []} />
+            <Chat data={data.tastingNoteInfo} />
             <TastingInfo
-              keyword={data.tastingNoteInfo[0].textures ?? []}
+              keyword={data.tastingNoteInfo[0].textures}
               info={{
-                difficultyLevelOfTrimming: data.tastingNoteInfo[0].difficultyLevelOfTrimming ?? '',
-                recommendedCookingWay: data.tastingNoteInfo[0].recommendedCookingWay ?? '',
-                theScentOfTheSea: data.tastingNoteInfo[0].theScentOfTheSea ?? '',
+                difficultyLevelOfTrimming: data.tastingNoteInfo[0].difficultyLevelOfTrimming,
+                recommendedCookingWay: data.tastingNoteInfo[0].recommendedCookingWay,
+                theScentOfTheSea: data.tastingNoteInfo[0].theScentOfTheSea,
               }}
             />
           </div>
         )}
-
         {/* <div className='h-2 bg-grey-90' /> */}
         {/* Tab Content */}
         <ProductTab
@@ -339,7 +338,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           setSelectedTab={setSelectedTab}
           reviewCount={data?.reviewCount ?? 0}
         />
-
         <div className='min-h-[calc(100dvb-180px)]'>
           {selectedTab === 0 ? (
             <Fragment>
