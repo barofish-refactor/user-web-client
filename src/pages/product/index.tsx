@@ -229,7 +229,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   }, [id]);
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
-  console.log(data.tastingNoteInfo.length);
 
   return (
     <>
