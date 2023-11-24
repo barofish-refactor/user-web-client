@@ -16,16 +16,16 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 interface Props {
   data: {
     tastes: {
-      taste: string;
-      score: number | string;
+      taste: string | undefined;
+      score: number | string | undefined;
     }[];
     textures: {
-      texture: string;
-      score: number | string;
+      texture: string | undefined;
+      score: number | string | undefined;
     }[];
-    recommendedCookingWay: string;
-    difficultyLevelOfTrimming: string;
-    theScentOfTheSea: string;
+    recommendedCookingWay: string | undefined;
+    difficultyLevelOfTrimming: string | undefined;
+    theScentOfTheSea: string | undefined;
   }[];
 }
 
