@@ -100,14 +100,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       await (await client()).addTastingNoteToBasket(args, { type: ContentType.FormData }),
   );
 
-  const onSaveMutate = ({ data, isData }: SaveProductPayload) => {
+  const onSaveMutate = ({ data }: SaveProductPayload) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
     if (isSaveLoading) return;
 
-    if (!isData)
-      return setAlert({
-        message: '테이스팅노트 데이터가 없습니다.',
-      });
     saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
@@ -383,7 +379,13 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             onClick={() => {
               if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
               if (data?.isLike) onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
-              else onSaveMutate({ data: { productId: Number(id) }, isData: data.tastingNoteInfo });
+              else {
+                if (!data.tastingNoteInfo)
+                  return setAlert({
+                    message: '테이스팅노트 데이터가 없습니다.',
+                  });
+                onSaveMutate({ data: { productId: Number(id) } });
+              }
             }}
           >
             <Image
