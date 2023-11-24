@@ -380,7 +380,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
               if (data?.isLike) onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
               else {
-                if (!data.tastingNoteInfo)
+                if (!data?.tastingNoteInfo)
                   return setAlert({
                     message: '테이스팅노트 데이터가 없습니다.',
                   });
