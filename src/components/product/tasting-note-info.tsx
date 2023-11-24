@@ -2,15 +2,19 @@ import React from 'react';
 import cm from 'src/utils/class-merge';
 import Image from 'next/image';
 interface Props {
-  info?: {
-    difficultyLevelOfTrimming: string;
-    recommendedCookingWay: string;
-    theScentOfTheSea: string;
-  };
-  keyword?: {
-    texture: string;
-    score: number;
-  }[];
+  info?:
+    | {
+        difficultyLevelOfTrimming: string;
+        recommendedCookingWay: string;
+        theScentOfTheSea: string;
+      }
+    | any;
+  keyword?:
+    | {
+        texture: string;
+        score: number;
+      }[]
+    | any;
 }
 
 const TastingInfo = ({ info, keyword }: Props) => {
