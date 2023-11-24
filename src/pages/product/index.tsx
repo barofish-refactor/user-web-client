@@ -317,16 +317,16 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <ProductInformationDefault data={data} user={user} />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
-        {data.tastingNoteInfo && (
+        {data && data.tastingNoteInfo && (
           <div className='flex flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-3 items-center text-[16px] font-bold'>BARO’s 피쉬 노트</div>
-            <Chat data={[data.tastingNoteInfo]} />
+            <Chat data={[data.tastingNoteInfo ?? []]} />
             <TastingInfo
-              keyword={data.tastingNoteInfo.textures}
+              keyword={data.tastingNoteInfo.textures ?? []}
               info={{
-                difficultyLevelOfTrimming: data.tastingNoteInfo.difficultyLevelOfTrimming,
-                recommendedCookingWay: data.tastingNoteInfo.recommendedCookingWay,
-                theScentOfTheSea: data.tastingNoteInfo.theScentOfTheSea,
+                difficultyLevelOfTrimming: data.tastingNoteInfo.difficultyLevelOfTrimming ?? '',
+                recommendedCookingWay: data.tastingNoteInfo.recommendedCookingWay ?? '',
+                theScentOfTheSea: data.tastingNoteInfo.theScentOfTheSea ?? '',
               }}
             />
           </div>
