@@ -56,12 +56,16 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const { id, openState } = router.query;
   const { setAlert } = useAlertStore();
   const { setToast } = useToastStore();
-
+  const [isTasting, setIsTasting] = useState(false);
   const { data, refetch } = useQuery(
     queryKey.product.detail(id),
     async () => {
       const res = await (await client()).selectProduct(Number(id));
       if (res.data.isSuccess) {
+        if (res.data.data.tastingNoteInfo.length > 0) {
+          setIsTasting(true);
+        }
+
         return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -72,6 +76,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
+  console.log(isTasting);
+
   // const { data: tastingData, refetch: tastingRefetch } = useQuery(
   //   queryKey.tasting.detail(id),
   //   async () => {
@@ -93,7 +99,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-  console.log(data);
 
   const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
     async (args: SaveProductPayload) =>
@@ -322,7 +327,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
-        {data && data?.tastingNoteInfo?.length > 0 && (
+        {data && isTasting && (
           <div className='flex  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-10 items-center text-[16px] font-bold'>피쉬 테이스팅 노트</div>
             <Chat data={data.tastingNoteInfo} />
