@@ -34,14 +34,14 @@ interface Props {
 const Chat = ({ data }: Props) => {
   const bgArr = ['rgb(23 68 191 / 0.8)', 'rgb(132 158 230 / 0.8)'];
 
-  const chartData = data.map((item, idx) => {
+  const chartData = data.map((item: { tastes: { score: number }[] }, idx: number) => {
     return {
       label: '',
-      data: item.tastes.map(item => item.score),
+      data: item.tastes.map((item: { score: number }) => item.score),
       backgroundColor: bgArr[idx] ?? 'gray',
     };
   });
-  const labelName = data.map(item => item.tastes.map(item2 => item2.taste));
+  const labelName = data.map((item: any) => item.tastes.map((item2: any) => item2.taste));
   const chartProps = {
     labels: labelName[0],
     datasets: chartData,
