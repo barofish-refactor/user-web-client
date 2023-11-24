@@ -62,10 +62,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     async () => {
       const res = await (await client()).selectProduct(Number(id));
       if (res.data.isSuccess) {
-        if (res.data.data.tastingNoteInfo.length > 0) {
-          setIsTasting(true);
+        if (res.data.data) {
+          if (res.data.data.tastingNoteInfo.length > 0) setIsTasting(true);
         }
-
         return res.data.data;
       } else {
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
