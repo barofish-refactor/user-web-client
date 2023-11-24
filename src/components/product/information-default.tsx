@@ -13,7 +13,7 @@ interface Props {
   data?: SimpleProductDto;
   user: UserInfoDto | undefined;
   setSelectedTab: (value: number) => void;
-  isTasting: any;
+  isTasting?: any;
 }
 
 /** 상품 상세 - 기본 정보 */
