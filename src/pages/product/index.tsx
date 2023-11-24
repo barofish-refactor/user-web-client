@@ -72,7 +72,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
-  console.log(data, 'data상품');
   // const { data: tastingData, refetch: tastingRefetch } = useQuery(
   //   queryKey.tasting.detail(id),
   //   async () => {
@@ -94,6 +93,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+  console.log(data, deliverInfo);
 
   const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
     async (args: SaveProductPayload) =>
@@ -317,7 +317,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <ProductInformationDefault data={data} user={user} />
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
-        {data && data.tastingNoteInfo && (
+        {data && data.tastingNoteInfo[0] && (
           <div className='flex  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mt-10 items-center text-[16px] font-bold'>피쉬 테이스팅 노트</div>
             <Chat data={data.tastingNoteInfo ?? []} />

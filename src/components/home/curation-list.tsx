@@ -4,7 +4,7 @@ import { client } from 'src/api/client';
 import { type Main } from 'src/api/swagger/data-contracts';
 import { HomeCurationItem, HomePartner, HomeSubBanner } from 'src/components/home';
 import { queryKey } from 'src/query-key';
-import { useAlertStore } from 'src/store';
+
 import { VARIABLES } from 'src/variables';
 
 interface Props {
@@ -13,7 +13,6 @@ interface Props {
 }
 
 export default function CurationList({ mainData }: Props) {
-  const { setAlert } = useAlertStore();
   const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
   const { data: curationData, refetch } = useQuery(queryKey.mainCuration, async () => {
     const res = await (await client()).selectMainCurationList();
@@ -27,7 +26,6 @@ export default function CurationList({ mainData }: Props) {
     ) {
       deleteCookie(REFRESH_TOKEN);
       deleteCookie(ACCESS_TOKEN);
-      console.log('dha');
       refetch();
       return;
     } else console.log(res.data.errorMsg);

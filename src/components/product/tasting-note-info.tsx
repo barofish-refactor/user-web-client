@@ -19,7 +19,6 @@ interface Props {
 
 const TastingInfo = ({ info, keyword }: Props) => {
   const spanClass = 'flex-low flex text-[16px] font-bold leading-[24px] mb-[10px]';
-  console.log(info, keyword, 'info, keyword');
 
   return (
     <>
