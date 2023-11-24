@@ -81,6 +81,21 @@ const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) =>
     return () => clearTimeout(timer);
   }, [deliver, deliverData, timer]);
 
+  // onClick={() => {
+  //   setSelectedTab(1);
+  //   if (isTasting.length > 0) {
+  //     window.scrollTo({ top: 810, left: 0, behavior: 'auto' });
+  //   } else {
+  //     window.scrollTo({ top: 1300, left: 0, behavior: 'auto' });
+  //   }
+  //   sessionStorage.setItem(
+  //     'productView',
+  //     JSON.stringify({
+  //       id,
+  //       tabId: 1,
+  //     }),
+  //   );
+  // }}
   return (
     <div className=''>
       <div className='px-4 pb-5 pt-[15px]'>
@@ -88,24 +103,7 @@ const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) =>
         <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
           {data?.title}
         </p>
-        <p
-          className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'
-          onClick={() => {
-            setSelectedTab(1);
-            if (isTasting.length > 0) {
-              window.scrollTo({ top: 810, left: 0, behavior: 'auto' });
-            } else {
-              window.scrollTo({ top: 1300, left: 0, behavior: 'auto' });
-            }
-            sessionStorage.setItem(
-              'productView',
-              JSON.stringify({
-                id,
-                tabId: 1,
-              }),
-            );
-          }}
-        >
+        <p className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'>
           {`${formatToLocaleString(data?.reviewCount)}개의 후기`}
         </p>
         <div className='mt-3 flex items-center justify-between'>
