@@ -17,11 +17,11 @@ interface Props {
   data: {
     tastes: {
       taste: string;
-      score: number;
+      score: number | string;
     }[];
     textures: {
       texture: string;
-      score: number;
+      score: number | string;
     }[];
     recommendedCookingWay: string;
     difficultyLevelOfTrimming: string;

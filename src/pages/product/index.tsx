@@ -100,7 +100,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       await (await client()).addTastingNoteToBasket(args, { type: ContentType.FormData }),
   );
 
-  const onSaveMutate = ({ data, isData }: SaveIsData) => {
+  const onSaveMutate = ({ data, isData }: SaveProductPayload) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
     if (isSaveLoading) return;
 
