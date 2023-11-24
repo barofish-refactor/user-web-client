@@ -852,6 +852,8 @@ export interface ProductFilterValueDto {
 export interface ProductListDto {
   /** @format int32 */
   id?: number;
+  /** @format int32 */
+  productId?: number;
   state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
   image?: string;
   title?: string;
