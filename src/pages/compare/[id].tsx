@@ -281,12 +281,44 @@ const CompareDetail: NextPageWithLayout = () => {
                     식감
                   </p>
                   {v.textures.map((item: any, idx: number) => {
+                    let itmeText = item.texture;
+                    if (itmeText === 'texture1') {
+                      if (v.textures.length - 1 !== idx) {
+                        return (itmeText = '부드러워요,');
+                      } else return (itmeText = '부드러워요');
+                    }
+                    if (itmeText === 'texture2') {
+                      if (v.textures.length - 1 !== idx) {
+                        return (itmeText = '쫄깃해요,');
+                      } else return (itmeText = '쫄깃해요');
+                    }
+                    if (itmeText === 'texture3') {
+                      if (v.textures.length - 1 !== idx) {
+                        return (itmeText = '물렁해요,');
+                      } else return (itmeText = '물렁해요');
+                    }
+                    if (itmeText === 'texture4') {
+                      if (v.textures.length - 1 !== idx) {
+                        return (itmeText = '아삭해요,');
+                      } else return (itmeText = '아삭해요');
+                    }
+                    if (itmeText === 'texture5') {
+                      if (v.textures.length - 1 !== idx) {
+                        return (itmeText = '안물렁거려요,');
+                      } else return (itmeText = '안물렁거려요');
+                    }
+                    if (itmeText === 'texture6') {
+                      if (v.textures.length - 1 !== idx) {
+                        return (itmeText = '맛있어요,');
+                      } else return (itmeText = '맛있어요');
+                    }
+
                     return (
                       <p
                         key={idx}
                         className='line-clamp-1 flex text-[13px] font-medium -tracking-[0.05em] text-[#797979] '
                       >
-                        {item.texture}
+                        {itmeText}
                       </p>
                     );
                   })}

@@ -495,11 +495,10 @@ const Storage: NextPageWithLayout = () => {
               const isTastingNoteExists = selectedItem.filter(
                 item => item.tastingNoteExists === true,
               );
-              console.log(isTastingNoteExists);
-              const notTastingNoteExists = isTastingNoteExists.filter(
+              const notTastingNoteExists = selectedItem.filter(
                 item => item.tastingNoteExists === false,
               );
-              if (isTastingNoteExists.length === 0)
+              if (isTastingNoteExists.length < 2)
                 return setAlert({
                   message:
                     `${notTastingNoteExists.map(item => item.title)}` +

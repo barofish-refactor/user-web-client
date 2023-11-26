@@ -114,8 +114,10 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
         {!!countData && countData === 0 ? (
           <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>{Empty()}</div>
         ) : (
-          (data?.pages ?? []).map(x =>
-            (x ?? []).map(v => <MypageOrderListItem key={v.id} data={v} apiKey={smartApi ?? ''} />),
+          (data?.pages ?? []).map((x: any) =>
+            (x ?? []).map((v: any) => (
+              <MypageOrderListItem key={v.id} data={v} apiKey={smartApi ?? ''} />
+            )),
           )
         )}
       </article>
