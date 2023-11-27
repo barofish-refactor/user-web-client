@@ -390,7 +390,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               else {
                 if (data?.tastingNoteInfo?.length === 0)
                   return setAlert({
-                    message: '테이스팅노트 데이터가 없습니다.',
+                    message: '테이스팅 노트 준비중입니다.',
                   });
 
                 onSaveMutate({ data: { productId: Number(id) } });
