@@ -63,7 +63,6 @@ const Chat = ({ data }: Props) => {
     labels: labelName[0],
     datasets: chartData ?? '',
   };
-  // console.log(labelName);
 
   const chartOptions: ChartOptions<'radar'> & ChartOptions = {
     elements: {

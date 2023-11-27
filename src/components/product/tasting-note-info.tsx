@@ -20,7 +20,6 @@ interface Props {
 
 const TastingInfo = ({ info, keyword }: Props) => {
   const spanClass = 'flex-low flex text-[16px] font-bold leading-[24px] mb-[10px]';
-
   return (
     <>
       <div className='ml-[20px] flex h-[180px] w-full flex-col items-start px-[20px] text-[18px]'>
@@ -39,7 +38,8 @@ const TastingInfo = ({ info, keyword }: Props) => {
             <div className='flex flex-row'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
-                if (idx < Number(info?.difficultyLevelOfTrimming)) {
+                const trimming = Math.floor(info?.difficultyLevelOfTrimming);
+                if (idx < trimming) {
                   isClass = true;
                 } else {
                   isClass = false;
@@ -100,7 +100,8 @@ const TastingInfo = ({ info, keyword }: Props) => {
             <div className='flex flex-row'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
-                if (idx < Number(info?.theScentOfTheSea)) {
+                const sea = Math.floor(info?.theScentOfTheSea);
+                if (idx < sea) {
                   isClass = true;
                 } else {
                   isClass = false;
