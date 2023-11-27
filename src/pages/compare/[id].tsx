@@ -21,6 +21,7 @@ import cm from 'src/utils/class-merge';
 import {
   calcDiscountRate,
   formatToLocaleString,
+  tastingText,
   // formatToBlob
 } from 'src/utils/functions';
 
@@ -82,7 +83,6 @@ const CompareDetail: NextPageWithLayout = () => {
       enabled: !!id && !!type,
     },
   );
-
   // const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
   //   async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
   // );
@@ -276,52 +276,22 @@ const CompareDetail: NextPageWithLayout = () => {
                   <p className='text-[14px] font-bold -tracking-[0.03em] text-white'>{idx + 1}</p>
                 </div>
 
-                <div className='mb-[15px]  w-full flex-col border-b-[2px] border-[#e2e2e2] pb-[15px] pl-1'>
+                <div className=' mb-[15px]  w-full flex-col border-b-[2px] border-[#e2e2e2] pb-[15px] pl-1'>
                   <p className='mb-2 line-clamp-1 text-[13px] font-bold -tracking-[0.05em] text-[#3c3b3b]'>
                     식감
                   </p>
-                  {v.textures.map((item: any, idx: number) => {
-                    let itmeText = item.texture;
-                    if (itmeText === 'texture1') {
-                      if (v.textures.length - 1 !== idx) {
-                        return (itmeText = '부드러워요,');
-                      } else return (itmeText = '부드러워요');
-                    }
-                    if (itmeText === 'texture2') {
-                      if (v.textures.length - 1 !== idx) {
-                        return (itmeText = '쫄깃해요,');
-                      } else return (itmeText = '쫄깃해요');
-                    }
-                    if (itmeText === 'texture3') {
-                      if (v.textures.length - 1 !== idx) {
-                        return (itmeText = '물렁해요,');
-                      } else return (itmeText = '물렁해요');
-                    }
-                    if (itmeText === 'texture4') {
-                      if (v.textures.length - 1 !== idx) {
-                        return (itmeText = '아삭해요,');
-                      } else return (itmeText = '아삭해요');
-                    }
-                    if (itmeText === 'texture5') {
-                      if (v.textures.length - 1 !== idx) {
-                        return (itmeText = '안물렁거려요,');
-                      } else return (itmeText = '안물렁거려요');
-                    }
-                    if (itmeText === 'texture6') {
-                      if (v.textures.length - 1 !== idx) {
-                        return (itmeText = '맛있어요,');
-                      } else return (itmeText = '맛있어요');
-                    }
-
-                    return (
-                      <p
-                        key={idx}
-                        className='line-clamp-1 flex text-[13px] font-medium -tracking-[0.05em] text-[#797979] '
-                      >
-                        {itmeText}
-                      </p>
-                    );
-                  })}
+                  <div className='flex flex-row flex-wrap'>
+                    {v.textures.map((item: any, idx: number) => {
+                      return (
+                        <span
+                          key={idx}
+                          className='line-clamp-1 flex text-[13px] font-medium -tracking-[0.05em] text-[#797979] '
+                        >
+                          {tastingText(item.texture, idx + 1, v.textures.length)}
+                        </span>
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className='mb-[15px] w-full  flex-col border-b-[2px] border-[#e2e2e2] pb-[15px] pl-1'>
                   <p className='mb-3 line-clamp-1 text-[13px] font-bold -tracking-[0.05em] text-[#3c3b3b]'>

@@ -43,7 +43,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
           placeholder='blur'
           onError={handleImgError}
         />
-        {onDeleteSaveProductsMutate && onMutate && dataDto && (
+        {/* {onDeleteSaveProductsMutate && onMutate && dataDto && (
           <button
             className='absolute right-2 top-2.5'
             onClick={e => {
@@ -65,7 +65,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
               }
             />
           </button>
-        )}
+        )} */}
         <button
           className='product-cart'
           onClick={e => {

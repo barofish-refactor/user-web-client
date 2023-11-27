@@ -44,7 +44,6 @@ const Chat = ({ data }: Props) => {
   const labelName = data.map((item: any) =>
     item?.tastes?.map((item2: any) => {
       let itemName;
-      console.log(item2.taste);
       if (item2.taste === 'taste1') return (itemName = '기름진맛');
       if (item2.taste === 'taste2') return (itemName = '단맛');
       if (item2.taste === 'taste3') return (itemName = '담백한맛');
@@ -59,7 +58,6 @@ const Chat = ({ data }: Props) => {
       return itemName;
     }),
   );
-  console.log(labelName);
 
   const chartProps = {
     labels: labelName[0],

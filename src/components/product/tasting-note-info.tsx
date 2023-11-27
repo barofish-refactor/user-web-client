@@ -1,6 +1,7 @@
 import React from 'react';
 import cm from 'src/utils/class-merge';
 import Image from 'next/image';
+import { tastingText } from 'src/utils/functions';
 interface Props {
   info?:
     | {
@@ -82,10 +83,11 @@ const TastingInfo = ({ info, keyword }: Props) => {
                   } else {
                     itemText = item.texture + ',';
                   }
+                  console.log(tastingText(item.texture, idx + 1, keyword.length));
 
                   return (
                     <span key={idx} className='font-500  text-[15px]'>
-                      {itemText}
+                      {tastingText(item.texture, idx + 1, keyword.length)}
                     </span>
                   );
                 })}

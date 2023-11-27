@@ -51,7 +51,7 @@ interface SaveIsData extends SaveProductPayload {
 }
 
 /** 상품 상세 */
-const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
+const ProductDetail: NextPageWithLayout<Props> = ({ initialData }: any) => {
   const router = useRouter();
   const { id, openState } = router.query;
   const { setAlert } = useAlertStore();
@@ -129,7 +129,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   const onDeleteSaveProductsMutate = ({ data }: DeleteTastingNoteToBasketPayload) => {
     if (isDeleteLoading) return;
-    console.log(' d', data);
     deleteSaveProducts({ data: formatToBlob<DeleteTastingNoteToBasketPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {

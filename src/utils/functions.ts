@@ -400,3 +400,57 @@ export const setDeliverDate = (expectedDeliverDay: number) => {
 
   return formatToUtc(value, 'M/d');
 };
+/** 테이스팅 노트 식감 변환 기능(임시)*/
+export const tastingText = (text: string, start?: number, end?: number) => {
+  console.log(text, start, end);
+  let itmeText = text;
+  if (itmeText === 'texture1') {
+    if (start !== end) {
+      return (itmeText = '쫄깃해요,');
+    }
+    return (itmeText = '쫄깃해요');
+  }
+
+  if (itmeText === 'texture2') {
+    if (start !== end) {
+      return (itmeText = '부드러워요,');
+    }
+    return (itmeText = '부드러워요');
+  }
+  if (itmeText === 'texture3') {
+    if (start !== end) {
+      return (itmeText = '오독오독해요,');
+    }
+    return (itmeText = '오독오독해요');
+  }
+  if (itmeText === 'texture4') {
+    if (start !== end) {
+      return (itmeText = '탱글거려요,');
+    }
+    return (itmeText = '탱글거려요');
+  }
+  if (itmeText === 'texture5') {
+    if (start !== end) {
+      return (itmeText = '포슬포슬해요,');
+    }
+    return (itmeText = '포슬포슬해요');
+  }
+  if (itmeText === 'texture6') {
+    if (start !== end) {
+      return (itmeText = '부스러져요,');
+    }
+    return (itmeText = '부스러져요');
+  }
+  if (itmeText === 'texture7') {
+    if (start !== end) {
+      return (itmeText = '꼬들꼬들해요,');
+    }
+    return (itmeText = '꼬들꼬들해요');
+  }
+  if (itmeText === 'texture8') {
+    if (start !== end) {
+      return (itmeText = '단단해요,');
+    }
+    return (itmeText = '단단해요');
+  }
+};
