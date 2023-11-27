@@ -401,8 +401,7 @@ export const setDeliverDate = (expectedDeliverDay: number) => {
   return formatToUtc(value, 'M/d');
 };
 /** 테이스팅 노트 식감 변환 기능(임시)*/
-export const tastingText = (text: string, start?: number, end?: number) => {
-  console.log(text, start, end);
+export const tastingText = (text: string, start: number, end: number) => {
   let itmeText = text;
   if (itmeText === 'texture1') {
     if (start !== end) {

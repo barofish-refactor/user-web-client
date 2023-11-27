@@ -51,7 +51,7 @@ interface SaveIsData extends SaveProductPayload {
 }
 
 /** 상품 상세 */
-const ProductDetail: NextPageWithLayout<Props> = ({ initialData }: any) => {
+const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { id, openState } = router.query;
   const { setAlert } = useAlertStore();
@@ -76,7 +76,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }: any) => {
       initialData,
     },
   );
-  console.log(isTasting);
+  console.log(data);
 
   // const { data: tastingData, refetch: tastingRefetch } = useQuery(
   //   queryKey.tasting.detail(id),
@@ -388,7 +388,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }: any) => {
               if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
               if (data?.isLike) onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
               else {
-                if (!data?.tastingNoteInfo)
+                if (data?.tastingNoteInfo?.length === 0)
                   return setAlert({
                     message: '테이스팅노트 데이터가 없습니다.',
                   });

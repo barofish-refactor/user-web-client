@@ -640,26 +640,32 @@ export interface TipInfo {
 export interface TastingNoteCreateRequest {
   /** @format int32 */
   orderProductInfoId?: number;
-  /** @format int32 */
+  /** @format double */
   taste1?: number;
-  /** @format int32 */
+  /** @format double */
   taste2?: number;
-  /** @format int32 */
+  /** @format double */
   taste3?: number;
-  /** @format int32 */
+  /** @format double */
   taste4?: number;
-  /** @format int32 */
+  /** @format double */
   taste5?: number;
-  /** @format int32 */
+  /** @format double */
   texture1?: number;
-  /** @format int32 */
+  /** @format double */
   texture2?: number;
-  /** @format int32 */
+  /** @format double */
   texture3?: number;
-  /** @format int32 */
+  /** @format double */
   texture4?: number;
-  /** @format int32 */
+  /** @format double */
   texture5?: number;
+  /** @format double */
+  texture6?: number;
+  /** @format double */
+  texture7?: number;
+  /** @format double */
+  texture8?: number;
 }
 
 export interface StoreStateUpdateReq {
@@ -1114,21 +1120,21 @@ export interface ProductTastingNoteInquiryDto {
   deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
-  taste1?: string;
+  oily?: string;
   /** @format double */
-  taste1Score?: number;
-  taste2?: string;
+  oilyScore?: number;
+  sweet?: string;
   /** @format double */
-  taste2Score?: number;
-  taste3?: string;
+  sweetScore?: number;
+  lightTaste?: string;
   /** @format double */
-  taste3Score?: number;
-  taste4?: string;
+  lightTasteScore?: number;
+  umami?: string;
   /** @format double */
-  taste4Score?: number;
-  taste5?: string;
+  umamiScore?: number;
+  salty?: string;
   /** @format double */
-  taste5Score?: number;
+  saltyScore?: number;
   texture1?: string;
   /** @format double */
   texture1Score?: number;
@@ -1144,6 +1150,15 @@ export interface ProductTastingNoteInquiryDto {
   texture5?: string;
   /** @format double */
   texture5Score?: number;
+  texture6?: string;
+  /** @format double */
+  texture6Score?: number;
+  texture7?: string;
+  /** @format double */
+  texture7Score?: number;
+  texture8?: string;
+  /** @format double */
+  texture8Score?: number;
   difficultyLevelOfTrimming?: string;
   theScentOfTheSea?: string;
   recommendedCookingWay?: string;
@@ -1236,8 +1251,8 @@ export interface SimpleProductDto {
   reviews?: ReviewDto[];
   inquiries?: InquiryDto[];
   isLike?: boolean;
-  tastingNoteInfo?: ProductTastingNoteResponse;
-  tastingNote?: ProductTastingNoteResponse;
+  tastingNoteInfo?: ProductTastingNoteResponse[];
+  tastingNote?: ProductTastingNoteResponse[];
 }
 
 export interface TastingNoteTaste {
@@ -2017,11 +2032,11 @@ export interface PageReviewDtoV2 {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2152,11 +2167,11 @@ export interface PageAdminReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2192,11 +2207,11 @@ export interface PageUserInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2225,11 +2240,11 @@ export interface PageProductListDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2266,11 +2281,11 @@ export interface PageTip {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2320,11 +2335,11 @@ export interface PageStoreDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2404,11 +2419,11 @@ export interface PageOrderProductInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2430,11 +2445,11 @@ export interface PageSettlementDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2533,11 +2548,11 @@ export interface PageReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2559,11 +2574,11 @@ export interface PageReportDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2639,11 +2654,11 @@ export interface PageSimpleProductDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2681,11 +2696,11 @@ export interface PageOrderDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2740,11 +2755,11 @@ export interface PageNotification {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2766,11 +2781,11 @@ export interface PageNotice {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2839,11 +2854,11 @@ export interface PageInquiryDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -2977,11 +2992,11 @@ export interface PageCurationDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -3028,11 +3043,11 @@ export interface PageCouponDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -3217,11 +3232,11 @@ export interface PageAdminLogDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 
@@ -3243,11 +3258,11 @@ export interface PageAdmin {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
   /** @format int32 */
   numberOfElements?: number;
   pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
   empty?: boolean;
 }
 

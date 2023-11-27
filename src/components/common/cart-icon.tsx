@@ -20,11 +20,10 @@ const CartIcon = () => {
     ) {
       deleteCookie(REFRESH_TOKEN);
       deleteCookie(ACCESS_TOKEN);
-      console.log('dha');
       return;
     }
-    // setAlert({ message: res.data.errorMsg ?? '' });
-    // throw new Error(res.data.errorMsg);
+    console.log(res.data.errorMsg);
+    throw new Error(res.data.errorMsg);
   });
 
   return (
