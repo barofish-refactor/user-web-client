@@ -69,7 +69,7 @@ const Chat = ({ data }: Props) => {
       // 데이터 속성.
       line: {
         borderWidth: 1,
-        borderColor: '#dcdcdc',
+        // borderColor: '#dcdcdc',
       },
       // 데이터 꼭짓점.
       point: {
