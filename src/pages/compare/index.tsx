@@ -70,6 +70,7 @@ const Storage: NextPageWithLayout = () => {
 
   const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
     if (isDeleteLoading) return;
+
     deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
@@ -93,6 +94,7 @@ const Storage: NextPageWithLayout = () => {
       })
       .catch(error => console.log(error));
   };
+  console.log(selectedItem);
 
   return (
     <div
@@ -162,8 +164,8 @@ const Storage: NextPageWithLayout = () => {
                     title: '상품 삭제',
                     content: '선택하신 상품을 정말 삭제하시겠습니까?',
                     onClick: () => {
-                      onDeleteSaveProductsMutate({
-                        data: { productId: selectedItem.map(x => x.id ?? -1) },
+                      onDeleteCompareSetMutate({
+                        data: { compareSetIds: selectedItem.map(x => x.productId ?? -1) },
                       });
                     },
                   });

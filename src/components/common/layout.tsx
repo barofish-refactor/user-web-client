@@ -1,4 +1,4 @@
-import { type ComponentProps } from 'react';
+import { useEffect, type ComponentProps } from 'react';
 import { Footer, type FooterProps } from 'src/components/common/footer';
 import { Header, type HeaderProps } from 'src/components/common/header';
 import cm from 'src/utils/class-merge';
@@ -31,6 +31,7 @@ export default function Layout({
       {/* PC 좌측 배너 */}
       <PcBanner />
       {/* 메인화면 */}
+
       <div className='flex flex-1 flex-col bg-white  md:w-[375px]'>
         {/* Alert */}
         <Alert />
