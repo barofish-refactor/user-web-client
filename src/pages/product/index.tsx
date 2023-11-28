@@ -288,7 +288,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           }}
         />
         {/* bottomSheet : 옵션 선택 */}
-        <div className='sticky top-0 z-[100] w-full '>
+        <div className='sticky top-0 z-[100] w-full'>
           {isVisible && (
             <div className='absolute top-0 z-[100] flex h-[100vh] w-full flex-col justify-end bg-black/50'>
               <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
@@ -327,7 +327,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         {/* <ProductCompare /> */}
         {/* BARO’s 피쉬 노트 */}
         {data && data?.tastingNoteInfo && isTasting && (
-          <div className='flex  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
+          <div className='flex w-full  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
             <div className=' mb-[10px] mt-10 items-center text-[20px] font-bold'>
               피쉬 테이스팅 노트
             </div>
@@ -394,7 +394,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                   return setAlert({
                     message: '테이스팅 노트 준비중입니다.',
                   });
-
                 onSaveMutate({ data: { productId: Number(id) } });
               }
             }}
