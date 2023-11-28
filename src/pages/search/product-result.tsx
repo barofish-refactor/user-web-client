@@ -225,7 +225,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
         {type === 'category' ? (
           <Swiper ref={refSwiper} freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
             {[{ id: -1, name: '전체보기' } as Category]
-              .concat(data.data?.filter(x => x.id === Number(id))[0].categoryList ?? [])
+              .concat(data.data?.filter((x: any) => x.id === Number(id))[0].categoryList ?? [])
               .map((v, idx) => {
                 return (
                   <SwiperSlide key={`mainTab${idx}`} className='h-full w-1/4'>
