@@ -278,19 +278,19 @@ const CompareDetail: NextPageWithLayout = () => {
                   <p className='text-[14px] font-bold -tracking-[0.03em] text-white'>{idx + 1}</p>
                 </div>
 
-                <div className=' mb-[15px]  w-full flex-col border-b-[2px] border-[#e2e2e2] pb-[15px] pl-1'>
+                <div className=' mb-[15px]  h-[90px] w-full flex-col border-b-[2px] border-[#e2e2e2] pb-[15px] pl-1'>
                   <p className='mb-2 line-clamp-1 text-[13px] font-bold -tracking-[0.05em] text-[#3c3b3b]'>
                     식감
                   </p>
-                  <div className='flex flex-row flex-wrap'>
+                  <div className='flex flex-col flex-wrap'>
                     {v.textures.map((item: any, idx: number) => {
                       return (
-                        <span
+                        <p
                           key={idx}
                           className='line-clamp-1 flex text-[13px] font-medium -tracking-[0.05em] text-[#797979] '
                         >
-                          {tastingText(item.texture, idx + 1, v.textures.length)}
-                        </span>
+                          {tastingText(item.texture)}
+                        </p>
                       );
                     })}
                   </div>

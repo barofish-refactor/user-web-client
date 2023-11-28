@@ -29,9 +29,9 @@ export default function Layout(
     ...args
   }: Props,
 ) {
-  const handleRefresh = async () => {
-    location.reload();
-  };
+  // const handleRefresh = async () => {
+  //   location.reload();
+  // };
   return (
     <div className='flex flex-1 gap-[18px] md:mx-auto'>
       {/* PC 좌측 배너 */}
@@ -53,13 +53,14 @@ export default function Layout(
         <OptionBottomSheet />
         {/* Toast */}
         <Toast />
-        <PullToRefresh pullingContent='' onRefresh={handleRefresh}>
-          <>
-            {!headerDisable && <Header {...headerArgs} />}
 
-            <main {...args} className={cm('flex-1', className)} />
-          </>
-        </PullToRefresh>
+        <>
+          {!headerDisable && <Header {...headerArgs} />}
+          {/* <PullToRefresh pullingContent='' onRefresh={handleRefresh}> */}
+          <main {...args} className={cm('flex-1', className)} />
+          {/* </PullToRefresh> */}
+        </>
+
         {!footerDisable && <Footer {...footerArgs} />}
       </div>
     </div>

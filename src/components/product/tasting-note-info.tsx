@@ -22,7 +22,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
   const spanClass = 'flex-low flex text-[16px] font-bold leading-[24px] mb-[10px]';
   return (
     <>
-      <div className='ml-[20px] flex h-[180px] w-full flex-col items-start px-[20px] text-[18px]'>
+      <div className='ml-[20px] mt-[20px] flex h-[180px] w-full flex-col items-start px-[20px] text-[18px]'>
         <div className='mb-[10px] flex w-[100%] flex-row'>
           <div className='flex w-[50%] flex-col'>
             <span className={spanClass}>
