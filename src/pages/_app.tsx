@@ -8,7 +8,6 @@ import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, setToken } from 'src/utils/functions';
 import useWebview from 'src/utils/use-web-view';
-
 import { ContentType } from 'src/api/swagger/http-client';
 import 'src/styles/globals.css';
 import { type JoinSnsUserPayload } from 'src/api/swagger/data-contracts';

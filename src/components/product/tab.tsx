@@ -24,6 +24,8 @@ const Tab = ({ selectedTab, setSelectedTab, reviewCount }: Props) => {
               isActive ? '-mb-[1px] border-b-2 border-b-primary-50' : 'border-b border-b-white', // 파란선 1px 겹침 처리
             )}
             onClick={() => {
+              console.log(idx);
+
               setSelectedTab(idx);
               sessionStorage.setItem(
                 'productView',

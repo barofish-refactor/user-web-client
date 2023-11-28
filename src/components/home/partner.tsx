@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
 import { StoreItem } from 'src/components/store';
@@ -10,6 +10,7 @@ import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 /** 홈화면 - 파트너 부분 */
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const Partner = () => {
   const router = useRouter();
   const { setAlert } = useAlertStore();
@@ -18,7 +19,11 @@ const Partner = () => {
     const res = await (await client()).selectMainStoreList();
     if (res.data.isSuccess) {
       return res.data.data;
-    } else setAlert({ message: res.data.errorMsg + 'p' ?? '' });
+    } else if ((res.data.code === '103', res.data.code === '9999')) {
+      deleteCookie(ACCESS_TOKEN);
+      deleteCookie(REFRESH_TOKEN);
+      return;
+    } else console.log(res.data.errorMsg);
   });
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(

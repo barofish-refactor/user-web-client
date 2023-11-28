@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import { client } from 'src/api/client';
 import { type Main } from 'src/api/swagger/data-contracts';
 import { HomeCurationItem, HomePartner, HomeSubBanner } from 'src/components/home';
 import { queryKey } from 'src/query-key';
-import { useAlertStore } from 'src/store';
+
+import { VARIABLES } from 'src/variables';
 
 interface Props {
   mainData: Main | undefined;
@@ -11,13 +13,22 @@ interface Props {
 }
 
 export default function CurationList({ mainData }: Props) {
-  const { setAlert } = useAlertStore();
-
-  const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
+  const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
+  const { data: curationData, refetch } = useQuery(queryKey.mainCuration, async () => {
     const res = await (await client()).selectMainCurationList();
     if (res.data.isSuccess) {
       return res.data.data;
-    } else setAlert({ message: res.data.errorMsg ?? '' });
+    } else if (
+      res.data.code === '101' ||
+      res.data.code === '102' ||
+      res.data.code === '103' ||
+      res.data.code === '9999'
+    ) {
+      deleteCookie(REFRESH_TOKEN);
+      deleteCookie(ACCESS_TOKEN);
+      refetch();
+      return;
+    } else console.log(res.data.errorMsg);
   });
 
   return (

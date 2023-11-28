@@ -15,7 +15,7 @@ import {
   HomeTab,
 } from 'src/components/home';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
+import { useFilterStore, type indexFilterType } from 'src/store';
 // import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, safeParse } from 'src/utils/parse';
 import 'swiper/css';
@@ -26,7 +26,6 @@ const perView = 10;
 const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
   const router = useRouter();
   const { tab = 0, f } = router.query;
-  const { setAlert } = useAlertStore();
 
   const { filter, setFilter } = useFilterStore();
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
@@ -39,7 +38,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       const res = await (await client()).selectMainItems();
       if (res.data.isSuccess) {
         return res.data.data;
-      } else setAlert({ message: res.data.errorMsg + 'd' ?? '' });
+      } else console.log(res.data.errorMsg);
     },
     { initialData: props.mainItem },
   );
@@ -50,7 +49,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       const res = await (await client()).selectMainCurationList();
       if (res.data.isSuccess) {
         return res.data.data;
-      } else setAlert({ message: res.data.errorMsg + 'q' ?? '' });
+      } else console.log(res.data.errorMsg);
     },
     initialData: props.curation,
   });

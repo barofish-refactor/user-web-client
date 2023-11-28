@@ -9,18 +9,21 @@ import { VARIABLES } from 'src/variables';
 const CartIcon = () => {
   const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
   // const { setAlert } = useAlertStore();
-  const { data, isLoading } = useQuery(queryKey.cartCount, async () => {
+  const { data, isLoading, refetch } = useQuery(queryKey.cartCount, async () => {
     const { countBasket } = await client();
     const res = await countBasket();
     if (res.data.isSuccess) {
       return res.data.data;
-    } else if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
+    } else if (
+      (res.data.code === '101' || res.data.code === '102' || res.data.code === '103',
+      res.data.code === '9999')
+    ) {
       deleteCookie(REFRESH_TOKEN);
       deleteCookie(ACCESS_TOKEN);
       return;
     }
-    // setAlert({ message: res.data.errorMsg ?? '' });
-    // throw new Error(res.data.errorMsg);
+    console.log(res.data.errorMsg);
+    throw new Error(res.data.errorMsg);
   });
 
   return (

@@ -43,13 +43,13 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
           placeholder='blur'
           onError={handleImgError}
         />
-        {onDeleteSaveProductsMutate && onMutate && dataDto && (
+        {/* {onDeleteSaveProductsMutate && onMutate && dataDto && (
           <button
             className='absolute right-2 top-2.5'
             onClick={e => {
               e.preventDefault();
               if (dataDto.isLike)
-                onDeleteSaveProductsMutate({ data: { productIds: [dataDto.id ?? -1] } });
+                onDeleteSaveProductsMutate({ data: { productId: [dataDto.id ?? -1] } });
               else onMutate({ data: { productId: dataDto.id } });
             }}
           >
@@ -65,7 +65,7 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
               }
             />
           </button>
-        )}
+        )} */}
         <button
           className='product-cart'
           onClick={e => {

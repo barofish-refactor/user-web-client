@@ -3,7 +3,7 @@ import { Footer, type FooterProps } from 'src/components/common/footer';
 import { Header, type HeaderProps } from 'src/components/common/header';
 import cm from 'src/utils/class-merge';
 import dynamic from 'next/dynamic';
-
+import PullToRefresh from 'react-simple-pull-to-refresh';
 export const PcBanner = dynamic(() => import('src/components/common/pc-banner'));
 export const Alert = dynamic(() => import('src/components/common/alert'));
 export const Confirm = dynamic(() => import('src/components/common/confirm'));
@@ -20,17 +20,24 @@ interface Props extends ComponentProps<'main'> {
   footerProps?: Optional<FooterProps>;
 }
 
-export default function Layout({
-  headerProps: { disable: headerDisable = false, ...headerArgs } = {},
-  footerProps: { disable: footerDisable = false, ...footerArgs } = {},
-  className,
-  ...args
-}: Props) {
+export default function Layout(
+  this: any,
+  {
+    headerProps: { disable: headerDisable = false, ...headerArgs } = {},
+    footerProps: { disable: footerDisable = false, ...footerArgs } = {},
+    className,
+    ...args
+  }: Props,
+) {
+  const handleRefresh = async () => {
+    location.reload();
+  };
   return (
     <div className='flex flex-1 gap-[18px] md:mx-auto'>
       {/* PC 좌측 배너 */}
       <PcBanner />
       {/* 메인화면 */}
+
       <div className='flex flex-1 flex-col bg-white  md:w-[375px]'>
         {/* Alert */}
         <Alert />
@@ -46,8 +53,13 @@ export default function Layout({
         <OptionBottomSheet />
         {/* Toast */}
         <Toast />
-        {!headerDisable && <Header {...headerArgs} />}
-        <main {...args} className={cm('flex-1', className)} />
+        <PullToRefresh pullingContent='' onRefresh={handleRefresh}>
+          <>
+            {!headerDisable && <Header {...headerArgs} />}
+
+            <main {...args} className={cm('flex-1', className)} />
+          </>
+        </PullToRefresh>
         {!footerDisable && <Footer {...footerArgs} />}
       </div>
     </div>

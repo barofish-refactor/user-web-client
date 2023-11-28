@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
 import { client } from 'src/api/client';
 import { type UserInfoDto, type SimpleProductDto } from 'src/api/swagger/data-contracts';
@@ -11,12 +12,15 @@ import { calcDiscountRate, formatToLocaleString, setDeliverDate } from 'src/util
 interface Props {
   data?: SimpleProductDto;
   user: UserInfoDto | undefined;
+  setSelectedTab: (value: number) => void;
+  isTasting?: any;
 }
 
 /** 상품 상세 - 기본 정보 */
-const InformationDefault = ({ data, user }: Props) => {
+const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) => {
   const [point, setPoint] = useState<number>(0);
-
+  const router = useRouter();
+  const { id } = router.query;
   useEffect(() => {
     if (data?.discountPrice && data?.pointRate) {
       // 데이터 확인
@@ -77,6 +81,21 @@ const InformationDefault = ({ data, user }: Props) => {
     return () => clearTimeout(timer);
   }, [deliver, deliverData, timer]);
 
+  // onClick={() => {
+  //   setSelectedTab(1);
+  //   if (isTasting.length > 0) {
+  //     window.scrollTo({ top: 810, left: 0, behavior: 'auto' });
+  //   } else {
+  //     window.scrollTo({ top: 1300, left: 0, behavior: 'auto' });
+  //   }
+  //   sessionStorage.setItem(
+  //     'productView',
+  //     JSON.stringify({
+  //       id,
+  //       tabId: 1,
+  //     }),
+  //   );
+  // }}
   return (
     <div className=''>
       <div className='px-4 pb-5 pt-[15px]'>
@@ -202,7 +221,7 @@ const InformationDefault = ({ data, user }: Props) => {
           </div>
         </Link>
       </div>
-      <div className='h-2 bg-grey-90' />
+      {/* <div className='h-2 bg-grey-90' /> */}
     </div>
   );
 };

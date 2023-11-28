@@ -427,6 +427,9 @@ export interface Product {
   minOrderPrice?: number;
   reviews?: Review[];
   itemCode?: string;
+  difficultyLevelOfTrimming?: string;
+  theScentOfTheSea?: string;
+  recommendedCookingWay?: string;
   /** @format int32 */
   categoryId?: number;
 }
@@ -634,6 +637,37 @@ export interface TipInfo {
   subTitle?: string;
 }
 
+export interface TastingNoteCreateRequest {
+  /** @format int32 */
+  orderProductInfoId?: number;
+  /** @format double */
+  taste1?: number;
+  /** @format double */
+  taste2?: number;
+  /** @format double */
+  taste3?: number;
+  /** @format double */
+  taste4?: number;
+  /** @format double */
+  taste5?: number;
+  /** @format double */
+  texture1?: number;
+  /** @format double */
+  texture2?: number;
+  /** @format double */
+  texture3?: number;
+  /** @format double */
+  texture4?: number;
+  /** @format double */
+  texture5?: number;
+  /** @format double */
+  texture6?: number;
+  /** @format double */
+  texture7?: number;
+  /** @format double */
+  texture8?: number;
+}
+
 export interface StoreStateUpdateReq {
   storeIds?: number[];
   state?: 'ACTIVE' | 'BANNED' | 'DELETED';
@@ -824,6 +858,8 @@ export interface ProductFilterValueDto {
 export interface ProductListDto {
   /** @format int32 */
   id?: number;
+  /** @format int32 */
+  productId?: number;
   state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
   image?: string;
   title?: string;
@@ -845,6 +881,7 @@ export interface ProductListDto {
   /** @format int32 */
   parentCategoryId?: number;
   filterValues?: ProductFilterValueDto[];
+  tastingNoteExists?: boolean;
 }
 
 export interface ReviewDto {
@@ -1066,6 +1103,94 @@ export interface InquiryDto {
   isMine?: boolean;
 }
 
+export interface ProductTastingNoteInquiryDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  images?: string;
+  storeName?: string;
+  productTitle?: string;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
+  oily?: string;
+  /** @format double */
+  oilyScore?: number;
+  sweet?: string;
+  /** @format double */
+  sweetScore?: number;
+  lightTaste?: string;
+  /** @format double */
+  lightTasteScore?: number;
+  umami?: string;
+  /** @format double */
+  umamiScore?: number;
+  salty?: string;
+  /** @format double */
+  saltyScore?: number;
+  texture1?: string;
+  /** @format double */
+  texture1Score?: number;
+  texture2?: string;
+  /** @format double */
+  texture2Score?: number;
+  texture3?: string;
+  /** @format double */
+  texture3Score?: number;
+  texture4?: string;
+  /** @format double */
+  texture4Score?: number;
+  texture5?: string;
+  /** @format double */
+  texture5Score?: number;
+  texture6?: string;
+  /** @format double */
+  texture6Score?: number;
+  texture7?: string;
+  /** @format double */
+  texture7Score?: number;
+  texture8?: string;
+  /** @format double */
+  texture8Score?: number;
+  difficultyLevelOfTrimming?: string;
+  theScentOfTheSea?: string;
+  recommendedCookingWay?: string;
+  tastes?: TastingNoteTastes;
+  textures?: TastingNoteTextures;
+}
+
+export interface ProductTastingNoteResponse {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  image?: string;
+  productTitle?: string;
+  storeName?: string;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
+  tastes?: TastingNoteTaste[];
+  textures?: TastingNoteTexture[];
+  difficultyLevelOfTrimming?: string;
+  theScentOfTheSea?: string;
+  recommendedCookingWay?: string[];
+  productInfo?: ProductTastingNoteInquiryDto;
+}
+
 export interface ReviewTotalStatistic {
   /** @format int32 */
   taste?: number;
@@ -1113,7 +1238,6 @@ export interface SimpleProductDto {
   /** @format float */
   pointRate?: number;
   store?: SimpleStore;
-  isLike?: boolean;
   /** @format int32 */
   discountPrice?: number;
   /** @format int32 */
@@ -1126,6 +1250,29 @@ export interface SimpleProductDto {
   comparedProduct?: ProductListDto[];
   reviews?: ReviewDto[];
   inquiries?: InquiryDto[];
+  isLike?: boolean;
+  tastingNoteInfo?: ProductTastingNoteResponse[];
+  tastingNote?: ProductTastingNoteResponse[];
+}
+
+export interface TastingNoteTaste {
+  taste?: string;
+  /** @format double */
+  score?: number;
+}
+
+export interface TastingNoteTastes {
+  tastes?: TastingNoteTaste[];
+}
+
+export interface TastingNoteTexture {
+  texture?: string;
+  /** @format double */
+  score?: number;
+}
+
+export interface TastingNoteTextures {
+  textures?: TastingNoteTexture[];
 }
 
 export interface UpdateStateProductsReq {
@@ -1750,6 +1897,15 @@ export interface AddBasketReq {
   options?: AddBasketOptionReq[];
 }
 
+export interface BasketTastingNoteDeleteReq {
+  productId?: number[];
+}
+
+export interface BasketTastingNoteAddReq {
+  /** @format int32 */
+  productId?: number;
+}
+
 export interface BannerDto {
   /** @format int32 */
   id?: number;
@@ -2131,6 +2287,13 @@ export interface PageTip {
   numberOfElements?: number;
   pageable?: PageableObject;
   empty?: boolean;
+}
+
+export interface CustomResponseListProductTastingNoteResponse {
+  isSuccess?: boolean;
+  code?: string;
+  data?: ProductTastingNoteResponse[];
+  errorMsg?: string;
 }
 
 export interface CustomResponseListStoreDto {
@@ -2910,6 +3073,11 @@ export interface CompareProductDto {
   process?: string;
   usage?: string;
   storage?: string;
+  tastes?: TastingNoteTaste[];
+  textures?: TastingNoteTexture[];
+  difficultyLevelOfTrimming?: string;
+  theScentOfTheSea?: string;
+  recommendedCookingWay?: string[];
 }
 
 export interface CustomResponseListCompareProductDto {
@@ -3002,6 +3170,41 @@ export interface CustomResponseListBasketProductDto {
   errorMsg?: string;
 }
 
+export interface CustomResponseListTastingNoteCompareBasketProductDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: TastingNoteCompareBasketProductDto[];
+  errorMsg?: string;
+}
+
+export interface TastingNoteCompareBasketProductDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
+  image?: string;
+  title?: string;
+  isNeedTaxation?: boolean;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int64 */
+  reviewCount?: number;
+  isLike?: boolean;
+  /** @format int32 */
+  storeId?: number;
+  storeName?: string;
+  /** @format int32 */
+  minOrderPrice?: number;
+  storeImage?: string;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  parentCategoryId?: number;
+  tastingNoteExists?: boolean;
+}
+
 export interface AdminLogDto {
   id?: string;
   type?: 'USER' | 'PARTNER' | 'PRODUCT' | 'ORDER' | 'SETTLEMENT' | 'REPORT' | 'INQUIRY' | 'COUPON';
@@ -3089,7 +3292,7 @@ export interface DeleteCompareSetReq {
 }
 
 export interface DeleteSaveProductReq {
-  productIds?: number[];
+  productId?: number[];
 }
 
 export interface DeleteBasketReq {
@@ -3236,6 +3439,8 @@ export interface AddTipPayload {
 }
 
 export type AddTipData = CustomResponseTip;
+
+export type CreateTastingNoteData = CustomResponseBoolean;
 
 export interface UpdateStoreStatePayload {
   data: StoreStateUpdateReq;
@@ -3702,6 +3907,18 @@ export interface AddBasketPayload {
 
 export type AddBasketData = CustomResponseBoolean;
 
+export interface DeleteTastingNoteToBasketPayload {
+  data: BasketTastingNoteDeleteReq;
+}
+
+export type DeleteTastingNoteToBasketData = CustomResponseBoolean;
+
+export interface AddTastingNoteToBasketPayload {
+  data: BasketTastingNoteAddReq;
+}
+
+export type AddTastingNoteToBasketData = CustomResponseBoolean;
+
 export interface UpdateBannerPayload {
   type?: 'NONE' | 'CURATION' | 'NOTICE' | 'CATEGORY' | 'MAIN' | 'PC_WEB' | 'MY_PAGE';
   /** @format binary */
@@ -3820,6 +4037,10 @@ export type DeleteTipData = CustomResponseBoolean;
 export type SelectTipList1Data = CustomResponsePageTip;
 
 export type SelectTipInfoData = CustomResponseTipInfo;
+
+export type GetMyProductTastingNotesData = CustomResponseObject;
+
+export type GetMyProductTastingNotes1Data = CustomResponseListProductTastingNoteResponse;
 
 export type SelectStoreListData = CustomResponseListStoreDto;
 
@@ -4024,6 +4245,8 @@ export type SelectCategoriesData = CustomResponseListCategory;
 export type SelectBasketData = CustomResponseListBasketProductDto;
 
 export type CountBasketData = CustomResponseInteger;
+
+export type GetTastingNoteBasketData = CustomResponseListTastingNoteCompareBasketProductDto;
 
 export type SelectBannerData = CustomResponseBannerDto;
 

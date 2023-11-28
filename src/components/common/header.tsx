@@ -7,7 +7,6 @@ import { HeaderBanner } from './header-banner';
 import dynamic from 'next/dynamic';
 import { type CookieValueTypes, getCookie } from 'cookies-next';
 import { VARIABLES } from 'src/variables';
-// import { useAlertStore } from 'src/store';
 export const CartIcon = dynamic(() => import('src/components/common/cart-icon'));
 export type HeaderProps = ComponentProps<'header'>;
 
@@ -19,20 +18,6 @@ export function Header({ className, ...props }: HeaderProps) {
     setToken(accessToken);
   }, []);
 
-  // const { data } = useQuery(queryKey.user, async () => {
-  //   const res = await (await client()).selectUserSelfInfo();
-  //   if (res.data.isSuccess) {
-  //     return res.data.data;
-  //   } else {
-  //     if (res.data.code === '103') {
-  //       deleteCookie(ACCESS_TOKEN);
-  //       deleteCookie(REFRESH_TOKEN);
-  //       return;
-  //     }
-  //     setAlert({ message: res.data.errorMsg + '헤더' ?? '' });
-  //     throw new Error(res.data.errorMsg);
-  //   }
-  // });
   return (
     <header {...props} className={cm('sticky top-0 z-50 space-y-0', className)}>
       {!token && <HeaderBanner />}

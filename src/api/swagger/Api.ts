@@ -57,6 +57,8 @@ import {
   AddSearchFilterPayload,
   AddStoreData,
   AddStorePayload,
+  AddTastingNoteToBasketData,
+  AddTastingNoteToBasketPayload,
   AddTipData,
   AddTipPayload,
   AddTopBarData,
@@ -88,6 +90,7 @@ import {
   CreateCurationPayload,
   CreateData,
   CreatePayload,
+  CreateTastingNoteData,
   DeleteBannerData,
   DeleteBasketData,
   DeleteBasketPayload,
@@ -116,6 +119,8 @@ import {
   DeleteSaveProductsPayload,
   DeleteSearchFilterData,
   DeleteSearchFilterFieldData,
+  DeleteTastingNoteToBasketData,
+  DeleteTastingNoteToBasketPayload,
   DeleteTipData,
   DeleteTopBarData,
   DeliverReadyData,
@@ -125,7 +130,10 @@ import {
   GetData,
   GetExpectedArrivalDateData,
   GetFormData,
+  GetMyProductTastingNotes1Data,
+  GetMyProductTastingNotesData,
   GetReviewsData,
+  GetTastingNoteBasketData,
   GithubWebhookCallbackData,
   GithubWebhookCallbackPayload,
   JoinAppleSnsData,
@@ -286,6 +294,7 @@ import {
   SortCuration1Payload,
   SortCurationData,
   SortCurationPayload,
+  TastingNoteCreateRequest,
   UnlikeReviewByUserData,
   UpdateAdminByMasterData,
   UpdateAdminByMasterPayload,
@@ -725,6 +734,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       method: 'POST',
       body: data,
       type: ContentType.FormData,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags tasting-note-controller
+   * @name CreateTastingNote
+   * @request POST:/api/v1/tasting-note/
+   * @response `200` `CreateTastingNoteData` OK
+   */
+  createTastingNote = (data: TastingNoteCreateRequest, params: RequestParams = {}) =>
+    this.request<CreateTastingNoteData, any>({
+      path: `/api/v1/tasting-note/`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**
@@ -1992,6 +2017,41 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags basket-tasting-note-controller
+   * @name DeleteTastingNoteToBasket
+   * @request POST:/api/v1/basket-tasting-note/delete
+   * @response `200` `DeleteTastingNoteToBasketData` OK
+   */
+  deleteTastingNoteToBasket = (
+    data: DeleteTastingNoteToBasketPayload,
+    params: RequestParams = {},
+  ) =>
+    this.request<DeleteTastingNoteToBasketData, any>({
+      path: `/api/v1/basket-tasting-note/delete`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-tasting-note-controller
+   * @name AddTastingNoteToBasket
+   * @request POST:/api/v1/basket-tasting-note/add
+   * @response `200` `AddTastingNoteToBasketData` OK
+   */
+  addTastingNoteToBasket = (data: AddTastingNoteToBasketPayload, params: RequestParams = {}) =>
+    this.request<AddTastingNoteToBasketData, any>({
+      path: `/api/v1/basket-tasting-note/add`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags banner-controller
    * @name UpdateBanner
    * @request POST:/api/v1/banner/update/{id}
@@ -2694,6 +2754,40 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<SelectTipInfoData, any>({
       path: `/api/v1/tip/info`,
       method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags tasting-note-controller
+   * @name GetMyProductTastingNotes
+   * @request GET:/api/v1/tasting-note/my
+   * @response `200` `GetMyProductTastingNotesData` OK
+   */
+  getMyProductTastingNotes = (params: RequestParams = {}) =>
+    this.request<GetMyProductTastingNotesData, any>({
+      path: `/api/v1/tasting-note/my`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags tasting-note-controller
+   * @name GetMyProductTastingNotes1
+   * @request GET:/api/v1/tasting-note/compare
+   * @response `200` `GetMyProductTastingNotes1Data` OK
+   */
+  getMyProductTastingNotes1 = (
+    query: {
+      productIds: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<GetMyProductTastingNotes1Data, any>({
+      path: `/api/v1/tasting-note/compare`,
+      method: 'GET',
+      query: query,
       ...params,
     });
   /**
@@ -4771,6 +4865,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   countBasket = (params: RequestParams = {}) =>
     this.request<CountBasketData, any>({
       path: `/api/v1/basket/list/count`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-tasting-note-controller
+   * @name GetTastingNoteBasket
+   * @request GET:/api/v1/basket-tasting-note
+   * @response `200` `GetTastingNoteBasketData` OK
+   */
+  getTastingNoteBasket = (params: RequestParams = {}) =>
+    this.request<GetTastingNoteBasketData, any>({
+      path: `/api/v1/basket-tasting-note`,
       method: 'GET',
       ...params,
     });

@@ -36,7 +36,8 @@ const MyPage: NextPageWithLayout = () => {
         deleteCookie(REFRESH_TOKEN);
         return;
       }
-      setAlert({ message: res.data.errorMsg ?? '' });
+      console.log(res.data.errorMsg);
+      // setAlert({ message: res.data.errorMsg ?? '' });
       throw new Error(res.data.errorMsg);
     }
   });

@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -60,10 +60,19 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   // );
 
   const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
+    const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
     const res = await (await client()).selectMainCurationList();
     if (res.data.isSuccess) {
       return res.data.data;
-    } else setAlert({ message: res.data.errorMsg ?? '' });
+    } else if (
+      (res.data.code === '101' || res.data.code === '102' || res.data.code === '103',
+      res.data.code === '9999')
+    ) {
+      deleteCookie(REFRESH_TOKEN);
+      deleteCookie(ACCESS_TOKEN);
+      console.log('dha');
+      return;
+    } else setAlert({ message: res.data.errorMsg + 's' ?? '' });
   });
 
   const {
