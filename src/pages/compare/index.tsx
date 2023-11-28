@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import { client } from 'src/api/client';
 import {
+  type DeleteTastingNoteToBasketPayload,
   type CompareSetDto,
   type DeleteCompareSetPayload,
   type DeleteSaveProductsPayload,
@@ -64,30 +65,31 @@ const Storage: NextPageWithLayout = () => {
   );
 
   const { mutateAsync: deleteCompareSet, isLoading: isDeleteSetLoading } = useMutation(
-    async (args: DeleteCompareSetPayload) =>
-      await (await client()).deleteCompareSet(args, { type: ContentType.FormData }),
+    async (args: DeleteTastingNoteToBasketPayload) =>
+      await (await client()).deleteTastingNoteToBasket(args, { type: ContentType.FormData }),
   );
 
-  const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
-    if (isDeleteLoading) return;
+  // const onDeleteSaveProductsMutate = ({ data }: DeleteSaveProductsPayload) => {
+  //   if (isDeleteLoading) return;
 
-    deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
-      .then(res => {
-        if (res.data.isSuccess) {
-          refetch();
-          setSelectedItem([]);
-          setSelectedSet([]);
-        } else setAlert({ message: res.data.errorMsg ?? '' });
-      })
-      .catch(error => console.log(error));
-  };
+  //   deleteSaveProducts({ data: formatToBlob<DeleteSaveProductsPayload['data']>(data, true) })
+  //     .then(res => {
+  //       if (res.data.isSuccess) {
+  //         refetch();
+  //         setSelectedItem([]);
+  //         setSelectedSet([]);
+  //       } else setAlert({ message: res.data.errorMsg ?? '' });
+  //     })
+  //     .catch(error => console.log(error));
+  // };
 
-  const onDeleteCompareSetMutate = ({ data }: DeleteCompareSetPayload) => {
+  const onDeleteCompareSetMutate = ({ data }: DeleteTastingNoteToBasketPayload) => {
     if (isDeleteSetLoading) return;
-    deleteCompareSet({ data: formatToBlob<DeleteCompareSetPayload['data']>(data, true) })
+    deleteCompareSet({ data: formatToBlob<DeleteTastingNoteToBasketPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
           setRefetch();
+          refetch();
           setSelectedItem([]);
           setSelectedSet([]);
         } else setAlert({ message: res.data.errorMsg ?? '' });
@@ -165,7 +167,7 @@ const Storage: NextPageWithLayout = () => {
                     content: '선택하신 상품을 정말 삭제하시겠습니까?',
                     onClick: () => {
                       onDeleteCompareSetMutate({
-                        data: { compareSetIds: selectedItem.map(x => x.productId ?? -1) },
+                        data: { productId: selectedItem.map(x => x.productId ?? -1) },
                       });
                     },
                   });
@@ -299,7 +301,7 @@ const Storage: NextPageWithLayout = () => {
                   content: '선택하신 조합을 정말 삭제하시겠습니까?',
                   onClick: () => {
                     onDeleteCompareSetMutate({
-                      data: { compareSetIds: selectedSet.map(x => x.compareSetId ?? -1) },
+                      data: { productId: selectedSet.map(x => x.compareSetId ?? -1) },
                     });
                   },
                 });
