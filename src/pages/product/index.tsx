@@ -328,7 +328,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         {/* BARO’s 피쉬 노트 */}
         {data && data?.tastingNoteInfo && isTasting && (
           <div className='flex  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
-            <div className=' mt-10 items-center text-[16px] font-bold'>피쉬 테이스팅 노트</div>
+            <div className=' mb-[10px] mt-10 items-center text-[20px] font-bold'>
+              피쉬 테이스팅 노트
+            </div>
             <Chat data={data?.tastingNoteInfo ?? []} />
             <TastingInfo
               keyword={data?.tastingNoteInfo[0]?.textures ?? []}
