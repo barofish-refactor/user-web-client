@@ -1,4 +1,4 @@
-import { type ComponentProps, useState } from 'react';
+import { type ComponentProps } from 'react';
 import { Footer, type FooterProps } from 'src/components/common/footer';
 import { Header, type HeaderProps } from 'src/components/common/header';
 import cm from 'src/utils/class-merge';
