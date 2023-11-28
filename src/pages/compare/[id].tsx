@@ -83,6 +83,7 @@ const CompareDetail: NextPageWithLayout = () => {
       enabled: !!id && !!type,
     },
   );
+
   // const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
   //   async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
   // );
@@ -150,10 +151,10 @@ const CompareDetail: NextPageWithLayout = () => {
                     className={cm(
                       'absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-br-lg bg-[#1744BF]/90',
                       { 'bg-[#5B83FF]/90': idx === 0 },
-                      { 'bg-[#849ee6]/90': idx === 1 },
+                      { 'bg-[#9370DB]/90': idx === 1 },
                     )}
                   >
-                    <p className='text-[14px] font-bold text-white'>{idx + 1}</p>
+                    <p className='text-[14px] font-bold text-white '>{idx + 1}</p>
                   </div>
                 </div>
                 <div className='flex flex-1 gap-6 '>
@@ -236,6 +237,7 @@ const CompareDetail: NextPageWithLayout = () => {
       >
         {set &&
           set.map((v: any, idx: number) => {
+            const setIndex = idx;
             // if (idx === 0) return null;
             // if (idx === 0) {
             //   const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
@@ -269,7 +271,7 @@ const CompareDetail: NextPageWithLayout = () => {
                     'mb-[10px] flex h-7 w-full items-center justify-start rounded pl-2',
                     {
                       'bg-[#6F91F8]/90': idx + 1 === 1,
-                      'bg-[#849ee6]/90': idx + 1 === 2,
+                      'bg-[#9370DB]/90': idx + 1 === 2,
                     },
                   )}
                 >
@@ -314,6 +316,9 @@ const CompareDetail: NextPageWithLayout = () => {
                               'bg-[#6F91F8]': isClass,
                             },
                             {
+                              'bg-[#9370DB]': isClass && setIndex === 1,
+                            },
+                            {
                               'bg-transparent': !isClass,
                             },
                           )}
@@ -341,6 +346,9 @@ const CompareDetail: NextPageWithLayout = () => {
                             ' mx-[1.5px] h-[18px]  w-[18px] justify-start rounded-full border border-grey-60',
                             {
                               'bg-[#5B83FF]': isClass,
+                            },
+                            {
+                              'bg-[#9370DB]': isClass && setIndex === 1,
                             },
                             {
                               'bg-transparent': !isClass,

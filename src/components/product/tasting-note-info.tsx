@@ -86,7 +86,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
           </div>
         </div>
         <div className='mb-[30px] mt-3 flex w-[100%] flex-row pb-3'>
-          <div className='flex w-[50%] flex-col'>
+          <div className='flex w-[50%] flex-col '>
             <span className={spanClass}>
               <Image
                 unoptimized
