@@ -58,10 +58,9 @@ export default function Layout(
             {!headerDisable && <Header {...headerArgs} />}
 
             <main {...args} className={cm('flex-1', className)} />
-
-            {!footerDisable && <Footer {...footerArgs} />}
           </>
         </PullToRefresh>
+        {!footerDisable && <Footer {...footerArgs} />}
       </div>
     </div>
   );
