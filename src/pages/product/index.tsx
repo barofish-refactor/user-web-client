@@ -272,7 +272,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       )}
 
       {/* <Head></Head> */}
-      <div className='pb-[80px] max-md:w-[100vw]'>
+      <div className='overflow-y-visible pb-[80px] max-md:w-[100vw]'>
         <DefaultSeo
           title={headTitle}
           description={testtext}
