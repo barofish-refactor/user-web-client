@@ -352,8 +352,19 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       router.push('/login');
                       return;
                     }
-                    if (selectedOption.filter(v => v.isNeeded === false).length > 0)
-                      return setAlert({ message: '필수옵션만 선택해주세요.' });
+                    console.log(
+                      selectedOption.filter(v => v.isNeeded === false),
+                      selectedOption.filter(v => v.isNeeded === true),
+                      'data',
+                    );
+                    console.log(
+                      selectedOption.filter(v => v.isNeeded === false).length,
+                      'leng',
+                      selectedOption.filter(v => v.isNeeded === true).length,
+                    );
+
+                    if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
+                      return setAlert({ message: '필수옵션을 선택해주세요.' });
                     fpixel.addToCart({
                       content_ids: selectedOption[0]?.productId,
                       content_type: 'product',
@@ -440,8 +451,8 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
           )}
         </div>
       ) : (
-        <div className='flex w-full flex-col px-4 pb-9'>
-          <div className='flex items-center gap-3'>
+        <div className='mt-5 flex w-full flex-col px-4 pb-9'>
+          <div className='flex items-center gap-5'>
             <Image
               unoptimized
               src={data?.images?.[0] ?? '/'}
@@ -452,6 +463,12 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
             />
             <p className='text-[14px] font-medium -tracking-[0.03em] text-grey-20'>
               장바구니에 상품을 담았습니다.
+            </p>
+            <p
+              className='ml-[60px] cursor-pointer text-end text-[14px] font-medium text-grey-50'
+              onClick={() => setIsVisible(false)}
+            >
+              X
             </p>
           </div>
           <div className='my-4 h-[1px] bg-grey-90' />
