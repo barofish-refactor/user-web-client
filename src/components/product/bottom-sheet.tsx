@@ -97,7 +97,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
       enabled: !!data?.id,
     },
   );
-
+  console.log(data, selectProductOtherCustomerBuy);
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
     async (args: AddBasketPayload) =>
       await (await client()).addBasket(args, { type: ContentType.FormData }),
@@ -197,19 +197,27 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   return (
     <div
       ref={target}
-      className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-5'
+      className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-4'
       onClick={e => {
         e.stopPropagation();
       }}
     >
-      <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' />
+      {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
       {!isAddCart ? (
         <div className='flex w-full flex-col'>
-          <p className='self-center text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
-            옵션 선택
-          </p>
+          <div className='mt-6 flex w-full flex-row'>
+            <p className='w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
+              옵션 선택
+            </p>
+            <p
+              className='mt-[3px] w-[30%] cursor-pointer text-end text-[18px] font-medium text-grey-50'
+              onClick={() => setIsVisible(false)}
+            >
+              X
+            </p>
+          </div>
           <div className='max-h-[560px] min-h-[280px] overflow-y-scroll px-4 scrollbar-hide'>
-            <div className='mb-3.5 min-h-[120px]'>
+            <div className='mb-3 min-h-[120px]'>
               {options.map((v, i) => {
                 return (
                   <div key={`${v.id}`} className='pt-3.5'>
@@ -256,7 +264,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 );
               })}
             </div>
-            <div className='flex max-h-[180px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[15px] scrollbar-hide'>
+            <div className='flex max-h-[250px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[5px] scrollbar-hide'>
               {selectedOption.map((v, idx) => {
                 return (
                   <div
@@ -344,8 +352,19 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       router.push('/login');
                       return;
                     }
-                    if (selectedOption.filter(v => v.isNeeded === false).length > 0)
-                      return setAlert({ message: '필수옵션만 선택해주세요.' });
+                    console.log(
+                      selectedOption.filter(v => v.isNeeded === false),
+                      selectedOption.filter(v => v.isNeeded === true),
+                      'data',
+                    );
+                    console.log(
+                      selectedOption.filter(v => v.isNeeded === false).length,
+                      'leng',
+                      selectedOption.filter(v => v.isNeeded === true).length,
+                    );
+
+                    if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
+                      return setAlert({ message: '필수옵션을 선택해주세요.' });
                     fpixel.addToCart({
                       content_ids: selectedOption[0]?.productId,
                       content_type: 'product',
@@ -432,8 +451,8 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
           )}
         </div>
       ) : (
-        <div className='flex w-full flex-col px-4 pb-9'>
-          <div className='flex items-center gap-3'>
+        <div className='mt-5 flex w-full flex-col px-4 pb-9'>
+          <div className='flex items-center gap-5'>
             <Image
               unoptimized
               src={data?.images?.[0] ?? '/'}
@@ -444,6 +463,12 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
             />
             <p className='text-[14px] font-medium -tracking-[0.03em] text-grey-20'>
               장바구니에 상품을 담았습니다.
+            </p>
+            <p
+              className='ml-[60px] cursor-pointer text-end text-[14px] font-medium text-grey-50'
+              onClick={() => setIsVisible(false)}
+            >
+              X
             </p>
           </div>
           <div className='my-4 h-[1px] bg-grey-90' />
