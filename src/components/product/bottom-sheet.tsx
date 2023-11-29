@@ -97,7 +97,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
       enabled: !!data?.id,
     },
   );
-
+  console.log(data, selectProductOtherCustomerBuy);
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
     async (args: AddBasketPayload) =>
       await (await client()).addBasket(args, { type: ContentType.FormData }),
@@ -197,19 +197,27 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
   return (
     <div
       ref={target}
-      className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-5'
+      className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-4'
       onClick={e => {
         e.stopPropagation();
       }}
     >
-      <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' />
+      {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
       {!isAddCart ? (
         <div className='flex w-full flex-col'>
-          <p className='self-center text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
-            옵션 선택
-          </p>
+          <div className='mt-6 flex w-full flex-row'>
+            <p className='w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
+              옵션 선택
+            </p>
+            <p
+              className='mt-[3px] w-[30%] cursor-pointer text-end text-[18px] font-medium text-grey-50'
+              onClick={() => setIsVisible(false)}
+            >
+              X
+            </p>
+          </div>
           <div className='max-h-[560px] min-h-[280px] overflow-y-scroll px-4 scrollbar-hide'>
-            <div className='mb-3.5 min-h-[120px]'>
+            <div className='mb-3 min-h-[120px]'>
               {options.map((v, i) => {
                 return (
                   <div key={`${v.id}`} className='pt-3.5'>
@@ -256,7 +264,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                 );
               })}
             </div>
-            <div className='flex max-h-[180px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[15px] scrollbar-hide'>
+            <div className='flex max-h-[250px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[5px] scrollbar-hide'>
               {selectedOption.map((v, idx) => {
                 return (
                   <div
