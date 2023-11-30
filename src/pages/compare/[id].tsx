@@ -2,6 +2,7 @@ import {
   useQuery,
   // useMutation
 } from '@tanstack/react-query';
+import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -290,6 +291,7 @@ const CompareDetail: NextPageWithLayout = () => {
 
 CompareDetail.getLayout = page => (
   <Layout headerProps={{ disable: true }} footerProps={{ disable: true }}>
+    <DefaultSeo title='피쉬 비교하기 | 바로피쉬' description='피쉬 비교하기' />
     {page}
   </Layout>
 );

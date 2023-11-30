@@ -19,6 +19,7 @@ import { useFilterStore, type indexFilterType } from 'src/store';
 // import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, safeParse } from 'src/utils/parse';
 import 'swiper/css';
+import PullToRefresh from 'react-simple-pull-to-refresh';
 
 const perView = 10;
 
@@ -154,58 +155,64 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       if (inView) fetchNextPage();
     },
   });
-
+  const handleRefresh = async () => {
+    location.reload();
+  };
   return (
     <main className='max-md:w-[100vw]'>
       {/* Tab */}
       <HomeTab mainData={data} />
-      {/* Content - 바로추천 */}
-      {tab === 0 ? (
+      <PullToRefresh pullingContent='' onRefresh={handleRefresh}>
         <>
-          <HomeBanner
-            data={
-              data?.banners
-                ? data.banners
-                    .filter(x => x.state === 'ACTIVE')
-                    .sort((a, b) => {
-                      if ((a.sortNo ?? -1) > (b.sortNo ?? -1)) return 1;
-                      else if ((a.sortNo ?? -1) < (b.sortNo ?? -1)) return -1;
-                      else return 0;
-                    })
-                : []
-            }
-          />
+          {/* Content - 바로추천 */}
+          {tab === 0 ? (
+            <>
+              <HomeBanner
+                data={
+                  data?.banners
+                    ? data.banners
+                        .filter(x => x.state === 'ACTIVE')
+                        .sort((a, b) => {
+                          if ((a.sortNo ?? -1) > (b.sortNo ?? -1)) return 1;
+                          else if ((a.sortNo ?? -1) < (b.sortNo ?? -1)) return -1;
+                          else return 0;
+                        })
+                    : []
+                }
+              />
 
-          <HomeAbbreviationCuration
-            data={defaultCurationAbbreviation.concat(
-              (curationData ?? []).filter(
-                x => x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
-              ),
-            )}
-          />
-          <div className='h-[1px]' />
-          {isLoading ? (
-            <div className='h-[50vh]' />
+              <HomeAbbreviationCuration
+                data={defaultCurationAbbreviation.concat(
+                  (curationData ?? []).filter(
+                    x => x.shortName && x.shortName.length > 0 && (x.products ?? []).length > 0,
+                  ),
+                )}
+              />
+              <div className='h-[1px]' />
+              {isLoading ? (
+                <div className='h-[50vh]' />
+              ) : (
+                <HomeCurationList mainData={data} mainRefetch={refetch} />
+              )}
+              {/* 알아두면 좋은 정보 */}
+              {/* <HomeCurationTip /> */}
+            </>
           ) : (
-            <HomeCurationList mainData={data} mainRefetch={refetch} />
+            <div>
+              <div className='h-[1px] bg-grey-90' />
+              <HomeProductList
+                storeType='topBar'
+                storeId={Number(tab)}
+                type={data?.topBars ? data?.topBars[Number(tab) - 1]?.name : '-'}
+                dataDto={topBarData?.pages ?? []}
+                filter={dummyFilter}
+              />
+              <div ref={ref} className='pb-10' />
+            </div>
           )}
-          {/* 알아두면 좋은 정보 */}
-          {/* <HomeCurationTip /> */}
+          <HomeFooter />
         </>
-      ) : (
-        <div>
-          <div className='h-[1px] bg-grey-90' />
-          <HomeProductList
-            storeType='topBar'
-            storeId={Number(tab)}
-            type={data?.topBars ? data?.topBars[Number(tab) - 1]?.name : '-'}
-            dataDto={topBarData?.pages ?? []}
-            filter={dummyFilter}
-          />
-          <div ref={ref} className='pb-10' />
-        </div>
-      )}
-      <HomeFooter />
+      </PullToRefresh>
     </main>
   );
 };
