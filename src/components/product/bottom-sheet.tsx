@@ -296,11 +296,11 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                         />
                       </button>
                     </div>
-                    {v.maxAvailableStock !== 999 && (
+                    {/* {v.maxAvailableStock !== 999 && (
                       <p className='text-[11px] leading-[16px] -tracking-[0.03em] text-grey-50'>
                         최대 주문 가능 수량 : {v.maxAvailableStock}
                       </p>
-                    )}
+                    )} */}
                     <div className='flex items-end justify-between'>
                       <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
                         <button className='' onClick={() => onPressMinus(v)}>
