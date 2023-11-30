@@ -59,11 +59,12 @@ export interface optionSelectorType {
 
 interface Props {
   data?: SimpleProductDto;
+  isVisible: boolean;
   setIsVisible: (value: boolean) => void;
 }
 
 /** 옵션 선택 BottomSheet */
-const BottomSheet = ({ data, setIsVisible }: Props) => {
+const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -97,7 +98,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
       enabled: !!data?.id,
     },
   );
-  console.log(data, selectProductOtherCustomerBuy);
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
     async (args: AddBasketPayload) =>
       await (await client()).addBasket(args, { type: ContentType.FormData }),
@@ -194,6 +194,21 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
     setTotalPrice(totalPrice);
   }, [selectedOption]);
 
+  useEffect(() => {
+    // 스크롤 막기
+    if (!isVisible) return;
+    document.body.style.cssText = `
+      position: fixed; 
+      // top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = '';
+      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+    };
+  }, [isVisible]);
+
   return (
     <div
       ref={target}
@@ -204,7 +219,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
     >
       {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
       {!isAddCart ? (
-        <div className='flex w-full flex-col'>
+        <div className=' flex w-full flex-col'>
           <div className='mt-6 flex w-full flex-row'>
             <p className='w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
               옵션 선택

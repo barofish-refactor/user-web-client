@@ -452,4 +452,16 @@ export const tastingText = (text: string, start?: number, end?: number) => {
     }
     return (itmeText = '단단해요');
   }
+  if (itmeText === 'texture9') {
+    if (start !== end) {
+      return (itmeText = '미끌해요,');
+    }
+    return (itmeText = '미끌해요');
+  }
+  if (itmeText === 'texture10') {
+    if (start !== end) {
+      return (itmeText = '흐물거려요,');
+    }
+    return (itmeText = '흐물거려요');
+  }
 };

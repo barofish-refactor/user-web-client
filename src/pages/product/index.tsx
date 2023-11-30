@@ -287,7 +287,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <div className='sticky top-0 z-[100] w-full'>
           {isVisible && (
             <div className='absolute top-0 z-[100] flex h-[100vh] w-full flex-col justify-end bg-black/50'>
-              <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
+              <ProductBottomSheet data={data} isVisible={isVisible} setIsVisible={setIsVisible} />
             </div>
           )}
         </div>
