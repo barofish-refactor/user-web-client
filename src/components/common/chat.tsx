@@ -10,39 +10,36 @@ import {
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
 import type { ChartOptions } from 'chart.js';
+import { type ProductTastingNoteResponse } from 'src/api/swagger/data-contracts';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 interface Props {
-  data:
-    | {
-        tastes: {
-          taste: string;
-          score: number | string;
-        }[];
-        textures: {
-          texture: string;
-          score: number;
-        }[];
-        recommendedCookingWay: string;
-        difficultyLevelOfTrimming: string;
-        theScentOfTheSea: string;
-      }[]
-    | any;
+  data: ProductTastingNoteResponse[];
+  // | {
+  //     tastes: TastingNoteTaste[];
+  //     textures: {
+  //       texture: string;
+  //       score: number;
+  //     }[];
+  //     recommendedCookingWay: string;
+  //     difficultyLevelOfTrimming: string;
+  //     theScentOfTheSea: string;
+  //   }[];
 }
 
 const Chat = ({ data }: Props) => {
   const bgArr = ['rgb(91 131 255 / 0.8)', 'rgb(147 112 219/ 0.8)'];
 
-  const chartData = data.map((item: { tastes: { score: number }[] }, idx: number) => {
+  const chartData = data.map((item, idx) => {
     return {
       label: '',
-      data: item?.tastes?.map((item: { score: number }) => item.score) ?? [],
+      data: item?.tastes?.map(item => item.score) ?? [],
       backgroundColor: bgArr[idx] ?? 'gray',
     };
   });
   const labelName = data.map((item: any) =>
-    item?.tastes?.map((item2: any) => {
+    item?.tastes?.map((item2: { taste: string }) => {
       let itemName;
       if (item2.taste === 'taste1') return (itemName = '기름진맛');
       if (item2.taste === 'taste2') return (itemName = '단맛');

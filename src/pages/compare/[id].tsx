@@ -7,9 +7,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { client } from 'src/api/client';
-import // type AddCompareSetPayload,
-// type CompareFilterDto,
-'src/api/swagger/data-contracts';
+import {
+  // type AddCompareSetPayload,
+  // type CompareFilterDto,
+  type ProductTastingNoteResponse,
+} from 'src/api/swagger/data-contracts';
 import { CartIcon } from 'src/components/common';
 import Chat from 'src/components/common/chat';
 import Layout from 'src/components/common/layout';
@@ -26,19 +28,19 @@ import {
 } from 'src/utils/functions';
 
 // const initialTable: CompareProductDto[] = [{}];
-interface ChatProps {
-  tastes: {
-    taste: string;
-    score: number;
-  }[];
-  textures: {
-    texture: string;
-    score: number;
-  }[];
-  recommendedCookingWay: string;
-  difficultyLevelOfTrimming: string;
-  theScentOfTheSea: string;
-}
+// interface ChatProps {
+//   tastes: {
+//     taste: string;
+//     score: number;
+//   }[];
+//   textures: {
+//     texture: string;
+//     score: number;
+//   }[];
+//   recommendedCookingWay: string;
+//   difficultyLevelOfTrimming: string;
+//   theScentOfTheSea: string;
+// }
 
 /** 비교하기 상세 */
 const CompareDetail: NextPageWithLayout = () => {
@@ -47,7 +49,7 @@ const CompareDetail: NextPageWithLayout = () => {
 
   const { id, type } = router.query;
   // const [selectedTag, setSelectedTag] = useState<number[]>([]);
-  const [chatData, setChatData] = useState<ChatProps[]>([]);
+  const [chatData, setChatData] = useState<ProductTastingNoteResponse[]>([]);
 
   // const [compareList, setCompareList] = useState<CompareFilterDto[]>([]);
   const { data: set } = useQuery(
