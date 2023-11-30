@@ -10,7 +10,6 @@ import { VARIABLES } from 'src/variables';
 const PcBanner = () => {
   const { ref, inView } = useInView({ initialInView: false });
   const router = useRouter();
-
   const { data } = useQuery(
     queryKey.pcBanner,
     async () => {
@@ -25,8 +24,11 @@ const PcBanner = () => {
   );
 
   return (
-    <aside className='w-[375px] max-md:hidden'>
-      <div ref={ref} className='fixed flex h-[100dvb] w-[375px] items-center justify-center'>
+    <aside className='z-10 w-[375px] max-md:hidden'>
+      <div
+        ref={ref}
+        className='fixed top-[0%] flex h-[100dvb] w-[375px] items-center justify-center'
+      >
         {data?.image && (
           <Image
             fill

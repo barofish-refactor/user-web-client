@@ -30,7 +30,6 @@ export default function Layout({
       {/* PC 좌측 배너 */}
       <PcBanner />
       {/* 메인화면 */}
-
       <div className='flex flex-1 flex-col bg-white  md:w-[375px]'>
         {/* Alert */}
         <Alert />
