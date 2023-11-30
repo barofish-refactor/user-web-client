@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useState, type SyntheticEvent } from 'react';
+import { type SyntheticEvent } from 'react';
 import { type AddBasketPayload, type ProductListDto } from 'src/api/swagger/data-contracts';
 import { useProductOptionStore } from 'src/store';
 import cm from 'src/utils/class-merge';
@@ -79,7 +79,7 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
           data.originPrice,
         )}원`}</p>
       )}
-      {/* <div className='mt-1 flex items-center gap-0.5'>
+      <div className='mt-1 flex items-center gap-0.5'>
         <Image
           src='/assets/icons/common/speech-bubble.svg'
           alt='후기'
@@ -93,7 +93,7 @@ const ProductSmallSlideItem = ({ data, type, imageOptimize, onClick }: Props) =>
         <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-70'>{`${
           data.reviewCount ?? 0
         }`}</p>
-      </div> */}
+      </div>
     </button>
   );
 };

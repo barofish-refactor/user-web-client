@@ -16,16 +16,6 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 
 interface Props {
   data: ProductTastingNoteResponse[];
-  // | {
-  //     tastes: TastingNoteTaste[];
-  //     textures: {
-  //       texture: string;
-  //       score: number;
-  //     }[];
-  //     recommendedCookingWay: string;
-  //     difficultyLevelOfTrimming: string;
-  //     theScentOfTheSea: string;
-  //   }[];
 }
 
 const Chat = ({ data }: Props) => {

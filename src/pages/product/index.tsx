@@ -46,10 +46,6 @@ import { DefaultSeo } from 'next-seo';
 interface Props {
   initialData: SimpleProductDto;
 }
-interface SaveIsData extends SaveProductPayload {
-  isData: string;
-}
-
 /** 상품 상세 */
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
