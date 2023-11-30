@@ -352,17 +352,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       router.push('/login');
                       return;
                     }
-                    console.log(
-                      selectedOption.filter(v => v.isNeeded === false),
-                      selectedOption.filter(v => v.isNeeded === true),
-                      'data',
-                    );
-                    console.log(
-                      selectedOption.filter(v => v.isNeeded === false).length,
-                      'leng',
-                      selectedOption.filter(v => v.isNeeded === true).length,
-                    );
-
                     if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
                       return setAlert({ message: '필수옵션을 선택해주세요.' });
                     fpixel.addToCart({

@@ -2,20 +2,16 @@ import React from 'react';
 import cm from 'src/utils/class-merge';
 import Image from 'next/image';
 import { tastingText } from 'src/utils/functions';
+import { type TastingNoteTexture } from 'src/api/swagger/data-contracts';
 interface Props {
   info?:
     | {
-        difficultyLevelOfTrimming: string;
-        recommendedCookingWay: string;
-        theScentOfTheSea: string;
+        difficultyLevelOfTrimming: number | string;
+        recommendedCookingWay: string[] | string;
+        theScentOfTheSea: number | string;
       }
-    | any;
-  keyword?:
-    | {
-        texture: string;
-        score: number;
-      }[]
-    | any;
+    | undefined;
+  keyword?: TastingNoteTexture[] | undefined;
 }
 
 const TastingInfo = ({ info, keyword }: Props) => {
@@ -38,7 +34,8 @@ const TastingInfo = ({ info, keyword }: Props) => {
             <div className='flex flex-row'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
-                const trimming = Math.floor(info?.difficultyLevelOfTrimming);
+                const difficultyLevelOfTrimming = info?.difficultyLevelOfTrimming as number;
+                const trimming = Math.floor(difficultyLevelOfTrimming);
                 if (idx < trimming) {
                   isClass = true;
                 } else {
@@ -75,10 +72,11 @@ const TastingInfo = ({ info, keyword }: Props) => {
             </span>
             <div className='flex-low flex flex-wrap '>
               {keyword &&
-                keyword.map((item: { texture: string }, idx: number) => {
+                keyword.map((item, idx) => {
+                  const text = item.texture as string;
                   return (
                     <span key={idx} className='font-500  text-[15px]'>
-                      {tastingText(item.texture, idx + 1, keyword.length)}
+                      {tastingText(text, idx + 1, keyword.length)}
                     </span>
                   );
                 })}
@@ -100,7 +98,8 @@ const TastingInfo = ({ info, keyword }: Props) => {
             <div className='flex flex-row'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
-                const sea = Math.floor(info?.theScentOfTheSea);
+                const theScentOfTheSea = info?.theScentOfTheSea as number;
+                const sea = Math.floor(theScentOfTheSea);
                 if (idx < sea) {
                   isClass = true;
                 } else {
