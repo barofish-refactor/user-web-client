@@ -86,29 +86,6 @@ const CompareDetail: NextPageWithLayout = () => {
     },
   );
 
-  // const { mutateAsync: addCompareSet, isLoading: isAddLoading } = useMutation(
-  //   async (args: AddCompareSetPayload) => await (await client()).addCompareSet(args),
-  // );
-
-  // const onAddCompareSetMutate = (args: AddCompareSetPayload) => {
-  //   if (isAddLoading) return;
-  //   addCompareSet(formatToBlob(args, true))
-  //     .then(res => {
-  //       if (res.data.isSuccess) {
-  //         setAlert({ message: '조합을 저장했습니다.', type: 'success' });
-  //       } else setAlert({ message: res.data.errorMsg ?? '' });
-  //     })
-  //     .catch(error => console.log(error));
-  // };
-
-  // useEffect(() => {
-  //   if (!isLoading && set) {
-  //     setCompareList(set[0].compareFilters ?? []);
-  //   }
-  // }, [set, isLoading]);
-  // border border-[#E2E2E2]
-  // border-b border-r border-[#E2E2E2] bg-[#F7F7F7]
-
   return (
     <div className='pb-[140px] max-md:w-[100vw]'>
       {/* header */}
@@ -121,15 +98,6 @@ const CompareDetail: NextPageWithLayout = () => {
           <CartIcon />
         </Link>
       </div>
-
-      {/* <div className='px-4 pt-5'>
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-          비교대상
-        </p>
-        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
-          선택한 상품을 한눈에 비교하세요.
-        </p>
-      </div> */}
       {/* bg-[#F7F9FA] */}
       <div className='flex px-4 pt-5'>
         {set?.map((v: any, idx: number) => {
@@ -195,42 +163,6 @@ const CompareDetail: NextPageWithLayout = () => {
           );
         })}
       </div>
-      {/* <div className='px-4 pt-6'>
-        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-          선택상품 비교하기
-        </p>
-        <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>
-          비교하고 싶으신 항목을 선택해주세요.
-        </p>
-      </div> */}
-      {/* <div className='flex flex-wrap gap-1.5 px-4 pt-5'>
-        {compareList.map((v, idx) => {
-          return (
-            <button
-              key={`tag${idx}`}
-              className={cm(
-                'flex h-8 items-center justify-center rounded-full border border-grey-80 px-3',
-                { 'border-secondary-50 bg-secondary-90': selectedTag.includes(idx) },
-              )}
-              onClick={() => {
-                const tmp = [...selectedTag];
-                const findIndex = tmp.findIndex(x => idx === x);
-                if (findIndex > -1) tmp.splice(findIndex, 1);
-                else tmp.push(idx);
-                setSelectedTag(tmp);
-              }}
-            >
-              <p
-                className={cm('text-[12px] font-bold -tracking-[0.03em] text-grey-60', {
-                  'text-secondary-50': selectedTag.includes(idx),
-                })}
-              >
-                {v.name ?? ''}
-              </p>
-            </button>
-          );
-        })}
-      </div> */}
       <div className='mb-10 flex items-center'>{chatData && <Chat data={chatData} />}</div>
       <div
         className={cm('mx-4  grid grid-cols-4 overflow-hidden rounded-b-lg  ', {
@@ -240,25 +172,6 @@ const CompareDetail: NextPageWithLayout = () => {
         {set &&
           set.map((v: any, idx: number) => {
             const setIndex = idx;
-            // if (idx === 0) return null;
-            // if (idx === 0) {
-            //   const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
-            //   return (
-            //     <div
-            //       key={`grid${i}/${idx}`}
-            //       className={cm(
-            //         'flex h-[42px] items-center border-b border-r border-[#E2E2E2] bg-[#F1F1F1] pl-3',
-            //         { 'bg-[#F7F7F7]': i !== 0, 'border-b-0': i === selectedTag.length + 1 },
-            //       )}
-            //     >
-            //       <p className='text-[12px] font-bold -tracking-[0.03em] text-grey-20'>{text}</p>
-            //     </div>
-            //   );
-            // }
-            // const compareValue =
-            //   i > 1 ? v.filterValues?.filter(w => w.compareFilterId === compareList[x].id) : [];
-
-            // const text = x === -2 ? '' : x === -1 ? '판매처' : compareList[x].name;
             return (
               <div
                 key={`grid${idx}`}
@@ -371,17 +284,6 @@ const CompareDetail: NextPageWithLayout = () => {
             );
           })}
       </div>
-
-      {/* <div className='fixed bottom-0 z-50 w-[375px] bg-white px-4 pb-7 pt-2 max-md:w-full'>
-        <button
-          className='flex h-[52px] w-full items-center justify-center rounded-lg border-0 bg-primary-50'
-          onClick={() => {
-            if (set && set.length > 0) onAddCompareSetMutate(set.map(x => x.id ?? -1));
-          }}
-        >
-          <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>이 조합 저장하기</p>
-        </button>
-      </div> */}
     </div>
   );
 };
