@@ -296,11 +296,11 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                         />
                       </button>
                     </div>
-                    {v.maxAvailableStock !== 999 && (
+                    {/* {v.maxAvailableStock !== 999 && (
                       <p className='text-[11px] leading-[16px] -tracking-[0.03em] text-grey-50'>
                         최대 주문 가능 수량 : {v.maxAvailableStock}
                       </p>
-                    )}
+                    )} */}
                     <div className='flex items-end justify-between'>
                       <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
                         <button className='' onClick={() => onPressMinus(v)}>
@@ -352,17 +352,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       router.push('/login');
                       return;
                     }
-                    console.log(
-                      selectedOption.filter(v => v.isNeeded === false),
-                      selectedOption.filter(v => v.isNeeded === true),
-                      'data',
-                    );
-                    console.log(
-                      selectedOption.filter(v => v.isNeeded === false).length,
-                      'leng',
-                      selectedOption.filter(v => v.isNeeded === true).length,
-                    );
-
                     if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
                       return setAlert({ message: '필수옵션을 선택해주세요.' });
                     fpixel.addToCart({

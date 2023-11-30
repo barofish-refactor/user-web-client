@@ -335,10 +335,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <TastingInfo
               keyword={data?.tastingNoteInfo[0]?.textures ?? []}
               info={{
-                difficultyLevelOfTrimming:
-                  data?.tastingNoteInfo[0]?.difficultyLevelOfTrimming ?? '',
+                difficultyLevelOfTrimming: data?.tastingNoteInfo[0]?.difficultyLevelOfTrimming ?? 0,
                 recommendedCookingWay: data?.tastingNoteInfo[0]?.recommendedCookingWay ?? '',
-                theScentOfTheSea: data?.tastingNoteInfo[0]?.theScentOfTheSea ?? '',
+                theScentOfTheSea: data?.tastingNoteInfo[0]?.theScentOfTheSea ?? 0,
               }}
             />
           </div>
