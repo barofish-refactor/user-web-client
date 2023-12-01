@@ -43,6 +43,7 @@ import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import { HeaderBanner } from 'src/components/common/header-banner';
 import { DefaultSeo } from 'next-seo';
+
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -72,7 +73,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
-  console.log(data);
 
   // const { data: tastingData, refetch: tastingRefetch } = useQuery(
   //   queryKey.tasting.detail(id),

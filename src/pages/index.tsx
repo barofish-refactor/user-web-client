@@ -162,7 +162,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     <main className='max-md:w-[100vw]'>
       {/* Tab */}
       <HomeTab mainData={data} />
-      <PullToRefresh pullingContent='' onRefresh={handleRefresh}>
+      <PullToRefresh pullingContent='' refreshingContent={<>gg</>} onRefresh={handleRefresh}>
         <>
           {/* Content - 바로추천 */}
           {tab === 0 ? (

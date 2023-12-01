@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { client } from 'src/api/client';
 import { type AddBasketPayload, type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
@@ -198,7 +198,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
     // 스크롤 막기
     if (!isVisible) return;
     document.body.style.cssText = `
-      position: fixed; 
+      position: fixed;
       top: -${window.scrollY}px;
       width: 100%;
       height: 100%;
@@ -210,24 +210,34 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
     };
   }, [isVisible]);
 
+  const onClose = () => {
+    if (target.current) {
+      target.current.style.transform = `translateY(${50}vh)`;
+      target.current.style.transition = 'all 0.5s ease-in';
+      target.current.addEventListener('transitionend', () => {
+        setIsVisible(false);
+      });
+    }
+  };
+
   return (
     <div
       ref={target}
-      className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-4'
+      className='relative flex w-full flex-col items-center rounded-t-[16px] bg-white pb-4'
       onClick={e => {
         e.stopPropagation();
       }}
     >
-      {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
       {!isAddCart ? (
         <div className=' flex w-full flex-col'>
+          {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
           <div className='mt-6 flex w-full flex-row'>
-            <p className='w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
+            <p className='mt-2 w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
               옵션 선택
             </p>
             <p
               className='mt-[3px] w-[30%] cursor-pointer text-end text-[18px] font-medium text-grey-50'
-              onClick={() => setIsVisible(false)}
+              onClick={onClose}
             >
               X
             </p>
