@@ -158,7 +158,6 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     },
   });
 
-  console.log(gtag.GA_TRACKING_ID, 'gtag.GA_TRACKING_ID');
   // refreshingContent={    <div className="text-center mb-4">
   //         <div className="spinner-border text-blue-500"></div>
   //         <p className="mt-2">Loading...</p>
