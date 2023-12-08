@@ -6,6 +6,7 @@ import { REG_EXP } from './regex';
 import { type SectionOptionType, type SectionBasketType } from 'src/pages/product/cart';
 import { type OptionState } from 'src/components/product/bottom-sheet';
 import { client } from 'src/api/client';
+import { decode } from 'jsonwebtoken';
 
 export function setToken(jwt: Jwt | undefined) {
   const { ACCESS_TOKEN, REFRESH_TOKEN, TOKEN_MAX_AGE } = VARIABLES;
@@ -33,6 +34,32 @@ export async function getRenewToken() {
       await client()
     ).renewToken({ accessToken: String(accessToken), refreshToken: String(refreshToken) });
     setToken(renewTokenResponse.data.data);
+  }
+}
+
+export function isValidAccessToken(accessToken: string | undefined): boolean {
+  if (!accessToken) {
+    // 토큰이 존재하지 않으면 유효하지 않음
+    return false;
+  }
+
+  try {
+    // 토큰을 디코딩하여 토큰의 만료 시간을 가져옴
+    const decodedToken: any = decode(accessToken);
+
+    if (!decodedToken) {
+      // 디코딩이 실패하거나 null인 경우 유효하지 않음
+      return false;
+    }
+
+    const expirationTime: number = (decodedToken.exp as number) * 1000; // 만료 시간은 초 단위로 제공되므로 1000을 곱함
+    const currentTime = Date.now();
+
+    // 현재 시간이 만료 시간보다 작으면 토큰이 유효함
+    return currentTime < expirationTime;
+  } catch (error) {
+    // 토큰 디코딩 실패 시 유효하지 않음
+    return false;
   }
 }
 

@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { client } from 'src/api/client';
 import {
-  type DeleteSaveProductsPayload,
+  // type DeleteSaveProductsPayload,
   type SaveProductPayload,
   type SimpleProductDto,
   type DeleteTastingNoteToBasketPayload,
@@ -21,11 +21,10 @@ import {
 } from 'src/components/common/head';
 import Layout from 'src/components/common/layout';
 import {
-  // Chat,
   ProductBanner,
   ProductBottomSheet,
-  ProductCompare,
-  ProductInfoNotice,
+  // ProductCompare,
+  // ProductInfoNotice,
   // ProductCompare,
   ProductInformationDefault,
   ProductInquiry,
@@ -49,6 +48,7 @@ import { useInView } from 'react-intersection-observer';
 interface Props {
   initialData: SimpleProductDto;
 }
+
 /** 상품 상세 */
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
@@ -218,17 +218,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-  // useEffect(() => {
-  //   // 페이지 탭 기억
-  //   const getProductView = sessionStorage.getItem('productView');
-  //   const getProductViewJson = JSON.parse(getProductView as string);
-  //   if (!getProductViewJson) return;
-  //   if (getProductViewJson.id === id) {
-  //     setSelectedTab(getProductViewJson.tabId);
-  //   } else {
-  //     sessionStorage.removeItem('productView');
-  //   }
-  // }, [id]);
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
@@ -260,7 +249,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   // console.log(isObserver);
   const tapOnclick = (idx: number) => {
     setSelectedTab(idx);
-
     setIsTap(true);
     setIsScroll(false);
   };
@@ -268,23 +256,28 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const [isScroll, setIsScroll] = useState(false);
   useEffect(() => {
     if (!isTap || isScroll) return;
-    if (selectedTab === 0)
+    if (selectedTab === 0) {
       infoRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
-    else if (selectedTab === 1)
+      window.scrollBy(0, -120);
+    } else if (selectedTab === 1) {
       reviewRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
-    else if (selectedTab === 2)
+      window.scrollBy(0, -90);
+    } else if (selectedTab === 2) {
       inquiryRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
+      window.scrollBy(0, -20);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tapOnclick]);
+
   const _infiniteScroll = useCallback(() => {
     // 화면높이
     setIsScroll(true);
@@ -313,7 +306,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       setSelectedTab(2);
     }
   }, []);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     window.addEventListener('scroll', _infiniteScroll, true);
     setIsScroll(true);
@@ -472,9 +467,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 <div
                   ref={infoRef}
                   dangerouslySetInnerHTML={{ __html: description }}
-                  className='[&_img]:w-full'
+                  className='pb-7 [&_img]:w-full'
                 />
-                <ProductInfoNotice id={Number(id)} />
+                {/* <ProductInfoNotice id={Number(id)} /> */}
               </Fragment>
               <div className='h-2 bg-grey-90' />
               <div>
