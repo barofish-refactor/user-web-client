@@ -10,7 +10,6 @@ import useClickAway from 'src/utils/use-click-away';
 import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { type Api } from 'src/api/swagger/Api';
-
 import 'swiper/css';
 
 type Instance = InstanceType<typeof Api>;

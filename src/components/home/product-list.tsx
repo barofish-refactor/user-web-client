@@ -55,7 +55,6 @@ const ProductList = ({
         <p className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-black'>{`총 ${formatToLocaleString(
           dataDto[0]?.totalElements ?? 0,
         )}건`}</p>
-
         <div className='flex items-center gap-[19px]'>
           {!type && (
             <div className='relative h-[22px] overflow-visible'>

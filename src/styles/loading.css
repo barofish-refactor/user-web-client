@@ -1,0 +1,54 @@
+/* styles.css */
+
+/* LoadingBody Style */
+.loading-body {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* LoadingBox Style */
+.loading-box {
+  display: inline-block;
+}
+
+/* Span Style */
+.spanLoading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: gray;
+  border-radius: 50%;
+  animation: loading 1s 0s linear infinite;
+}
+
+/* Span Child Styles */
+.spanLoading:nth-child(1) {
+  animation-delay: 0s;
+  background-color: red;
+}
+
+.spanLoading:nth-child(2) {
+  animation-delay: 0.2s;
+  background-color: orange;
+}
+
+.spanLoading:nth-child(3) {
+  animation-delay: 0.4s;
+  background-color: yellowgreen;
+}
+
+/* Keyframes Style */
+@keyframes loading {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}

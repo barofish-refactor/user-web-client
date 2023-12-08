@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import {
   type DeleteSaveProductsPayload,
   type SaveProductPayload,
@@ -28,6 +29,15 @@ const CurationItem = ({
   onMutate,
   onDeleteSaveProductsMutate,
 }: Props) => {
+  const [productsLength, setProductsLength] = useState<number>();
+  useEffect(() => {
+    if (data.products) {
+      const active = data.products.filter(item => item.state === 'ACTIVE');
+      setProductsLength(active.length);
+    }
+  }, [data.products]);
+  if (productsLength === 0) return null;
+
   return (
     <div
       className={cm(

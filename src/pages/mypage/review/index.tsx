@@ -11,8 +11,9 @@ import { NewReviewItem } from 'src/components/review/newItem';
 import { LinkButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
-import { formatToLocaleString } from 'src/utils/functions';
-
+import { formatToLocaleString , handleRefresh } from 'src/utils/functions';
+import PullToRefresh from 'react-simple-pull-to-refresh';
+import Loading from 'src/components/common/loading';
 const take = 10;
 
 /** 마이페이지/구매 후기 */
@@ -68,46 +69,50 @@ const MypageReview: NextPageWithLayout = () => {
   return (
     <>
       <DefaultSeo title='구매후기' description='Review' />
-      <div className='max-md:w-[100vw]'>
-        <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
-          <h3 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
-            내가 쓴 후기
-          </h3>
-          <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
-            총 {formatToLocaleString(data?.pages?.[0]?.reviewCount)}건
-          </span>
+      <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+        <div className='max-md:w-[100vw]'>
+          <div className='flex items-center justify-between gap-2 border-b border-b-[#f2f2f2] px-4 py-2'>
+            <h3 className='text-[16px] font-medium leading-[22px] -tracking-[0.03em]'>
+              내가 쓴 후기
+            </h3>
+            <span className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-primary-50'>
+              총 {formatToLocaleString(data?.pages?.[0]?.reviewCount)}건
+            </span>
+          </div>
+          <article className='px-4'>
+            {data?.pages.map((v, i) => (
+              <Fragment key={i}>
+                {v?.pagedReviews?.content?.map((v, idx) => (
+                  <NewReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
+                ))}
+              </Fragment>
+            ))}
+            <div ref={ref} className='pb-10' />
+          </article>
         </div>
-        <article className='px-4'>
-          {data?.pages.map((v, i) => (
-            <Fragment key={i}>
-              {v?.pagedReviews?.content?.map((v, idx) => (
-                <NewReviewItem key={`${idx}${v?.productId}`} isMine data={v} refetch={refetch} />
-              ))}
-            </Fragment>
-          ))}
-          <div ref={ref} className='pb-10' />
-        </article>
-      </div>
+      </PullToRefresh>
     </>
   );
 };
 
 function Empty() {
   return (
-    <div className='grid flex-1 place-items-center'>
-      <div className='flex flex-col items-center gap-2'>
-        <Image
-          unoptimized
-          src='/assets/icons/search/search-error.svg'
-          alt='up'
-          width={40}
-          height={40}
-        />
-        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-          구매 후기가 없습니다.
-        </p>
+    <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+      <div className='grid flex-1 place-items-center'>
+        <div className='flex flex-col items-center gap-2'>
+          <Image
+            unoptimized
+            src='/assets/icons/search/search-error.svg'
+            alt='up'
+            width={40}
+            height={40}
+          />
+          <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+            구매 후기가 없습니다.
+          </p>
+        </div>
       </div>
-    </div>
+    </PullToRefresh>
   );
 }
 

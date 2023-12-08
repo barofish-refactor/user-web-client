@@ -12,7 +12,9 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-
+import PullToRefresh from 'react-simple-pull-to-refresh';
+import { handleRefresh } from 'src/utils/functions';
+import Loading from 'src/components/common/loading';
 const perView = 10;
 
 interface Props {
@@ -104,42 +106,50 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
 
   return (
     <section className='pb-6'>
-      <MypageOrderStatistics
-        totalCount={countData}
-        deliveryDoneCount={deliveryDoneCount ?? 0}
-        cancelRefundCount={cancelRefundCount ?? 0}
-      />
-      <hr className='border-t-8 border-grey-90' />
-      <article className='divide-y-8 divide-grey-90'>
-        {!!countData && countData === 0 ? (
-          <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>{Empty()}</div>
-        ) : (
-          (data?.pages ?? []).map((x: any) =>
-            (x ?? []).map((v: any) => (
-              <MypageOrderListItem key={v.id} data={v} apiKey={smartApi ?? ''} />
-            )),
-          )
-        )}
-      </article>
-      <div ref={ref} className='pb-10' />
+      <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+        <>
+          <MypageOrderStatistics
+            totalCount={countData}
+            deliveryDoneCount={deliveryDoneCount ?? 0}
+            cancelRefundCount={cancelRefundCount ?? 0}
+          />
+          <hr className='border-t-8 border-grey-90' />
+          <article className='divide-y-8 divide-grey-90'>
+            {!!countData && countData === 0 ? (
+              <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>
+                {Empty()}
+              </div>
+            ) : (
+              (data?.pages ?? []).map((x: any) =>
+                (x ?? []).map((v: any) => (
+                  <MypageOrderListItem key={v.id} data={v} apiKey={smartApi ?? ''} />
+                )),
+              )
+            )}
+          </article>
+          <div ref={ref} className='pb-10' />
+        </>
+      </PullToRefresh>
     </section>
   );
 };
 
 function Empty() {
   return (
-    <div className='flex flex-col items-center gap-2'>
-      <Image
-        unoptimized
-        src='/assets/icons/search/search-error.svg'
-        alt='up'
-        width={40}
-        height={40}
-      />
-      <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-        주문 내역이 없습니다.
-      </p>
-    </div>
+    <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+      <div className='flex flex-col items-center gap-2'>
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='up'
+          width={40}
+          height={40}
+        />
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+          주문 내역이 없습니다.
+        </p>
+      </div>
+    </PullToRefresh>
   );
 }
 

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { client } from 'src/api/client';
 import { type AddBasketPayload, type SimpleProductDto } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
@@ -16,6 +16,7 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
+import { animate, motion, useMotionValue } from 'framer-motion';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -198,7 +199,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
     // 스크롤 막기
     if (!isVisible) return;
     document.body.style.cssText = `
-      position: fixed; 
+      position: fixed;
       top: -${window.scrollY}px;
       width: 100%;
       height: 100%;
@@ -210,300 +211,328 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
     };
   }, [isVisible]);
 
-  return (
-    <div
-      ref={target}
-      className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-4'
-      onClick={e => {
-        e.stopPropagation();
-      }}
-    >
-      {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
-      {!isAddCart ? (
-        <div className=' flex w-full flex-col'>
-          <div className='mt-6 flex w-full flex-row'>
-            <p className='w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
-              옵션 선택
-            </p>
-            <p
-              className='mt-[3px] w-[30%] cursor-pointer text-end text-[18px] font-medium text-grey-50'
-              onClick={() => setIsVisible(false)}
-            >
-              X
-            </p>
-          </div>
-          <div className='max-h-[560px] min-h-[280px] overflow-y-scroll px-4 scrollbar-hide'>
-            <div className='mb-3 min-h-[120px]'>
-              {options.map((v, i) => {
-                return (
-                  <div key={`${v.id}`} className='pt-3.5'>
-                    <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'>
-                      {`${v.isNeeded ? '필수옵션' : '추가옵션'}`}
-                    </p>
-                    <ProductSelector
-                      index={i}
-                      list={v.options}
-                      className='mt-1.5'
-                      isNeeded={v.isNeeded}
-                      placeHolder='옵션을 선택해주세요'
-                      setValue={value => {
-                        const tmp = [...selectedOption];
-                        const objIndex = tmp.findIndex(obj => obj.optionId === value.optionId);
-                        if (objIndex === -1) {
-                          tmp.push({
-                            isNeeded: v.isNeeded ?? false,
-                            optionId: value.optionId,
-                            productId: value.productId,
-                            name: value.option,
-                            amount: 1,
-                            price: value.price,
-                            additionalPrice: value.additionalPrice,
-                            deliveryFee: data?.deliveryFee ?? 0,
-                            deliverFeeType: data?.deliverFeeType ?? 'FREE',
-                            minOrderPrice: data?.minOrderPrice ?? 0,
-                            stock: value.amount,
-                            maxAvailableStock: value.maxAvailableStock,
-                            productImage:
-                              data && data.images && data.images.length > 0 ? data.images[0] : '',
-                            productName: data?.title ?? '',
-                            storeId: data?.store?.storeId ?? -1,
-                            storeImage: data?.store?.profileImage ?? '',
-                            storeName: data?.store?.name ?? '',
-                            needTaxation: data?.needTaxation ?? false, //
-                            pointRate: data?.pointRate ?? 0,
-                          });
-                          setSelectedOption(tmp);
-                        }
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-            <div className='flex max-h-[250px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[5px] scrollbar-hide'>
-              {selectedOption.map((v, idx) => {
-                return (
-                  <div
-                    key={`selected${idx}`}
-                    className='flex h-[100px] shrink-0 flex-col justify-between rounded-lg bg-[#F7F7F7] px-3 pb-3 pt-[12.5px]'
-                  >
-                    <div className='flex items-start justify-between gap-1'>
-                      <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
-                        {`${v.name}`}
+  const onClose = () => {
+    if (target.current) {
+      target.current.style.transform = `translateY(${50}vh)`;
+      target.current.style.transition = 'all 0.1s ease-in';
+      target.current.addEventListener('transitionend', () => {
+        setIsVisible(false);
+      });
+    }
+  };
 
-                        {v.isNeeded &&
-                          v.additionalPrice !== 0 &&
-                          `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
-                            v.additionalPrice,
-                          )}원)`}
+  const SHEET_MARGIN = 34;
+  const h = window.innerHeight - SHEET_MARGIN;
+  // const y = useMotionValue(h);
+  return (
+    <>
+      <motion.div
+        ref={target}
+        // drag='y'
+        // dragElastic={{ top: 0, bottom: 0 }}
+        dragConstraints={{ top: 0 }}
+        animate={{ y: 0 }}
+        // whileTap={{ scale: 0, cursor: 'grabbing' }}
+        // dragTransition={{ bounceStiffness: 10000, bounceDamping: 1 }}
+        className='relative top-[50px] flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[100px]'
+        // onDragEnd={(e, { offset, velocity }) => {
+        //   if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
+        //     setIsVisible(false);
+        //   } else {
+        //     animate(y, 0);
+        //   }
+        // }}
+        onClick={e => {
+          e.stopPropagation();
+        }}
+      >
+        {!isAddCart ? (
+          <motion.div dragListener={false} className=' flex w-full flex-col'>
+            {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
+            <div className='mt-6 flex w-full flex-row'>
+              <p className='mt-2 w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
+                옵션 선택
+              </p>
+              <p
+                className='mt-[3px] w-[30%] cursor-pointer text-end text-[18px] font-medium text-grey-50'
+                onClick={onClose}
+              >
+                X
+              </p>
+            </div>
+            <div className='max-h-[560px] min-h-[280px] overflow-y-scroll px-4 scrollbar-hide'>
+              <div className='mb-3 min-h-[120px]'>
+                {options.map((v, i) => {
+                  return (
+                    <div key={`${v.id}`} className='pt-3.5'>
+                      <p className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-40'>
+                        {`${v.isNeeded ? '필수옵션' : '추가옵션'}`}
                       </p>
-                      <button
-                        className=''
-                        onClick={() => {
-                          onPressDelete(v);
+                      <ProductSelector
+                        index={i}
+                        list={v.options}
+                        className='mt-1.5'
+                        isNeeded={v.isNeeded}
+                        placeHolder='옵션을 선택해주세요'
+                        setValue={value => {
+                          const tmp = [...selectedOption];
+                          const objIndex = tmp.findIndex(obj => obj.optionId === value.optionId);
+                          if (objIndex === -1) {
+                            tmp.push({
+                              isNeeded: v.isNeeded ?? false,
+                              optionId: value.optionId,
+                              productId: value.productId,
+                              name: value.option,
+                              amount: 1,
+                              price: value.price,
+                              additionalPrice: value.additionalPrice,
+                              deliveryFee: data?.deliveryFee ?? 0,
+                              deliverFeeType: data?.deliverFeeType ?? 'FREE',
+                              minOrderPrice: data?.minOrderPrice ?? 0,
+                              stock: value.amount,
+                              maxAvailableStock: value.maxAvailableStock,
+                              productImage:
+                                data && data.images && data.images.length > 0 ? data.images[0] : '',
+                              productName: data?.title ?? '',
+                              storeId: data?.store?.storeId ?? -1,
+                              storeImage: data?.store?.profileImage ?? '',
+                              storeName: data?.store?.name ?? '',
+                              needTaxation: data?.needTaxation ?? false, //
+                              pointRate: data?.pointRate ?? 0,
+                            });
+                            setSelectedOption(tmp);
+                          }
                         }}
-                      >
-                        <Image
-                          unoptimized
-                          src='/assets/icons/common/close-small-grey.svg'
-                          alt='close'
-                          width={19}
-                          height={19}
-                        />
-                      </button>
+                      />
                     </div>
-                    {/* {v.maxAvailableStock !== 999 && (
+                  );
+                })}
+              </div>
+              <div className='flex max-h-[250px] flex-col gap-3 overflow-y-scroll pb-[25.5px] pt-[5px] scrollbar-hide'>
+                {selectedOption.map((v, idx) => {
+                  return (
+                    <div
+                      key={`selected${idx}`}
+                      className='flex h-[100px] shrink-0 flex-col justify-between rounded-lg bg-[#F7F7F7] px-3 pb-3 pt-[12.5px]'
+                    >
+                      <div className='flex items-start justify-between gap-1'>
+                        <p className='line-clamp-1 flex-1 text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+                          {`${v.name}`}
+
+                          {v.isNeeded &&
+                            v.additionalPrice !== 0 &&
+                            `(${v.additionalPrice > 0 ? '+' : ''}${formatToLocaleString(
+                              v.additionalPrice,
+                            )}원)`}
+                        </p>
+                        <button
+                          className=''
+                          onClick={() => {
+                            onPressDelete(v);
+                          }}
+                        >
+                          <Image
+                            unoptimized
+                            src='/assets/icons/common/close-small-grey.svg'
+                            alt='close'
+                            width={19}
+                            height={19}
+                          />
+                        </button>
+                      </div>
+                      {/* {v.maxAvailableStock !== 999 && (
                       <p className='text-[11px] leading-[16px] -tracking-[0.03em] text-grey-50'>
                         최대 주문 가능 수량 : {v.maxAvailableStock}
                       </p>
                     )} */}
-                    <div className='flex items-end justify-between'>
-                      <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
-                        <button className='' onClick={() => onPressMinus(v)}>
-                          <Image
-                            unoptimized
-                            src='/assets/icons/product/product-minus.svg'
-                            alt='minus'
-                            width={24}
-                            height={24}
-                          />
-                        </button>
-                        <p className='min-w-[30px] text-center text-[16px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
-                          {v.amount}
-                        </p>
-                        <button className='' onClick={() => onPressPlus(v)}>
-                          <Image
-                            unoptimized
-                            src='/assets/icons/product/product-plus.svg'
-                            alt='minus'
-                            width={24}
-                            height={24}
-                          />
-                        </button>
+                      <div className='flex items-end justify-between'>
+                        <div className='flex items-center rounded border border-grey-80 bg-white px-[3px] py-1'>
+                          <button className='' onClick={() => onPressMinus(v)}>
+                            <Image
+                              unoptimized
+                              src='/assets/icons/product/product-minus.svg'
+                              alt='minus'
+                              width={24}
+                              height={24}
+                            />
+                          </button>
+                          <p className='min-w-[30px] text-center text-[16px] font-semibold tabular-nums leading-[24px] -tracking-[0.03em] text-grey-20'>
+                            {v.amount}
+                          </p>
+                          <button className='' onClick={() => onPressPlus(v)}>
+                            <Image
+                              unoptimized
+                              src='/assets/icons/product/product-plus.svg'
+                              alt='minus'
+                              width={24}
+                              height={24}
+                            />
+                          </button>
+                        </div>
+                        <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+                          (v.price + v.additionalPrice) * v.amount,
+                        )}원`}</p>
                       </div>
-                      <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                        (v.price + v.additionalPrice) * v.amount,
-                      )}원`}</p>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          {selectedOption.length > 0 && (
-            <div className='z-[200] px-4'>
-              <div className='h-[1px] bg-grey-90' />
-              <div className='mt-[10.5px] flex items-center justify-between'>
-                <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-40'>{`${selectedOption.length}개 상품`}</p>
-                <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`총 ${formatToLocaleString(
-                  totalPrice,
-                )}원`}</p>
+                  );
+                })}
               </div>
-              <div className='mt-[30px] flex items-center gap-[7px]'>
-                <button
-                  className='h-[52px] flex-1 rounded-lg border border-primary-50'
-                  onClick={() => {
-                    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
-                      setIsVisible(false);
-                      router.push('/login');
-                      return;
-                    }
-                    if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
-                      return setAlert({ message: '필수옵션을 선택해주세요.' });
-                    fpixel.addToCart({
-                      content_ids: selectedOption[0]?.productId,
-                      content_type: 'product',
-                      contents: selectedOption.map(item => {
-                        return {
-                          item_id: item.productId,
-                          item_name: item.productName,
-                          affiliation: '바로피쉬',
-                          currency: 'KRW',
-                          quantity: item.amount,
-                          item_brand: item.storeName,
-                          price: (item.price + item.additionalPrice) * item.amount,
-                        };
-                      }),
-                    });
-                    gtag('event', 'add_to_cart', {
-                      currency: 'KRW',
-                      value: totalPrice,
-                      event_label: selectedOption[0].productName,
-                      items: selectedOption.map(item => {
-                        return {
-                          item_id: item.productId,
-                          item_name: item.name,
-                          affiliation: '바로피쉬',
-                          currency: 'KRW',
-                          item_brand: item.storeName,
-                          price: (item.price + item.additionalPrice) * item.amount,
-                          quantity: item.amount,
-                        };
-                      }),
-                    });
-                    onMutate({
-                      data: {
-                        productId: data?.id,
-                        options: selectedOption.map(x => {
+            </div>
+            {selectedOption.length > 0 && (
+              <div className='z-[200] px-4'>
+                <div className='h-[1px] bg-grey-90' />
+                <div className='mt-[10.5px] flex items-center justify-between'>
+                  <p className='text-[16px] font-medium leading-[24px] -tracking-[0.03em] text-grey-40'>{`${selectedOption.length}개 상품`}</p>
+                  <p className='text-[20px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>{`총 ${formatToLocaleString(
+                    totalPrice,
+                  )}원`}</p>
+                </div>
+                <div className='mt-[30px] flex items-center gap-[7px]'>
+                  <button
+                    className='h-[52px] flex-1 rounded-lg border border-primary-50'
+                    onClick={() => {
+                      if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                        setIsVisible(false);
+                        router.push('/login');
+                        return;
+                      }
+                      if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
+                        return setAlert({ message: '필수옵션을 선택해주세요.' });
+                      fpixel.addToCart({
+                        content_ids: selectedOption[0]?.productId,
+                        content_type: 'product',
+                        contents: selectedOption.map(item => {
                           return {
-                            optionId: x.optionId === -1 ? undefined : x.optionId,
-                            amount: x.amount,
+                            item_id: item.productId,
+                            item_name: item.productName,
+                            affiliation: '바로피쉬',
+                            currency: 'KRW',
+                            quantity: item.amount,
+                            item_brand: item.storeName,
+                            price: (item.price + item.additionalPrice) * item.amount,
                           };
                         }),
-                      },
-                    });
-                  }}
-                >
-                  <p className='text-[16px] font-bold -tracking-[0.03em] text-primary-50'>
-                    장바구니
-                  </p>
-                </button>
-                <button
-                  className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
-                  onClick={() => {
-                    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
-                      setIsVisible(false);
-                      router.push('/login');
-                      return;
-                    }
+                      });
+                      gtag('event', 'add_to_cart', {
+                        currency: 'KRW',
+                        value: totalPrice,
+                        event_label: selectedOption[0].productName,
+                        items: selectedOption.map(item => {
+                          return {
+                            item_id: item.productId,
+                            item_name: item.name,
+                            affiliation: '바로피쉬',
+                            currency: 'KRW',
+                            item_brand: item.storeName,
+                            price: (item.price + item.additionalPrice) * item.amount,
+                            quantity: item.amount,
+                          };
+                        }),
+                      });
+                      onMutate({
+                        data: {
+                          productId: data?.id,
+                          options: selectedOption.map(x => {
+                            return {
+                              optionId: x.optionId === -1 ? undefined : x.optionId,
+                              amount: x.amount,
+                            };
+                          }),
+                        },
+                      });
+                    }}
+                  >
+                    <p className='text-[16px] font-bold -tracking-[0.03em] text-primary-50'>
+                      장바구니
+                    </p>
+                  </button>
+                  <button
+                    className='flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+                    onClick={() => {
+                      if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                        setIsVisible(false);
+                        router.push('/login');
+                        return;
+                      }
 
-                    if (selectedOption.filter(v => v.isNeeded === true).length === 0)
-                      return setAlert({ message: '필수옵션을 1개 이상 선택해주세요.' });
+                      if (selectedOption.filter(v => v.isNeeded === true).length === 0)
+                        return setAlert({ message: '필수옵션을 1개 이상 선택해주세요.' });
 
-                    const querySendData: miniOptionState[] = selectedOption.map(v => ({
-                      productId: v.productId,
-                      optionId: v.optionId,
-                      name: v.name,
-                      amount: v.amount,
-                      additionalPrice: v.additionalPrice,
-                      deliveryFee: v.deliveryFee,
-                      stock: v.stock,
-                      maxAvailableStock: v.maxAvailableStock,
-                      needTaxation: v.needTaxation,
-                      pointRate: v.pointRate,
-                    }));
+                      const querySendData: miniOptionState[] = selectedOption.map(v => ({
+                        productId: v.productId,
+                        optionId: v.optionId,
+                        name: v.name,
+                        amount: v.amount,
+                        additionalPrice: v.additionalPrice,
+                        deliveryFee: v.deliveryFee,
+                        stock: v.stock,
+                        maxAvailableStock: v.maxAvailableStock,
+                        needTaxation: v.needTaxation,
+                        pointRate: v.pointRate,
+                      }));
 
-                    router.push({
-                      pathname: '/product/order',
-                      query: { id: data?.id, options: aToB(JSON.stringify(querySendData)) },
-                    });
-                  }}
-                >
-                  <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>바로 구매</p>
-                </button>
+                      router.push({
+                        pathname: '/product/order',
+                        query: { id: data?.id, options: aToB(JSON.stringify(querySendData)) },
+                      });
+                    }}
+                  >
+                    <p className='text-[16px] font-bold -tracking-[0.03em] text-white'>바로 구매</p>
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className='mt-5 flex w-full flex-col px-4 pb-9'>
-          <div className='flex items-center gap-5'>
-            <Image
-              unoptimized
-              src={data?.images?.[0] ?? '/'}
-              alt='image'
-              width={50}
-              height={50}
-              style={{ width: '50px', height: '50px' }}
-            />
-            <p className='text-[14px] font-medium -tracking-[0.03em] text-grey-20'>
-              장바구니에 상품을 담았습니다.
-            </p>
-            <p
-              className='ml-[60px] cursor-pointer text-end text-[14px] font-medium text-grey-50'
-              onClick={() => setIsVisible(false)}
-            >
-              X
-            </p>
-          </div>
-          <div className='my-4 h-[1px] bg-grey-90' />
-          <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-            다른 고객이 함께 구매한 상품
-          </p>
-          {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
-            <HomeSmallSlideCuration
-              title=''
-              className='mt-4'
-              data={selectProductOtherCustomerBuy ?? []}
-              onClick={() => setIsVisible(false)}
-            />
-          ) : (
-            <div className='flex h-[252px] flex-col items-center justify-center'>
+            )}
+          </motion.div>
+        ) : (
+          <div className='mt-5 flex w-full flex-col px-4 pb-9'>
+            <div className='flex items-center gap-5'>
               <Image
                 unoptimized
-                src='/assets/icons/search/search-error.svg'
-                alt='up'
-                width={40}
-                height={40}
+                src={data?.images?.[0] ?? '/'}
+                alt='image'
+                width={50}
+                height={50}
+                style={{ width: '50px', height: '50px' }}
               />
-              <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-                상품이 존재하지 않습니다.
+              <p className='text-[14px] font-medium -tracking-[0.03em] text-grey-20'>
+                장바구니에 상품을 담았습니다.
+              </p>
+              <p
+                className='ml-[60px] cursor-pointer text-end text-[14px] font-medium text-grey-50'
+                onClick={() => setIsVisible(false)}
+              >
+                X
               </p>
             </div>
-          )}
-        </div>
-      )}
-    </div>
+            <div className='my-4 h-[1px] bg-grey-90' />
+            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+              다른 고객이 함께 구매한 상품
+            </p>
+            {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
+              <HomeSmallSlideCuration
+                title=''
+                className='mt-4'
+                data={selectProductOtherCustomerBuy ?? []}
+                onClick={() => setIsVisible(false)}
+              />
+            ) : (
+              <div className='flex h-[252px] flex-col items-center justify-center'>
+                <Image
+                  unoptimized
+                  src='/assets/icons/search/search-error.svg'
+                  alt='up'
+                  width={40}
+                  height={40}
+                />
+                <p className='whitespace-pre text-center text-[14px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                  상품이 존재하지 않습니다.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </motion.div>
+    </>
   );
 };
 

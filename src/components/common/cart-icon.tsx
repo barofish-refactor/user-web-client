@@ -9,7 +9,7 @@ import { VARIABLES } from 'src/variables';
 const CartIcon = () => {
   const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
   // const { setAlert } = useAlertStore();
-  const { data, isLoading, refetch } = useQuery(queryKey.cartCount, async () => {
+  const { data, isLoading } = useQuery(queryKey.cartCount, async () => {
     const { countBasket } = await client();
     const res = await countBasket();
     if (res.data.isSuccess) {
