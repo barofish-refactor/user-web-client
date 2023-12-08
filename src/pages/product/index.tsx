@@ -261,13 +261,13 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -120);
+      window.scrollBy(0, -150);
     } else if (selectedTab === 1) {
       reviewRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -90);
+      window.scrollBy(0, -130);
     } else if (selectedTab === 2) {
       inquiryRef.current?.scrollIntoView({
         behavior: 'auto',
