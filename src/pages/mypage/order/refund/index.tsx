@@ -8,7 +8,9 @@ import { MypageOrderListItem } from 'src/components/mypage/order';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
-
+import PullToRefresh from 'react-simple-pull-to-refresh';
+import { handleRefresh } from 'src/utils/functions';
+import Loading from 'src/components/common/loading';
 /** 마이페이지 - 취소/환불/교환 내역 */
 const MypageOrder: NextPageWithLayout = () => {
   const { data, isLoading, isFetched } = useQuery(queryKey.order.list('canceled'), async () => {
@@ -47,13 +49,20 @@ const MypageOrder: NextPageWithLayout = () => {
   return (
     <section className='pb-6'>
       <hr className='border-t-8 border-grey-90' />
-      <article className='divide-y-8 divide-grey-90'>
-        {data?.data && data.data.length === 0 ? (
-          <div className='flex h-[calc(100dvb-200px)] items-center justify-center'>{Empty()}</div>
-        ) : (
-          data?.data?.map(v => <MypageOrderListItem key={v.id} data={v} apiKey={smartApi ?? ''} />)
-        )}
-      </article>
+      <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+        <article className='divide-y-8 divide-grey-90'>
+          {data?.data && data.data.length === 0 ? (
+            <div className='flex h-[calc(100dvb-100px)] items-center justify-center'>{Empty()}</div>
+          ) : (
+            data?.data?.map(v => (
+              // eslint-disable-next-line react/jsx-key
+              <div key={v.id} className='flex h-[calc(100dvb)]'>
+                <MypageOrderListItem data={v} apiKey={smartApi ?? ''} />
+              </div>
+            ))
+          )}
+        </article>
+      </PullToRefresh>
     </section>
   );
 };
@@ -68,6 +77,7 @@ function Empty() {
         width={40}
         height={40}
       />
+
       <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
         취소/환불/교환 내역이 없습니다.
       </p>

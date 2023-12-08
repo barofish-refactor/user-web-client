@@ -20,13 +20,13 @@ const Footer = () => {
   });
 
   return (
-    <div className='pt-[62px]'>
+    <div className='bg-[#f5f5f5] pt-[62px]'>
       <div className='h-2 bg-grey-90' />
       <p className='pl-[15px] pr-[13px] pt-[25px] text-[13px] font-medium leading-[18px] -tracking-[0.05em] text-[#969696]'>
         (주) 맛신저는 통신판매중개자이며, 통신판매의 당사자가 아닙니다. 따라서 (주) 맛신저는 상품,
         거래정보 및 거래에 대하여 책임을 지지 않습니다.
       </p>
-      <div className='px-[16px] pb-[118px] pt-[23px]'>
+      <div className=' px-[16px] pb-[118px] pt-[23px]'>
         <button onClick={() => setShowInfo(!showInfo)}>
           <div className='flex items-center gap-[5px]'>
             <p className='text-[15px] font-bold leading-[16px] -tracking-[0.05em] text-[#797979]'>

@@ -465,3 +465,6 @@ export const tastingText = (text: string, start?: number, end?: number) => {
     return (itmeText = '흐물거려요');
   }
 };
+export const handleRefresh = async () => {
+  location.reload();
+};

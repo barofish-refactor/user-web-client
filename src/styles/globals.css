@@ -1,6 +1,7 @@
 @import url(./tinymce.css);
 @import url(./swiper.css);
 @import url(./product.css);
+@import url(./loading.css);
 /* @import 'pretendard/dist/web/static/pretendard.css'; */
 @tailwind base;
 @tailwind components;

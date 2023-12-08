@@ -38,7 +38,11 @@ export default function CurationList({ mainData }: Props) {
         .map((v, idx) => {
           return (
             <div key={v.id}>
-              {(v.products ?? []).length > 0 && <HomeCurationItem data={v} />}
+              {(v.products ?? []).length > 0 && (
+                <>
+                  <HomeCurationItem data={v} />
+                </>
+              )}
               {idx === 0 && (
                 <>
                   {/* SubBanner */}

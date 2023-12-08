@@ -20,7 +20,9 @@ import { useFilterStore, type indexFilterType } from 'src/store';
 import { aToB, bToA, safeParse } from 'src/utils/parse';
 import 'swiper/css';
 import PullToRefresh from 'react-simple-pull-to-refresh';
-
+import { handleRefresh } from 'src/utils/functions';
+import Loading from 'src/components/common/loading';
+import * as gtag from 'src/utils/gtag';
 const perView = 10;
 
 /** 홈화면 */
@@ -155,14 +157,18 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       if (inView) fetchNextPage();
     },
   });
-  const handleRefresh = async () => {
-    location.reload();
-  };
+
+  console.log(gtag.GA_TRACKING_ID, 'gtag.GA_TRACKING_ID');
+  // refreshingContent={    <div className="text-center mb-4">
+  //         <div className="spinner-border text-blue-500"></div>
+  //         <p className="mt-2">Loading...</p>
+  //       </div>}
   return (
     <main className='max-md:w-[100vw]'>
       {/* Tab */}
       <HomeTab mainData={data} />
-      <PullToRefresh pullingContent='' refreshingContent={<>gg</>} onRefresh={handleRefresh}>
+      {/* <Loading /> */}
+      <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
         <>
           {/* Content - 바로추천 */}
           {tab === 0 ? (
@@ -192,7 +198,9 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
               {isLoading ? (
                 <div className='h-[50vh]' />
               ) : (
-                <HomeCurationList mainData={data} mainRefetch={refetch} />
+                <>
+                  <HomeCurationList mainData={data} mainRefetch={refetch} />
+                </>
               )}
               {/* 알아두면 좋은 정보 */}
               {/* <HomeCurationTip /> */}

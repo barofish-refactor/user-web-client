@@ -52,6 +52,40 @@ const Inquiry = ({ productId, data, refetch }: Props) => {
         console.log(error);
       });
   };
+  function Empty(text: string) {
+    return (
+      <div className='h-[300px]'>
+        <div className='grid h-full flex-1 place-items-center'>
+          <div className='flex flex-col items-center gap-2'>
+            <Image
+              unoptimized
+              src='/assets/icons/common/error.svg'
+              alt='error'
+              width={40}
+              height={40}
+            />
+            <p className='whitespace-pre text-center text-[14px] font-medium leading-[24px] -tracking-[0.05em] text-[#B5B5B5]'>
+              {`${text}글이 없습니다.`}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (data.length === 0)
+    return (
+      <>
+        <Link
+          href={{ pathname: '/product/inquiry', query: { id: productId } }}
+          className='mx-4 mb-[18px] mt-5 flex h-[42px] items-center justify-center rounded-lg border border-primary-50'
+        >
+          <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>
+            상품 문의하기
+          </p>
+        </Link>
+        {Empty('문의')}
+      </>
+    );
 
   return (
     <div className=''>
@@ -63,13 +97,13 @@ const Inquiry = ({ productId, data, refetch }: Props) => {
           상품 문의하기
         </p>
       </Link>
-      <div>
+      <div className='min-h-[300px]'>
         {data.map((v, idx) => {
           const isDone = !!v.answer;
           return (
             <div key={`inquiry${idx}`} className='flex-col'>
               <div
-                className='flex w-full cursor-pointer justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px] text-start'
+                className='flex  w-full cursor-pointer justify-between border-b border-b-grey-90 py-[22px] pl-4 pr-[14.5px] text-start'
                 onClick={() => {
                   if (v.isSecret && v.user?.userId !== user?.userId) return;
                   setOpenIndex(openIndex === idx ? undefined : idx);

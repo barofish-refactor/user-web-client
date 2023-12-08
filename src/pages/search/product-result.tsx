@@ -20,7 +20,11 @@ import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { FreeMode } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide, type SwiperRef } from 'swiper/react';
-
+import PullToRefresh from 'react-simple-pull-to-refresh';
+import { handleRefresh } from 'src/utils/functions';
+import { type CookieValueTypes, getCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
+import Loading from 'src/components/common/loading';
 const perView = 10;
 
 interface Props {
@@ -112,6 +116,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       enabled: !!id && !!selectedCategoryId,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
+        0;
         return lastPage?.content?.length !== 0 ? nextId + 1 : -1;
       },
     },
@@ -181,13 +186,13 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       if (inView) fetchNextPage();
     },
   });
-  // 배너 확인용 유저
-  const { data: user } = useQuery(queryKey.user, async () => {
-    const res = await (await client()).selectUserSelfInfo();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    }
-  });
+
+  const [token, setToken] = useState<CookieValueTypes>();
+  useEffect(() => {
+    const { ACCESS_TOKEN } = VARIABLES;
+    const accessToken: CookieValueTypes = getCookie(ACCESS_TOKEN);
+    setToken(accessToken);
+  }, []);
 
   return (
     <>
@@ -202,14 +207,14 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
         // }}
       />
       <div className='max-md:w-[100vw]'>
-        {!user && (
+        {!token && (
           <div className='sticky top-0 z-50'>
             <HeaderBanner />
           </div>
         )}
         <div
           className={
-            !user
+            !token
               ? 'sticky top-11 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
               : 'sticky top-0 z-50 flex h-[56px] items-center gap-3.5 bg-white pl-4 pr-[18px]'
           }
@@ -222,42 +227,54 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
             <CartIcon />
           </Link>
         </div>
-        {type === 'category' ? (
-          <Swiper ref={refSwiper} freeMode slidesPerView={4} modules={[FreeMode]} className='mt-3'>
-            {[{ id: -1, name: '전체보기' } as Category]
-              .concat(data.data?.filter((x: any) => x.id === Number(id))[0].categoryList ?? [])
-              .map((v, idx) => {
-                return (
-                  <SwiperSlide key={`mainTab${idx}`} className='h-full w-1/4'>
-                    <button className='w-full' onClick={() => setSelectedTabIndex(idx)}>
-                      <div className='flex h-full w-full flex-col justify-between'>
-                        <p
-                          className={cm(
-                            'text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
-                            { 'font-semibold text-primary-50': selectedTabIndex === idx },
-                          )}
-                        >
-                          {v.name}
-                        </p>
-                        <div
-                          className={cm('h-[2.5px]', { 'bg-primary-50': selectedTabIndex === idx })}
-                        />
-                      </div>
-                    </button>
-                  </SwiperSlide>
-                );
-              })}
-          </Swiper>
-        ) : null}
-        <HomeProductList
-          title={curationData?.shortName}
-          storeType={type === 'curation' ? 'curation' : 'category'}
-          storeId={type === 'curation' ? Number(id) : selectedCategoryId}
-          dataDto={productData?.pages ?? []}
-          filter={dummyFilter}
-          sort={sort}
-          setSort={setSort}
-        />
+        <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+          <>
+            {type === 'category' ? (
+              <Swiper
+                ref={refSwiper}
+                freeMode
+                slidesPerView={4}
+                modules={[FreeMode]}
+                className='mt-3'
+              >
+                {[{ id: -1, name: '전체보기' } as Category]
+                  .concat(data.data?.filter((x: any) => x.id === Number(id))[0].categoryList ?? [])
+                  .map((v, idx) => {
+                    return (
+                      <SwiperSlide key={`mainTab${idx}`} className='h-full w-1/4'>
+                        <button className='w-full' onClick={() => setSelectedTabIndex(idx)}>
+                          <div className='flex h-full w-full flex-col justify-between'>
+                            <p
+                              className={cm(
+                                'text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-50',
+                                { 'font-semibold text-primary-50': selectedTabIndex === idx },
+                              )}
+                            >
+                              {v.name}
+                            </p>
+                            <div
+                              className={cm('h-[2.5px]', {
+                                'bg-primary-50': selectedTabIndex === idx,
+                              })}
+                            />
+                          </div>
+                        </button>
+                      </SwiperSlide>
+                    );
+                  })}
+              </Swiper>
+            ) : null}
+            <HomeProductList
+              title={curationData?.shortName}
+              storeType={type === 'curation' ? 'curation' : 'category'}
+              storeId={type === 'curation' ? Number(id) : selectedCategoryId}
+              dataDto={productData?.pages ?? []}
+              filter={dummyFilter}
+              sort={sort}
+              setSort={setSort}
+            />
+          </>
+        </PullToRefresh>
         <div ref={ref} className='pb-10' />
       </div>
     </>

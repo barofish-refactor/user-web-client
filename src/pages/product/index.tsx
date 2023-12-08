@@ -5,7 +5,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { client } from 'src/api/client';
 import {
   type DeleteSaveProductsPayload,
@@ -38,12 +38,14 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import { formatToBlob, formatToLocaleString } from 'src/utils/functions';
+import { formatToBlob, formatToLocaleString, handleRefresh } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import { HeaderBanner } from 'src/components/common/header-banner';
 import { DefaultSeo } from 'next-seo';
-
+import PullToRefresh from 'react-simple-pull-to-refresh';
+import Loading from 'src/components/common/loading';
+import { useInView } from 'react-intersection-observer';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -216,19 +218,109 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-  useEffect(() => {
-    // 페이지 탭 기억
-    const getProductView = sessionStorage.getItem('productView');
-    const getProductViewJson = JSON.parse(getProductView as string);
-    if (!getProductViewJson) return;
-    if (getProductViewJson.id === id) {
-      setSelectedTab(getProductViewJson.tabId);
-    } else {
-      sessionStorage.removeItem('productView');
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   // 페이지 탭 기억
+  //   const getProductView = sessionStorage.getItem('productView');
+  //   const getProductViewJson = JSON.parse(getProductView as string);
+  //   if (!getProductViewJson) return;
+  //   if (getProductViewJson.id === id) {
+  //     setSelectedTab(getProductViewJson.tabId);
+  //   } else {
+  //     sessionStorage.removeItem('productView');
+  //   }
+  // }, [id]);
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
+
+  const [isObserver, setIsObserver] = useState(false);
+  const [isImgObserver, setIsImgObserver] = useState(false);
+  const infoRef = useRef<HTMLDivElement>(null);
+  const reviewRef = useRef<HTMLDivElement>(null);
+  const inquiryRef = useRef<HTMLDivElement>(null);
+  const { ref } = useInView({
+    initialInView: false,
+    onChange: inView => {
+      if (inView) {
+        setIsObserver(false);
+      } else {
+        setIsObserver(true);
+      }
+    },
+  });
+  const { ref: imgRef } = useInView({
+    initialInView: false,
+    onChange: inView => {
+      if (inView) {
+        setIsImgObserver(false);
+      } else {
+        setIsImgObserver(true);
+      }
+    },
+  });
+  // console.log(isObserver);
+  const tapOnclick = (idx: number) => {
+    setSelectedTab(idx);
+
+    setIsTap(true);
+    setIsScroll(false);
+  };
+  const [isTap, setIsTap] = useState(false);
+  const [isScroll, setIsScroll] = useState(false);
+  useEffect(() => {
+    if (!isTap || isScroll) return;
+    if (selectedTab === 0)
+      infoRef.current?.scrollIntoView({
+        behavior: 'auto',
+        block: 'start',
+      });
+    else if (selectedTab === 1)
+      reviewRef.current?.scrollIntoView({
+        behavior: 'auto',
+        block: 'start',
+      });
+    else if (selectedTab === 2)
+      inquiryRef.current?.scrollIntoView({
+        behavior: 'auto',
+        block: 'start',
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tapOnclick]);
+  const _infiniteScroll = useCallback(() => {
+    // 화면높이
+    setIsScroll(true);
+    const clientHeight = document.documentElement.clientHeight;
+
+    if (
+      infoRef.current &&
+      reviewRef.current &&
+      inquiryRef.current &&
+      infoRef.current.getBoundingClientRect().top <= clientHeight / 2 &&
+      infoRef.current.getBoundingClientRect().bottom >= clientHeight / 2
+    ) {
+      setSelectedTab(0);
+    } else if (
+      reviewRef.current &&
+      inquiryRef.current &&
+      reviewRef.current.getBoundingClientRect().top <= clientHeight / 2 &&
+      reviewRef.current.getBoundingClientRect().bottom >= clientHeight / 2
+    ) {
+      setSelectedTab(1);
+    } else if (
+      inquiryRef.current &&
+      inquiryRef.current.getBoundingClientRect().top <= clientHeight / 2 &&
+      inquiryRef.current.getBoundingClientRect().bottom >= clientHeight / 2
+    ) {
+      setSelectedTab(2);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', _infiniteScroll, true);
+    setIsScroll(true);
+    return () => {
+      window.removeEventListener('scroll', _infiniteScroll, true);
+    };
+  }, [_infiniteScroll, isTap]);
 
   return (
     <>
@@ -292,6 +384,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           )}
         </div>
         {/* header */}
+
         {!user && (
           <div className='sticky top-0 z-50'>
             <HeaderBanner />
@@ -305,139 +398,181 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           }
         >
           <BackButton />
-          <div className='flex items-center gap-4'>
+          <div className=' flex items-center gap-4'>
             <Link href='/product/cart'>
               <CartIcon />
             </Link>
             <ShareButton />
           </div>
         </div>
-        {/* content */}
-        <ProductBanner image={data?.images ?? []} />
-        <ProductInformationDefault
-          data={data}
-          user={user}
-          setSelectedTab={setSelectedTab}
-          // isTasting={data.tastingNoteInfo ?? 0}
-        />
-        {/* <ProductCompare /> */}
-        {/* BARO’s 피쉬 노트 */}
-        {data && data?.tastingNoteInfo && isTasting && (
-          <div className='flex w-full  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
-            <div className=' mb-[10px] mt-10 items-center text-[20px] font-bold'>
-              피쉬 테이스팅 노트
-            </div>
-            <Chat data={data?.tastingNoteInfo ?? []} />
-            <TastingInfo
-              keyword={data?.tastingNoteInfo[0]?.textures ?? []}
-              info={{
-                difficultyLevelOfTrimming: data?.tastingNoteInfo[0]?.difficultyLevelOfTrimming ?? 0,
-                recommendedCookingWay: data?.tastingNoteInfo[0]?.recommendedCookingWay ?? '',
-                theScentOfTheSea: data?.tastingNoteInfo[0]?.theScentOfTheSea ?? 0,
-              }}
+        {/* {isObserver && isImgObserver && (
+          <div className='fixed top-10 z-50 flex h-[56px] w-full items-center justify-between bg-white '>
+            <ProductTab
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+              reviewCount={data?.reviewCount ?? 0}
+              onClick={tapOnclick}
             />
           </div>
-        )}
-        {/* <div className='h-2 bg-grey-90' /> */}
-        {/* Tab Content */}
-        <ProductTab
-          selectedTab={selectedTab}
-          setSelectedTab={setSelectedTab}
-          reviewCount={data?.reviewCount ?? 0}
-        />
-        <div className='min-h-[calc(100dvb-180px)]'>
-          {selectedTab === 0 ? (
-            <Fragment>
-              <div dangerouslySetInnerHTML={{ __html: description }} className='[&_img]:w-full' />
-              <ProductInfoNotice id={Number(id)} />
-            </Fragment>
-          ) : selectedTab === 1 ? (
-            <div>
-              {/* 구매자들의 솔직 리뷰 */}
-              <ReviewChart
-                data={{
-                  taste: data?.reviewStatistics?.taste ?? 0,
-                  freshness: data?.reviewStatistics?.fresh ?? 0,
-                  price: data?.reviewStatistics?.price ?? 0,
-                  packaging: data?.reviewStatistics?.packaging ?? 0,
-                  size: data?.reviewStatistics?.size ?? 0,
-                }}
-              />
-              {/* 사진 후기 */}
-              <div className='h-2 bg-grey-90' />
-              {/* <ReviewPhoto data={data?.reviews ?? []} type='product' /> */}
-              <ReviewPhoto id={data?.id ?? -1} type='product' />
-            </div>
-          ) : selectedTab === 2 ? (
-            <ProductInquiry productId={Number(id)} data={data?.inquiries ?? []} refetch={refetch} />
-          ) : (
+        )} */}
+        <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+          <>
+            {/* content */}
+            <ProductBanner image={data?.images ?? []} />
+            <div ref={imgRef} />
+
+            <ProductInformationDefault
+              data={data}
+              user={user}
+              setSelectedTab={setSelectedTab}
+              // isTasting={data.tastingNoteInfo ?? 0}
+            />
+
+            {/* <ProductCompare /> */}
+            {/* BARO’s 피쉬 노트 */}
+
+            {data && data?.tastingNoteInfo && isTasting && (
+              <div className='flex w-full  flex-col items-center bg-[url("/assets/icons/common/tasting-bg.png")]'>
+                <div className=' mb-[10px] mt-10 items-center text-[20px] font-bold'>
+                  피쉬 테이스팅 노트
+                </div>
+                <Chat data={data?.tastingNoteInfo ?? []} />
+                <TastingInfo
+                  keyword={data?.tastingNoteInfo[0]?.textures ?? []}
+                  info={{
+                    difficultyLevelOfTrimming:
+                      data?.tastingNoteInfo[0]?.difficultyLevelOfTrimming ?? 0,
+                    recommendedCookingWay: data?.tastingNoteInfo[0]?.recommendedCookingWay ?? '',
+                    theScentOfTheSea: data?.tastingNoteInfo[0]?.theScentOfTheSea ?? 0,
+                  }}
+                />
+              </div>
+            )}
+            <div ref={ref} id='Observer' />
+            <div className='h-2 bg-grey-90' />
+            {/* Tab Content */}
+            {/* <div className=' w-full flex-col items-center '> */}
+
             <div
-              dangerouslySetInnerHTML={{ __html: content }}
-              className='product-delivery-description mt-5 px-4'
-            />
-          )}
-        </div>
-        {/* 하단 부분 */}
-        <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
-          <button
-            className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
-            onClick={() => {
-              if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
-              if (data?.isLike) onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
-              else {
-                if (data?.tastingNoteInfo?.length === 0)
-                  return setAlert({
-                    message: '테이스팅 노트 준비중입니다.',
-                  });
-                onSaveMutate({ data: { productId: Number(id) } });
-              }
-            }}
-          >
-            <Image
-              unoptimized
-              alt='heart'
-              width={30}
-              height={30}
-              src={
-                isLiked
-                  ? '/assets/icons/product/product-bookmark-on.svg'
-                  : '/assets/icons/product/product-bookmark-off.svg'
-              }
-            />
-          </button>
-          <button
-            disabled={data?.state === 'INACTIVE'}
-            className={
-              data?.state === 'ACTIVE'
-                ? 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
-                : 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-grey-70'
-            }
-            onClick={() => {
-              if (data?.state !== 'ACTIVE') {
-                let message = '';
-                switch (data?.state) {
-                  case 'DELETED':
-                    message = '삭제된 상품입니다.';
-                    break;
-                  case 'SOLD_OUT':
-                    message = '품절된 상품입니다.';
-                    break;
-                  case 'INACTIVE':
-                    message = '비활성화된 상품입니다.';
-                    break;
-                  default:
-                    break;
+              className={`${isObserver && isImgObserver && 'fixed top-10'}  ${
+                !user && 'top-[100px]'
+              } z-50 w-full bg-[#ffffff] md:w-[375px]`}
+            >
+              <ProductTab
+                selectedTab={selectedTab}
+                setSelectedTab={setSelectedTab}
+                reviewCount={data?.reviewCount ?? 0}
+                onClick={tapOnclick}
+              />
+            </div>
+
+            {/* </div> */}
+            <div className='mt-[30px] min-h-[calc(100dvb-180px)]'>
+              <Fragment>
+                <div
+                  ref={infoRef}
+                  dangerouslySetInnerHTML={{ __html: description }}
+                  className='[&_img]:w-full'
+                />
+                <ProductInfoNotice id={Number(id)} />
+              </Fragment>
+              <div className='h-2 bg-grey-90' />
+              <div>
+                {/* 구매자들의 솔직 리뷰 */}
+                <ReviewChart
+                  data={{
+                    taste: data?.reviewStatistics?.taste ?? 0,
+                    freshness: data?.reviewStatistics?.fresh ?? 0,
+                    price: data?.reviewStatistics?.price ?? 0,
+                    packaging: data?.reviewStatistics?.packaging ?? 0,
+                    size: data?.reviewStatistics?.size ?? 0,
+                  }}
+                />
+                {/* 사진 후기 */}
+                <div className='h-2 bg-grey-90' />
+                {/* <ReviewPhoto data={data?.reviews ?? []} type='product' /> */}
+                <div ref={reviewRef}>
+                  <ReviewPhoto id={data?.id ?? -1} type='product' />
+                </div>
+              </div>
+              <div className='h-2 bg-grey-90' />
+              <div ref={inquiryRef}>
+                <ProductInquiry
+                  productId={Number(id)}
+                  data={data?.inquiries ?? []}
+                  refetch={refetch}
+                />
+              </div>
+              {/* 배송정책 */}
+              {/* <div
+                dangerouslySetInnerHTML={{ __html: content }}
+                className='product-delivery-description mt-5 px-4'
+              /> */}
+            </div>
+            {/* 하단 부분 */}
+            <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
+              <button
+                className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
+                onClick={() => {
+                  if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+                  if (data?.isLike)
+                    onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
+                  else {
+                    if (data?.tastingNoteInfo?.length === 0)
+                      return setAlert({
+                        message: '테이스팅 노트 준비중입니다.',
+                      });
+                    onSaveMutate({ data: { productId: Number(id) } });
+                  }
+                }}
+              >
+                <Image
+                  unoptimized
+                  alt='heart'
+                  width={30}
+                  height={30}
+                  src={
+                    isLiked
+                      ? '/assets/icons/product/product-bookmark-on.svg'
+                      : '/assets/icons/product/product-bookmark-off.svg'
+                  }
+                />
+              </button>
+              <button
+                disabled={data?.state === 'INACTIVE'}
+                className={
+                  data?.state === 'ACTIVE'
+                    ? 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+                    : 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-grey-70'
                 }
-                return setAlert({ message });
-              }
-              setIsVisible(true);
-            }}
-          >
-            <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
-              {data?.state === 'ACTIVE' ? '구매하기' : '상품 준비중'}
-            </p>
-          </button>
-        </div>
+                onClick={() => {
+                  if (data?.state !== 'ACTIVE') {
+                    let message = '';
+                    switch (data?.state) {
+                      case 'DELETED':
+                        message = '삭제된 상품입니다.';
+                        break;
+                      case 'SOLD_OUT':
+                        message = '품절된 상품입니다.';
+                        break;
+                      case 'INACTIVE':
+                        message = '비활성화된 상품입니다.';
+                        break;
+                      default:
+                        break;
+                    }
+                    return setAlert({ message });
+                  }
+                  setIsVisible(true);
+                }}
+              >
+                <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
+                  {data?.state === 'ACTIVE' ? '구매하기' : '상품 준비중'}
+                </p>
+              </button>
+            </div>
+          </>
+        </PullToRefresh>
       </div>
     </>
   );

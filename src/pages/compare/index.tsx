@@ -31,6 +31,7 @@ import { FreeMode } from 'swiper';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import PullToRefresh from 'react-simple-pull-to-refresh';
+import Loading from 'src/components/common/loading';
 /** 저장함 */
 const Storage: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
@@ -114,7 +115,7 @@ const Storage: NextPageWithLayout = () => {
           <CartIcon />
         </Link>
       </div>
-      <PullToRefresh pullingContent='' onRefresh={handleRefresh}>
+      <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
         <div className='h-[calc(100dvb)]'>
           {/* Tab */}
           {/* <div className='mt-4 flex w-full items-center justify-around border-b border-b-[#F7F7F7] px-[46px] md:justify-between'>

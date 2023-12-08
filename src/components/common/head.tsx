@@ -86,6 +86,7 @@ function GAScript() {
       router.events.off('hashChangeComplete', handleRouteChange);
     };
   }, [router.events]);
+
   return (
     <>
       <Script

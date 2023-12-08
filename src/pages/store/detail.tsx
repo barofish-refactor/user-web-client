@@ -23,7 +23,9 @@ import { useAlertStore, useFilterStore, type indexFilterType } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { aToB, bToA, safeParse, type sortType } from 'src/utils/parse';
 import { VARIABLES } from 'src/variables';
-
+import PullToRefresh from 'react-simple-pull-to-refresh';
+import { handleRefresh } from 'src/utils/functions';
+import Loading from 'src/components/common/loading';
 const perView = 10;
 
 interface Props {
@@ -240,122 +242,125 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           <ShareButton />
         </div>
       </div>
-
-      {/* banner */}
-      <Image
-        unoptimized
-        priority
-        width={375}
-        height={186}
-        src={data?.backgroundImage ?? '/'}
-        alt='banner'
-        className=' aspect-[375/186] w-full object-cover'
-      />
-
-      {/* info */}
-      <div className='flex items-start justify-between pb-5 pl-[17px] pr-[21px] pt-4'>
-        <div className='flex flex-1 items-center gap-3'>
+      <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
+        <>
+          {/* banner */}
           <Image
             unoptimized
-            src={data?.profileImage ?? '/'}
-            alt='partner'
-            width={83}
-            height={83}
-            className='rounded-full border border-grey-90 object-cover'
-            style={{ width: '83px', height: '83px' }}
+            priority
+            width={375}
+            height={186}
+            src={data?.backgroundImage ?? '/'}
+            alt='banner'
+            className=' aspect-[375/186] w-full object-cover'
           />
-          <div className=''>
-            <p className='text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
-              {data?.name ?? ''}
-            </p>
-            <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
-              {data?.location ?? ''}
-            </p>
-            <div className='mt-[5px] flex flex-wrap gap-1'>
-              {(data?.keyword ?? []).map((v, idx) => {
-                return (
-                  <div
-                    key={`tag${idx}`}
-                    className='flex h-[22px] items-center justify-center rounded bg-grey-90 px-2'
-                  >
-                    <p className='whitespace-pre text-[15px] font-medium -tracking-[0.03em] text-grey-40'>
-                      {v}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='h-2 bg-grey-90' />
-      {/* 구매자들의 솔직 리뷰 */}
-      <ReviewChart
-        data={{
-          taste:
-            (data?.reviewStatistic?.filter(x => x.key === 'TASTE').length ?? 0) > 0
-              ? data?.reviewStatistic?.filter(x => x.key === 'TASTE')[0].count ?? 0
-              : 0,
-          freshness:
-            (data?.reviewStatistic?.filter(x => x.key === 'FRESH').length ?? 0) > 0
-              ? data?.reviewStatistic?.filter(x => x.key === 'FRESH')[0].count ?? 0
-              : 0,
-          price:
-            (data?.reviewStatistic?.filter(x => x.key === 'PRICE').length ?? 0) > 0
-              ? data?.reviewStatistic?.filter(x => x.key === 'PRICE')[0].count ?? 0
-              : 0,
-          packaging:
-            (data?.reviewStatistic?.filter(x => x.key === 'PACKAGING').length ?? 0) > 0
-              ? data?.reviewStatistic?.filter(x => x.key === 'PACKAGING')[0].count ?? 0
-              : 0,
-          size:
-            (data?.reviewStatistic?.filter(x => x.key === 'SIZE').length ?? 0) > 0
-              ? data?.reviewStatistic?.filter(x => x.key === 'SIZE')[0].count ?? 0
-              : 0,
-        }}
-      />
-      <div className='mt-2.5 h-2 bg-grey-90' />
-      <StoreTab data={data} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-      <div className='min-h-[calc(100dvb-95px)]'>
-        {selectedTab === 0 ? (
-          description === '' ? (
-            <div className='grid min-h-[calc(100dvb-95px)] flex-1 place-items-center'>
-              <div className='flex flex-col items-center gap-2'>
-                <Image
-                  unoptimized
-                  src='/assets/icons/search/search-error.svg'
-                  alt='up'
-                  width={40}
-                  height={40}
-                />
-                <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-                  준비중입니다.
+
+          {/* info */}
+          <div className='flex items-start justify-between pb-5 pl-[17px] pr-[21px] pt-4'>
+            <div className='flex flex-1 items-center gap-3'>
+              <Image
+                unoptimized
+                src={data?.profileImage ?? '/'}
+                alt='partner'
+                width={83}
+                height={83}
+                className='rounded-full border border-grey-90 object-cover'
+                style={{ width: '83px', height: '83px' }}
+              />
+              <div className=''>
+                <p className='text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-grey-10'>
+                  {data?.name ?? ''}
                 </p>
+                <p className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-30'>
+                  {data?.location ?? ''}
+                </p>
+                <div className='mt-[5px] flex flex-wrap gap-1'>
+                  {(data?.keyword ?? []).map((v, idx) => {
+                    return (
+                      <div
+                        key={`tag${idx}`}
+                        className='flex h-[22px] items-center justify-center rounded bg-grey-90 px-2'
+                      >
+                        <p className='whitespace-pre text-[15px] font-medium -tracking-[0.03em] text-grey-40'>
+                          {v}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          ) : (
-            <div
-              dangerouslySetInnerHTML={{ __html: description }}
-              className='mb-5 w-full [&_img]:w-full'
-            />
-          )
-        ) : selectedTab === 1 ? (
-          <Fragment>
-            <HomeProductList
-              storeType='store'
-              storeId={data?.storeId}
-              dataDto={productData?.pages ?? []}
-              filter={dummyFilter}
-              sort={sort}
-              setSort={setSort}
-            />
-            <div ref={ref} className='pb-10' />
-          </Fragment>
-        ) : (
-          // <ReviewPhoto data={[]} type='store' />
-          <ReviewPhoto id={data?.storeId ?? -1} type='store' />
-        )}
-      </div>
+          </div>
+          <div className='h-2 bg-grey-90' />
+          {/* 구매자들의 솔직 리뷰 */}
+          <ReviewChart
+            data={{
+              taste:
+                (data?.reviewStatistic?.filter(x => x.key === 'TASTE').length ?? 0) > 0
+                  ? data?.reviewStatistic?.filter(x => x.key === 'TASTE')[0].count ?? 0
+                  : 0,
+              freshness:
+                (data?.reviewStatistic?.filter(x => x.key === 'FRESH').length ?? 0) > 0
+                  ? data?.reviewStatistic?.filter(x => x.key === 'FRESH')[0].count ?? 0
+                  : 0,
+              price:
+                (data?.reviewStatistic?.filter(x => x.key === 'PRICE').length ?? 0) > 0
+                  ? data?.reviewStatistic?.filter(x => x.key === 'PRICE')[0].count ?? 0
+                  : 0,
+              packaging:
+                (data?.reviewStatistic?.filter(x => x.key === 'PACKAGING').length ?? 0) > 0
+                  ? data?.reviewStatistic?.filter(x => x.key === 'PACKAGING')[0].count ?? 0
+                  : 0,
+              size:
+                (data?.reviewStatistic?.filter(x => x.key === 'SIZE').length ?? 0) > 0
+                  ? data?.reviewStatistic?.filter(x => x.key === 'SIZE')[0].count ?? 0
+                  : 0,
+            }}
+          />
+          <div className='mt-2.5 h-2 bg-grey-90' />
+          <StoreTab data={data} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+          <div className='min-h-[calc(100dvb-95px)]'>
+            {selectedTab === 0 ? (
+              description === '' ? (
+                <div className='grid min-h-[calc(100dvb-95px)] flex-1 place-items-center'>
+                  <div className='flex flex-col items-center gap-2'>
+                    <Image
+                      unoptimized
+                      src='/assets/icons/search/search-error.svg'
+                      alt='up'
+                      width={40}
+                      height={40}
+                    />
+                    <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+                      준비중입니다.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  dangerouslySetInnerHTML={{ __html: description }}
+                  className='mb-5 w-full [&_img]:w-full'
+                />
+              )
+            ) : selectedTab === 1 ? (
+              <Fragment>
+                <HomeProductList
+                  storeType='store'
+                  storeId={data?.storeId}
+                  dataDto={productData?.pages ?? []}
+                  filter={dummyFilter}
+                  sort={sort}
+                  setSort={setSort}
+                />
+                <div ref={ref} className='pb-10' />
+              </Fragment>
+            ) : (
+              // <ReviewPhoto data={[]} type='store' />
+              <ReviewPhoto id={data?.storeId ?? -1} type='store' />
+            )}
+          </div>
+        </>
+      </PullToRefresh>
     </div>
   );
 };
