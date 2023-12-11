@@ -449,9 +449,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             {/* <div className=' w-full flex-col items-center '> */}
 
             <div
-              className={`${isObserver && isImgObserver && 'fixed top-[55px]'}  ${
-                !user && 'top-[100px]'
-              } z-50 w-full bg-[#ffffff] md:w-[375px]`}
+              className={`${isObserver && isImgObserver && 'fixed top-[55px]'}${
+                isObserver && isImgObserver && !user && 'fxied top-[100px]'
+              }
+              ${!user && 'top-[100px]'} z-50 w-full bg-[#ffffff] md:w-[375px]`}
             >
               <ProductTab
                 selectedTab={selectedTab}

@@ -493,6 +493,5 @@ export const tastingText = (text: string, start?: number, end?: number) => {
 };
 /** 새로고침 - pull to reload */
 export const handleRefresh = async () => {
-  // 새로고침
   location.reload();
 };
