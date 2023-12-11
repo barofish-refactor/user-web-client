@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -37,11 +36,6 @@ const Chat = ({ data }: Props) => {
       if (item2.taste === 'taste4') return (itemName = '감칠맛');
       if (item2.taste === 'taste5') return (itemName = '짠맛');
 
-      // if (item2.taste === 'oily') return (itemName = '기름진맛');
-      // if (item2.taste === 'sweet') return (itemName = '단맛');
-      // if (item2.taste === 'lightTaste') return (itemName = '담백한맛');
-      // if (item2.taste === 'umami') return (itemName = '감칠맛');
-      // if (item2.taste === 'salty') return (itemName = '짠맛');
       return itemName;
     }),
   );
