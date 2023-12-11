@@ -221,21 +221,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
-  const [isObserver, setIsObserver] = useState(false);
   const [isImgObserver, setIsImgObserver] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
   const inquiryRef = useRef<HTMLDivElement>(null);
-  const { ref } = useInView({
-    initialInView: false,
-    onChange: inView => {
-      if (inView) {
-        setIsObserver(false);
-      } else {
-        setIsObserver(true);
-      }
-    },
-  });
+
   const { ref: imgRef } = useInView({
     initialInView: false,
     onChange: inView => {
@@ -443,7 +433,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 />
               </div>
             )}
-            <div ref={ref} id='Observer' />
+
             <div className='h-2 bg-grey-90' />
             {/* Tab Content */}
             {/* <div className=' w-full flex-col items-center '> */}
