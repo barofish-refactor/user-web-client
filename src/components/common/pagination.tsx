@@ -34,7 +34,7 @@ export const Pagination = (props: PaginationProps) => {
           &lt;
         </button>
         {Array(Math.ceil(props.total / props.limit) < 5 ? Math.ceil(props.total / props.limit) : 5)
-          .fill(5, 1)
+          .fill(undefined)
           .slice(0, 5)
           .map((x, i: number) => (
             <button

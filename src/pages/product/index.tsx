@@ -414,15 +414,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           <>
             {/* content */}
             <ProductBanner image={data?.images ?? []} />
-            <div ref={imgRef} />
-
-            <ProductInformationDefault
-              data={data}
-              user={user}
-              setSelectedTab={setSelectedTab}
-              // isTasting={data.tastingNoteInfo ?? 0}
-            />
-
+            <div ref={imgRef}>
+              <ProductInformationDefault
+                data={data}
+                user={user}
+                setSelectedTab={setSelectedTab}
+                // isTasting={data.tastingNoteInfo ?? 0}
+              />
+            </div>
             {/* <ProductCompare /> */}
             {/* BARO’s 피쉬 노트 */}
 
