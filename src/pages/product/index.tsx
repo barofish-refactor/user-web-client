@@ -316,6 +316,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       window.removeEventListener('scroll', _infiniteScroll, true);
     };
   }, [_infiniteScroll, isTap]);
+  console.log(isImgObserver, 'isImgObserver');
 
   return (
     <>
@@ -448,8 +449,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             {/* <div className=' w-full flex-col items-center '> */}
 
             <div
-              className={`${isObserver && isImgObserver && 'fixed top-[55px]'}${
-                isObserver && isImgObserver && !user && 'fxied top-[100px]'
+              className={`${isImgObserver && 'fixed top-[55px] '}${
+                isImgObserver && !user && 'fxied top-[100px]'
               }
               ${!user && 'top-[100px]'} z-50 w-full bg-[#ffffff] md:w-[375px]`}
             >
