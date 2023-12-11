@@ -414,15 +414,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           <>
             {/* content */}
             <ProductBanner image={data?.images ?? []} />
-            <div ref={imgRef} />
-
-            <ProductInformationDefault
-              data={data}
-              user={user}
-              setSelectedTab={setSelectedTab}
-              // isTasting={data.tastingNoteInfo ?? 0}
-            />
-
+            <div ref={imgRef}>
+              <ProductInformationDefault
+                data={data}
+                user={user}
+                setSelectedTab={setSelectedTab}
+                // isTasting={data.tastingNoteInfo ?? 0}
+              />
+            </div>
             {/* <ProductCompare /> */}
             {/* BARO’s 피쉬 노트 */}
 
@@ -449,9 +448,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             {/* <div className=' w-full flex-col items-center '> */}
 
             <div
-              className={`${isObserver && isImgObserver && 'fixed top-[55px]'}  ${
-                !user && 'top-[100px]'
-              } z-50 w-full bg-[#ffffff] md:w-[375px]`}
+              className={`${isObserver && isImgObserver && 'fixed top-[55px]'}${
+                isObserver && isImgObserver && !user && 'fxied top-[100px]'
+              }
+              ${!user && 'top-[100px]'} z-50 w-full bg-[#ffffff] md:w-[375px]`}
             >
               <ProductTab
                 selectedTab={selectedTab}

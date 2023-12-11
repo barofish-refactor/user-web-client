@@ -172,7 +172,7 @@ export function ReviewPhoto({ id, type }: Props) {
         .map(x => x?.pagedReviews?.content).length === 0 ? (
         Empty()
       ) : (
-        <div className='pb-[100px] pl-[17px] pr-[15px]'>
+        <div className='pb-[0px] pl-[17px] pr-[15px]'>
           {(data?.pages ?? []).map((x, i) =>
             (x?.pagedReviews?.content ?? []).map((v: any, idx: number) => (
               <ReviewItem key={`${i}${idx}${v.id}`} data={v} showInfo={false} refetch={refetch} />
@@ -181,6 +181,11 @@ export function ReviewPhoto({ id, type }: Props) {
           <div ref={ref} className='pb-10' />
         </div>
       )}
+      {/* <div className='mb-3 mt-1 flex'>
+        <button className='m-[auto] rounded-lg border border-primary-50 py-[5px] px text-[16px] font-semibold text-primary-50  active:bg-primary-50  active:text-white'>
+          더보기
+        </button>
+      </div> */}
     </div>
   );
 }
