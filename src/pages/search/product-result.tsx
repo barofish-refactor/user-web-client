@@ -233,7 +233,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
               <Swiper
                 ref={refSwiper}
                 freeMode
-                slidesPerView={4}
+                slidesPerView={4.5}
                 modules={[FreeMode]}
                 className='mt-3'
               >
