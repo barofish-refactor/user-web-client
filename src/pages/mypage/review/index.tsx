@@ -11,7 +11,7 @@ import { NewReviewItem } from 'src/components/review/newItem';
 import { LinkButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
-import { formatToLocaleString , handleRefresh } from 'src/utils/functions';
+import { formatToLocaleString, handleRefresh } from 'src/utils/functions';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
 const take = 10;

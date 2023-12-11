@@ -52,38 +52,51 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
           .map(v => {
             return (
               <div key={`category${v.id}`}>
-                <button
-                  className='flex h-[56px] w-full items-center gap-5 px-4'
-                  onClick={() => {
-                    if (selectedId === v.id) setSelectedId(undefined);
-                    else setSelectedId(v.id);
+                <Link
+                  key={`subItem${-1}`}
+                  className=''
+                  href={{
+                    pathname: '/search/product-result',
+                    query: {
+                      id: v.id,
+                      subItemId: -1,
+                      type: 'category',
+                    },
                   }}
                 >
-                  <Image
-                    unoptimized
-                    src={v.image ?? ''}
-                    alt={v.name ?? ''}
-                    width={30}
-                    height={30}
-                    className='object-cover'
-                    draggable={false}
-                  />
-                  <p className='flex-1 text-start text-[16px] font-medium -tracking-[0.01em] text-grey-20'>
-                    {v.name}
-                  </p>
-                  <Image
-                    unoptimized
-                    src='/assets/icons/common/chevron-category.svg'
-                    alt='chevron'
-                    width={23.5}
-                    height={24.5}
-                    className={cm({ 'rotate-180': selectedId !== v.id })}
-                    draggable={false}
-                  />
-                </button>
+                  <button
+                    className='flex h-[56px] w-full items-center gap-5 px-4 hover:bg-grey-80'
+                    onClick={() => {
+                      if (selectedId === v.id) setSelectedId(undefined);
+                      else setSelectedId(v.id);
+                    }}
+                  >
+                    <Image
+                      unoptimized
+                      src={v.image ?? ''}
+                      alt={v.name ?? ''}
+                      width={30}
+                      height={30}
+                      className='object-cover'
+                      draggable={false}
+                    />
+                    <p className='flex-1 text-start text-[16px] font-medium -tracking-[0.01em] text-grey-20'>
+                      {v.name}
+                    </p>
+                    {/* <Image
+                      unoptimized
+                      src='/assets/icons/common/chevron-category.svg'
+                      alt='chevron'
+                      width={23.5}
+                      height={24.5}
+                      className={cm({ 'rotate-180': selectedId !== v.id })}
+                      draggable={false}
+                    /> */}
+                  </button>
+                </Link>
                 <div className='h-[1px] bg-grey-90' />
 
-                {selectedId === v.id && (
+                {/* {selectedId === v.id && (
                   <div className='grid grid-cols-2 gap-y-0.5 bg-grey-90'>
                     {defaultCategoryList.concat(v.categoryList ?? []).map((subItem, idx) => {
                       return (
@@ -108,7 +121,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
                       );
                     })}
                   </div>
-                )}
+                )} */}
               </div>
             );
           })}

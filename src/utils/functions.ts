@@ -436,7 +436,6 @@ export const tastingText = (text: string, start?: number, end?: number) => {
     }
     return (itmeText = '쫄깃해요');
   }
-
   if (itmeText === 'texture2') {
     if (start !== end) {
       return (itmeText = '부드러워요,');
