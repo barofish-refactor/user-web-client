@@ -41,10 +41,10 @@ import {
   AddProductPayload,
   AddProductToCurationData,
   AddProductToCurationPayload,
-  AddProductToTopBar1Data,
-  AddProductToTopBar1Payload,
   AddProductToTopBarData,
   AddProductToTopBarPayload,
+  AddProductToTopBarV2Data,
+  AddProductToTopBarV2Payload,
   AddRecommendCompareSetData,
   AddRecommendCompareSetPayload,
   AddReportData,
@@ -63,10 +63,10 @@ import {
   AddTastingNoteToBasketPayload,
   AddTipData,
   AddTipPayload,
-  AddTopBar1Data,
-  AddTopBar1Payload,
   AddTopBarData,
   AddTopBarPayload,
+  AddTopBarV2Data,
+  AddTopBarV2Payload,
   AnswerInquiryData,
   AnswerInquiryPayload,
   CancelOrderByPartnerData,
@@ -126,8 +126,8 @@ import {
   DeleteTastingNoteToBasketData,
   DeleteTastingNoteToBasketPayload,
   DeleteTipData,
-  DeleteTopBar1Data,
   DeleteTopBarData,
+  DeleteTopBarV2Data,
   DeliverReadyData,
   DoneRefundOrderProductData,
   DownloadStoresWithExcelData,
@@ -286,12 +286,12 @@ import {
   SelectTipInfoData,
   SelectTipList1Data,
   SelectTipListData,
-  SelectTopBar1Data,
-  SelectTopBarCount1Data,
   SelectTopBarCountData,
+  SelectTopBarCountV2Data,
   SelectTopBarData,
   SelectTopBarList1Data,
   SelectTopBarListData,
+  SelectTopBarV2Data,
   SelectTopSearchKeywordsData,
   SelectTrackingInfoData,
   SelectUserCouponsData,
@@ -364,10 +364,10 @@ import {
   UpdateTipPayload,
   UpdateTipStateData,
   UpdateTipStatePayload,
-  UpdateTopBar1Data,
-  UpdateTopBar1Payload,
   UpdateTopBarData,
   UpdateTopBarPayload,
+  UpdateTopBarV2Data,
+  UpdateTopBarV2Payload,
   UpdateUserData,
   UpdateUserPayload,
   UpdateUserStateData,
@@ -390,12 +390,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller-v-2
-   * @name UpdateTopBar
+   * @name UpdateTopBarV2
    * @request POST:/api/v2/topbar/update/{id}
-   * @response `200` `UpdateTopBarData` OK
+   * @response `200` `UpdateTopBarV2Data` OK
    */
-  updateTopBar = (id: number, data: UpdateTopBarPayload, params: RequestParams = {}) =>
-    this.request<UpdateTopBarData, any>({
+  updateTopBarV2 = (id: number, data: UpdateTopBarV2Payload, params: RequestParams = {}) =>
+    this.request<UpdateTopBarV2Data, any>({
       path: `/api/v2/topbar/update/${id}`,
       method: 'POST',
       body: data,
@@ -406,12 +406,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller-v-2
-   * @name AddTopBar
+   * @name AddTopBarV2
    * @request POST:/api/v2/topbar/add
-   * @response `200` `AddTopBarData` OK
+   * @response `200` `AddTopBarV2Data` OK
    */
-  addTopBar = (data: AddTopBarPayload, params: RequestParams = {}) =>
-    this.request<AddTopBarData, any>({
+  addTopBarV2 = (data: AddTopBarV2Payload, params: RequestParams = {}) =>
+    this.request<AddTopBarV2Data, any>({
       path: `/api/v2/topbar/add`,
       method: 'POST',
       body: data,
@@ -422,12 +422,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller-v-2
-   * @name AddProductToTopBar
+   * @name AddProductToTopBarV2
    * @request POST:/api/v2/topbar/add-product
-   * @response `200` `AddProductToTopBarData` OK
+   * @response `200` `AddProductToTopBarV2Data` OK
    */
-  addProductToTopBar = (data: AddProductToTopBarPayload, params: RequestParams = {}) =>
-    this.request<AddProductToTopBarData, any>({
+  addProductToTopBarV2 = (data: AddProductToTopBarV2Payload, params: RequestParams = {}) =>
+    this.request<AddProductToTopBarV2Data, any>({
       path: `/api/v2/topbar/add-product`,
       method: 'POST',
       body: data,
@@ -690,12 +690,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller
-   * @name UpdateTopBar1
+   * @name UpdateTopBar
    * @request POST:/api/v1/topbar/update/{id}
-   * @response `200` `UpdateTopBar1Data` OK
+   * @response `200` `UpdateTopBarData` OK
    */
-  updateTopBar1 = (id: number, data: UpdateTopBar1Payload, params: RequestParams = {}) =>
-    this.request<UpdateTopBar1Data, any>({
+  updateTopBar = (id: number, data: UpdateTopBarPayload, params: RequestParams = {}) =>
+    this.request<UpdateTopBarData, any>({
       path: `/api/v1/topbar/update/${id}`,
       method: 'POST',
       body: data,
@@ -706,12 +706,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller
-   * @name AddTopBar1
+   * @name AddTopBar
    * @request POST:/api/v1/topbar/add
-   * @response `200` `AddTopBar1Data` OK
+   * @response `200` `AddTopBarData` OK
    */
-  addTopBar1 = (data: AddTopBar1Payload, params: RequestParams = {}) =>
-    this.request<AddTopBar1Data, any>({
+  addTopBar = (data: AddTopBarPayload, params: RequestParams = {}) =>
+    this.request<AddTopBarData, any>({
       path: `/api/v1/topbar/add`,
       method: 'POST',
       body: data,
@@ -722,12 +722,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller
-   * @name AddProductToTopBar1
+   * @name AddProductToTopBar
    * @request POST:/api/v1/topbar/add-product
-   * @response `200` `AddProductToTopBar1Data` OK
+   * @response `200` `AddProductToTopBarData` OK
    */
-  addProductToTopBar1 = (data: AddProductToTopBar1Payload, params: RequestParams = {}) =>
-    this.request<AddProductToTopBar1Data, any>({
+  addProductToTopBar = (data: AddProductToTopBarPayload, params: RequestParams = {}) =>
+    this.request<AddProductToTopBarData, any>({
       path: `/api/v1/topbar/add-product`,
       method: 'POST',
       body: data,
@@ -2245,11 +2245,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller-v-2
-   * @name SelectTopBar
+   * @name SelectTopBarV2
    * @request GET:/api/v2/topbar/{id}
-   * @response `200` `SelectTopBarData` OK
+   * @response `200` `SelectTopBarV2Data` OK
    */
-  selectTopBar = (
+  selectTopBarV2 = (
     id: number,
     query?: {
       /**
@@ -2266,7 +2266,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectTopBarData, any>({
+    this.request<SelectTopBarV2Data, any>({
       path: `/api/v2/topbar/${id}`,
       method: 'GET',
       query: query,
@@ -2276,12 +2276,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller-v-2
-   * @name DeleteTopBar
+   * @name DeleteTopBarV2
    * @request DELETE:/api/v2/topbar/{id}
-   * @response `200` `DeleteTopBarData` OK
+   * @response `200` `DeleteTopBarV2Data` OK
    */
-  deleteTopBar = (id: number, params: RequestParams = {}) =>
-    this.request<DeleteTopBarData, any>({
+  deleteTopBarV2 = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteTopBarV2Data, any>({
       path: `/api/v2/topbar/${id}`,
       method: 'DELETE',
       ...params,
@@ -2290,11 +2290,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller-v-2
-   * @name SelectTopBarCount
+   * @name SelectTopBarCountV2
    * @request GET:/api/v2/topbar/{id}/count
-   * @response `200` `SelectTopBarCountData` OK
+   * @response `200` `SelectTopBarCountV2Data` OK
    */
-  selectTopBarCount = (
+  selectTopBarCountV2 = (
     id: number,
     query?: {
       /**
@@ -2317,7 +2317,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectTopBarCountData, any>({
+    this.request<SelectTopBarCountV2Data, any>({
       path: `/api/v2/topbar/${id}/count`,
       method: 'GET',
       query: query,
@@ -2816,11 +2816,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller
-   * @name SelectTopBar1
+   * @name SelectTopBar
    * @request GET:/api/v1/topbar/{id}
-   * @response `200` `SelectTopBar1Data` OK
+   * @response `200` `SelectTopBarData` OK
    */
-  selectTopBar1 = (
+  selectTopBar = (
     id: number,
     query?: {
       /**
@@ -2843,7 +2843,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectTopBar1Data, any>({
+    this.request<SelectTopBarData, any>({
       path: `/api/v1/topbar/${id}`,
       method: 'GET',
       query: query,
@@ -2853,12 +2853,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller
-   * @name DeleteTopBar1
+   * @name DeleteTopBar
    * @request DELETE:/api/v1/topbar/{id}
-   * @response `200` `DeleteTopBar1Data` OK
+   * @response `200` `DeleteTopBarData` OK
    */
-  deleteTopBar1 = (id: number, params: RequestParams = {}) =>
-    this.request<DeleteTopBar1Data, any>({
+  deleteTopBar = (id: number, params: RequestParams = {}) =>
+    this.request<DeleteTopBarData, any>({
       path: `/api/v1/topbar/${id}`,
       method: 'DELETE',
       ...params,
@@ -2867,11 +2867,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller
-   * @name SelectTopBarCount1
+   * @name SelectTopBarCount
    * @request GET:/api/v1/topbar/{id}/count
-   * @response `200` `SelectTopBarCount1Data` OK
+   * @response `200` `SelectTopBarCountData` OK
    */
-  selectTopBarCount1 = (
+  selectTopBarCount = (
     id: number,
     query?: {
       /**
@@ -2894,7 +2894,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectTopBarCount1Data, any>({
+    this.request<SelectTopBarCountData, any>({
       path: `/api/v1/topbar/${id}/count`,
       method: 'GET',
       query: query,

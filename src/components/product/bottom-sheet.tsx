@@ -224,7 +224,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
     <>
       <div
         ref={target}
-        className='relative top-[50px] flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[50px]'
+        className='relative  flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[20px]'
         onClick={e => {
           e.stopPropagation();
         }}
