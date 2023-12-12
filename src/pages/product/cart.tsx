@@ -207,6 +207,7 @@ const Cart: NextPageWithLayout = () => {
       query: { amount: amount + 1 },
     });
   };
+  console.log(data);
 
   // 옵션에 따른 총 가격
   useEffect(() => {

@@ -251,19 +251,21 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -170);
+      if (!user) window.scrollBy(0, -170);
+      else window.scrollBy(0, -110);
     } else if (selectedTab === 1) {
       reviewRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -130);
+      if (!user) window.scrollBy(0, -130);
+      else window.scrollBy(0, -90);
     } else if (selectedTab === 2) {
       inquiryRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -20);
+      if (!user) window.scrollBy(0, -20);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tapOnclick]);
@@ -306,7 +308,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       window.removeEventListener('scroll', _infiniteScroll, true);
     };
   }, [_infiniteScroll, isTap]);
-  console.log(isImgObserver, 'isImgObserver');
 
   return (
     <>

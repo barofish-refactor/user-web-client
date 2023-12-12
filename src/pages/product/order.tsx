@@ -41,6 +41,8 @@ const setOptionData = async (value: miniOptionState[]) =>
   (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
     .then(res => {
+      console.log(res.data.data, 'data');
+
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
         value.forEach(v => {
@@ -474,6 +476,7 @@ const Order: NextPageWithLayout = () => {
       });
     }
   }, [options, router.isReady]);
+  console.log(tmpOption);
 
   return (
     <>
