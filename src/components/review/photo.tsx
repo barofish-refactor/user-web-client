@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type Api } from 'src/api/swagger/Api';
@@ -17,7 +17,7 @@ type Instance = InstanceType<typeof Api>;
 type RequestInstance = Instance['selectReviewListWithProductId'];
 type Variables = NonNullable<Parameters<RequestInstance>>;
 
-const perView = 10;
+const perView = 3;
 
 interface Props {
   id: number;
@@ -28,8 +28,17 @@ interface Props {
 export function ReviewPhoto({ id, type }: Props) {
   // const queryClient = useQueryClient();
   const [selectedSort, setSelectedSort] = useState<number>(0); // 베스트순, 최신순
+  const { data: imges } = useQuery(queryKey.reviewPhoto, async () => {
+    const res = await (await client()).getProductReviewPhotos(id);
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
+  console.log(imges);
 
-  const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
+  const { data, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.review.list({ id, type, selectedSort }),
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
@@ -62,13 +71,37 @@ export function ReviewPhoto({ id, type }: Props) {
     },
   );
 
-  const { ref } = useInView({
-    initialInView: false,
-    skip: !hasNextPage,
-    onChange: inView => {
-      if (inView) fetchNextPage();
-    },
-  });
+  // const { ref } = useInView({
+  //   initialInView: false,
+  //   skip: !hasNextPage,
+  //   onChange: inView => {
+  //     if (inView) fetchNextPage();
+  //   },
+  // });
+
+  const [lastNumber, setLastNumber] = useState<number>(0);
+  const [isBtn, setIsBtn] = useState<boolean>(false);
+  const nextPageBtn = () => {
+    if (data) {
+      if (data.pages.length === lastNumber) {
+        setIsBtn(true);
+        return;
+      } else {
+        fetchNextPage();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (data && data.pages[0]?.pagedReviews) {
+      const totalPages = data?.pages[0]?.pagedReviews?.totalPages as number;
+      if (data.pages.length === lastNumber) {
+        setIsBtn(true);
+      } else {
+        setLastNumber(totalPages);
+      }
+    }
+  }, [data, lastNumber]);
   return (
     <div>
       <div className='px-4 pb-6 pt-5'>
@@ -99,37 +132,34 @@ export function ReviewPhoto({ id, type }: Props) {
           className='mt-3.5'
           style={{ marginInline: '-16px', paddingInline: '16px' }}
         >
-          {data?.pages?.map((x, i) =>
-            x?.pagedReviews?.content
-              ?.filter((v: any) => v.imageUrls?.[0] !== '')
-              .map((v: any, idx: number) => {
-                return (
-                  <SwiperSlide key={`reviews${i}${idx}${v.reviewId}`} className=''>
-                    <Link href={{ pathname: '/store/review', query: { id: v.reviewId } }}>
-                      <div className='relative overflow-hidden'>
-                        <Image
-                          unoptimized
-                          width={100}
-                          height={100}
-                          src={v.imageUrls?.[0] ?? ''}
-                          alt='review'
-                          draggable={false}
-                          className='aspect-square w-full rounded-lg object-cover'
-                        />
-                        {Number(v.imageUrls?.length) > 1 && (
-                          <div
-                            className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
-                            style={{ background: 'rgba(111, 111, 111, 0.65)' }}
-                          >
-                            +{Number(v.imageUrls?.length) - 1}
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-                  </SwiperSlide>
-                );
-              }),
-          )}
+          {imges &&
+            imges.map((v: any, idx: number) => {
+              return (
+                <SwiperSlide key={`reviews${idx}${v.reviewId}`} className=''>
+                  <Link href={{ pathname: '/store/review', query: { id: v.reviewId } }}>
+                    <div className='relative overflow-hidden'>
+                      <Image
+                        unoptimized
+                        width={100}
+                        height={100}
+                        src={v?.imageUrls?.[0] ?? ''}
+                        alt='review'
+                        draggable={false}
+                        className='aspect-square w-full rounded-lg object-cover'
+                      />
+                      {Number(v?.imageUrls.length) > 1 && (
+                        <div
+                          className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
+                          style={{ background: 'rgba(111, 111, 111, 0.65)' }}
+                        >
+                          +{Number(v?.imageUrls.length) - 1}
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                </SwiperSlide>
+              );
+            })}
         </Swiper>
       </div>
       <div className='h-2 bg-grey-90' />
@@ -178,14 +208,27 @@ export function ReviewPhoto({ id, type }: Props) {
               <ReviewItem key={`${i}${idx}${v.id}`} data={v} showInfo={false} refetch={refetch} />
             )),
           )}
-          <div ref={ref} className='pb-10' />
+          {/* <div ref={ref} className='pb-10' /> */}
         </div>
       )}
-      {/* <div className='mb-3 mt-1 flex'>
-        <button className='m-[auto] rounded-lg border border-primary-50 py-[5px] px text-[16px] font-semibold text-primary-50  active:bg-primary-50  active:text-white'>
-          더보기
-        </button>
-      </div> */}
+      {!isBtn && (
+        <div className='mb-3  flex'>
+          <button
+            className='text-grey-50-50 m-[auto] flex   py-[5px] text-[16px] font-semibold text-grey-50'
+            onClick={nextPageBtn}
+          >
+            <span className='mx-2'> 더보기</span>
+            <Image
+              unoptimized
+              src='/assets/icons/common/chevron-footer.svg'
+              alt='footer'
+              width={13}
+              height={8}
+              className='rotate relative top-[6px]'
+            />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
