@@ -234,7 +234,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
         animate={{ y: 0 }}
         // whileTap={{ scale: 0, cursor: 'grabbing' }}
         // dragTransition={{ bounceStiffness: 10000, bounceDamping: 1 }}
-        className='relative top-[50px] flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[100px]'
+        className='relative top-[50px] flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[50px]'
         // onDragEnd={(e, { offset, velocity }) => {
         //   if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
         //     setIsVisible(false);
@@ -484,7 +484,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             )}
           </motion.div>
         ) : (
-          <div className='mt-5 flex w-full flex-col px-4 pb-9'>
+          <div className='mt-5 flex w-full flex-col overflow-auto px-4'>
             <div className='flex items-center gap-5'>
               <Image
                 unoptimized
@@ -508,13 +508,16 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
               다른 고객이 함께 구매한 상품
             </p>
+
             {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
-              <HomeSmallSlideCuration
-                title=''
-                className='mt-4'
-                data={selectProductOtherCustomerBuy ?? []}
-                onClick={() => setIsVisible(false)}
-              />
+              <div className='h-[300px] overflow-y-auto'>
+                <HomeSmallSlideCuration
+                  title=''
+                  className='mt-4'
+                  data={selectProductOtherCustomerBuy ?? []}
+                  onClick={() => setIsVisible(false)}
+                />
+              </div>
             ) : (
               <div className='flex h-[252px] flex-col items-center justify-center'>
                 <Image

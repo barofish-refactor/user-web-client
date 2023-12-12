@@ -28,7 +28,7 @@ const HomeNotice = ({ data }: Props) => {
         >
           {data?.map(item => (
             <SwiperSlide key={item.id}>
-              <span className='-tracking-[0.02em]'>{item.title}</span>
+              <p className='text-ellipsis -tracking-[0.01em]'>{item.title}</p>
             </SwiperSlide>
           ))}
         </Swiper>
