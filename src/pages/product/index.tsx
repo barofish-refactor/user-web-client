@@ -391,16 +391,22 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <ShareButton />
           </div>
         </div>
-        {/* {isObserver && isImgObserver && (
-          <div className='fixed top-10 z-50 flex h-[56px] w-full items-center justify-between bg-white '>
-            <ProductTab
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-              reviewCount={data?.reviewCount ?? 0}
-              onClick={tapOnclick}
-            />
-          </div>
-        )} */}
+
+        <div
+          className={
+            !user
+              ? 'sticky top-[100px] z-50 flex  w-full items-center justify-between bg-white'
+              : 'sticky top-10 z-50 flex  w-full items-center justify-between bg-white '
+          }
+        >
+          <ProductTab
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+            reviewCount={data?.reviewCount ?? 0}
+            onClick={tapOnclick}
+          />
+        </div>
+
         <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
           <>
             {/* content */}
@@ -437,20 +443,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <div className='h-2 bg-grey-90' />
             {/* Tab Content */}
             {/* <div className=' w-full flex-col items-center '> */}
-
-            <div
-              className={`${isImgObserver && 'fixed top-[55px] '}${
-                isImgObserver && !user && 'fxied top-[100px]'
-              }
-              ${!user && 'top-[100px]'} z-50 w-full bg-[#ffffff] md:w-[375px]`}
-            >
-              <ProductTab
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-                reviewCount={data?.reviewCount ?? 0}
-                onClick={tapOnclick}
-              />
-            </div>
 
             {/* </div> */}
             <div className='mt-[30px] min-h-[calc(100dvb-180px)]'>

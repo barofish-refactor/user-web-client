@@ -17,7 +17,7 @@ export function NoticeLayout({ page }: Props) {
     >
       <div className='flex flex-1 flex-col'>
         <header className='title-header'>
-          <BackButton onBack={() => router.push('/mypage')} />
+          <BackButton onBack={() => router.back()} />
           <h2 className='font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>공지사항</h2>
           <div className='h-6 w-6' />
         </header>

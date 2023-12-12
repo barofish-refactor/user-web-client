@@ -10,6 +10,7 @@ export { default as HomeProductList } from './product-list';
 export { default as HomeSubBanner } from './sub-banner';
 export { default as HomeCurationList } from './curation-list';
 export { default as HomeTab } from './tab';
+export { default as HomeNotice } from './home-notice';
 
 export const HomeBanner = dynamic(() => import('./banner'));
 export const HomeFooter = dynamic(() => import('./footer'));

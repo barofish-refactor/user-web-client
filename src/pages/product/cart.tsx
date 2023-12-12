@@ -248,6 +248,7 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
+  console.log(sectionCart);
 
   if (isLoading)
     return (
