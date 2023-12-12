@@ -103,6 +103,8 @@ export const queryKey = {
   productList: getQueryKeys('productList'),
   /** 리뷰 */
   review: getQueryKeys('review'),
+  /** 리뷰사진 */
+  reviewPhoto: ['reviewImges'],
   /** 내가 쓴 후기 */
   myReview: ['myReview'],
   /** 알림 */

@@ -235,9 +235,9 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
             </div>
           )}
           <div className='h-4 bg-grey-90' />
-          <div className='h-[40px] overflow-hidden  '>
+          {/* <div className='h-[40px] overflow-hidden  '>
             <HomeNotice data={notice as []} />
-          </div>
+          </div> */}
           <HomeFooter />
         </>
       </PullToRefresh>

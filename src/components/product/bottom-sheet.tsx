@@ -16,7 +16,6 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
-import { animate, motion, useMotionValue } from 'framer-motion';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -221,33 +220,17 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
     }
   };
 
-  const SHEET_MARGIN = 34;
-  const h = window.innerHeight - SHEET_MARGIN;
-  // const y = useMotionValue(h);
   return (
     <>
-      <motion.div
+      <div
         ref={target}
-        // drag='y'
-        // dragElastic={{ top: 0, bottom: 0 }}
-        dragConstraints={{ top: 0 }}
-        animate={{ y: 0 }}
-        // whileTap={{ scale: 0, cursor: 'grabbing' }}
-        // dragTransition={{ bounceStiffness: 10000, bounceDamping: 1 }}
         className='relative top-[50px] flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[50px]'
-        // onDragEnd={(e, { offset, velocity }) => {
-        //   if (offset.y > window.innerHeight * 0.75 || velocity.y > 10) {
-        //     setIsVisible(false);
-        //   } else {
-        //     animate(y, 0);
-        //   }
-        // }}
         onClick={e => {
           e.stopPropagation();
         }}
       >
         {!isAddCart ? (
-          <motion.div dragListener={false} className=' flex w-full flex-col'>
+          <div className=' flex w-full flex-col'>
             {/* <div className='mb-4 mt-2 h-1 w-8 rounded-full bg-grey-80' /> */}
             <div className='mt-6 flex w-full flex-row'>
               <p className='mt-2 w-[60%] self-center pr-[10px] text-end text-[16px] font-semibold leading-[24px] -tracking-[0.05em] text-black'>
@@ -482,7 +465,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                 </div>
               </div>
             )}
-          </motion.div>
+          </div>
         ) : (
           <div className='mt-5 flex w-full flex-col overflow-auto px-4'>
             <div className='flex items-center gap-5'>
@@ -534,7 +517,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             )}
           </div>
         )}
-      </motion.div>
+      </div>
     </>
   );
 };
