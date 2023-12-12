@@ -28,235 +28,6 @@ export interface PortOneBodyData {
   status?: string;
 }
 
-export interface CustomResponseBoolean {
-  isSuccess?: boolean;
-  code?: string;
-  data?: boolean;
-  errorMsg?: string;
-}
-
-export interface UpdateReviewReq {
-  content?: string;
-  evaluations?: ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[];
-}
-
-export interface CustomResponseObject {
-  isSuccess?: boolean;
-  code?: string;
-  data?: object;
-  errorMsg?: string;
-}
-
-export interface VerifyCodeReq {
-  target?: string;
-  verificationNumber?: string;
-}
-
-export interface CustomResponseInteger {
-  isSuccess?: boolean;
-  code?: string;
-  /** @format int32 */
-  data?: number;
-  errorMsg?: string;
-}
-
-export interface RequestCodeReq {
-  target?: string;
-}
-
-export interface ResetPasswordReq {
-  phone?: string;
-  /** @format int32 */
-  verificationId?: number;
-}
-
-export interface CustomResponseJwt {
-  isSuccess?: boolean;
-  code?: string;
-  data?: Jwt;
-  errorMsg?: string;
-}
-
-export interface Jwt {
-  accessToken?: string;
-  refreshToken?: string;
-}
-
-export interface AddPaymentMethodReq {
-  name?: string;
-  cardNo?: string;
-  expiryAt?: string;
-  birth?: string;
-  passwordTwoDigit?: string;
-}
-
-export interface CustomResponsePaymentMethodDto {
-  isSuccess?: boolean;
-  code?: string;
-  data?: PaymentMethodDto;
-  errorMsg?: string;
-}
-
-export interface PaymentMethodDto {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  userId?: number;
-  name?: string;
-  cardName?: string;
-  cardNo?: string;
-  expiryAt?: string;
-  birth?: string;
-}
-
-export interface UserUpdateReq {
-  name?: string;
-  nickname?: string;
-  oldPassword?: string;
-  newPassword?: string;
-  phone?: string;
-  /** @format int32 */
-  verificationId?: number;
-  address?: string;
-  addressDetail?: string;
-  isAgreeMarketing?: boolean;
-}
-
-export interface CustomResponseUserInfoDto {
-  isSuccess?: boolean;
-  code?: string;
-  data?: UserInfoDto;
-  errorMsg?: string;
-}
-
-export interface DeliverPlace {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  userId?: number;
-  name?: string;
-  receiverName?: string;
-  tel?: string;
-  postalCode?: string;
-  address?: string;
-  addressDetail?: string;
-  bcode?: string;
-  deliverMessage?: string;
-  isDefault?: boolean;
-}
-
-export interface Grade {
-  /** @format int32 */
-  id?: number;
-  name?: string;
-  /** @format float */
-  pointRate?: number;
-  /** @format int32 */
-  minOrderPrice?: number;
-  /** @format int32 */
-  minOrderCount?: number;
-}
-
-export interface UserAuthDto {
-  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
-  loginId?: string;
-  /** @format int32 */
-  userId?: number;
-}
-
-export interface UserDto {
-  /** @format int32 */
-  id?: number;
-  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
-  /** @format date-time */
-  joinAt?: string;
-}
-
-export interface UserInfoDto {
-  user?: UserDto;
-  auth?: UserAuthDto;
-  /** @format int32 */
-  userId?: number;
-  profileImage?: string;
-  email?: string;
-  name?: string;
-  nickname?: string;
-  phone?: string;
-  grade?: Grade;
-  /** @format int32 */
-  point?: number;
-  isAgreeMarketing?: boolean;
-  deliverPlaces?: DeliverPlace[];
-  /** @format int32 */
-  reviewCount?: number;
-  /** @format int32 */
-  notificationCount?: number;
-  /** @format int32 */
-  saveProductCount?: number;
-}
-
-export interface UpdateUserStateReq {
-  userIds?: number[];
-  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
-}
-
-export interface UserLoginReq {
-  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
-  loginId?: string;
-  password?: string;
-}
-
-export interface UserJoinReq {
-  email?: string;
-  name?: string;
-  nickname?: string;
-  password?: string;
-  phone?: string;
-  /** @format int32 */
-  verificationId?: number;
-  impUid?: string;
-  bcode?: string;
-  postalCode?: string;
-  address?: string;
-  addressDetail?: string;
-  isAgreeMarketing?: boolean;
-}
-
-export interface SnsJoinReq {
-  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
-  loginId?: string;
-  profileImage?: string;
-  email?: string;
-  name?: string;
-  nickname?: string;
-  phone?: string;
-}
-
-export interface AppleJoinReq {
-  loginId?: string;
-  name?: string;
-  nickname?: string;
-  phone?: string;
-  /** @format int32 */
-  verificationId?: number;
-  bcode?: string;
-  postalCode?: string;
-  address?: string;
-  addressDetail?: string;
-  isAgreeMarketing?: boolean;
-}
-
-export interface FindEmailReq {
-  phone?: string;
-  /** @format int32 */
-  verificationId?: number;
-}
-
-export interface UpdateFcmReq {
-  fcmToken?: string;
-  set?: boolean;
-}
-
 export interface Category {
   /** @format int32 */
   id?: number;
@@ -273,6 +44,18 @@ export interface CustomResponseTopBar {
   code?: string;
   data?: TopBar;
   errorMsg?: string;
+}
+
+export interface Grade {
+  /** @format int32 */
+  id?: number;
+  name?: string;
+  /** @format float */
+  pointRate?: number;
+  /** @format int32 */
+  minOrderPrice?: number;
+  /** @format int32 */
+  minOrderCount?: number;
 }
 
 export interface OrderDeliverPlace {
@@ -485,7 +268,7 @@ export interface StoreInfo {
   /** @format int32 */
   storeId?: number;
   store?: Store;
-  backgroudImage?: string;
+  getbackgroundImage?: string;
   profileImage?: string;
   isReliable?: boolean;
   name?: string;
@@ -584,6 +367,223 @@ export interface CustomResponseTopBarProductMap {
   code?: string;
   data?: TopBarProductMap;
   errorMsg?: string;
+}
+
+export interface CustomResponseBoolean {
+  isSuccess?: boolean;
+  code?: string;
+  data?: boolean;
+  errorMsg?: string;
+}
+
+export interface UpdateReviewReq {
+  content?: string;
+  evaluations?: ('TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE')[];
+}
+
+export interface CustomResponseObject {
+  isSuccess?: boolean;
+  code?: string;
+  data?: object;
+  errorMsg?: string;
+}
+
+export interface VerifyCodeReq {
+  target?: string;
+  verificationNumber?: string;
+}
+
+export interface CustomResponseInteger {
+  isSuccess?: boolean;
+  code?: string;
+  /** @format int32 */
+  data?: number;
+  errorMsg?: string;
+}
+
+export interface RequestCodeReq {
+  target?: string;
+}
+
+export interface ResetPasswordReq {
+  phone?: string;
+  /** @format int32 */
+  verificationId?: number;
+}
+
+export interface CustomResponseJwt {
+  isSuccess?: boolean;
+  code?: string;
+  data?: Jwt;
+  errorMsg?: string;
+}
+
+export interface Jwt {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+export interface AddPaymentMethodReq {
+  name?: string;
+  cardNo?: string;
+  expiryAt?: string;
+  birth?: string;
+  passwordTwoDigit?: string;
+}
+
+export interface CustomResponsePaymentMethodDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: PaymentMethodDto;
+  errorMsg?: string;
+}
+
+export interface PaymentMethodDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  userId?: number;
+  name?: string;
+  cardName?: string;
+  cardNo?: string;
+  expiryAt?: string;
+  birth?: string;
+}
+
+export interface UserUpdateReq {
+  name?: string;
+  nickname?: string;
+  oldPassword?: string;
+  newPassword?: string;
+  phone?: string;
+  /** @format int32 */
+  verificationId?: number;
+  address?: string;
+  addressDetail?: string;
+  isAgreeMarketing?: boolean;
+}
+
+export interface CustomResponseUserInfoDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: UserInfoDto;
+  errorMsg?: string;
+}
+
+export interface DeliverPlace {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  userId?: number;
+  name?: string;
+  receiverName?: string;
+  tel?: string;
+  postalCode?: string;
+  address?: string;
+  addressDetail?: string;
+  bcode?: string;
+  deliverMessage?: string;
+  isDefault?: boolean;
+}
+
+export interface UserAuthDto {
+  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
+  loginId?: string;
+  /** @format int32 */
+  userId?: number;
+}
+
+export interface UserDto {
+  /** @format int32 */
+  id?: number;
+  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
+  /** @format date-time */
+  joinAt?: string;
+}
+
+export interface UserInfoDto {
+  user?: UserDto;
+  auth?: UserAuthDto;
+  /** @format int32 */
+  userId?: number;
+  profileImage?: string;
+  email?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+  grade?: Grade;
+  /** @format int32 */
+  point?: number;
+  isAgreeMarketing?: boolean;
+  deliverPlaces?: DeliverPlace[];
+  /** @format int32 */
+  reviewCount?: number;
+  /** @format int32 */
+  notificationCount?: number;
+  /** @format int32 */
+  saveProductCount?: number;
+}
+
+export interface UpdateUserStateReq {
+  userIds?: number[];
+  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
+}
+
+export interface UserLoginReq {
+  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
+  loginId?: string;
+  password?: string;
+}
+
+export interface UserJoinReq {
+  email?: string;
+  name?: string;
+  nickname?: string;
+  password?: string;
+  phone?: string;
+  /** @format int32 */
+  verificationId?: number;
+  impUid?: string;
+  bcode?: string;
+  postalCode?: string;
+  address?: string;
+  addressDetail?: string;
+  isAgreeMarketing?: boolean;
+}
+
+export interface SnsJoinReq {
+  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
+  loginId?: string;
+  profileImage?: string;
+  email?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+}
+
+export interface AppleJoinReq {
+  loginId?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+  /** @format int32 */
+  verificationId?: number;
+  bcode?: string;
+  postalCode?: string;
+  address?: string;
+  addressDetail?: string;
+  isAgreeMarketing?: boolean;
+}
+
+export interface FindEmailReq {
+  phone?: string;
+  /** @format int32 */
+  verificationId?: number;
+}
+
+export interface UpdateFcmReq {
+  fcmToken?: string;
+  set?: boolean;
 }
 
 export interface AddTipReq {
@@ -1161,6 +1161,12 @@ export interface ProductTastingNoteInquiryDto {
   texture8?: string;
   /** @format double */
   texture8Score?: number;
+  texture9?: string;
+  /** @format double */
+  texture9Score?: number;
+  texture10?: string;
+  /** @format double */
+  texture10Score?: number;
   /** @format double */
   difficultyLevelOfTrimming?: number;
   /** @format double */
@@ -2020,6 +2026,72 @@ export interface ExceptionEntity {
   data?: string;
 }
 
+export interface CustomResponseListTopBar {
+  isSuccess?: boolean;
+  code?: string;
+  data?: TopBar[];
+  errorMsg?: string;
+}
+
+export interface CustomResponsePageProductListDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: PageProductListDto;
+  errorMsg?: string;
+}
+
+export interface PageProductListDto {
+  /** @format int64 */
+  totalElements?: number;
+  /** @format int32 */
+  totalPages?: number;
+  /** @format int32 */
+  size?: number;
+  content?: ProductListDto[];
+  /** @format int32 */
+  number?: number;
+  sort?: SortObject;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
+  empty?: boolean;
+}
+
+export interface PageableObject {
+  /** @format int64 */
+  offset?: number;
+  sort?: SortObject;
+  /** @format int32 */
+  pageNumber?: number;
+  /** @format int32 */
+  pageSize?: number;
+  unpaged?: boolean;
+  paged?: boolean;
+}
+
+export interface SortObject {
+  empty?: boolean;
+  sorted?: boolean;
+  unsorted?: boolean;
+}
+
+export interface CustomResponseLong {
+  isSuccess?: boolean;
+  code?: string;
+  /** @format int64 */
+  data?: number;
+  errorMsg?: string;
+}
+
+export interface CustomResponseListSimpleStore {
+  isSuccess?: boolean;
+  code?: string;
+  data?: SimpleStore[];
+  errorMsg?: string;
+}
+
 export interface CustomResponseStoreReviewDto {
   isSuccess?: boolean;
   code?: string;
@@ -2038,24 +2110,12 @@ export interface PageReviewDtoV2 {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
-}
-
-export interface PageableObject {
-  /** @format int64 */
-  offset?: number;
-  sort?: SortObject;
-  /** @format int32 */
-  pageNumber?: number;
-  /** @format int32 */
-  pageSize?: number;
-  paged?: boolean;
-  unpaged?: boolean;
 }
 
 export interface ReviewDtoV2 {
@@ -2090,12 +2150,6 @@ export interface ReviewEvaluationSummaryDto {
   evaluationType?: 'TASTE' | 'FRESH' | 'PRICE' | 'PACKAGING' | 'SIZE';
   /** @format int64 */
   evaluationSum?: number;
-}
-
-export interface SortObject {
-  empty?: boolean;
-  sorted?: boolean;
-  unsorted?: boolean;
 }
 
 export interface StoreReviewDto {
@@ -2173,12 +2227,19 @@ export interface PageAdminReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
+}
+
+export interface CustomResponseListString {
+  isSuccess?: boolean;
+  code?: string;
+  data?: string[];
+  errorMsg?: string;
 }
 
 export interface CustomResponseString {
@@ -2213,53 +2274,12 @@ export interface PageUserInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  empty?: boolean;
-}
-
-export interface CustomResponseListTopBar {
-  isSuccess?: boolean;
-  code?: string;
-  data?: TopBar[];
-  errorMsg?: string;
-}
-
-export interface CustomResponsePageProductListDto {
-  isSuccess?: boolean;
-  code?: string;
-  data?: PageProductListDto;
-  errorMsg?: string;
-}
-
-export interface PageProductListDto {
-  /** @format int64 */
-  totalElements?: number;
-  /** @format int32 */
-  totalPages?: number;
-  /** @format int32 */
-  size?: number;
-  content?: ProductListDto[];
-  /** @format int32 */
-  number?: number;
-  sort?: SortObject;
   first?: boolean;
   last?: boolean;
-  pageable?: PageableObject;
-  /** @format int32 */
-  numberOfElements?: number;
   empty?: boolean;
-}
-
-export interface CustomResponseLong {
-  isSuccess?: boolean;
-  code?: string;
-  /** @format int64 */
-  data?: number;
-  errorMsg?: string;
 }
 
 export interface CustomResponseListTip {
@@ -2287,11 +2307,11 @@ export interface PageTip {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2316,13 +2336,6 @@ export interface CustomResponseSimpleStore {
   errorMsg?: string;
 }
 
-export interface CustomResponseListSimpleStore {
-  isSuccess?: boolean;
-  code?: string;
-  data?: SimpleStore[];
-  errorMsg?: string;
-}
-
 export interface CustomResponsePageStoreDto {
   isSuccess?: boolean;
   code?: string;
@@ -2341,11 +2354,11 @@ export interface PageStoreDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2425,11 +2438,11 @@ export interface PageOrderProductInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2451,11 +2464,11 @@ export interface PageSettlementDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2554,11 +2567,11 @@ export interface PageReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2580,11 +2593,11 @@ export interface PageReportDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2660,11 +2673,11 @@ export interface PageSimpleProductDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2702,11 +2715,11 @@ export interface PageOrderDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2761,11 +2774,11 @@ export interface PageNotification {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2787,11 +2800,11 @@ export interface PageNotice {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2860,11 +2873,11 @@ export interface PageInquiryDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2998,11 +3011,11 @@ export interface PageCurationDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3049,11 +3062,11 @@ export interface PageCouponDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3238,11 +3251,11 @@ export interface PageAdminLogDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3264,11 +3277,11 @@ export interface PageAdmin {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
   pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3310,6 +3323,27 @@ export type ServiceExceptionGetData = string;
 export type ServiceExceptionPostData = string;
 
 export type PortOneCallbackData = object;
+
+export interface UpdateTopBarPayload {
+  name: string;
+}
+
+export type UpdateTopBarData = CustomResponseTopBar;
+
+export interface AddTopBarPayload {
+  name: string;
+}
+
+export type AddTopBarData = CustomResponseTopBar;
+
+export interface AddProductToTopBarPayload {
+  /** @format int32 */
+  topBarId: number;
+  /** @format int32 */
+  productId: number;
+}
+
+export type AddProductToTopBarData = CustomResponseTopBarProductMap;
 
 export type DeleteReviewData = CustomResponseBoolean;
 
@@ -3391,26 +3425,26 @@ export type FindEmailData = CustomResponseBoolean;
 
 export type UpdateFcmData = CustomResponseBoolean;
 
-export interface UpdateTopBarPayload {
+export interface UpdateTopBar1Payload {
   name: string;
 }
 
-export type UpdateTopBarData = CustomResponseTopBar;
+export type UpdateTopBar1Data = CustomResponseTopBar;
 
-export interface AddTopBarPayload {
+export interface AddTopBar1Payload {
   name: string;
 }
 
-export type AddTopBarData = CustomResponseTopBar;
+export type AddTopBar1Data = CustomResponseTopBar;
 
-export interface AddProductToTopBarPayload {
+export interface AddProductToTopBar1Payload {
   /** @format int32 */
   topBarId: number;
   /** @format int32 */
   productId: number;
 }
 
-export type AddProductToTopBarData = CustomResponseTopBarProductMap;
+export type AddProductToTopBar1Data = CustomResponseTopBarProductMap;
 
 export interface UpdateTipPayload {
   data: AddTipReq;
@@ -3996,6 +4030,18 @@ export type CustomData = string;
 
 export type ControllerExceptionData = any;
 
+export type SelectTopBarListData = CustomResponseListTopBar;
+
+export type SelectTopBarData = CustomResponsePageProductListDto;
+
+export type DeleteTopBarData = CustomResponseBoolean;
+
+export type SelectTopBarCountData = CustomResponseLong;
+
+export type SelectRecommendStoreListV2Data = CustomResponseListSimpleStore;
+
+export type DownloadStoresWithExcelData = any;
+
 export type SelectReviewListWithStoreIdV2Data = CustomResponseStoreReviewDto;
 
 export type SelectReviewListWithStoreIdV21Data = CustomResponseStoreReviewDto;
@@ -4006,7 +4052,11 @@ export type SelectMyReviewListV2Data = CustomResponseUserReviewDto;
 
 export type SelectAllReviewListByAdminV2Data = CustomResponsePageAdminReviewDto;
 
+export type GetProductReviewPhotosData = CustomResponseListString;
+
 export type SelectProductListByUserV2Data = CustomResponseObject;
+
+export type SelectProductListByUserV21Data = CustomResponseInteger;
 
 export type GetExpectedArrivalDateData = CustomResponseObject;
 
@@ -4026,13 +4076,13 @@ export type SelectUserListData = CustomResponsePageUserInfoDto;
 
 export type SelectUserList1Data = CustomResponseUserInfoDto;
 
-export type SelectTopBarListData = CustomResponseListTopBar;
+export type SelectTopBarList1Data = CustomResponseListTopBar;
 
-export type SelectTopBarData = CustomResponsePageProductListDto;
+export type SelectTopBar1Data = CustomResponsePageProductListDto;
 
-export type DeleteTopBarData = CustomResponseBoolean;
+export type DeleteTopBar1Data = CustomResponseBoolean;
 
-export type SelectTopBarCountData = CustomResponseLong;
+export type SelectTopBarCount1Data = CustomResponseLong;
 
 export type SelectTipListData = CustomResponseListTip;
 
