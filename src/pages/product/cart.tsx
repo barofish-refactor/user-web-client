@@ -343,6 +343,7 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
+              console.log(x, 'x');
 
               const deliverResult = x.deliverFee;
               // const deliverResult = deliverPriceAfterCheckType({
