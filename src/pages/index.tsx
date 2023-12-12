@@ -11,6 +11,7 @@ import {
   HomeCurationList,
   // HomeCurationTip,
   HomeFooter,
+  HomeNotice,
   HomeProductList,
   HomeTab,
 } from 'src/components/home';
@@ -118,6 +119,22 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     },
   );
 
+  const { data: notice } = useQuery(
+    queryKey.notice.lists,
+    async () => {
+      const res = await (await client()).selectNoticeList({ type: 'NOTICE' });
+      if (res.data.isSuccess) {
+        return res.data.data;
+      } else {
+        // setAlert({ message: res.data.errorMsg ?? '' });
+        throw new Error(res.data.errorMsg);
+      }
+    },
+
+    // {
+    //   initialData,
+    // },
+  );
   useEffect(() => {
     if (filter) {
       setDummyFilter(filter);
@@ -217,6 +234,10 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
               <div ref={ref} className='pb-10' />
             </div>
           )}
+          <div className='h-4 bg-grey-90' />
+          <div className='h-[40px] overflow-hidden  '>
+            <HomeNotice data={notice as []} />
+          </div>
           <HomeFooter />
         </>
       </PullToRefresh>

@@ -221,21 +221,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
-  const [isObserver, setIsObserver] = useState(false);
   const [isImgObserver, setIsImgObserver] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
   const inquiryRef = useRef<HTMLDivElement>(null);
-  const { ref } = useInView({
-    initialInView: false,
-    onChange: inView => {
-      if (inView) {
-        setIsObserver(false);
-      } else {
-        setIsObserver(true);
-      }
-    },
-  });
+
   const { ref: imgRef } = useInView({
     initialInView: false,
     onChange: inView => {
@@ -261,19 +251,21 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -170);
+      if (!user) window.scrollBy(0, -170);
+      else window.scrollBy(0, -110);
     } else if (selectedTab === 1) {
       reviewRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -130);
+      if (!user) window.scrollBy(0, -130);
+      else window.scrollBy(0, -90);
     } else if (selectedTab === 2) {
       inquiryRef.current?.scrollIntoView({
         behavior: 'auto',
         block: 'start',
       });
-      window.scrollBy(0, -20);
+      if (!user) window.scrollBy(0, -20);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tapOnclick]);
@@ -400,16 +392,22 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             <ShareButton />
           </div>
         </div>
-        {/* {isObserver && isImgObserver && (
-          <div className='fixed top-10 z-50 flex h-[56px] w-full items-center justify-between bg-white '>
-            <ProductTab
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-              reviewCount={data?.reviewCount ?? 0}
-              onClick={tapOnclick}
-            />
-          </div>
-        )} */}
+
+        <div
+          className={
+            !user
+              ? 'sticky top-[100px] z-50 flex  w-full items-center justify-between bg-white'
+              : 'sticky top-10 z-50 flex  w-full items-center justify-between bg-white '
+          }
+        >
+          <ProductTab
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+            reviewCount={data?.reviewCount ?? 0}
+            onClick={tapOnclick}
+          />
+        </div>
+
         <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
           <>
             {/* content */}
@@ -442,24 +440,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 />
               </div>
             )}
-            <div ref={ref} id='Observer' />
+
             <div className='h-2 bg-grey-90' />
             {/* Tab Content */}
             {/* <div className=' w-full flex-col items-center '> */}
-
-            <div
-              className={`${isObserver && isImgObserver && 'fixed top-[55px]'}${
-                isObserver && isImgObserver && !user && 'fxied top-[100px]'
-              }
-              ${!user && 'top-[100px]'} z-50 w-full bg-[#ffffff] md:w-[375px]`}
-            >
-              <ProductTab
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-                reviewCount={data?.reviewCount ?? 0}
-                onClick={tapOnclick}
-              />
-            </div>
 
             {/* </div> */}
             <div className='mt-[30px] min-h-[calc(100dvb-180px)]'>

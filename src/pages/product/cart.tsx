@@ -207,6 +207,7 @@ const Cart: NextPageWithLayout = () => {
       query: { amount: amount + 1 },
     });
   };
+  console.log(data);
 
   // 옵션에 따른 총 가격
   useEffect(() => {
@@ -248,6 +249,7 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
+  console.log(sectionCart);
 
   if (isLoading)
     return (
@@ -341,6 +343,7 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
+              console.log(x, 'x');
 
               const deliverResult = x.deliverFee;
               // const deliverResult = deliverPriceAfterCheckType({
