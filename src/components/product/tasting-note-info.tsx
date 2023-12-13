@@ -17,12 +17,14 @@ interface Props {
 const TastingInfo = ({ info, keyword }: Props) => {
   const spanClass =
     'text-[16px] text-[#333333]  leading-[24px] mb-[10px] ml-[20px] w-[30%] text-center';
+  const divClass =
+    'text-[16px] text-[#333333] font-semibold font leading-[24px] mb-[10px] ml-[20px] w-[30%] text-center';
   return (
     <div className='flex w-full flex-col items-center'>
       <div className=' mt-[40px] flex h-[180px] flex-col items-start  text-[18px]'>
         <div className='mb-[10px] flex w-[100%] flex-col items-center '>
           <div className='flex w-full flex-row  items-center px-[10px]'>
-            <div className={spanClass}>손질 난이도 </div>
+            <div className={divClass}>손질 난이도 </div>
             <div className='relative bottom-[5px] flex flex-row shadow-lg'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
@@ -54,7 +56,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
             </div>
           </div>
           <div className='flex w-full flex-row px-[10px] '>
-            <div className={spanClass}>바&nbsp;&nbsp; 다&nbsp;&nbsp; 향 </div>
+            <div className={divClass}>바&nbsp;&nbsp; 다&nbsp;&nbsp; 향 </div>
             <div className='relative top-[5px] flex flex-row'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
@@ -94,9 +96,9 @@ const TastingInfo = ({ info, keyword }: Props) => {
                 unoptimized
                 src='/assets/icons/common/tastingTag1.png'
                 alt='tastingTag'
-                className='relative bottom-[10px] left-[3px]  h-[60px] w-[90px]'
+                className='relative bottom-[10px] left-[3px]  h-[65px] w-[100px]'
                 width={100}
-                height={60}
+                height={0}
               />
             </div>
             <div className='flex-low  ml-2  flex  flex-wrap  '>
@@ -104,7 +106,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
                 keyword.map((item, idx) => {
                   const text = item.texture as string;
                   return (
-                    <span key={idx} className='font-500  relative top-[10px] text-[15px] '>
+                    <span key={idx} className='font-500  relative top-[15px] text-[15px] '>
                       {tastingText(text, idx + 1, keyword.length)}
                     </span>
                   );
@@ -117,13 +119,13 @@ const TastingInfo = ({ info, keyword }: Props) => {
                 unoptimized
                 src='/assets/icons/common/tastingTag2.png'
                 alt='tastingTag'
-                className='relative bottom-[10px] left-[3px] h-[60px] w-[90px]'
+                className='relative bottom-[10px] left-[3px] h-[65px] w-[100px]'
                 width={100}
                 height={60}
               />
             </div>
             <div className='flex-low  ml-2 flex'>
-              <span className='font-500 relative top-[10px] mx-[2px] text-[15px] '>
+              <span className='font-500 relative top-[15px] mx-[2px] text-[15px] '>
                 {info?.recommendedCookingWay ?? ''}
               </span>
             </div>
