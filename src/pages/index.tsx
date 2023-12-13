@@ -97,7 +97,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectTopBar(Number(tab), {
+      ).selectTopBarV2(Number(tab), {
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         page: pageParam,
         take: perView,

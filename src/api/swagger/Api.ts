@@ -289,8 +289,8 @@ import {
   SelectTopBarCountData,
   SelectTopBarCountV2Data,
   SelectTopBarData,
-  SelectTopBarList1Data,
   SelectTopBarListData,
+  SelectTopBarListV2Data,
   SelectTopBarV2Data,
   SelectTopSearchKeywordsData,
   SelectTrackingInfoData,
@@ -2231,12 +2231,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller-v-2
-   * @name SelectTopBarList
+   * @name SelectTopBarListV2
    * @request GET:/api/v2/topbar
-   * @response `200` `SelectTopBarListData` OK
+   * @response `200` `SelectTopBarListV2Data` OK
    */
-  selectTopBarList = (params: RequestParams = {}) =>
-    this.request<SelectTopBarListData, any>({
+  selectTopBarListV2 = (params: RequestParams = {}) =>
+    this.request<SelectTopBarListV2Data, any>({
       path: `/api/v2/topbar`,
       method: 'GET',
       ...params,
@@ -2802,12 +2802,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags top-bar-controller
-   * @name SelectTopBarList1
+   * @name SelectTopBarList
    * @request GET:/api/v1/topbar
-   * @response `200` `SelectTopBarList1Data` OK
+   * @response `200` `SelectTopBarListData` OK
    */
-  selectTopBarList1 = (params: RequestParams = {}) =>
-    this.request<SelectTopBarList1Data, any>({
+  selectTopBarList = (params: RequestParams = {}) =>
+    this.request<SelectTopBarListData, any>({
       path: `/api/v1/topbar`,
       method: 'GET',
       ...params,
