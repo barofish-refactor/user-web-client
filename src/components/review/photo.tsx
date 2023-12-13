@@ -36,7 +36,6 @@ export function ReviewPhoto({ id, type }: Props) {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-  console.log(imges);
 
   const { data, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.review.list({ id, type, selectedSort }),
@@ -60,6 +59,7 @@ export function ReviewPhoto({ id, type }: Props) {
       }
     },
     {
+      cacheTime: 200,
       getNextPageParam: (lastPage, allPages) => {
         const nextId = allPages.length;
 
@@ -92,6 +92,10 @@ export function ReviewPhoto({ id, type }: Props) {
     }
   };
 
+  useEffect(() => {
+    if (data) refetch();
+    console.log('ss');
+  }, []);
   useEffect(() => {
     if (data && data.pages[0]?.pagedReviews) {
       const totalPages = data?.pages[0]?.pagedReviews?.totalPages as number;

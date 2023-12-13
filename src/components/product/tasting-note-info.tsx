@@ -15,23 +15,14 @@ interface Props {
 }
 
 const TastingInfo = ({ info, keyword }: Props) => {
-  const spanClass = 'flex-low flex text-[16px] font-bold leading-[24px] mb-[10px]';
+  const spanClass = 'text-[16px] font-bold leading-[24px] mb-[10px] ml-[20px] w-[30%] text-center';
   return (
-    <div className='w-full'>
-      <div className='ml-[20px] mt-[20px] flex h-[180px] flex-col items-start px-[20px] text-[18px]'>
-        <div className='mb-[10px] flex w-[100%] flex-row'>
-          <div className='flex w-[50%] flex-col'>
-            <span className={spanClass}>
-              <Image
-                unoptimized
-                alt='heart'
-                width={2}
-                height={15}
-                src='/assets/icons/product/product-stick.svg'
-              />
-              &nbsp;손질 난이도{' '}
-            </span>
-            <div className='flex flex-row'>
+    <div className='flex w-full flex-col items-center'>
+      <div className=' mt-[20px] flex h-[180px] flex-col items-start  text-[18px]'>
+        <div className='mb-[10px] flex w-[100%] flex-col items-center '>
+          <div className='flex w-full flex-row  items-center px-[10px]'>
+            <div className={spanClass}>손질 난이도 </div>
+            <div className='relative bottom-[5px] flex flex-row shadow-lg'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
                 const difficultyLevelOfTrimming = info?.difficultyLevelOfTrimming as number;
@@ -46,9 +37,11 @@ const TastingInfo = ({ info, keyword }: Props) => {
                   <div
                     key={idx}
                     className={cm(
-                      ' mx-[1.5px] h-[18px]  w-[18px] justify-start rounded-full border border-grey-60',
+                      ' h-[15px]  w-[30px] justify-start  border border-l-0 border-grey-60',
+                      { 'border-l-1 rounded-l-lg': idx === 0 },
+                      { 'rounded-r-lg border-l-0': idx === 4 },
                       {
-                        'bg-[#5B83FF]': isClass,
+                        'bg-[#505fcd]': isClass,
                       },
                       {
                         'bg-transparent': !isClass,
@@ -59,43 +52,9 @@ const TastingInfo = ({ info, keyword }: Props) => {
               })}
             </div>
           </div>
-          <div className='flex w-[50%] flex-col'>
-            <span className={spanClass}>
-              <Image
-                unoptimized
-                alt='heart'
-                width={2}
-                height={15}
-                src='/assets/icons/product/product-stick.svg'
-              />
-              &nbsp;식감{' '}
-            </span>
-            <div className='flex-low flex flex-wrap '>
-              {keyword &&
-                keyword.map((item, idx) => {
-                  const text = item.texture as string;
-                  return (
-                    <span key={idx} className='font-500  text-[15px]'>
-                      {tastingText(text, idx + 1, keyword.length)}
-                    </span>
-                  );
-                })}
-            </div>
-          </div>
-        </div>
-        <div className='mb-[30px] mt-3 flex w-[100%] flex-row pb-3'>
-          <div className='flex w-[50%] flex-col '>
-            <span className={spanClass}>
-              <Image
-                unoptimized
-                alt='heart'
-                width={2}
-                height={15}
-                src='/assets/icons/product/product-stick.svg'
-              />
-              &nbsp;바다향{' '}
-            </span>
-            <div className='flex flex-row'>
+          <div className='flex w-full flex-row px-[10px] '>
+            <div className={spanClass}>바다향 </div>
+            <div className='relative top-[5px] flex flex-row'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
                 const theScentOfTheSea = info?.theScentOfTheSea as number;
@@ -110,9 +69,11 @@ const TastingInfo = ({ info, keyword }: Props) => {
                   <div
                     key={idx}
                     className={cm(
-                      ' mx-[1.5px] h-[18px]  w-[18px] justify-start rounded-full border border-grey-60',
+                      ' h-[15px]  w-[30px] justify-start  border border-l-0 border-grey-60',
+                      { 'border-l-1 rounded-l-lg': idx === 0 },
+                      { 'rounded-r-lg border-l-0': idx === 4 },
                       {
-                        'bg-[#5B83FF]': isClass,
+                        'bg-[#505fcd]': isClass,
                       },
                       {
                         'bg-transparent': !isClass,
@@ -123,19 +84,52 @@ const TastingInfo = ({ info, keyword }: Props) => {
               })}
             </div>
           </div>
-          <div className='flex w-[50%] flex-col'>
-            <span className={spanClass}>
-              <Image
-                unoptimized
-                alt='heart'
-                width={2}
-                height={15}
-                src='/assets/icons/product/product-stick.svg'
-              />
-              &nbsp;추천조리법{' '}
-            </span>
-            <div className='flex-low flex'>
-              <span className='font-500 mx-[2px] text-[15px]'>
+          <div className='mb-3 mt-10 flex w-full  flex-row'>
+            <div className={spanClass} style={{ width: '100px', marginLeft: '0' }}>
+              <div className='flex flex-row rounded-full border bg-[#5B83FF] text-white'>
+                <span className='w-[78px] text-center text-[14px]'>식감</span>
+                <div className='flex w-[22px] items-center rounded-full bg-[#7e9df9] text-center'>
+                  <Image
+                    unoptimized
+                    src='/assets/icons/common/Check.png'
+                    alt='check'
+                    className='relative left-[3px]'
+                    width={15}
+                    height={8}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className='flex-low  ml-2  flex  flex-wrap  '>
+              {keyword &&
+                keyword.map((item, idx) => {
+                  const text = item.texture as string;
+                  return (
+                    <span key={idx} className='font-500  relative top-[3px] text-[15px]'>
+                      {tastingText(text, idx + 1, keyword.length)}
+                    </span>
+                  );
+                })}
+            </div>
+          </div>
+          <div className='flex w-full flex-row '>
+            <div className={spanClass} style={{ width: '100px', marginLeft: '0' }}>
+              <div className='flex flex-row rounded-full border bg-[#5B83FF] text-white '>
+                <span className='w-[78px] text-center text-[14px]'>추천조리법</span>
+                <div className='flex w-[22px] items-center rounded-full bg-[#7e9df9] text-center'>
+                  <Image
+                    unoptimized
+                    src='/assets/icons/common/Check.png'
+                    alt='check'
+                    className='relative left-[3px]'
+                    width={15}
+                    height={8}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className='flex-low  ml-2 flex'>
+              <span className='font-500 relative top-[3px] mx-[2px] text-[15px] '>
                 {info?.recommendedCookingWay ?? ''}
               </span>
             </div>
