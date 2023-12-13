@@ -117,7 +117,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
                 unoptimized
                 src='/assets/icons/common/tastingTag2.png'
                 alt='tastingTag'
-                className='relative bottom-[10px] left-[3px] h-[60px] w-[0-px]'
+                className='relative bottom-[10px] left-[3px] h-[60px] w-[90px]'
                 width={100}
                 height={60}
               />
