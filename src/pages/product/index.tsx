@@ -424,7 +424,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             {/* BARO’s 피쉬 노트 */}
 
             {data && data?.tastingNoteInfo && isTasting && (
-              <div className='flex h-[auto] min-h-[580px] w-full flex-col items-center bg-[#eef3ff] pb-[15px]'>
+              <div className='flex h-[auto] min-h-[600px] w-full flex-col items-center bg-[#eef3ff] pb-[15px]'>
                 <div className='mb-[40px] w-full items-start  bg-[#002486] px-[10px] py-[12px] pl-[40px] text-left text-[20px] font-bold  text-white '>
                   피쉬 테이스팅 노트
                 </div>

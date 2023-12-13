@@ -3,6 +3,7 @@ import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Autoplay } from 'swiper';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 SwiperCore.use([Autoplay]);
 
 interface Props {
@@ -10,29 +11,20 @@ interface Props {
 }
 
 const HomeNotice = ({ data }: Props) => {
+  const [noticeText, setNoticeText] = useState<string>();
+  useEffect(() => {
+    if (data && data) {
+      const noticeActive = data.filter(item => item.representative === true);
+      const noticeText = noticeActive[0]?.title as string;
+      console.log(noticeText);
+
+      setNoticeText(noticeText);
+    }
+  }, [data]);
   return (
     <div className='flex items-start px-[10px] pt-[11px]'>
       <div className='w-[20%] font-bold'>공지사항</div>
-      <div className='w-[80%]'>
-        <Swiper
-          loop
-          navigation
-          slidesPerView={1}
-          modules={[Autoplay]}
-          direction='vertical'
-          style={{ height: '100px' }}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-        >
-          {data?.map(item => (
-            <SwiperSlide key={item.id}>
-              <p className='text-ellipsis -tracking-[0.01em]'>{item.title}</p>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+      <div className='w-[80%]'>{noticeText}</div>
       <Image
         unoptimized
         src='/assets/icons/common/chevron.svg'

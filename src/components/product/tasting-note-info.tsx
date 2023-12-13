@@ -42,7 +42,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
                       { 'border-l-1 rounded-l-lg': idx === 0 },
                       { 'rounded-r-lg border-l-0': idx === 4 },
                       {
-                        'bg-[#002486]': isClass,
+                        'bg-[#505fcd]': isClass,
                       },
                       {
                         'bg-transparent': !isClass,
@@ -70,11 +70,11 @@ const TastingInfo = ({ info, keyword }: Props) => {
                   <div
                     key={idx}
                     className={cm(
-                      ' h-[15px]  w-[30px] justify-start  border border-l-0 border-grey-70 text-[#333333]',
+                      'h-[15px]  w-[30px] justify-start  border border-l-0 border-grey-70 text-[#333333]',
                       { 'border-l-1 rounded-l-lg': idx === 0 },
                       { 'rounded-r-lg border-l-0': idx === 4 },
                       {
-                        'bg-[#002486]': isClass,
+                        'bg-[#505fcd]': isClass,
                       },
                       {
                         'bg-transparent': !isClass,
@@ -85,52 +85,45 @@ const TastingInfo = ({ info, keyword }: Props) => {
               })}
             </div>
           </div>
-          <div className='mb-3 mt-7 flex w-full  flex-row'>
-            <div className={spanClass} style={{ width: '100px', marginLeft: '0' }}>
-              <div className='flex flex-row rounded-full border bg-[#5B83FF] text-white'>
-                <span className='w-[78px] text-center text-[14px] text-[#]'>식감</span>
-                <div className='flex w-[22px] items-center rounded-full bg-[#7e9df9] text-center'>
-                  <Image
-                    unoptimized
-                    src='/assets/icons/common/Check.png'
-                    alt='check'
-                    className='relative left-[3px]'
-                    width={15}
-                    height={8}
-                  />
-                </div>
-              </div>
+          <div className='mt-7 flex w-full  flex-row'>
+            <div
+              className={spanClass}
+              style={{ width: '100px', marginLeft: '0', marginBottom: '0' }}
+            >
+              <Image
+                unoptimized
+                src='/assets/icons/common/tastingTag1.png'
+                alt='tastingTag'
+                className='relative bottom-[10px] left-[3px]  h-[60px] w-[90px]'
+                width={100}
+                height={60}
+              />
             </div>
             <div className='flex-low  ml-2  flex  flex-wrap  '>
               {keyword &&
                 keyword.map((item, idx) => {
                   const text = item.texture as string;
                   return (
-                    <span key={idx} className='font-500  relative top-[3px] text-[15px] '>
+                    <span key={idx} className='font-500  relative top-[10px] text-[15px] '>
                       {tastingText(text, idx + 1, keyword.length)}
                     </span>
                   );
                 })}
             </div>
           </div>
-          <div className='flex w-full flex-row '>
+          <div className='flex w-full flex-row'>
             <div className={spanClass} style={{ width: '100px', marginLeft: '0' }}>
-              <div className='flex flex-row rounded-full border bg-[#5B83FF] text-white '>
-                <span className='w-[78px] text-center text-[14px]'>추천조리법</span>
-                <div className='flex w-[22px] items-center rounded-full bg-[#7e9df9] text-center'>
-                  <Image
-                    unoptimized
-                    src='/assets/icons/common/Check.png'
-                    alt='check'
-                    className='relative left-[3px]'
-                    width={15}
-                    height={8}
-                  />
-                </div>
-              </div>
+              <Image
+                unoptimized
+                src='/assets/icons/common/tastingTag2.png'
+                alt='tastingTag'
+                className='relative bottom-[10px] left-[3px] h-[60px] w-[0-px]'
+                width={100}
+                height={60}
+              />
             </div>
             <div className='flex-low  ml-2 flex'>
-              <span className='font-500 relative top-[3px] mx-[2px] text-[15px] '>
+              <span className='font-500 relative top-[10px] mx-[2px] text-[15px] '>
                 {info?.recommendedCookingWay ?? ''}
               </span>
             </div>
