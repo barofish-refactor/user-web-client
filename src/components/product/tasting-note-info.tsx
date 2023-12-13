@@ -15,8 +15,7 @@ interface Props {
 }
 
 const TastingInfo = ({ info, keyword }: Props) => {
-  const spanClass =
-    'text-[16px] text-[#333333]  leading-[24px] mb-[10px] ml-[20px] w-[30%] text-center';
+  const spanClass = 'text-[16px] text-[#333333]  leading-[24px]  ml-[20px] w-[30%] text-center';
   const divClass =
     'text-[16px] text-[#333333] font-semibold font leading-[24px] mb-[10px] ml-[20px] w-[30%] text-center';
   return (
@@ -119,13 +118,13 @@ const TastingInfo = ({ info, keyword }: Props) => {
                 unoptimized
                 src='/assets/icons/common/tastingTag2.png'
                 alt='tastingTag'
-                className='relative bottom-[10px] left-[3px] h-[65px] w-[110px]'
+                className='relative bottom-[20px] left-[3px] h-[65px] w-[110px]'
                 width={100}
                 height={60}
               />
             </div>
             <div className='flex-low  ml-2 flex'>
-              <span className='font-500 relative top-[15px] mx-[2px] text-[14px] '>
+              <span className='font-500 relative top-[5px] mx-[2px] text-[14px] '>
                 {info?.recommendedCookingWay ?? ''}
               </span>
             </div>
