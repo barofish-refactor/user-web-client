@@ -23,14 +23,13 @@ import 'swiper/css';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import { handleRefresh } from 'src/utils/functions';
 import Loading from 'src/components/common/loading';
-import * as gtag from 'src/utils/gtag';
+
 const perView = 10;
 
 /** 홈화면 */
 const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
   const router = useRouter();
   const { tab = 0, f } = router.query;
-
   const { filter, setFilter } = useFilterStore();
   const [savedFilter, setSavedFilter] = useState<number[]>([]);
   const [dummyFilter, setDummyFilter] = useState<indexFilterType[]>();

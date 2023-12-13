@@ -25,8 +25,20 @@ const Chat = ({ data }: Props) => {
       label: '',
       data: item?.tastes?.map(item => item.score) ?? [],
       backgroundColor: bgArr[idx] ?? 'gray',
+      borderColor: bgArr[idx] ?? 'gray',
+      fill: true, // 영역을 채우도록 설정
     };
   });
+  // 추가된 데이터로 배경색 표시
+  const backgroundData = {
+    label: '', // 빈 문자열 추가
+    data: [10, 10, 10, 10, 10], // 모든 값이 최대값으로 설정하여 전체 영역을 채움
+    backgroundColor: '#ffffff', // 배경색 설정
+    borderColor: 'transparent', // 테두리는 표시하지 않음
+    fill: true, // 영역을 채우도록 설정
+  };
+  // chartData.push(backgroundData);
+
   const labelName = data.map((item: any) =>
     item?.tastes?.map((item2: { taste: string }) => {
       let itemName;
@@ -45,7 +57,7 @@ const Chat = ({ data }: Props) => {
     datasets: chartData ?? '',
   };
 
-  const chartOptions: ChartOptions<'radar'> & ChartOptions = {
+  const chartOptions: ChartOptions<'radar'> & ChartOptions<any> = {
     elements: {
       // 데이터 속성.
       line: {
@@ -66,7 +78,6 @@ const Chat = ({ data }: Props) => {
           color: '#dcdcdc',
           backdropColor: '#dcdcdc',
         },
-
         grid: {
           color: 'gray',
         },
@@ -94,12 +105,16 @@ const Chat = ({ data }: Props) => {
         // type !== 'product'
         display: false,
       },
+      filler: {
+        propagate: false, // 영역을 서로 독립적으로 채우도록 설정
+      },
     },
     // 기본 값은 가운데에서 펴져나가는 애니메이션 형태입니다.
     animation: {
       duration: 1,
     },
   };
+  // className='bg-[#ffffff]'
   return (
     <div style={{ margin: '0 auto', width: '250px', height: '250px' }}>
       <Radar data={chartProps} options={chartOptions} />
