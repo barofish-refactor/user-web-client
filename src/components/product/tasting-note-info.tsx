@@ -90,13 +90,13 @@ const TastingInfo = ({ info, keyword }: Props) => {
           <div className='mt-7 flex w-full  flex-row'>
             <div
               className={spanClass}
-              style={{ width: '100px', marginLeft: '0', marginBottom: '0' }}
+              style={{ width: '110px', marginLeft: '0', marginBottom: '0' }}
             >
               <Image
                 unoptimized
                 src='/assets/icons/common/tastingTag1.png'
                 alt='tastingTag'
-                className='relative bottom-[10px] left-[3px]  h-[65px] w-[100px]'
+                className='relative bottom-[10px] left-[3px]  h-[65px] w-[110px]'
                 width={100}
                 height={0}
               />
@@ -106,7 +106,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
                 keyword.map((item, idx) => {
                   const text = item.texture as string;
                   return (
-                    <span key={idx} className='font-500  relative top-[15px] text-[15px] '>
+                    <span key={idx} className='font-500  relative top-[15px] text-[14px] '>
                       {tastingText(text, idx + 1, keyword.length)}
                     </span>
                   );
@@ -114,18 +114,18 @@ const TastingInfo = ({ info, keyword }: Props) => {
             </div>
           </div>
           <div className='flex w-full flex-row'>
-            <div className={spanClass} style={{ width: '100px', marginLeft: '0' }}>
+            <div className={spanClass} style={{ width: '110px', marginLeft: '0' }}>
               <Image
                 unoptimized
                 src='/assets/icons/common/tastingTag2.png'
                 alt='tastingTag'
-                className='relative bottom-[10px] left-[3px] h-[65px] w-[100px]'
+                className='relative bottom-[10px] left-[3px] h-[65px] w-[110px]'
                 width={100}
                 height={60}
               />
             </div>
             <div className='flex-low  ml-2 flex'>
-              <span className='font-500 relative top-[15px] mx-[2px] text-[15px] '>
+              <span className='font-500 relative top-[15px] mx-[2px] text-[14px] '>
                 {info?.recommendedCookingWay ?? ''}
               </span>
             </div>
