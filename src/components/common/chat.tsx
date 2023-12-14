@@ -26,6 +26,7 @@ const Chat = ({ data }: Props) => {
       data: item?.tastes?.map(item => item.score) ?? [],
       backgroundColor: bgArr[idx] ?? 'gray',
       borderColor: bgArr[idx] ?? 'gray',
+      color: '#333333',
       fill: true, // 영역을 채우도록 설정
     };
   });
@@ -66,11 +67,11 @@ const Chat = ({ data }: Props) => {
         ticks: {
           stepSize: 5,
           display: false,
-          color: '#dcdcdc',
-          backdropColor: '#dcdcdc',
+          color: '#000000',
+          // backdropColor: 'red',
         },
         grid: {
-          color: 'gray',
+          color: '#000000',
         },
         // 라벨 속성 지정.
         pointLabels: {
@@ -79,13 +80,13 @@ const Chat = ({ data }: Props) => {
             weight: '500',
             family: 'Pretendard',
           },
-          // color: 'black',
+          color: 'black',
           finally: 'Pretendard',
         },
         angleLines: {
           display: true,
           lineWidth: 1,
-          color: 'gray',
+          color: '#000000',
         },
         suggestedMin: 0,
         suggestedMax: 10,

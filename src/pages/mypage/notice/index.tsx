@@ -8,7 +8,6 @@ import { type Notice } from 'src/api/swagger/data-contracts';
 import Skeleton from 'src/components/common/skeleton';
 import { NoticeLayout } from 'src/components/mypage/notice';
 import { queryKey } from 'src/query-key';
-import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToUtc, handleRefresh } from 'src/utils/functions';
 import PullToRefresh from 'react-simple-pull-to-refresh';
@@ -19,8 +18,6 @@ interface Props {
 }
 
 const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
-  const { setAlert } = useAlertStore();
-
   const { data, isLoading } = useQuery(
     queryKey.notice.lists,
     async () => {
@@ -28,7 +25,6 @@ const MypageNotices: NextPageWithLayout<Props> = ({ initialData }) => {
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
-        setAlert({ message: res.data.errorMsg ?? '' });
         throw new Error(res.data.errorMsg);
       }
     },
