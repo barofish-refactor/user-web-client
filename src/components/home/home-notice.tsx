@@ -24,15 +24,18 @@ const HomeNotice = ({ data }: Props) => {
   }, [data, id]);
   console.log(propsData);
 
-  if (propsData?.length === 0) return null;
+  // if (propsData?.length === 0) return null;
 
   return (
     <div className='flex h-[50px] items-center overflow-hidden'>
       <div className='flex  w-full items-start px-[10px] '>
         <div className='w-[25%] pr-[2px] text-center text-[16px] font-bold'>공지사항</div>
-        <Link href={`mypage/notice/${id}`} className='flex w-[75%] items-start'>
+        <Link
+          href={propsData?.length === 0 ? 'mypage/notice' : `mypage/notice/${id}`}
+          className='flex w-[75%] items-start'
+        >
           <div className='line-clamp-1 w-[95%] overflow-ellipsis px-1 text-[14px]'>
-            {noticeText}
+            {noticeText || '공지사항이 없습니다'}
           </div>
           <div className='w-[5%]'>
             <Image
