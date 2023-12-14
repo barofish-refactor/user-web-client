@@ -24,7 +24,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
         <div className='mb-[10px] flex w-[100%] flex-col items-center '>
           <div className='flex w-full flex-row  items-center px-[10px]'>
             <div className={divClass}>손질 난이도 </div>
-            <div className='relative bottom-[5px] flex flex-row shadow-lg'>
+            <div className='relative bottom-[5px] flex flex-row'>
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
                 const difficultyLevelOfTrimming = info?.difficultyLevelOfTrimming as number;
