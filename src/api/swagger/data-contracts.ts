@@ -1588,6 +1588,7 @@ export interface NoticeAddReq {
   type?: 'NOTICE' | 'FAQ';
   title?: string;
   content?: string;
+  isRepresentative?: boolean;
 }
 
 export interface CustomResponseNotice {
@@ -1607,6 +1608,7 @@ export interface Notice {
   createdAt?: string;
   /** @format date-time */
   updateAt?: string;
+  representative?: boolean;
 }
 
 export interface InquiryUpdateReq {
@@ -2063,11 +2065,11 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  paged?: boolean;
   unpaged?: boolean;
 }
 
@@ -4038,7 +4040,7 @@ export type CustomData = string;
 
 export type ControllerExceptionData = any;
 
-export type SelectTopBarListData = CustomResponseListTopBar;
+export type SelectTopBarListV2Data = CustomResponseListTopBar;
 
 export type SelectTopBarV2Data = CustomResponsePageProductListDto;
 
@@ -4084,7 +4086,7 @@ export type SelectUserListData = CustomResponsePageUserInfoDto;
 
 export type SelectUserList1Data = CustomResponseUserInfoDto;
 
-export type SelectTopBarList1Data = CustomResponseListTopBar;
+export type SelectTopBarListData = CustomResponseListTopBar;
 
 export type SelectTopBarData = CustomResponsePageProductListDto;
 

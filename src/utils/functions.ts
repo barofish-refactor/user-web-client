@@ -480,9 +480,9 @@ export const tastingText = (text: string, start?: number, end?: number) => {
   }
   if (itmeText === 'texture9') {
     if (start !== end) {
-      return (itmeText = '미끌해요,');
+      return (itmeText = '미끌거려요,');
     }
-    return (itmeText = '미끌해요');
+    return (itmeText = '미끌거려요');
   }
   if (itmeText === 'texture10') {
     if (start !== end) {

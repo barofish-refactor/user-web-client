@@ -26,18 +26,10 @@ const Chat = ({ data }: Props) => {
       data: item?.tastes?.map(item => item.score) ?? [],
       backgroundColor: bgArr[idx] ?? 'gray',
       borderColor: bgArr[idx] ?? 'gray',
+      color: '#333333',
       fill: true, // 영역을 채우도록 설정
     };
   });
-  // 추가된 데이터로 배경색 표시
-  const backgroundData = {
-    label: '', // 빈 문자열 추가
-    data: [10, 10, 10, 10, 10], // 모든 값이 최대값으로 설정하여 전체 영역을 채움
-    backgroundColor: '#ffffff', // 배경색 설정
-    borderColor: 'transparent', // 테두리는 표시하지 않음
-    fill: true, // 영역을 채우도록 설정
-  };
-  // chartData.push(backgroundData);
 
   const labelName = data.map((item: any) =>
     item?.tastes?.map((item2: { taste: string }) => {
@@ -75,25 +67,26 @@ const Chat = ({ data }: Props) => {
         ticks: {
           stepSize: 5,
           display: false,
-          color: '#dcdcdc',
-          backdropColor: '#dcdcdc',
+          color: '#000000',
+          // backdropColor: 'red',
         },
         grid: {
-          color: 'gray',
+          color: '#000000',
         },
         // 라벨 속성 지정.
         pointLabels: {
           font: {
             size: 14,
-            weight: '700',
+            weight: '500',
             family: 'Pretendard',
           },
-          // color: 'black',
+          color: 'black',
+          finally: 'Pretendard',
         },
         angleLines: {
           display: true,
           lineWidth: 1,
-          color: 'gray',
+          color: '#000000',
         },
         suggestedMin: 0,
         suggestedMax: 10,
@@ -104,6 +97,9 @@ const Chat = ({ data }: Props) => {
       legend: {
         // type !== 'product'
         display: false,
+        lables: {
+          finally: 'Pretendard',
+        },
       },
       filler: {
         propagate: false, // 영역을 서로 독립적으로 채우도록 설정
