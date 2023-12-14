@@ -425,7 +425,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
             {data && data?.tastingNoteInfo && isTasting && (
               <div className='flex h-[auto] min-h-[600px] w-full flex-col items-center bg-[#EEF3FF] pb-[15px]'>
-                <div className='shadow-[0px_1000px_70px_4px_rgba(12, 12, 12, 0.56)] mb-[10px] mt-7 w-[230px] items-center rounded-full bg-[#002486] p-[5px] py-[5px] text-center text-[20px] font-bold  text-[#fff] '>
+                <div className='mb-[10px] mt-7 w-[230px] items-center rounded-full bg-[#002486] p-[5px] py-[5px] text-center text-[20px] font-bold  text-[#fff] '>
                   피쉬 테이스팅 노트
                 </div>
                 <Chat data={data?.tastingNoteInfo ?? []} />

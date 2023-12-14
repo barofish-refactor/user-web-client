@@ -60,7 +60,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
               {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
                 const theScentOfTheSea = info?.theScentOfTheSea as number;
-                const sea = Math.floor(0);
+                const sea = Math.floor(theScentOfTheSea);
                 if (idx < sea) {
                   isClass = true;
                 } else {
@@ -75,7 +75,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
                       { 'border-l-1 rounded-l-lg': idx === 0 },
                       { 'rounded-r-lg border-l-0': idx === 4 },
                       {
-                        'bg-[#224dcd]': isClass,
+                        'bg-[#85a4ff]': isClass,
                       },
                       {
                         'bg-transparent': !isClass,
