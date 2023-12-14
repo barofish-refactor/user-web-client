@@ -17,7 +17,7 @@ interface Props {
 const TastingInfo = ({ info, keyword }: Props) => {
   const spanClass = 'text-[16px] text-[#333333]  leading-[24px]  ml-[20px] w-[30%] text-center';
   const divClass =
-    'text-[16px] text-[#333333] font-semibold font leading-[24px] mb-[10px] ml-[20px] w-[30%] text-center';
+    'text-[16px] text-[#333333] font-semibold font leading-[24px] mb-[10px] mx-[10px] w-[30%] text-center';
   return (
     <div className='flex w-full flex-col items-center'>
       <div className=' mt-[40px] flex h-[180px] flex-col items-start  text-[18px]'>
