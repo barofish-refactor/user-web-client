@@ -119,7 +119,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
                 src='/assets/icons/common/tastingTag2.png'
                 alt='tastingTag'
                 className='relative bottom-[25px] h-[63px] w-[102px]'
-                width={10}
+                width={102}
                 height={63}
               />
             </div>
