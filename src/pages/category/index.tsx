@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { client } from 'src/api/client';
-import { Category, type CustomResponseListCategory } from 'src/api/swagger/data-contracts';
+import { type CustomResponseListCategory } from 'src/api/swagger/data-contracts';
 import Layout from 'src/components/common/layout';
 import { queryKey } from 'src/query-key';
 import { type NextPageWithLayout } from 'src/types/common';
