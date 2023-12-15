@@ -694,7 +694,7 @@ const Order: NextPageWithLayout = () => {
             </p>
             <div className='flex items-center'>
               <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
-                사용 가능 쿠폰
+                보유중인 쿠폰
               </p>
               <p className='whitespace-pre text-[15px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>{` ${
                 couponData?.length ?? 0
