@@ -517,7 +517,7 @@ const Order: NextPageWithLayout = () => {
           <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             주문자 정보
           </p>
-          <div className='flex items-center justify-between'>
+          <div className='flex w-full items-center justify-between'>
             <p className='w-[71px] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
               이름
             </p>
@@ -531,7 +531,7 @@ const Order: NextPageWithLayout = () => {
               }}
             />
           </div>
-          <div className='flex items-center justify-between'>
+          <div className='flex w-full items-center justify-between'>
             <p className='w-[71px] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
               연락처
             </p>
