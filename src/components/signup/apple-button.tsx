@@ -56,7 +56,11 @@ export function AppleButton() {
               }
             })
             .then(res => {
-              if (res) router.replace('/');
+              if (res) {
+                const getPath = sessionStorage.getItem('Path');
+
+                router.replace(getPath ? `${getPath}` : '/');
+              }
             })
             .catch(console.error);
         }
