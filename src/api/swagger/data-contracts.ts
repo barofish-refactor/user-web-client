@@ -2065,12 +2065,12 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
+  unpaged?: boolean;
+  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
-  paged?: boolean;
-  unpaged?: boolean;
 }
 
 export interface SortObject {
@@ -4064,9 +4064,9 @@ export type SelectAllReviewListByAdminV2Data = CustomResponsePageAdminReviewDto;
 
 export type GetProductReviewPhotosData = CustomResponseListProductPhotiReviewDto;
 
-export type SelectProductListByUserV2Data = CustomResponseObject;
+export type SelectProductListByUserV2Data = CustomResponsePageProductListDto;
 
-export type SelectProductListByUserV21Data = CustomResponseInteger;
+export type SelectProductCountByUserV2Data = CustomResponseInteger;
 
 export type GetExpectedArrivalDateData = CustomResponseObject;
 

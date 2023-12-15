@@ -61,8 +61,8 @@ const BottomSheet = () => {
     }),
     async () => {
       const res = await (type.type === 'topBar'
-        ? (await client()).selectTopBarCount(type.id ?? 0, ...variables)
-        : (await client()).selectProductCountByUser(...variables));
+        ? (await client()).selectTopBarCountV2(type.id ?? 0, ...variables)
+        : (await client()).selectProductCountByUserV2(...variables));
 
       if (res.data.isSuccess) {
         return res.data.data;

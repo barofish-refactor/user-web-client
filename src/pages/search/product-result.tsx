@@ -97,7 +97,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectProductListByUser({
+      ).selectProductListByUserV2({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         ...{
           categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
@@ -121,6 +121,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       },
     },
   );
+  console.log(productData, 'productData');
 
   useEffect(() => {
     if (id && subItemId && data.data) {
