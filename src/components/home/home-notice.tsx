@@ -22,7 +22,6 @@ const HomeNotice = ({ data }: Props) => {
       setNoticeText(noticeText);
     }
   }, [data, id]);
-  console.log(propsData);
 
   // if (propsData?.length === 0) return null;
 
@@ -35,7 +34,7 @@ const HomeNotice = ({ data }: Props) => {
           className='flex w-[75%] items-start'
         >
           <div className='line-clamp-1 w-[95%] overflow-ellipsis px-1 text-[14px]'>
-            {noticeText || '공지사항이 없습니다'}
+            {noticeText}
           </div>
           <div className='w-[5%]'>
             <Image

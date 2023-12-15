@@ -223,9 +223,20 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
           <p className='line-clamp-1 flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             {title}
           </p>
-          <Link href='/product/cart'>
+          <div
+            onClick={() => {
+              if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                console.log(router.asPath, 'asPath');
+
+                sessionStorage.setItem('Path', router.asPath);
+                router.push('/login');
+                return;
+              }
+              router.push('/product/cart');
+            }}
+          >
             <CartIcon />
-          </Link>
+          </div>
         </div>
         <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
           <>

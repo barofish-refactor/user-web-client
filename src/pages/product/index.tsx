@@ -390,9 +390,18 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         >
           <BackButton />
           <div className=' flex items-center gap-4'>
-            <Link href='/product/cart'>
+            <div
+              onClick={() => {
+                if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                  sessionStorage.setItem('Path', router.asPath);
+                  router.push('/login');
+                  return;
+                }
+                router.push('/product/cart');
+              }}
+            >
               <CartIcon />
-            </Link>
+            </div>
             <ShareButton />
           </div>
         </div>

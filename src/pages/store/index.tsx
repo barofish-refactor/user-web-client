@@ -128,7 +128,6 @@ const Store: NextPageWithLayout = () => {
   useEffect(() => {
     sessionStorage.removeItem('storeView');
   }, []);
-  console.log(likedData);
 
   return (
     <div className='max-md:w-[100vw]'>
@@ -168,9 +167,18 @@ const Store: NextPageWithLayout = () => {
             height={24}
           />
         </Link> */}
-        <Link href='/product/cart'>
+        <div
+          onClick={() => {
+            if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+              sessionStorage.setItem('Path', router.asPath);
+              router.push('/login');
+              return;
+            }
+            router.push('/product/cart');
+          }}
+        >
           <CartIcon />
-        </Link>
+        </div>
       </div>
       <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
         <>

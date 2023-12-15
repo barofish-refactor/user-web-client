@@ -7,6 +7,7 @@ import { HeaderBanner } from './header-banner';
 import dynamic from 'next/dynamic';
 import { type CookieValueTypes, getCookie } from 'cookies-next';
 import { VARIABLES } from 'src/variables';
+import router from 'next/router';
 export const CartIcon = dynamic(() => import('src/components/common/cart-icon'));
 export type HeaderProps = ComponentProps<'header'>;
 
@@ -59,9 +60,19 @@ export function Header({ className, ...props }: HeaderProps) {
           className='h-6 w-6 bg-[url(/assets/icons/common/bookmark-title.svg)] bg-cover'
         /> */}
         {/* 장바구니 */}
-        <Link href='/product/cart' className='ml-[2px]'>
+        <div
+          className='ml-[2px]'
+          onClick={() => {
+            if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+              sessionStorage.setItem('Path', router.asPath);
+              router.push('/login');
+              return;
+            }
+            router.push('/product/cart');
+          }}
+        >
           <CartIcon />
-        </Link>
+        </div>
       </div>
     </header>
   );
