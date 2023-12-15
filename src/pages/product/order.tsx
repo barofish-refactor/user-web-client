@@ -518,12 +518,12 @@ const Order: NextPageWithLayout = () => {
             주문자 정보
           </p>
           <div className='flex w-full items-center justify-between'>
-            <p className='w-[71px] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+            <p className='w-[20%] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
               이름
             </p>
             <input
               maxLength={10}
-              className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+              className='h-[44px] w-[80%] flex-1 rounded-lg border border-grey-80 px-3 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
               placeholder='이름을 입력해주세요'
               value={name}
               onChange={e => {
@@ -532,7 +532,7 @@ const Order: NextPageWithLayout = () => {
             />
           </div>
           <div className='flex w-full items-center justify-between'>
-            <p className='w-[71px] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
+            <p className='w-[20%] text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
               연락처
             </p>
             <PatternFormat
@@ -541,7 +541,7 @@ const Order: NextPageWithLayout = () => {
               inputMode='numeric'
               spellCheck={false}
               value={phone}
-              className='h-[44px] flex-1 rounded-lg border border-grey-80 px-3 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
+              className='h-[44px] w-[80%] flex-1 rounded-lg border border-grey-80 px-3 text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10 placeholder:text-grey-60 focus:border-primary-50'
               onChange={e => setPhone(e.target.value)}
             />
           </div>
