@@ -219,7 +219,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
-
+  console.log('11 ', router.asPath);
   return (
     <>
       <div
@@ -376,6 +376,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                     onClick={() => {
                       if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                         setIsVisible(false);
+                        sessionStorage.setItem('Path', router.asPath);
                         router.push('/login');
                         return;
                       }
@@ -434,6 +435,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                     onClick={() => {
                       if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                         setIsVisible(false);
+                        sessionStorage.setItem('Path', router.asPath);
                         router.push('/login');
                         return;
                       }

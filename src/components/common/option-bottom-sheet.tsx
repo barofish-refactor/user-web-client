@@ -335,6 +335,7 @@ const BottomSheet = ({}: Props) => {
                           className='h-[52px] flex-1 rounded-lg border border-primary-50'
                           onClick={() => {
                             if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                              sessionStorage.setItem('Path', router.asPath);
                               router.push('/login');
                               initClear();
                               return;
