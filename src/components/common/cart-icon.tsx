@@ -22,7 +22,6 @@ const CartIcon = () => {
       deleteCookie(ACCESS_TOKEN);
       return;
     }
-    console.log(res.data.errorMsg);
     throw new Error(res.data.errorMsg);
   });
 

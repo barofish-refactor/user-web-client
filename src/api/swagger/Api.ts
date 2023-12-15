@@ -241,9 +241,9 @@ import {
   SelectPcWebBannerData,
   SelectPointRuleData,
   SelectProductCountByUserData,
+  SelectProductCountByUserV2Data,
   SelectProductData,
   SelectProductListByUserData,
-  SelectProductListByUserV21Data,
   SelectProductListByUserV2Data,
   SelectProductListData,
   SelectProductListForExcelData,
@@ -2606,11 +2606,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags product-controller-v-2
-   * @name SelectProductListByUserV21
+   * @name SelectProductCountByUserV2
    * @request GET:/api/v2/product/list/count
-   * @response `200` `SelectProductListByUserV21Data` OK
+   * @response `200` `SelectProductCountByUserV2Data` OK
    */
-  selectProductListByUserV21 = (
+  selectProductCountByUserV2 = (
     query?: {
       categoryIds?: string;
       filterFieldIds?: string;
@@ -2623,7 +2623,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     },
     params: RequestParams = {},
   ) =>
-    this.request<SelectProductListByUserV21Data, any>({
+    this.request<SelectProductCountByUserV2Data, any>({
       path: `/api/v2/product/list/count`,
       method: 'GET',
       query: query,

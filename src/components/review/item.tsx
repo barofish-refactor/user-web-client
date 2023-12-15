@@ -50,7 +50,10 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   });
 
   const onLikeMutate = ({ id }: { id: number }) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+      sessionStorage.setItem('Path', router.asPath);
+      router.push('/login');
+    }
     if (isLoading) return;
     likeReviewByUser(id)
       .then(res => {

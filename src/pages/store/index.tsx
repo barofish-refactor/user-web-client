@@ -89,7 +89,11 @@ const Store: NextPageWithLayout = () => {
   );
 
   const onMutate = ({ storeId, type }: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+      sessionStorage.setItem('Path', router.asPath);
+      router.push('/login');
+      return;
+    }
     likeStoreByUser({
       storeId,
       type,
@@ -124,7 +128,6 @@ const Store: NextPageWithLayout = () => {
   useEffect(() => {
     sessionStorage.removeItem('storeView');
   }, []);
-  console.log(likedData);
 
   return (
     <div className='max-md:w-[100vw]'>
@@ -164,9 +167,18 @@ const Store: NextPageWithLayout = () => {
             height={24}
           />
         </Link> */}
-        <Link href='/product/cart'>
+        <div
+          onClick={() => {
+            if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+              sessionStorage.setItem('Path', router.asPath);
+              router.push('/login');
+              return;
+            }
+            router.push('/product/cart');
+          }}
+        >
           <CartIcon />
-        </Link>
+        </div>
       </div>
       <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
         <>
@@ -186,8 +198,11 @@ const Store: NextPageWithLayout = () => {
                     idx === 0 ? 'px-[43.5px]' : 'px-[30px] ',
                   )}
                   onClick={() => {
-                    if (idx === 1 && !getCookie(VARIABLES.ACCESS_TOKEN))
-                      return router.push('/login');
+                    if (idx === 1 && !getCookie(VARIABLES.ACCESS_TOKEN)) {
+                      sessionStorage.setItem('Path', router.asPath);
+                      router.push('/login');
+                      return;
+                    }
                     setSelectedTab(idx);
                   }}
                 >

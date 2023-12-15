@@ -41,7 +41,8 @@ const Review: NextPageWithLayout = () => {
   );
 
   const onLikeMutate = ({ id }: { id: number }) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+    }
     if (isLoading) return;
     likeReviewByUser(id)
       .then(res => {

@@ -91,7 +91,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectProductListByUser({
+      ).selectProductListByUserV2({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         sortby: sort,
         page: pageParam,
@@ -132,7 +132,11 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   );
 
   const onMutate = ({ data }: SaveProductPayload, isRefetch = true) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+      sessionStorage.setItem('Path', router.asPath);
+      router.push('/login');
+      return;
+    }
     if (isSaveLoading) return;
     saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
       .then(res => {

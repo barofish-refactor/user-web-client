@@ -39,7 +39,11 @@ const Login: NextPageWithLayout = () => {
         }
       })
       .then(res => {
-        if (res) router.push('/');
+        if (res) {
+          const getPath = sessionStorage.getItem('Path');
+
+          router.push(getPath ? `${getPath}` : '/');
+        }
       })
       .catch(console.error);
   });

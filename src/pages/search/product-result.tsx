@@ -97,7 +97,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectProductListByUser({
+      ).selectProductListByUserV2({
         filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
         ...{
           categoryIds: selectedCategoryId === -1 ? undefined : selectedCategoryId.toString(),
@@ -121,6 +121,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       },
     },
   );
+  console.log(productData, 'productData');
 
   useEffect(() => {
     if (id && subItemId && data.data) {
@@ -223,9 +224,20 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
           <p className='line-clamp-1 flex-1 text-center text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             {title}
           </p>
-          <Link href='/product/cart'>
+          <div
+            onClick={() => {
+              if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                console.log(router.asPath, 'asPath');
+
+                sessionStorage.setItem('Path', router.asPath);
+                router.push('/login');
+                return;
+              }
+              router.push('/product/cart');
+            }}
+          >
             <CartIcon />
-          </Link>
+          </div>
         </div>
         <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
           <>

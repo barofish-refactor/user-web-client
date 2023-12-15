@@ -78,8 +78,11 @@ export function Footer({ className, ...props }: FooterProps) {
               onClick={() => {
                 if (i === 4) {
                   // console.log(getCookie(VARIABLES.ACCESS_TOKEN));
-                  if (!getCookie(VARIABLES.ACCESS_TOKEN)) router.push('/login');
-                  else router.push(v.path);
+                  if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                    sessionStorage.setItem('Path', router.asPath);
+                    router.push('/login');
+                    return;
+                  } else router.push(v.path);
                 } else router.push(v.path);
               }}
             >

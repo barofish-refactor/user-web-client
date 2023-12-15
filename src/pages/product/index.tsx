@@ -104,7 +104,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   );
 
   const onSaveMutate = ({ data }: SaveProductPayload) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+      sessionStorage.setItem('Path', router.asPath);
+      router.push('/login');
+      return;
+    }
     if (isSaveLoading) return;
 
     saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
@@ -386,9 +390,18 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         >
           <BackButton />
           <div className=' flex items-center gap-4'>
-            <Link href='/product/cart'>
+            <div
+              onClick={() => {
+                if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                  sessionStorage.setItem('Path', router.asPath);
+                  router.push('/login');
+                  return;
+                }
+                router.push('/product/cart');
+              }}
+            >
               <CartIcon />
-            </Link>
+            </div>
             <ShareButton />
           </div>
         </div>
@@ -493,7 +506,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               <button
                 className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
                 onClick={() => {
-                  if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+                  if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                    sessionStorage.setItem('Path', router.asPath);
+                    router.push('/login');
+                    return;
+                  }
                   if (data?.isLike)
                     onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
                   else {

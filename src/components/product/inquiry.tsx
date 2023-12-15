@@ -40,7 +40,9 @@ const Inquiry = ({ productId, data, refetch }: Props) => {
   );
 
   const onDeleteMutate = ({ id }: { id: number }) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+      sessionStorage.setItem('Path', router.asPath);
+    }
     if (isLoading) return;
     deleteInquiryByUser(id)
       .then(res => {

@@ -32,7 +32,11 @@ const Partner = () => {
   );
 
   const onMutate = ({ storeId, type }: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => {
-    if (!getCookie(VARIABLES.ACCESS_TOKEN)) return router.push('/login');
+    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+      sessionStorage.setItem('Path', router.asPath);
+      router.push('/login');
+      return;
+    }
     if (isLoading) return;
     likeStoreByUser({
       storeId,

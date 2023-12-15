@@ -194,21 +194,21 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
     setTotalPrice(totalPrice);
   }, [selectedOption]);
 
-  useEffect(() => {
-    // 스크롤 막기
-    if (!isVisible) return;
-    document.body.style.cssText = `
-      position: fixed;
-      top: -${window.scrollY}px;
-      width: 100%;
-      height: 100%;
-      `;
-    return () => {
-      const scrollY = document.body.style.top;
-      document.body.style.cssText = '';
-      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
-    };
-  }, [isVisible]);
+  // useEffect(() => {
+  //   // 스크롤 막기
+  //   if (!isVisible) return;
+  //   document.body.style.cssText = `
+  //     position: fixed;
+  //     top: -${window.scrollY}px;
+  //     width: 100%;
+  //     height: 100%;
+  //     `;
+  //   return () => {
+  //     const scrollY = document.body.style.top;
+  //     document.body.style.cssText = '';
+  //     window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+  //   };
+  // }, [isVisible]);
 
   const onClose = () => {
     if (target.current) {
@@ -219,12 +219,12 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
-
+  console.log('11 ', router.asPath);
   return (
     <>
       <div
         ref={target}
-        className='relative  flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[20px]'
+        className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[20px]'
         onClick={e => {
           e.stopPropagation();
         }}
@@ -376,6 +376,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                     onClick={() => {
                       if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                         setIsVisible(false);
+                        sessionStorage.setItem('Path', router.asPath);
                         router.push('/login');
                         return;
                       }
@@ -434,6 +435,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                     onClick={() => {
                       if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                         setIsVisible(false);
+                        sessionStorage.setItem('Path', router.asPath);
                         router.push('/login');
                         return;
                       }
