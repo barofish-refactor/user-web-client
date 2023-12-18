@@ -225,22 +225,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
-  const [isImgObserver, setIsImgObserver] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
   const inquiryRef = useRef<HTMLDivElement>(null);
 
-  const { ref: imgRef } = useInView({
-    initialInView: false,
-    onChange: inView => {
-      if (inView) {
-        setIsImgObserver(false);
-      } else {
-        setIsImgObserver(true);
-      }
-    },
-  });
-  // console.log(isObserver);
   const tapOnclick = (idx: number) => {
     setSelectedTab(idx);
     setIsTap(true);
@@ -425,14 +413,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           <>
             {/* content */}
             <ProductBanner image={data?.images ?? []} />
-            <div ref={imgRef}>
-              <ProductInformationDefault
-                data={data}
-                user={user}
-                setSelectedTab={setSelectedTab}
-                // isTasting={data.tastingNoteInfo ?? 0}
-              />
-            </div>
+
+            <ProductInformationDefault
+              data={data}
+              user={user}
+              setSelectedTab={setSelectedTab}
+              // isTasting={data.tastingNoteInfo ?? 0}
+            />
+
             {/* <ProductCompare /> */}
             {/* BARO’s 피쉬 노트 */}
 

@@ -77,9 +77,18 @@ export function KakaoButton() {
             .then(res => {
               // if (res) router.replace('/');
               if (res) {
-                const getPath = sessionStorage.getItem('Path');
+                const getPaths = sessionStorage.getItem('Paths');
 
-                router.replace(getPath ? `${getPath}` : '/');
+                const getPath = sessionStorage.getItem('Path');
+                if (getPath) return router.replace(getPath ? `${getPath}` : '/');
+                if (getPaths) {
+                  const query = JSON.parse(getPaths);
+                  return router.replace({
+                    pathname: '/product/order',
+                    query: { id: query?.id, options: query.options },
+                  });
+                }
+                if (!getPath && !getPaths) return router.replace('/');
               }
             })
             .catch(console.error);

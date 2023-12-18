@@ -435,7 +435,37 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                     onClick={() => {
                       if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                         setIsVisible(false);
-                        sessionStorage.setItem('Path', router.asPath);
+                        console.log(selectedOption.filter(v => v.isNeeded === true).length);
+
+                        if (selectedOption.filter(v => v.isNeeded === true).length > 0) {
+                          console.log('gg');
+
+                          const querySendData: miniOptionState[] = selectedOption.map(v => ({
+                            productId: v.productId,
+                            optionId: v.optionId,
+                            name: v.name,
+                            amount: v.amount,
+                            additionalPrice: v.additionalPrice,
+                            deliveryFee: v.deliveryFee,
+                            stock: v.stock,
+                            maxAvailableStock: v.maxAvailableStock,
+                            needTaxation: v.needTaxation,
+                            pointRate: v.pointRate,
+                          }));
+                          sessionStorage.setItem(
+                            'Paths',
+                            // `/product/order?id=${data?.id}&options=${aToB(
+                            //   JSON.stringify(querySendData),
+                            // )}`,
+                            JSON.stringify({
+                              id: data?.id,
+                              options: aToB(JSON.stringify(querySendData)),
+                            }),
+                          );
+                        } else {
+                          sessionStorage.setItem('Path', router.asPath);
+                        }
+
                         router.push('/login');
                         return;
                       }

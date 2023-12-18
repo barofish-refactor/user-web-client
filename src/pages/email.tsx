@@ -40,9 +40,18 @@ const Login: NextPageWithLayout = () => {
       })
       .then(res => {
         if (res) {
-          const getPath = sessionStorage.getItem('Path');
+          const getPaths = sessionStorage.getItem('Paths');
 
-          router.push(getPath ? `${getPath}` : '/');
+          const getPath = sessionStorage.getItem('Path');
+          if (getPath) return router.push(getPath ? `${getPath}` : '/');
+          if (getPaths) {
+            const query = JSON.parse(getPaths);
+            return router.push({
+              pathname: '/product/order',
+              query: { id: query?.id, options: query.options },
+            });
+          }
+          if (!getPath && !getPaths) return router.push('/');
         }
       })
       .catch(console.error);
