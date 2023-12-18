@@ -476,7 +476,10 @@ const Order: NextPageWithLayout = () => {
       });
     }
   }, [options, router.isReady]);
-  console.log(tmpOption);
+  useEffect(() => {
+    sessionStorage.removeItem('Paths');
+  }, []);
+  console.log(selectedOption);
 
   return (
     <>

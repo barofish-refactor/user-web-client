@@ -19,6 +19,7 @@ export default function useLogout() {
           deleteCookie(ACCESS_TOKEN);
           deleteCookie(REFRESH_TOKEN);
           queryClient.clear();
+          sessionStorage.clear();
           requestPermission('logout', '');
           // resetToken();
         });
