@@ -41,7 +41,6 @@ const Login: NextPageWithLayout = () => {
       .then(res => {
         if (res) {
           const getPaths = sessionStorage.getItem('Paths');
-
           const getPath = sessionStorage.getItem('Path');
           if (getPath) return router.push(getPath ? `${getPath}` : '/');
           if (getPaths) {
