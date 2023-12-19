@@ -506,7 +506,7 @@ const Order: NextPageWithLayout = () => {
             <ProductCoupon
               setIsVisible={setIsCouponVisible}
               setCoupon={setSelectCoupon}
-              data={coponValid}
+              data={couponData}
               totalPrice={totalPrice + totalDelivery}
             />
           )}

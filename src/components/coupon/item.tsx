@@ -10,14 +10,16 @@ export function CouponItem({
   isAvailable,
   isOrder,
   onClick,
+  isCoupon,
 }: {
   item: Coupon;
   isAvailable?: boolean;
+  isCoupon?: boolean;
   isOrder?: boolean;
   onClick?: (item: Coupon) => void;
 }) {
   // const hasBorder = item.id % 2 === 0;
-  const hasBorder = true;
+  const hasBorder = !!isCoupon;
 
   const onDownload = () => {
     if (onClick) onClick(item);
@@ -29,42 +31,74 @@ export function CouponItem({
       data-border={hasBorder}
       className={cm(
         s.coupon,
-        'h-[144px] overflow-hidden rounded-lg bg-white shadow-[0px_3px_6px_rgba(0,0,0,0.15)]',
+        'h-[144px] overflow-hidden rounded-lg  shadow-[0px_3px_6px_rgba(0,0,0,0.15)]',
         { 'cursor-pointer': isOrder },
+        { 'cursor-auto': !isCoupon },
+        { 'border border-grey-80 shadow-none ': !isCoupon },
       )}
       onClick={() => {
         if (isOrder && onClick) onDownload();
       }}
     >
-      <div className='relative flex h-full overflow-hidden rounded-lg bg-white'>
-        <LinearGradient />
+      <div className={cm('relative flex h-full overflow-hidden rounded-lg bg-white', {})}>
+        {isCoupon && <LinearGradient />}
+
         <div className='relative z-[1] flex h-full w-full rounded-lg'>
           <div className={clsx(s.content, 'flex flex-1 flex-col justify-between')}>
             <div>
-              <h4 className='text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20'>
+              <h4
+                className={cm(
+                  'text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-20',
+                  { 'text-grey-70': !isCoupon },
+                )}
+              >
                 {item.title}
               </h4>
-              <strong className='text-[30px] font-bold leading-[36px] -tracking-[0.03em] text-primary-40'>
+              <strong
+                className={cm(
+                  'text-[30px] font-bold leading-[36px] -tracking-[0.03em] text-primary-40',
+                  { 'text-grey-70': !isCoupon },
+                )}
+              >
                 {formatToLocaleString(item.amount, {
                   suffix: item.type === 'RATE' ? '%' : '원',
                 })}
-                <span className='ml-0.5 text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-40'>
+                <span
+                  className={cm(
+                    'ml-0.5 text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-40',
+                    { 'text-grey-70': !isCoupon },
+                  )}
+                >
                   할인
                 </span>
               </strong>
             </div>
             <div className='flex items-center gap-[7px]'>
-              <span className='text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50'>
+              <span
+                className={cm(
+                  'text-[13px] font-medium leading-[20px] -tracking-[0.03em] text-grey-50',
+                  {
+                    'text-grey-70': !isCoupon,
+                  },
+                )}
+              >
                 {formatToUtc(item.startAt, 'yy.MM.dd')} ~ {formatToUtc(item.endAt, 'yy.MM.dd')}
               </span>
-              <span className='text-[12px] leading-[18px] -tracking-[0.03em] text-grey-60'>
+              <span
+                className={cm('text-[12px] leading-[18px] -tracking-[0.03em] text-grey-60', {
+                  'text-[red]': !isCoupon,
+                })}
+              >
                 {`최소 ${formatToLocaleString(item.minPrice)}원 이상 구매 시`}
               </span>
             </div>
           </div>
           <button
             disabled={!isAvailable && !isOrder}
-            className='grid h-full basis-[67px] place-items-center border-l border-dashed border-primary-70'
+            className={cm(
+              'grid h-full basis-[67px] place-items-center border-l border-dashed border-primary-70',
+              { 'cursor-auto': !isCoupon },
+            )}
             onClick={onDownload}
           >
             {isAvailable && !isOrder && (
