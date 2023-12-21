@@ -36,7 +36,7 @@ const ProductCoupon = ({ setIsVisible, setCoupon, data, totalPrice }: Props) => 
       ) : (
         <div className='h-full w-full flex-1 overflow-auto scrollbar-hide'>
           {data?.map(v => {
-            const isCoupon = (v.minPrice as number) < totalPrice;
+            const isCoupon = (v.minPrice as number) <= totalPrice;
             return (
               <div key={v.id} className=' px-3 pb-3'>
                 <CouponItem

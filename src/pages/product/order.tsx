@@ -481,7 +481,7 @@ const Order: NextPageWithLayout = () => {
   useEffect(() => {
     if (couponData) {
       const totalPrices = totalDelivery + totalPrice;
-      const filter = couponData.filter(item => (item?.minPrice as number) < totalPrices);
+      const filter = couponData.filter(item => (item?.minPrice as number) <= totalPrices);
       setCoponValid(filter);
     }
   }, [couponData, totalDelivery, totalPrice]);
@@ -701,7 +701,7 @@ const Order: NextPageWithLayout = () => {
             </p>
             <div className='flex items-center'>
               <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
-                보유중인 쿠폰
+                사용가능한 쿠폰
               </p>
               <p className='whitespace-pre text-[15px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>{` ${
                 coponValid?.length ?? 0

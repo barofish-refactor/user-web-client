@@ -489,7 +489,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             )}
           </div>
         ) : (
-          <div className='mt-5 flex w-full flex-col overflow-auto px-4'>
+          <div className='mt-5 flex w-full flex-col px-4'>
             <div className='flex items-center gap-5'>
               <Image
                 unoptimized
@@ -515,9 +515,9 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             </p>
 
             {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
-              <div className='h-[300px] overflow-y-auto'>
+              <div className='h-[auto] '>
                 <HomeSmallSlideCuration
-                  title=''
+                  title='추천'
                   className='mt-4'
                   data={selectProductOtherCustomerBuy ?? []}
                   onClick={() => setIsVisible(false)}

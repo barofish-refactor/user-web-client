@@ -13,7 +13,7 @@ const ImageBox = ({ storeType, title }: Props) => {
   return (
     <>
       {title?.includes('캠핑') && storeType.includes('curation') && (
-        <button style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationA.jpg'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
@@ -25,10 +25,10 @@ const ImageBox = ({ storeType, title }: Props) => {
             placeholder='blur'
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
-        </button>
+        </div>
       )}
       {title?.includes('혼술용') && storeType.includes('curation') && (
-        <button style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationB.jpg'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
@@ -40,10 +40,10 @@ const ImageBox = ({ storeType, title }: Props) => {
             placeholder='blur'
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
-        </button>
+        </div>
       )}
       {title?.includes('밥도둑') && storeType.includes('curation') && (
-        <button style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationC.jpg'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
@@ -55,10 +55,10 @@ const ImageBox = ({ storeType, title }: Props) => {
             placeholder='blur'
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
-        </button>
+        </div>
       )}
       {title?.includes('파워충전') && storeType.includes('curation') && (
-        <button style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationF.jpg'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
@@ -70,10 +70,10 @@ const ImageBox = ({ storeType, title }: Props) => {
             placeholder='blur'
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
-        </button>
+        </div>
       )}
       {title?.includes('문어야') && storeType.includes('curation') && (
-        <button style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationG.jpg'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
@@ -85,10 +85,10 @@ const ImageBox = ({ storeType, title }: Props) => {
             placeholder='blur'
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
-        </button>
+        </div>
       )}
       {title?.includes('독도새우') && storeType.includes('curation') && (
-        <button style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationQ.jpg'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
@@ -100,7 +100,22 @@ const ImageBox = ({ storeType, title }: Props) => {
             placeholder='blur'
             sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
           />
-        </button>
+        </div>
+      )}
+      {title?.includes("BEST'맛'") && storeType.includes('curation') && (
+        <div style={{ marginTop: '20px' }}>
+          <Image
+            src='/assets/icons/common/curationW.jpg'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='bannerAds'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
+        </div>
       )}
     </>
   );
