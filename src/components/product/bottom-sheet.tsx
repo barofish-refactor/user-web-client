@@ -219,7 +219,6 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
-  console.log('11 ', router.asPath);
   return (
     <>
       <div
@@ -388,7 +387,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         contents: selectedOption.map(item => {
                           return {
                             item_id: item.productId,
-                            item_name: item.productName,
+                            item_name: item.productName + item.name,
                             affiliation: '바로피쉬',
                             currency: 'KRW',
                             quantity: item.amount,
@@ -404,7 +403,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         items: selectedOption.map(item => {
                           return {
                             item_id: item.productId,
-                            item_name: item.name,
+                            item_name: item.productName + item.name,
                             affiliation: '바로피쉬',
                             currency: 'KRW',
                             item_brand: item.storeName,
@@ -435,11 +434,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                     onClick={() => {
                       if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                         setIsVisible(false);
-                        console.log(selectedOption.filter(v => v.isNeeded === true).length);
-
                         if (selectedOption.filter(v => v.isNeeded === true).length > 0) {
-                          console.log('gg');
-
                           const querySendData: miniOptionState[] = selectedOption.map(v => ({
                             productId: v.productId,
                             optionId: v.optionId,
@@ -454,9 +449,6 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           }));
                           sessionStorage.setItem(
                             'Paths',
-                            // `/product/order?id=${data?.id}&options=${aToB(
-                            //   JSON.stringify(querySendData),
-                            // )}`,
                             JSON.stringify({
                               id: data?.id,
                               options: aToB(JSON.stringify(querySendData)),
@@ -465,7 +457,6 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         } else {
                           sessionStorage.setItem('Path', router.asPath);
                         }
-
                         router.push('/login');
                         return;
                       }
@@ -485,7 +476,6 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         needTaxation: v.needTaxation,
                         pointRate: v.pointRate,
                       }));
-
                       router.push({
                         pathname: '/product/order',
                         query: { id: data?.id, options: aToB(JSON.stringify(querySendData)) },
@@ -499,7 +489,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             )}
           </div>
         ) : (
-          <div className='mt-5 flex w-full flex-col overflow-auto px-4'>
+          <div className='mt-5 flex w-full flex-col px-4'>
             <div className='flex items-center gap-5'>
               <Image
                 unoptimized
@@ -525,9 +515,9 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             </p>
 
             {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
-              <div className='h-[300px] overflow-y-auto'>
+              <div className='h-[auto] '>
                 <HomeSmallSlideCuration
-                  title=''
+                  title='추천'
                   className='mt-4'
                   data={selectProductOtherCustomerBuy ?? []}
                   onClick={() => setIsVisible(false)}

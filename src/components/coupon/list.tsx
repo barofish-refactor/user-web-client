@@ -21,6 +21,7 @@ export function CouponList({
         <CouponItem
           key={v.id}
           item={v}
+          isCoupon={true}
           isAvailable={isAvailable}
           isOrder={isOrder}
           onClick={onDownload}

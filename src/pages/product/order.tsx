@@ -106,6 +106,7 @@ const Order: NextPageWithLayout = () => {
   );
 
   const [tmpOption, setTmpOption] = useState<OptionState[]>([]);
+  const [coponValid, setCoponValid] = useState<Coupon[]>();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
@@ -210,7 +211,7 @@ const Order: NextPageWithLayout = () => {
         items: selectedOption.map(item => {
           return {
             item_id: item.storeId,
-            item_name: item.productName + ' ' + item.name,
+            item_name: item.productName + item.name,
             list_name: '해산물',
             item_category: 'product',
             variant: '해산물',
@@ -223,7 +224,6 @@ const Order: NextPageWithLayout = () => {
         }),
       }),
     );
-
     localStorage.setItem(
       'fp',
       JSON.stringify({
@@ -234,7 +234,7 @@ const Order: NextPageWithLayout = () => {
         items: selectedOption.map(item => {
           return {
             item_id: item.storeId,
-            item_name: item.productName + ' ' + item.name,
+            item_name: item.productName + item.name,
             affiliation: '바로피쉬',
             item_brand: item.storeName,
             price: formatToLocaleString((item.price + item.additionalPrice) * item.amount).replace(
@@ -467,7 +467,6 @@ const Order: NextPageWithLayout = () => {
     const tmpMiniOption: miniOptionState[] | undefined = router.isReady
       ? safeParse(bToA(options as string))
       : [];
-
     if (tmpMiniOption && tmpMiniOption.length > 0) {
       setOptionData(tmpMiniOption).then(res => {
         if (res) {
@@ -479,8 +478,13 @@ const Order: NextPageWithLayout = () => {
   useEffect(() => {
     sessionStorage.removeItem('Paths');
   }, []);
-  console.log(selectedOption);
-
+  useEffect(() => {
+    if (couponData) {
+      const totalPrices = totalDelivery + totalPrice;
+      const filter = couponData.filter(item => (item?.minPrice as number) <= totalPrices);
+      setCoponValid(filter);
+    }
+  }, [couponData, totalDelivery, totalPrice]);
   return (
     <>
       <DefaultSeo title='주문 | 바로피쉬' description='주문' />
@@ -697,10 +701,10 @@ const Order: NextPageWithLayout = () => {
             </p>
             <div className='flex items-center'>
               <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
-                보유중인 쿠폰
+                사용가능한 쿠폰
               </p>
               <p className='whitespace-pre text-[15px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50'>{` ${
-                couponData?.length ?? 0
+                coponValid?.length ?? 0
               }`}</p>
               <p className='text-[15px] font-medium leading-[22px] -tracking-[0.03em] text-grey-20'>
                 장

@@ -42,7 +42,7 @@ const CurationSmallSlide = ({ data, title, className, onClick }: Props) => {
       className={cm('mt-5', className)}
       style={{ marginInline: '-16px', paddingInline: '16px' }}
       grid={{
-        rows: title?.includes('검색') ? 3 : 2,
+        rows: title?.includes('검색') ? 3 : title?.includes('추천') ? 1 : 2,
         fill: 'row',
       }}
       freeMode={{
