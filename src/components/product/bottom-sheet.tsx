@@ -16,8 +16,7 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
-import Script from 'next/script';
-import * as kakaoPixel from 'src/utils/kakaoPixel';
+
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -72,7 +71,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [isKakaoP, setIsKakaoP] = useState(false);
+
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
@@ -423,7 +422,6 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           };
                         }),
                       });
-                      setIsKakaoP(true);
                       onMutate({
                         data: {
                           productId: data?.id,
