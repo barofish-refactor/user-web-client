@@ -16,6 +16,8 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
+import Script from 'next/script';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -36,6 +38,7 @@ export interface OptionState {
   storeName: string;
   needTaxation: boolean;
   pointRate: number;
+  allDelveryFee?: number;
 }
 
 export interface miniOptionState {
@@ -49,6 +52,7 @@ export interface miniOptionState {
   maxAvailableStock: number;
   needTaxation: boolean;
   pointRate: number;
+  allDelveryFee?: number;
 }
 
 export interface optionSelectorType {
@@ -68,7 +72,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
-
+  const [isKakaoP, setIsKakaoP] = useState(false);
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
@@ -219,8 +223,28 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
+  console.log(data);
+
   return (
     <>
+      {isKakaoP && (
+        <Script
+          id='kakao-addToCart'
+          strategy='afterInteractive'
+          dangerouslySetInnerHTML={{
+            __html: `
+            if (typeof window.kakaoPixel !== 'undefined') {
+              window.kakaoPixel('create', '${kakaoPixel.KAKAO_TRACKING_ID}', { persistent_session: true });
+              window.kakaoPixel('identify', '${kakaoPixel.KAKAO_TRACKING_ID}');
+              window.kakaoPixel('875611193771705648').addToCart({
+                id: '${data.id}',
+                tag: '${data.title}'
+              });
+            }
+          `,
+          }}
+        />
+      )}
       <div
         ref={target}
         className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[20px]'
@@ -379,6 +403,12 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         router.push('/login');
                         return;
                       }
+                      if (typeof window.kakaoPixel !== 'undefined') {
+                        window.kakaoPixel('875611193771705648').addToCart({
+                          id: `${data.id}`,
+                          tag: `${data.title}`,
+                        });
+                      }
                       if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
                         return setAlert({ message: '필수옵션을 선택해주세요.' });
                       fpixel.addToCart({
@@ -412,6 +442,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           };
                         }),
                       });
+                      setIsKakaoP(true);
                       onMutate({
                         data: {
                           productId: data?.id,
@@ -504,7 +535,10 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
               </p>
               <p
                 className='ml-[60px] cursor-pointer text-end text-[14px] font-medium text-grey-50'
-                onClick={() => setIsVisible(false)}
+                onClick={() => {
+                  setIsVisible(false);
+                  setIsKakaoP(false);
+                }}
               >
                 X
               </p>

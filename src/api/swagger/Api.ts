@@ -131,6 +131,7 @@ import {
   DeliverReadyData,
   DoneRefundOrderProductData,
   DownloadStoresWithExcelData,
+  DownloadStoresWithExcelPayload,
   FindEmailData,
   FindEmailPayload,
   GetData,
@@ -157,6 +158,7 @@ import {
   LoginStoreData,
   LoginStorePayload,
   LoginUserData,
+  OrderProduct1Data,
   OrderProductData,
   OrderReq,
   ProcessDeliverStartData,
@@ -437,6 +439,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags store-controller-v-2
+   * @name DownloadStoresWithExcel
+   * @request POST:/api/v2/store/download
+   * @response `200` `DownloadStoresWithExcelData` OK
+   */
+  downloadStoresWithExcel = (data: DownloadStoresWithExcelPayload, params: RequestParams = {}) =>
+    this.request<DownloadStoresWithExcelData, any>({
+      path: `/api/v2/store/download`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags review-controller-v-2
    * @name DeleteReview
    * @request POST:/api/v2/review/{id}
@@ -459,6 +477,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   updateReviewV2 = (id: number, data: UpdateReviewV2Payload, params: RequestParams = {}) =>
     this.request<UpdateReviewV2Data, any>({
       path: `/api/v2/review/update/${id}`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller-v-2
+   * @name OrderProduct
+   * @request POST:/api/v2/order
+   * @response `200` `OrderProductData` OK
+   */
+  orderProduct = (data: OrderReq, params: RequestParams = {}) =>
+    this.request<OrderProductData, any>({
+      path: `/api/v2/order`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -1306,12 +1340,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags order-controller
-   * @name OrderProduct
+   * @name OrderProduct1
    * @request POST:/api/v1/order
-   * @response `200` `OrderProductData` OK
+   * @response `200` `OrderProduct1Data` OK
    */
-  orderProduct = (data: OrderReq, params: RequestParams = {}) =>
-    this.request<OrderProductData, any>({
+  orderProduct1 = (data: OrderReq, params: RequestParams = {}) =>
+    this.request<OrderProduct1Data, any>({
       path: `/api/v1/order`,
       method: 'POST',
       body: data,
@@ -2351,26 +2385,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectRecommendStoreListV2Data, any>({
       path: `/api/v2/store/recommend`,
-      method: 'GET',
-      query: query,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags store-controller-v-2
-   * @name DownloadStoresWithExcel
-   * @request GET:/api/v2/store/download
-   * @response `200` `DownloadStoresWithExcelData` OK
-   */
-  downloadStoresWithExcel = (
-    query?: {
-      storeIds?: string;
-    },
-    params: RequestParams = {},
-  ) =>
-    this.request<DownloadStoresWithExcelData, any>({
-      path: `/api/v2/store/download`,
       method: 'GET',
       query: query,
       ...params,

@@ -119,8 +119,11 @@ function KakaoScript() {
 
   useEffect(() => {
     // This pageview only triggers the first time (it's important for Pixel to have real information)
-
-    const handleRouteChange = (url: URL) => kakaoPixel.pageview(url);
+    const handleRouteChange = (url: URL) => {
+      if (typeof window.kakaoPixel !== 'undefined') {
+        window.kakaoPixel('875611193771705648').pageView(url);
+      }
+    };
 
     router.events.on('routeChangeComplete', handleRouteChange);
     router.events.on('hashChangeComplete', handleRouteChange);
