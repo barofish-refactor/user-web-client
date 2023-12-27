@@ -223,7 +223,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
-  console.log(data);
+  console.log(selectedOption);
 
   return (
     <>
@@ -234,13 +234,11 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
           dangerouslySetInnerHTML={{
             __html: `
             if (typeof window.kakaoPixel !== 'undefined') {
-              window.kakaoPixel('create', '${
-                kakaoPixel.KAKAO_TRACKING_ID
-              }', { persistent_session: true });
+              window.kakaoPixel('create', '${kakaoPixel.KAKAO_TRACKING_ID}', { persistent_session: true });
               window.kakaoPixel('identify', '${kakaoPixel.KAKAO_TRACKING_ID}');
               window.kakaoPixel('875611193771705648').addToCart({
-                id: '${data.id ?? 0}',
-                tag: '${data.title ?? ''}'
+                id: '${selectedOption[0].productId}',
+                tag: '${selectedOption[0].productName}'
               });
             }
           `,
