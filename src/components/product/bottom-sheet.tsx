@@ -27,7 +27,7 @@ export interface OptionState {
   price: number;
   additionalPrice: number;
   deliveryFee: number;
-  deliverFeeType: '"FREE" | "C_FIX" | "C_FREE_IF_OVER" | "FIX" | "FREE_IF_OVER"';
+  deliverFeeType: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   minOrderPrice: number;
   stock: number;
   maxAvailableStock: number;
