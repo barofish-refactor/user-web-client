@@ -234,11 +234,13 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
           dangerouslySetInnerHTML={{
             __html: `
             if (typeof window.kakaoPixel !== 'undefined') {
-              window.kakaoPixel('create', '${kakaoPixel.KAKAO_TRACKING_ID}', { persistent_session: true });
+              window.kakaoPixel('create', '${
+                kakaoPixel.KAKAO_TRACKING_ID
+              }', { persistent_session: true });
               window.kakaoPixel('identify', '${kakaoPixel.KAKAO_TRACKING_ID}');
               window.kakaoPixel('875611193771705648').addToCart({
-                id: '${data.id}',
-                tag: '${data.title}'
+                id: '${data.id ?? 0}',
+                tag: '${data.title ?? ''}'
               });
             }
           `,
