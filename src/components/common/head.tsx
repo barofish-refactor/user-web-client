@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { Fragment, useEffect } from 'react';
 import * as gtag from 'src/utils/gtag';
 import * as fpixel from 'src/utils/fpixel';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
@@ -33,6 +34,7 @@ export default function Head() {
       />
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
+      {kakaoPixel.KAKAO_TRACKING_ID && <KakaoScript />}
     </Fragment>
   );
 }
@@ -106,6 +108,44 @@ function GAScript() {
     page_path: window.location.pathname,
   });
   `,
+        }}
+      />
+    </>
+  );
+}
+
+function KakaoScript() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // This pageview only triggers the first time (it's important for Pixel to have real information)
+    const handleRouteChange = (url: URL) => {
+      if (typeof window.kakaoPixel !== 'undefined') {
+        window.kakaoPixel('875611193771705648').pageView(url);
+      }
+    };
+
+    router.events.on('routeChangeComplete', handleRouteChange);
+    router.events.on('hashChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+      router.events.off('hashChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+  return (
+    <>
+      <Script id='kakao-init' strategy='afterInteractive' src='//t1.daumcdn.net/kas/static/kp.js' />
+      <Script
+        id='kakao-tracking'
+        strategy='afterInteractive'
+        dangerouslySetInnerHTML={{
+          __html: `
+            if (typeof window.kakaoPixel !== 'undefined') {
+              window.kakaoPixel('create', '${kakaoPixel.KAKAO_TRACKING_ID}', { persistent_session: true });
+              window.kakaoPixel('identify', '${kakaoPixel.KAKAO_TRACKING_ID}');
+              window.kakaoPixel('pageView');
+            }
+          `,
         }}
       />
     </>

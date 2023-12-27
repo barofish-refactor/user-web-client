@@ -9,6 +9,12 @@
  * ---------------------------------------------------------------
  */
 
+export interface PortOneBodyData {
+  imp_uid?: string;
+  merchant_uid?: string;
+  status?: string;
+}
+
 export interface ErrorExceptionRequestInternal {
   internalErrorFields1?: string;
   /** @format int32 */
@@ -20,12 +26,6 @@ export interface ExceptionRequest {
   /** @format int32 */
   errorFields2?: number;
   internalFields?: ErrorExceptionRequestInternal[];
-}
-
-export interface PortOneBodyData {
-  imp_uid?: string;
-  merchant_uid?: string;
-  status?: string;
 }
 
 export interface Category {
@@ -103,6 +103,7 @@ export interface OrderProductInfo {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
+  deliveryFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   deliverCompanyCode?: string;
@@ -119,6 +120,11 @@ export interface OrderProductInfo {
   isTaxFree?: boolean;
   order?: Orders;
   product?: Product;
+  ifOver?: boolean;
+  free?: boolean;
+  cifOver?: boolean;
+  fix?: boolean;
+  cfix?: boolean;
 }
 
 export interface Orders {
@@ -203,7 +209,7 @@ export interface Product {
   promotionStartAt?: string;
   /** @format date-time */
   promotionEndAt?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   deliverFee?: number;
   /** @format int32 */
@@ -217,6 +223,10 @@ export interface Product {
   recommendedCookingWay?: string;
   /** @format int32 */
   categoryId?: number;
+  deliveryTypeFreeIfOver?: boolean;
+  deliveryTypeFix?: boolean;
+  promotionEnd?: boolean;
+  deliveryTypeFee?: boolean;
 }
 
 export interface Review {
@@ -278,6 +288,8 @@ export interface StoreInfo {
   oneLineDescription?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  /** @format int32 */
+  minOrderPrice?: number;
   /** @format float */
   settlementRate?: number;
   bankName?: string;
@@ -369,6 +381,10 @@ export interface CustomResponseTopBarProductMap {
   errorMsg?: string;
 }
 
+export interface StoreExcelDownloadReq {
+  storeIds?: number[];
+}
+
 export interface CustomResponseBoolean {
   isSuccess?: boolean;
   code?: string;
@@ -386,6 +402,284 @@ export interface CustomResponseObject {
   code?: string;
   data?: object;
   errorMsg?: string;
+}
+
+export interface OrderProductReq {
+  /** @format int32 */
+  productId?: number;
+  /** @format int32 */
+  optionId?: number;
+  /** @format int32 */
+  amount?: number;
+  needTaxation?: boolean;
+  /** @format int32 */
+  deliveryFee?: number;
+  /** @format int32 */
+  taxFreeAmount?: number;
+}
+
+export interface OrderReq {
+  name?: string;
+  tel?: string;
+  /** @format int32 */
+  couponId?: number;
+  paymentWay?:
+    | 'CARD'
+    | 'KEY_IN'
+    | 'NAVER'
+    | 'KAKAO_PAY'
+    | 'PHONE'
+    | 'DEPOSIT'
+    | 'VIRTUAL_ACCOUNT'
+    | 'TOSS_PAY';
+  /** @format int32 */
+  point?: number;
+  /** @format int32 */
+  totalPrice?: number;
+  /** @format int32 */
+  couponDiscountPrice?: number;
+  products?: OrderProductReq[];
+  /** @format int32 */
+  taxFreeAmount?: number;
+  /** @format int32 */
+  deliverPlaceId?: number;
+  /** @format int32 */
+  paymentMethodId?: number;
+  vbankRefundInfo?: VBankRefundInfoReq;
+}
+
+export interface VBankRefundInfoReq {
+  bankHolder?: string;
+  /** @format int32 */
+  bankCodeId?: number;
+  bankAccount?: string;
+}
+
+export interface CustomResponseOrderDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: OrderDto;
+  errorMsg?: string;
+}
+
+export interface DeliverPlace {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  userId?: number;
+  name?: string;
+  receiverName?: string;
+  tel?: string;
+  postalCode?: string;
+  address?: string;
+  addressDetail?: string;
+  bcode?: string;
+  deliverMessage?: string;
+  isDefault?: boolean;
+}
+
+export interface OptionItemDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  optionId?: number;
+  name?: string;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  amount?: number;
+  /** @format int32 */
+  purchasePrice?: number;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
+  /** @format int32 */
+  deliverBoxPerAmount?: number;
+  /** @format int32 */
+  maxAvailableAmount?: number;
+  /** @format float */
+  pointRate?: number;
+  /** @format int32 */
+  minOrderPrice?: number;
+}
+
+export interface OrderDeliverPlaceDto {
+  orderId?: string;
+  name?: string;
+  receiverName?: string;
+  tel?: string;
+  postalCode?: string;
+  address?: string;
+  addressDetail?: string;
+  deliverMessage?: string;
+}
+
+export interface OrderDto {
+  id?: string;
+  user?: UserInfoDto;
+  state?:
+    | 'WAIT_DEPOSIT'
+    | 'PAYMENT_DONE'
+    | 'DELIVERY_READY'
+    | 'ON_DELIVERY'
+    | 'DELIVERY_DONE'
+    | 'EXCHANGE_REQUEST'
+    | 'EXCHANGE_ACCEPT'
+    | 'FINAL_CONFIRM'
+    | 'CANCELED'
+    | 'CANCEL_REQUEST'
+    | 'REFUND_REQUEST'
+    | 'REFUND_ACCEPT'
+    | 'REFUND_DONE';
+  ordererName?: string;
+  ordererTel?: string;
+  paymentWay?:
+    | 'CARD'
+    | 'KEY_IN'
+    | 'NAVER'
+    | 'KAKAO_PAY'
+    | 'PHONE'
+    | 'DEPOSIT'
+    | 'VIRTUAL_ACCOUNT'
+    | 'TOSS_PAY';
+  /** @format int32 */
+  originTotalPrice?: number;
+  /** @format int32 */
+  totalAmount?: number;
+  /** @format int32 */
+  couponDiscount?: number;
+  couponName?: string;
+  /** @format int32 */
+  usePoint?: number;
+  /** @format date-time */
+  orderedAt?: string;
+  bankHolder?: string;
+  bankCode?: string;
+  bankAccount?: string;
+  bankName?: string;
+  productInfos?: OrderProductDto[];
+  deliverPlace?: OrderDeliverPlaceDto;
+}
+
+export interface OrderProductDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  storeId?: number;
+  storeProfile?: string;
+  storeName?: string;
+  /** @format int32 */
+  deliverFee?: number;
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  minOrderPrice?: number;
+  product?: ProductListDto;
+  state?:
+    | 'WAIT_DEPOSIT'
+    | 'PAYMENT_DONE'
+    | 'DELIVERY_READY'
+    | 'ON_DELIVERY'
+    | 'DELIVERY_DONE'
+    | 'EXCHANGE_REQUEST'
+    | 'EXCHANGE_ACCEPT'
+    | 'FINAL_CONFIRM'
+    | 'CANCELED'
+    | 'CANCEL_REQUEST'
+    | 'REFUND_REQUEST'
+    | 'REFUND_ACCEPT'
+    | 'REFUND_DONE';
+  optionName?: string;
+  optionItem?: OptionItemDto;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  price?: number;
+  /** @format int32 */
+  amount?: number;
+  deliverCompany?: string;
+  invoiceCode?: string;
+  deliverCompanyCode?: string;
+  /** @format date-time */
+  finalConfirmedAt?: string;
+  needTaxation?: boolean;
+  cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
+  cancelReasonContent?: string;
+  isReviewWritten?: boolean;
+}
+
+export interface ProductFilterValueDto {
+  /** @format int32 */
+  compareFilterId?: number;
+  compareFilterName?: string;
+  value?: string;
+}
+
+export interface ProductListDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
+  image?: string;
+  title?: string;
+  isNeedTaxation?: boolean;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  reviewCount?: number;
+  isLike?: boolean;
+  /** @format int32 */
+  storeId?: number;
+  storeName?: string;
+  /** @format int32 */
+  minOrderPrice?: number;
+  storeImage?: string;
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  /** @format int32 */
+  parentCategoryId?: number;
+  filterValues?: ProductFilterValueDto[];
+  tastingNoteExists?: boolean;
+}
+
+export interface UserAuthDto {
+  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
+  loginId?: string;
+  /** @format int32 */
+  userId?: number;
+}
+
+export interface UserDto {
+  /** @format int32 */
+  id?: number;
+  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
+  /** @format date-time */
+  joinAt?: string;
+}
+
+export interface UserInfoDto {
+  user?: UserDto;
+  auth?: UserAuthDto;
+  /** @format int32 */
+  userId?: number;
+  profileImage?: string;
+  email?: string;
+  name?: string;
+  nickname?: string;
+  phone?: string;
+  grade?: Grade;
+  /** @format int32 */
+  point?: number;
+  isAgreeMarketing?: boolean;
+  deliverPlaces?: DeliverPlace[];
+  /** @format int32 */
+  reviewCount?: number;
+  /** @format int32 */
+  notificationCount?: number;
+  /** @format int32 */
+  saveProductCount?: number;
 }
 
 export interface VerifyCodeReq {
@@ -468,60 +762,6 @@ export interface CustomResponseUserInfoDto {
   code?: string;
   data?: UserInfoDto;
   errorMsg?: string;
-}
-
-export interface DeliverPlace {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  userId?: number;
-  name?: string;
-  receiverName?: string;
-  tel?: string;
-  postalCode?: string;
-  address?: string;
-  addressDetail?: string;
-  bcode?: string;
-  deliverMessage?: string;
-  isDefault?: boolean;
-}
-
-export interface UserAuthDto {
-  loginType?: 'IDPW' | 'GOOGLE' | 'NAVER' | 'KAKAO' | 'APPLE';
-  loginId?: string;
-  /** @format int32 */
-  userId?: number;
-}
-
-export interface UserDto {
-  /** @format int32 */
-  id?: number;
-  state?: 'ACTIVE' | 'BANNED' | 'DELETED';
-  /** @format date-time */
-  joinAt?: string;
-}
-
-export interface UserInfoDto {
-  user?: UserDto;
-  auth?: UserAuthDto;
-  /** @format int32 */
-  userId?: number;
-  profileImage?: string;
-  email?: string;
-  name?: string;
-  nickname?: string;
-  phone?: string;
-  grade?: Grade;
-  /** @format int32 */
-  point?: number;
-  isAgreeMarketing?: boolean;
-  deliverPlaces?: DeliverPlace[];
-  /** @format int32 */
-  reviewCount?: number;
-  /** @format int32 */
-  notificationCount?: number;
-  /** @format int32 */
-  saveProductCount?: number;
 }
 
 export interface UpdateUserStateReq {
@@ -850,42 +1090,6 @@ export interface CustomResponseReviewDto {
   errorMsg?: string;
 }
 
-export interface ProductFilterValueDto {
-  /** @format int32 */
-  compareFilterId?: number;
-  compareFilterName?: string;
-  value?: string;
-}
-
-export interface ProductListDto {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  productId?: number;
-  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
-  image?: string;
-  title?: string;
-  isNeedTaxation?: boolean;
-  /** @format int32 */
-  discountPrice?: number;
-  /** @format int32 */
-  originPrice?: number;
-  /** @format int32 */
-  reviewCount?: number;
-  isLike?: boolean;
-  /** @format int32 */
-  storeId?: number;
-  storeName?: string;
-  /** @format int32 */
-  minOrderPrice?: number;
-  storeImage?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  /** @format int32 */
-  parentCategoryId?: number;
-  filterValues?: ProductFilterValueDto[];
-  tastingNoteExists?: boolean;
-}
-
 export interface ReviewDto {
   /** @format int32 */
   id?: number;
@@ -924,6 +1128,8 @@ export interface SimpleStore {
   oneLineDescription?: string;
   deliverCompany?: string;
   isLike?: boolean;
+  /** @format int32 */
+  minOrderPrice?: number;
   reviewStatistic?: ReviewStatistic[];
   products?: ProductListDto[];
   reviews?: ReviewDto[];
@@ -1027,7 +1233,7 @@ export interface ProductUpdateReq {
   isActive?: boolean;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
   deliveryInfo?: string;
@@ -1119,7 +1325,7 @@ export interface ProductTastingNoteInquiryDto {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
   oily?: string;
@@ -1190,7 +1396,7 @@ export interface ProductTastingNoteResponse {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
   tastes?: TastingNoteTaste[];
@@ -1231,7 +1437,7 @@ export interface SimpleProductDto {
   deliveryInfo?: string;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
   descriptionImages?: string[];
@@ -1325,7 +1531,7 @@ export interface ProductAddReq {
   isActive?: boolean;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
   deliveryInfo?: string;
@@ -1381,192 +1587,6 @@ export interface ProductInformation {
   /** @format int32 */
   productId?: number;
   itemCode?: string;
-}
-
-export interface OrderProductReq {
-  /** @format int32 */
-  productId?: number;
-  /** @format int32 */
-  optionId?: number;
-  /** @format int32 */
-  amount?: number;
-  needTaxation?: boolean;
-  /** @format int32 */
-  deliveryFee?: number;
-  /** @format int32 */
-  taxFreeAmount?: number;
-}
-
-export interface OrderReq {
-  name?: string;
-  tel?: string;
-  /** @format int32 */
-  couponId?: number;
-  paymentWay?:
-    | 'CARD'
-    | 'KEY_IN'
-    | 'NAVER'
-    | 'KAKAO_PAY'
-    | 'PHONE'
-    | 'DEPOSIT'
-    | 'VIRTUAL_ACCOUNT'
-    | 'TOSS_PAY';
-  /** @format int32 */
-  point?: number;
-  /** @format int32 */
-  totalPrice?: number;
-  /** @format int32 */
-  couponDiscountPrice?: number;
-  products?: OrderProductReq[];
-  /** @format int32 */
-  taxFreeAmount?: number;
-  /** @format int32 */
-  deliverPlaceId?: number;
-  /** @format int32 */
-  paymentMethodId?: number;
-  vbankRefundInfo?: VBankRefundInfoReq;
-}
-
-export interface VBankRefundInfoReq {
-  bankHolder?: string;
-  /** @format int32 */
-  bankCodeId?: number;
-  bankAccount?: string;
-}
-
-export interface CustomResponseOrderDto {
-  isSuccess?: boolean;
-  code?: string;
-  data?: OrderDto;
-  errorMsg?: string;
-}
-
-export interface OptionItemDto {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  optionId?: number;
-  name?: string;
-  /** @format int32 */
-  discountPrice?: number;
-  /** @format int32 */
-  amount?: number;
-  /** @format int32 */
-  purchasePrice?: number;
-  /** @format int32 */
-  originPrice?: number;
-  /** @format int32 */
-  deliveryFee?: number;
-  /** @format int32 */
-  deliverBoxPerAmount?: number;
-  /** @format int32 */
-  maxAvailableAmount?: number;
-  /** @format float */
-  pointRate?: number;
-}
-
-export interface OrderDeliverPlaceDto {
-  orderId?: string;
-  name?: string;
-  receiverName?: string;
-  tel?: string;
-  postalCode?: string;
-  address?: string;
-  addressDetail?: string;
-  deliverMessage?: string;
-}
-
-export interface OrderDto {
-  id?: string;
-  user?: UserInfoDto;
-  state?:
-    | 'WAIT_DEPOSIT'
-    | 'PAYMENT_DONE'
-    | 'DELIVERY_READY'
-    | 'ON_DELIVERY'
-    | 'DELIVERY_DONE'
-    | 'EXCHANGE_REQUEST'
-    | 'EXCHANGE_ACCEPT'
-    | 'FINAL_CONFIRM'
-    | 'CANCELED'
-    | 'CANCEL_REQUEST'
-    | 'REFUND_REQUEST'
-    | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
-  ordererName?: string;
-  ordererTel?: string;
-  paymentWay?:
-    | 'CARD'
-    | 'KEY_IN'
-    | 'NAVER'
-    | 'KAKAO_PAY'
-    | 'PHONE'
-    | 'DEPOSIT'
-    | 'VIRTUAL_ACCOUNT'
-    | 'TOSS_PAY';
-  /** @format int32 */
-  originTotalPrice?: number;
-  /** @format int32 */
-  totalAmount?: number;
-  /** @format int32 */
-  couponDiscount?: number;
-  couponName?: string;
-  /** @format int32 */
-  usePoint?: number;
-  /** @format date-time */
-  orderedAt?: string;
-  bankHolder?: string;
-  bankCode?: string;
-  bankAccount?: string;
-  bankName?: string;
-  productInfos?: OrderProductDto[];
-  deliverPlace?: OrderDeliverPlaceDto;
-}
-
-export interface OrderProductDto {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  storeId?: number;
-  storeProfile?: string;
-  storeName?: string;
-  /** @format int32 */
-  deliverFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  /** @format int32 */
-  minOrderPrice?: number;
-  product?: ProductListDto;
-  state?:
-    | 'WAIT_DEPOSIT'
-    | 'PAYMENT_DONE'
-    | 'DELIVERY_READY'
-    | 'ON_DELIVERY'
-    | 'DELIVERY_DONE'
-    | 'EXCHANGE_REQUEST'
-    | 'EXCHANGE_ACCEPT'
-    | 'FINAL_CONFIRM'
-    | 'CANCELED'
-    | 'CANCEL_REQUEST'
-    | 'REFUND_REQUEST'
-    | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
-  optionName?: string;
-  optionItem?: OptionItemDto;
-  /** @format int32 */
-  originPrice?: number;
-  /** @format int32 */
-  price?: number;
-  /** @format int32 */
-  amount?: number;
-  deliverCompany?: string;
-  invoiceCode?: string;
-  deliverCompanyCode?: string;
-  /** @format date-time */
-  finalConfirmedAt?: string;
-  needTaxation?: boolean;
-  cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
-  cancelReasonContent?: string;
-  isReviewWritten?: boolean;
 }
 
 export interface RequestCancelReq {
@@ -1885,7 +1905,7 @@ export interface BasketProductDto {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
   option?: OptionItemDto;
@@ -2065,12 +2085,12 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
-  unpaged?: boolean;
-  paged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
+  unpaged?: boolean;
+  paged?: boolean;
 }
 
 export interface SortObject {
@@ -2419,7 +2439,7 @@ export interface OrderProductInfoDto {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   deliverCompany?: string;
@@ -3092,7 +3112,7 @@ export interface CompareProductDto {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   minOrderPrice?: number;
   compareFilters?: CompareFilterDto[];
@@ -3228,7 +3248,7 @@ export interface TastingNoteCompareBasketProductDto {
   /** @format int32 */
   minOrderPrice?: number;
   storeImage?: string;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   parentCategoryId?: number;
   tastingNoteExists?: boolean;
@@ -3328,11 +3348,13 @@ export interface DeleteBasketReq {
   ids?: number[];
 }
 
+export type PortOneCallbackData = object;
+
 export type ServiceExceptionGetData = string;
 
 export type ServiceExceptionPostData = string;
 
-export type PortOneCallbackData = object;
+export type PortOneCallback1Data = object;
 
 export interface UpdateTopBarV2Payload {
   name: string;
@@ -3355,6 +3377,12 @@ export interface AddProductToTopBarV2Payload {
 
 export type AddProductToTopBarV2Data = CustomResponseTopBarProductMap;
 
+export interface DownloadStoresWithExcelPayload {
+  storeIds?: StoreExcelDownloadReq;
+}
+
+export type DownloadStoresWithExcelData = any;
+
 export type DeleteReviewData = CustomResponseBoolean;
 
 export interface UpdateReviewV2Payload {
@@ -3363,6 +3391,8 @@ export interface UpdateReviewV2Payload {
 }
 
 export type UpdateReviewV2Data = CustomResponseObject;
+
+export type OrderProductData = CustomResponseOrderDto;
 
 export type VerifyCodeData = CustomResponseInteger;
 
@@ -3709,7 +3739,7 @@ export type CreateData = CustomResponseObject;
 
 export type CancelOrderData = CustomResponseBoolean;
 
-export type OrderProductData = CustomResponseOrderDto;
+export type OrderProduct1Data = CustomResponseOrderDto;
 
 export interface RequestRefundOrderProductPayload {
   data: RequestCancelReq;
@@ -4049,8 +4079,6 @@ export type DeleteTopBarV2Data = CustomResponseBoolean;
 export type SelectTopBarCountV2Data = CustomResponseLong;
 
 export type SelectRecommendStoreListV2Data = CustomResponseListSimpleStore;
-
-export type DownloadStoresWithExcelData = any;
 
 export type SelectReviewListWithStoreIdV2Data = CustomResponseStoreReviewDto;
 

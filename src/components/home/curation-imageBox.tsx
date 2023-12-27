@@ -117,6 +117,21 @@ const ImageBox = ({ storeType, title }: Props) => {
           />
         </div>
       )}
+      {title?.includes('혼자다') && storeType.includes('curation') && (
+        <div style={{ marginTop: '20px' }}>
+          <Image
+            src='/assets/icons/common/curationE.png'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='bannerAds'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
+        </div>
+      )}
     </>
   );
 };

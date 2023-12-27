@@ -283,7 +283,7 @@ export function maskingName(name: string) {
 }
 
 export interface checkDeliverType {
-  type: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  type: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   totalPrice: number;
   deliverFee: number;
   minOrderPrice: number;

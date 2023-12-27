@@ -50,7 +50,7 @@ interface DeliverPriceCheckType {
   result: number;
   sectionTotal: number;
   minOrderPrice: number;
-  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
 }
 
 function getAdditionalPrice(

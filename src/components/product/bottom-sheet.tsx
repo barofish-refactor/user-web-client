@@ -16,6 +16,8 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
+import Script from 'next/script';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -25,7 +27,7 @@ export interface OptionState {
   price: number;
   additionalPrice: number;
   deliveryFee: number;
-  deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   minOrderPrice: number;
   stock: number;
   maxAvailableStock: number;
@@ -36,6 +38,7 @@ export interface OptionState {
   storeName: string;
   needTaxation: boolean;
   pointRate: number;
+  allDelveryFee?: number;
 }
 
 export interface miniOptionState {
@@ -49,6 +52,7 @@ export interface miniOptionState {
   maxAvailableStock: number;
   needTaxation: boolean;
   pointRate: number;
+  allDelveryFee?: number;
 }
 
 export interface optionSelectorType {
@@ -68,7 +72,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
-
+  const [isKakaoP, setIsKakaoP] = useState(false);
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
@@ -219,6 +223,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
+
   return (
     <>
       <div
@@ -379,6 +384,12 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         router.push('/login');
                         return;
                       }
+                      if (typeof window.kakaoPixel !== 'undefined') {
+                        window.kakaoPixel('875611193771705648').addToCart({
+                          id: `${selectedOption[0].productId}`,
+                          tag: `${selectedOption[0].productName}`,
+                        });
+                      }
                       if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
                         return setAlert({ message: '필수옵션을 선택해주세요.' });
                       fpixel.addToCart({
@@ -412,6 +423,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           };
                         }),
                       });
+                      setIsKakaoP(true);
                       onMutate({
                         data: {
                           productId: data?.id,
