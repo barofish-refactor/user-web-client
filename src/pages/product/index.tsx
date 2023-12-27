@@ -48,11 +48,16 @@ import { useInView } from 'react-intersection-observer';
 interface Props {
   initialData: SimpleProductDto;
 }
-
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
 /** 상품 상세 */
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { id, openState } = router.query;
+
   const { setAlert } = useAlertStore();
   const { setToast } = useToastStore();
   const [isTasting, setIsTasting] = useState(false);
@@ -149,7 +154,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   const [content, setContent] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-
+  console.log(id, 'ddss');
   useEffect(() => {
     if (data) {
       setIsLiked(data.isLike ?? false);
@@ -188,6 +193,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   useEffect(() => {
     if (!data) return;
+
     const value = {
       content_ids: [data?.id],
       content_type: 'product',
