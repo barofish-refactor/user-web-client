@@ -117,7 +117,7 @@ const ImageBox = ({ storeType, title }: Props) => {
           />
         </div>
       )}
-      {title?.includes('혼자다') && storeType.includes('curation') && (
+      {title?.includes('신규스토어') && storeType.includes('curation') && (
         <div style={{ marginTop: '20px' }}>
           <Image
             src='/assets/icons/common/curationE.png'
