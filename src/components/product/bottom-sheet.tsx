@@ -223,28 +223,9 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
-  console.log(selectedOption);
 
   return (
     <>
-      {isKakaoP && (
-        <Script
-          id='kakao-addToCart'
-          strategy='afterInteractive'
-          dangerouslySetInnerHTML={{
-            __html: `
-            if (typeof window.kakaoPixel !== 'undefined') {
-              window.kakaoPixel('create', '${kakaoPixel.KAKAO_TRACKING_ID}', { persistent_session: true });
-              window.kakaoPixel('identify', '${kakaoPixel.KAKAO_TRACKING_ID}');
-              window.kakaoPixel('875611193771705648').addToCart({
-                id: '${selectedOption[0].productId}',
-                tag: '${selectedOption[0].productName}'
-              });
-            }
-          `,
-          }}
-        />
-      )}
       <div
         ref={target}
         className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[20px]'
@@ -405,8 +386,8 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                       }
                       if (typeof window.kakaoPixel !== 'undefined') {
                         window.kakaoPixel('875611193771705648').addToCart({
-                          id: `${data.id}`,
-                          tag: `${data.title}`,
+                          id: `${selectedOption[0].productId}`,
+                          tag: `${selectedOption[0].productName}`,
                         });
                       }
                       if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
@@ -535,10 +516,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
               </p>
               <p
                 className='ml-[60px] cursor-pointer text-end text-[14px] font-medium text-grey-50'
-                onClick={() => {
-                  setIsVisible(false);
-                  setIsKakaoP(false);
-                }}
+                onClick={() => setIsVisible(false)}
               >
                 X
               </p>
