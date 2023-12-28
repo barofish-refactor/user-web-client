@@ -252,9 +252,12 @@ const Cart: NextPageWithLayout = () => {
   useEffect(() => {
     if (!user) return;
     if (typeof window.kakaoPixel !== 'undefined') {
-      window.kakaoPixel('875611193771705648').viewCart(`${user?.nickname}`);
+      window
+        .kakaoPixel('875611193771705648')
+        .viewCart(`${user?.nickname} : ${user.auth ?? 'email'}`);
     }
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   if (isLoading)
     return (
       <>
