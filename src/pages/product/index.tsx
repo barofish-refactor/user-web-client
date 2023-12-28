@@ -193,7 +193,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   useEffect(() => {
     if (!data) return;
-
+    if (typeof window.kakaoPixel !== 'undefined') {
+      window.kakaoPixel('875611193771705648').viewContent({
+        id: `${data?.id}`,
+        tag: `${data?.title}`,
+      });
+    }
     const value = {
       content_ids: [data?.id],
       content_type: 'product',

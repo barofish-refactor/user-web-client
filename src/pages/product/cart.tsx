@@ -249,7 +249,12 @@ const Cart: NextPageWithLayout = () => {
       : 0,
   );
   console.log(sectionCart, '선택 데이터');
-
+  useEffect(() => {
+    if (!user) return;
+    if (typeof window.kakaoPixel !== 'undefined') {
+      window.kakaoPixel('875611193771705648').viewCart(`${user?.nickname}`);
+    }
+  }, [user]);
   if (isLoading)
     return (
       <>

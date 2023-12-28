@@ -306,6 +306,12 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
                     setSearchState('default');
                     return;
                   }
+                  if (typeof window.kakaoPixel !== 'undefined') {
+                    window.kakaoPixel('875611193771705648').search({
+                      keyword: `${searchText}`,
+                      tag: '검색엔터',
+                    });
+                  }
                   setSearchState('result');
                   handleAddKeyword(searchText);
                 }

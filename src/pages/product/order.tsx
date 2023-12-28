@@ -246,6 +246,25 @@ const Order: NextPageWithLayout = () => {
         }),
       }),
     );
+    localStorage.setItem(
+      'kakaoP',
+      JSON.stringify({
+        total_quantity: `${selectedOption.length}`,
+        total_price: `${totalPrice}`, // 주문 총 가격(optional)
+        currency: 'KRW',
+        tag: '상품구매',
+        products: selectedOption.map(item => {
+          return {
+            id: `${item.storeId}`,
+            name: `${item.productName + item.name}`,
+            quantity: `${item.amount}`,
+            price: `${formatToLocaleString(
+              (item.price + item.additionalPrice) * item.amount,
+            ).replace(',', '.')}`,
+          };
+        }),
+      }),
+    );
   }, [selectedOption, totalPrice]);
 
   const onIamportResult = (

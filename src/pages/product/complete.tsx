@@ -11,16 +11,20 @@ const Complete: NextPageWithLayout = () => {
   const router = useRouter();
   const [ga, setGa] = useState<any>();
   const [fp, setFp] = useState<any>();
+  const [kakaoP, setKakaoP] = useState<any>();
 
   useEffect(() => {
     const LocalGaData: any = localStorage.getItem('ga');
     const LocalFpData: any = localStorage.getItem('fp');
-    if (!LocalGaData && LocalFpData) return;
+    const LocalKakaoData: any = localStorage.getItem('kakaoP');
+    if (!LocalGaData && LocalFpData && LocalKakaoData) return;
     const jsonGaData = JSON.parse(LocalGaData);
     const jsonFpData = JSON.parse(LocalFpData);
+    const jsonKakaoData = JSON.parse(LocalKakaoData);
 
     setGa(jsonGaData);
     setFp(jsonFpData);
+    setKakaoP(jsonKakaoData);
   }, []);
 
   const onComplete = () => {
@@ -31,8 +35,14 @@ const Complete: NextPageWithLayout = () => {
     gtag.Purchase({
       ...ga,
     });
+    if (typeof window.kakaoPixel !== 'undefined') {
+      window.kakaoPixel('875611193771705648').purchase({
+        ...kakaoP,
+      });
+    }
     localStorage.removeItem('ga');
     localStorage.removeItem('fp');
+    localStorage.removeItem('kakaoP');
     router.replace('/');
   };
 
