@@ -249,15 +249,16 @@ const Cart: NextPageWithLayout = () => {
       : 0,
   );
   console.log(sectionCart, '선택 데이터');
+  const [isKakaoCart, setIsKakaoCart] = useState(false);
   useEffect(() => {
-    if (!user) return;
+    if (!user || isKakaoCart) return;
     if (typeof window.kakaoPixel !== 'undefined') {
       window
         .kakaoPixel('875611193771705648')
         .viewCart(`${user?.nickname} : ${user.auth ?? 'email'}`);
+      setIsKakaoCart(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isKakaoCart, user]);
   if (isLoading)
     return (
       <>
