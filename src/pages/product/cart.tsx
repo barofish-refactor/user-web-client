@@ -25,7 +25,7 @@ import { getCookie } from 'cookies-next';
 import Link from 'next/link';
 import { DefaultSeo } from 'next-seo';
 import Skeleton from 'src/components/common/skeleton';
-
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 export interface SectionBasketType {
   index: number;
   deliverFee: number;
@@ -254,7 +254,7 @@ const Cart: NextPageWithLayout = () => {
     if (!user || isKakaoCart) return;
     if (typeof window.kakaoPixel !== 'undefined') {
       window
-        .kakaoPixel('875611193771705648')
+        .kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`)
         .viewCart(`${user?.nickname} : ${user.auth ?? 'email'}`);
       setIsKakaoCart(true);
     }

@@ -16,7 +16,7 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
-
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -384,7 +384,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         return;
                       }
                       if (typeof window.kakaoPixel !== 'undefined') {
-                        window.kakaoPixel('875611193771705648').addToCart({
+                        window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).addToCart({
                           id: `${selectedOption[0].productId}`,
                           tag: `${selectedOption[0].productName}`,
                         });

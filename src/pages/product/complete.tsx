@@ -6,12 +6,13 @@ import { type NextPageWithLayout } from 'src/types/common';
 import * as gtag from 'src/utils/gtag';
 import * as fpixel from 'src/utils/fpixel';
 import { DefaultSeo } from 'next-seo';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 /** 주문 완료 */
 const Complete: NextPageWithLayout = () => {
   const router = useRouter();
   const [ga, setGa] = useState<any>();
   const [fp, setFp] = useState<any>();
-  const [kakaoP, setKakaoP] = useState<any>();
+
   const [isClick, setIsClick] = useState(false);
   useEffect(() => {
     const LocalGaData: any = localStorage.getItem('ga');
@@ -22,13 +23,12 @@ const Complete: NextPageWithLayout = () => {
     const jsonFpData = JSON.parse(LocalFpData);
     const jsonKakaoData = JSON.parse(LocalKakaoData);
     if (typeof window.kakaoPixel !== 'undefined') {
-      window.kakaoPixel('875611193771705648').purchase({
+      window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).purchase({
         ...jsonKakaoData,
       });
     }
     setGa(jsonGaData);
     setFp(jsonFpData);
-    setKakaoP(jsonKakaoData);
   }, []);
 
   const onComplete = () => {

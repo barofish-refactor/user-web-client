@@ -44,6 +44,7 @@ import { HeaderBanner } from 'src/components/common/header-banner';
 import { DefaultSeo } from 'next-seo';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 import { useInView } from 'react-intersection-observer';
 interface Props {
   initialData: SimpleProductDto;
@@ -194,7 +195,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   useEffect(() => {
     if (!data) return;
     if (typeof window.kakaoPixel !== 'undefined') {
-      window.kakaoPixel('875611193771705648').viewContent({
+      window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).viewContent({
         id: `${data?.id}`,
         tag: `${data?.title}`,
       });
