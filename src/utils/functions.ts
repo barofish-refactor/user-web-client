@@ -7,6 +7,7 @@ import { type SectionOptionType, type SectionBasketType } from 'src/pages/produc
 import { type OptionState } from 'src/components/product/bottom-sheet';
 import { client } from 'src/api/client';
 import { decode } from 'jsonwebtoken';
+import { type deliverFeeTypeEnum } from 'src/types/common';
 
 export function setToken(jwt: Jwt | undefined) {
   const { ACCESS_TOKEN, REFRESH_TOKEN, TOKEN_MAX_AGE } = VARIABLES;
@@ -283,7 +284,7 @@ export function maskingName(name: string) {
 }
 
 export interface checkDeliverType {
-  type: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  type: deliverFeeTypeEnum;
   totalPrice: number;
   deliverFee: number;
   minOrderPrice: number;

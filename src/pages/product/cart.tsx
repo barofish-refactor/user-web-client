@@ -16,7 +16,7 @@ import { type miniOptionState, type OptionState } from 'src/components/product/b
 import { Checkbox } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
-import { type NextPageWithLayout } from 'src/types/common';
+import { type deliverFeeTypeEnum, type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { changeSectionBasket, formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { aToB } from 'src/utils/parse';
@@ -50,7 +50,7 @@ interface DeliverPriceCheckType {
   result: number;
   sectionTotal: number;
   minOrderPrice: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: deliverFeeTypeEnum;
 }
 
 function getAdditionalPrice(

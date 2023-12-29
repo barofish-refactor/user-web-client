@@ -13,7 +13,6 @@ const Complete: NextPageWithLayout = () => {
   const [ga, setGa] = useState<any>();
   const [fp, setFp] = useState<any>();
 
-  const [isClick, setIsClick] = useState(false);
   useEffect(() => {
     const LocalGaData: any = localStorage.getItem('ga');
     const LocalFpData: any = localStorage.getItem('fp');
@@ -32,9 +31,6 @@ const Complete: NextPageWithLayout = () => {
   }, []);
 
   const onComplete = () => {
-    if (isClick) return;
-    setIsClick(true);
-
     // 성공시 픽셀,ga
     fpixel.purchase({
       ...fp,
@@ -46,7 +42,6 @@ const Complete: NextPageWithLayout = () => {
     localStorage.removeItem('ga');
     localStorage.removeItem('fp');
     localStorage.removeItem('kakaoP');
-    setIsClick(false);
     router.replace('/');
   };
 

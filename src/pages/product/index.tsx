@@ -45,7 +45,6 @@ import { DefaultSeo } from 'next-seo';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
-import { useInView } from 'react-intersection-observer';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -367,7 +366,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           }}
         />
         {/* bottomSheet : 옵션 선택 */}
-        <div className='sticky top-0 z-[100] w-full'>
+        <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (
             <div className='absolute top-0 z-[100] flex h-[100vh] w-full flex-col justify-end bg-black/50'>
               <ProductBottomSheet data={data} isVisible={isVisible} setIsVisible={setIsVisible} />

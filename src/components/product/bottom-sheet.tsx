@@ -17,6 +17,7 @@ import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
+import { type deliverFeeTypeEnum } from 'src/types/common';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -26,7 +27,7 @@ export interface OptionState {
   price: number;
   additionalPrice: number;
   deliveryFee: number;
-  deliverFeeType: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType: deliverFeeTypeEnum;
   minOrderPrice: number;
   stock: number;
   maxAvailableStock: number;
