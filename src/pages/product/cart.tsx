@@ -248,7 +248,6 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
-  console.log(sectionCart, '선택 데이터');
   const [isKakaoCart, setIsKakaoCart] = useState(false);
   useEffect(() => {
     if (!user || isKakaoCart) return;
