@@ -167,11 +167,11 @@ MypageOrder.getLayout = page => (
   </Layout>
 );
 
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const { selectOrderList } = await client();
-//   return {
-//     props: { initialData: (await selectOrderList()).data.data },
-//   };
-// };
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { selectOrderList } = await client();
+  return {
+    props: { initialData: (await selectOrderList()).data.data },
+  };
+};
 
 export default MypageOrder;
