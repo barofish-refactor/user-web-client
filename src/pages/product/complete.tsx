@@ -6,6 +6,7 @@ import { type NextPageWithLayout } from 'src/types/common';
 import * as gtag from 'src/utils/gtag';
 import * as fpixel from 'src/utils/fpixel';
 import { DefaultSeo } from 'next-seo';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 /** 주문 완료 */
 const Complete: NextPageWithLayout = () => {
   const router = useRouter();
@@ -15,10 +16,16 @@ const Complete: NextPageWithLayout = () => {
   useEffect(() => {
     const LocalGaData: any = localStorage.getItem('ga');
     const LocalFpData: any = localStorage.getItem('fp');
-    if (!LocalGaData && LocalFpData) return;
+    const LocalKakaoData: any = localStorage.getItem('kakaoP');
+    if (!LocalGaData && LocalFpData && LocalKakaoData) return;
     const jsonGaData = JSON.parse(LocalGaData);
     const jsonFpData = JSON.parse(LocalFpData);
-
+    const jsonKakaoData = JSON.parse(LocalKakaoData);
+    if (typeof window.kakaoPixel !== 'undefined') {
+      window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).purchase({
+        ...jsonKakaoData,
+      });
+    }
     setGa(jsonGaData);
     setFp(jsonFpData);
   }, []);
@@ -31,8 +38,10 @@ const Complete: NextPageWithLayout = () => {
     gtag.Purchase({
       ...ga,
     });
+
     localStorage.removeItem('ga');
     localStorage.removeItem('fp');
+    localStorage.removeItem('kakaoP');
     router.replace('/');
   };
 

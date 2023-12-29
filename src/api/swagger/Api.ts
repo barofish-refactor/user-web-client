@@ -158,8 +158,8 @@ import {
   LoginStoreData,
   LoginStorePayload,
   LoginUserData,
-  OrderProduct1Data,
   OrderProductData,
+  OrderProductV2Data,
   OrderReq,
   ProcessDeliverStartData,
   ProcessDeliverStartPayload,
@@ -486,12 +486,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags order-controller-v-2
-   * @name OrderProduct
+   * @name OrderProductV2
    * @request POST:/api/v2/order
-   * @response `200` `OrderProductData` OK
+   * @response `200` `OrderProductV2Data` OK
    */
-  orderProduct = (data: OrderReq, params: RequestParams = {}) =>
-    this.request<OrderProductData, any>({
+  orderProductV2 = (data: OrderReq, params: RequestParams = {}) =>
+    this.request<OrderProductV2Data, any>({
       path: `/api/v2/order`,
       method: 'POST',
       body: data,
@@ -1340,12 +1340,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags order-controller
-   * @name OrderProduct1
+   * @name OrderProduct
    * @request POST:/api/v1/order
-   * @response `200` `OrderProduct1Data` OK
+   * @response `200` `OrderProductData` OK
    */
-  orderProduct1 = (data: OrderReq, params: RequestParams = {}) =>
-    this.request<OrderProduct1Data, any>({
+  orderProduct = (data: OrderReq, params: RequestParams = {}) =>
+    this.request<OrderProductData, any>({
       path: `/api/v1/order`,
       method: 'POST',
       body: data,

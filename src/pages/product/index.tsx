@@ -44,7 +44,7 @@ import { HeaderBanner } from 'src/components/common/header-banner';
 import { DefaultSeo } from 'next-seo';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
-import { useInView } from 'react-intersection-observer';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -193,7 +193,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   useEffect(() => {
     if (!data) return;
-
+    if (typeof window.kakaoPixel !== 'undefined') {
+      window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).viewContent({
+        id: `${data?.id}`,
+        tag: `${data?.title}`,
+      });
+    }
     const value = {
       content_ids: [data?.id],
       content_type: 'product',
@@ -361,7 +366,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           }}
         />
         {/* bottomSheet : 옵션 선택 */}
-        <div className='sticky top-0 z-[100] w-full'>
+        <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (
             <div className='absolute top-0 z-[100] flex h-[100vh] w-full flex-col justify-end bg-black/50'>
               <ProductBottomSheet data={data} isVisible={isVisible} setIsVisible={setIsVisible} />

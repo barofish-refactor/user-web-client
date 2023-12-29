@@ -55,8 +55,8 @@ const Contact: NextPageWithLayout = () => {
           <button
             className='flex items-center justify-center gap-4 bg-[#F7F7F7]'
             onClick={() => {
-              if (window.ReactNativeWebView) requestPermission('tel', '1668-4591');
-              else router.push('tel:1668-4591');
+              if (window.ReactNativeWebView) requestPermission('tel', '070-7954-7185');
+              else router.push('tel:070-7954-7185');
             }}
           >
             <Image

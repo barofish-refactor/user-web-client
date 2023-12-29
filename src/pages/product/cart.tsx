@@ -16,7 +16,7 @@ import { type miniOptionState, type OptionState } from 'src/components/product/b
 import { Checkbox } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
-import { type NextPageWithLayout } from 'src/types/common';
+import { type deliverFeeTypeEnum, type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { changeSectionBasket, formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { aToB } from 'src/utils/parse';
@@ -25,7 +25,7 @@ import { getCookie } from 'cookies-next';
 import Link from 'next/link';
 import { DefaultSeo } from 'next-seo';
 import Skeleton from 'src/components/common/skeleton';
-
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 export interface SectionBasketType {
   index: number;
   deliverFee: number;
@@ -50,7 +50,7 @@ interface DeliverPriceCheckType {
   result: number;
   sectionTotal: number;
   minOrderPrice: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: deliverFeeTypeEnum;
 }
 
 function getAdditionalPrice(
@@ -249,7 +249,16 @@ const Cart: NextPageWithLayout = () => {
       : 0,
   );
   console.log(sectionCart, '선택 데이터');
-
+  const [isKakaoCart, setIsKakaoCart] = useState(false);
+  useEffect(() => {
+    if (!user || isKakaoCart) return;
+    if (typeof window.kakaoPixel !== 'undefined') {
+      window
+        .kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`)
+        .viewCart(`${user?.nickname} : ${user.auth ?? 'email'}`);
+      setIsKakaoCart(true);
+    }
+  }, [isKakaoCart, user]);
   if (isLoading)
     return (
       <>

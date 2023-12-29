@@ -16,7 +16,8 @@ import { aToB } from 'src/utils/parse';
 import useClickAway from 'src/utils/use-click-away';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
-
+import * as kakaoPixel from 'src/utils/kakaoPixel';
+import { type deliverFeeTypeEnum } from 'src/types/common';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -26,7 +27,7 @@ export interface OptionState {
   price: number;
   additionalPrice: number;
   deliveryFee: number;
-  deliverFeeType: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType: deliverFeeTypeEnum;
   minOrderPrice: number;
   stock: number;
   maxAvailableStock: number;
@@ -384,7 +385,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                         return;
                       }
                       if (typeof window.kakaoPixel !== 'undefined') {
-                        window.kakaoPixel('875611193771705648').addToCart({
+                        window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).addToCart({
                           id: `${selectedOption[0].productId}`,
                           tag: `${selectedOption[0].productName}`,
                         });

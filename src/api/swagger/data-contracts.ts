@@ -120,11 +120,11 @@ export interface OrderProductInfo {
   isTaxFree?: boolean;
   order?: Orders;
   product?: Product;
-  ifOver?: boolean;
-  free?: boolean;
+  cfix?: boolean;
   cifOver?: boolean;
   fix?: boolean;
-  cfix?: boolean;
+  ifOver?: boolean;
+  free?: boolean;
 }
 
 export interface Orders {
@@ -2089,8 +2089,8 @@ export interface PageableObject {
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
-  unpaged?: boolean;
   paged?: boolean;
+  unpaged?: boolean;
 }
 
 export interface SortObject {
@@ -3392,7 +3392,7 @@ export interface UpdateReviewV2Payload {
 
 export type UpdateReviewV2Data = CustomResponseObject;
 
-export type OrderProductData = CustomResponseOrderDto;
+export type OrderProductV2Data = CustomResponseOrderDto;
 
 export type VerifyCodeData = CustomResponseInteger;
 
@@ -3739,7 +3739,7 @@ export type CreateData = CustomResponseObject;
 
 export type CancelOrderData = CustomResponseBoolean;
 
-export type OrderProduct1Data = CustomResponseOrderDto;
+export type OrderProductData = CustomResponseOrderDto;
 
 export interface RequestRefundOrderProductPayload {
   data: RequestCancelReq;

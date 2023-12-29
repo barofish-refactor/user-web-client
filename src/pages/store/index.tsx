@@ -49,7 +49,7 @@ const Store: NextPageWithLayout = () => {
       if (pageParam === -1) return;
       const res = await (
         await client()
-      ).selectRecommendStoreList({
+      ).selectRecommendStoreListV2({
         ...variables,
         page: pageParam,
         take: perView,

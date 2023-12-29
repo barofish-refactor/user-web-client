@@ -27,6 +27,7 @@ import { REG_EXP } from 'src/utils/regex';
 import { VARIABLES } from 'src/variables';
 import { TemporaryCurationItem } from 'src/components/common/temporary-curation-item';
 import { DefaultSeo } from 'next-seo';
+import * as kakaoPixel from 'src/utils/kakaoPixel';
 const perView = 10;
 
 interface Props {
@@ -305,6 +306,12 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
                     router.replace('/search');
                     setSearchState('default');
                     return;
+                  }
+                  if (typeof window.kakaoPixel !== 'undefined') {
+                    window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).search({
+                      keyword: `${searchText}`,
+                      tag: '검색엔터',
+                    });
                   }
                   setSearchState('result');
                   handleAddKeyword(searchText);
