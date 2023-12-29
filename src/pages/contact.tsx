@@ -48,12 +48,12 @@ const Contact: NextPageWithLayout = () => {
               height={32}
               alt='카카오톡'
             />
-            <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em]'>
+            <span className='text-[18px] font-medium leading-[22px] -tracking-[0.03em]'>
               카카오톡으로 문의하기
             </span>
           </button>
           <button
-            className='flex items-center justify-center gap-4 bg-[#F7F7F7]'
+            className='flex items-center justify-center gap-4 rounded-lg bg-[#F7F7F7]'
             onClick={() => {
               if (window.ReactNativeWebView) requestPermission('tel', '070-7954-7185');
               else router.push('tel:070-7954-7185');
@@ -66,10 +66,13 @@ const Contact: NextPageWithLayout = () => {
               height={32}
               alt='전화'
             />
-            <span className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-30'>
+            <span className='text-[18px] font-medium leading-[22px] -tracking-[0.03em] text-grey-30'>
               전화상담 연결하기
             </span>
           </button>
+          <div className='text-center text-[16px]'>
+            <span className=' font-semibold'>문의가능시간 :</span> 9시~6시 (토,일 공휴일 제외)
+          </div>
         </section>
       </div>
     </>
