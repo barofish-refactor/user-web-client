@@ -91,7 +91,20 @@ export default function MyApp(props: CustomAppProps) {
           }
         })
         .then(res => {
-          if (res) router.replace('/');
+          if (res) {
+            const getPaths = sessionStorage.getItem('Paths');
+            const getPath = sessionStorage.getItem('Path');
+            // router.replace('/');
+            if (getPath) return router.replace(getPath ? `${getPath}` : '/');
+            if (getPaths) {
+              const query = JSON.parse(getPaths);
+              return router.replace({
+                pathname: '/product/order',
+                query: { id: query?.id, options: query.options },
+              });
+            }
+            if (!getPath && !getPaths) return router.replace('/');
+          }
         })
         .catch(err => setAlert({ message: err }));
     }
