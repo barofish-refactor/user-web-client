@@ -18,6 +18,7 @@ import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
 import { type deliverFeeTypeEnum } from 'src/types/common';
+import Script from 'next/script';
 export interface OptionState {
   isNeeded: boolean;
   optionId: number;
@@ -66,7 +67,7 @@ interface Props {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
 }
-
+const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 /** 옵션 선택 BottomSheet */
 const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
@@ -76,7 +77,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
-
+  const [naverP, setNaverP] = useState(false);
   const { data: optionData, isLoading } = useQuery(queryKey.option.list(data?.id), async () => {
     const res = await (await client()).selectProductOptionList(data?.id ?? -1);
     if (res.data.isSuccess) {
@@ -226,6 +227,35 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
 
   return (
     <>
+      {naverP && totalPrice > 0 && (
+        <>
+          <Script
+            id='naver-purchase'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+            var _nasa={};
+            if(window.wcs) _nasa["cnv"] = wcs.cnv("3","${totalPrice}");
+            `,
+            }}
+          />
+          <Script
+            id='naver-tracking'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+          if (!wcs_add) var wcs_add={};
+          wcs_add["wa"] = "${NAVER_PIXEL_ID}";
+          if (!_nasa) var _nasa={};
+          if(window.wcs){
+          wcs.inflow();
+          wcs_do(_nasa);
+          }
+          `,
+            }}
+          />
+        </>
+      )}
       <div
         ref={target}
         className='flex w-full flex-col items-center rounded-t-[16px] bg-white pb-[20px]'
@@ -423,6 +453,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           };
                         }),
                       });
+                      setNaverP(true);
                       onMutate({
                         data: {
                           productId: data?.id,
