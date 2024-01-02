@@ -154,7 +154,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   const [content, setContent] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  console.log(id, 'ddss');
   useEffect(() => {
     if (data) {
       setIsLiked(data.isLike ?? false);
@@ -424,7 +423,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           <>
             {/* content */}
             <ProductBanner image={data?.images ?? []} />
-
             <ProductInformationDefault
               data={data}
               user={user}
