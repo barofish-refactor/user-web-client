@@ -240,7 +240,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             }}
           />
           <Script
-            id='naver-tracking'
+            id='naver-purchaseTracking'
             strategy='afterInteractive'
             dangerouslySetInnerHTML={{
               __html: `

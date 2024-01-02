@@ -64,7 +64,7 @@ const Complete: NextPageWithLayout = () => {
             }}
           />
           <Script
-            id='naver-tracking'
+            id='naver-purchaseTracking'
             strategy='afterInteractive'
             dangerouslySetInnerHTML={{
               __html: `
