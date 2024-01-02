@@ -27,7 +27,7 @@ const PcBanner = () => {
     <aside className='z-10 w-[375px] max-md:hidden'>
       <div
         ref={ref}
-        className='fixed top-[0%] flex h-[100dvb] w-[375px] items-center justify-center'
+        className='fixed top-[-5%] flex h-[100dvb] w-[375px] items-center justify-center'
       >
         {data?.image && (
           <Image

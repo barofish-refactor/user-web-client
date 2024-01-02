@@ -125,7 +125,6 @@ function KakaoScript() {
         window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).pageView(url);
       }
     };
-
     router.events.on('routeChangeComplete', handleRouteChange);
     router.events.on('hashChangeComplete', handleRouteChange);
     return () => {

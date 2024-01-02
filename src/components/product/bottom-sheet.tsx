@@ -77,7 +77,6 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
   const [check, setCheck] = useState<boolean>(false);
   const [isAddCart, setIsAddCart] = useState<boolean>(false);
   const { setAlert } = useAlertStore();
-  const [naverP, setNaverP] = useState(false);
   const { data: optionData, isLoading } = useQuery(queryKey.option.list(data?.id), async () => {
     const res = await (await client()).selectProductOptionList(data?.id ?? -1);
     if (res.data.isSuccess) {
@@ -424,7 +423,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           };
                         }),
                       });
-                      setNaverP(true);
+
                       onMutate({
                         data: {
                           productId: data?.id,

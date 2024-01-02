@@ -13,7 +13,6 @@ const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 const Complete: NextPageWithLayout = () => {
   const router = useRouter();
   const [ga, setGa] = useState<any>();
-  const [fp, setFp] = useState<any>();
   const [naverP, setNaverP] = useState(false);
 
   useEffect(() => {
@@ -29,19 +28,18 @@ const Complete: NextPageWithLayout = () => {
         ...jsonKakaoData,
       });
     }
+    fpixel.purchase({
+      ...jsonFpData,
+    });
+    gtag.Purchase({
+      ...jsonGaData,
+    });
     setGa(jsonGaData);
-    setFp(jsonFpData);
     setNaverP(true);
   }, []);
 
   const onComplete = () => {
     // 성공시 픽셀,ga
-    fpixel.purchase({
-      ...fp,
-    });
-    gtag.Purchase({
-      ...ga,
-    });
     localStorage.removeItem('ga');
     localStorage.removeItem('fp');
     localStorage.removeItem('kakaoP');

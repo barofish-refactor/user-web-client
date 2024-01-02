@@ -1,5 +1,4 @@
 import { type InfiniteData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { useInView } from 'react-intersection-observer';
@@ -12,11 +11,13 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-import PullToRefresh from 'react-simple-pull-to-refresh';
 import { handleRefresh } from 'src/utils/functions';
-import Loading from 'src/components/common/loading';
-const perView = 10;
+// import Loading from 'src/components/common/loading';
+import dynamic from 'next/dynamic';
+export const Loading = dynamic(() => import('src/components/common/loading'), { ssr: false });
+export const PullToRefresh = dynamic(() => import('react-simple-pull-to-refresh'), { ssr: false });
 
+const perView = 10;
 interface Props {
   initialData: InfiniteData<OrderDto[]>;
 }
