@@ -26,6 +26,7 @@ import Link from 'next/link';
 import { DefaultSeo } from 'next-seo';
 import Skeleton from 'src/components/common/skeleton';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
+import Script from 'next/script';
 export interface SectionBasketType {
   index: number;
   deliverFee: number;
@@ -86,7 +87,7 @@ const deliverPriceAfterCheckType = ({
     ? 0
     : result;
 };
-
+const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 /** 장바구니 */
 const Cart: NextPageWithLayout = () => {
   const router = useRouter();
@@ -283,6 +284,33 @@ const Cart: NextPageWithLayout = () => {
   return (
     <>
       <DefaultSeo title='장바구니 | 바로피쉬' description='장바구니' />
+      <>
+        <Script
+          id='naver-purchase'
+          strategy='afterInteractive'
+          dangerouslySetInnerHTML={{
+            __html: `
+            var _nasa={};
+            if(window.wcs) _nasa["cnv"] = wcs.cnv("3","1000");
+            `,
+          }}
+        />
+        <Script
+          id='naver-purchaseTracking'
+          strategy='afterInteractive'
+          dangerouslySetInnerHTML={{
+            __html: `
+          if (!wcs_add) var wcs_add={};
+          wcs_add["wa"] = "${NAVER_PIXEL_ID}";
+          if (!_nasa) var _nasa={};
+          if(window.wcs){
+          wcs.inflow();
+          wcs_do(_nasa);
+          }
+          `,
+          }}
+        />
+      </>
       <div className='pb-[100px] max-md:w-[100vw]'>
         {/* header */}
         <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white px-4'>
