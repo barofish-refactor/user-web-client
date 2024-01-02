@@ -235,7 +235,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
             dangerouslySetInnerHTML={{
               __html: `
             var _nasa={};
-            if(window.wcs) _nasa["cnv"] = wcs.cnv("3","${totalPrice}");
+            if(window.wcs) _nasa["cnv"] = wcs.cnv("3","1000");
             `,
             }}
           />
