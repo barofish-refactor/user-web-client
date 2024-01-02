@@ -152,10 +152,16 @@ function KakaoScript() {
     </>
   );
 }
-export const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
+const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 function NaverScript() {
   return (
     <>
+      <Script
+        id='naver-init'
+        strategy='afterInteractive'
+        type='text/javascript'
+        src='//wcs.naver.net/wcslog.js'
+      />
       <Script
         id='naver-tracking'
         strategy='afterInteractive'

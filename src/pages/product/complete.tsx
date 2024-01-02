@@ -7,11 +7,14 @@ import * as gtag from 'src/utils/gtag';
 import * as fpixel from 'src/utils/fpixel';
 import { DefaultSeo } from 'next-seo';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
+import Script from 'next/script';
+const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 /** 주문 완료 */
 const Complete: NextPageWithLayout = () => {
   const router = useRouter();
   const [ga, setGa] = useState<any>();
   const [fp, setFp] = useState<any>();
+  const [naverP, setNaverP] = useState(false);
 
   useEffect(() => {
     const LocalGaData: any = localStorage.getItem('ga');
@@ -28,6 +31,7 @@ const Complete: NextPageWithLayout = () => {
     }
     setGa(jsonGaData);
     setFp(jsonFpData);
+    setNaverP(true);
   }, []);
 
   const onComplete = () => {
@@ -38,7 +42,6 @@ const Complete: NextPageWithLayout = () => {
     gtag.Purchase({
       ...ga,
     });
-
     localStorage.removeItem('ga');
     localStorage.removeItem('fp');
     localStorage.removeItem('kakaoP');
@@ -48,6 +51,35 @@ const Complete: NextPageWithLayout = () => {
   return (
     <>
       <DefaultSeo title={`${ga?.name || '주문완료'} | 바로피쉬`} description='contect' />
+      {naverP && ga.value > 0 && (
+        <>
+          <Script
+            id='naver-purchase'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+            var _nasa={};
+            if(window.wcs) _nasa["cnv"] = wcs.cnv("1","${ga.value}");
+            `,
+            }}
+          />
+          <Script
+            id='naver-purchaseTracking'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+          if (!wcs_add) var wcs_add={};
+          wcs_add["wa"] = "${NAVER_PIXEL_ID}";
+          if (!_nasa) var _nasa={};
+          if(window.wcs){
+          wcs.inflow();
+          wcs_do(_nasa);
+          }
+          `,
+            }}
+          />
+        </>
+      )}
       <div className='pb-[80px] max-md:w-[100vw]'>
         {/* header */}
         <div className='sticky top-0 z-50 flex h-[56px] items-center justify-center gap-3.5 bg-white px-4'>
