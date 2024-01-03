@@ -450,8 +450,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 />
               </div>
             )}
-            <div className='h-2 bg-grey-90' />
             {/* <div className='h-2 bg-grey-90' /> */}
+
             {/* Tab Content */}
             {/* <div className=' w-full flex-col items-center '> */}
 

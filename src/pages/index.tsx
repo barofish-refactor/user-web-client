@@ -46,23 +46,12 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     { initialData: props.mainItem },
   );
 
-  const { data: curationData } = useQuery({
-    queryKey: queryKey.mainCuration,
-    queryFn: async () => {
-      const res = await (await client()).selectMainCurationList();
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else console.log(res.data.errorMsg);
-    },
-    initialData: props.curation,
+  const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
+    const res = await (await client()).selectMainCurationList();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else console.log(res.data.errorMsg), { initialData: props.curation };
   });
-
-  // const { data: curationData } = useQuery(queryKey.mainCuration, async () => {
-  //   const res = await (await client()).selectMainCurationList();
-  //   if (res.data.isSuccess) {
-  //     return res.data.data;
-  //   } else setAlert({ message: res.data.errorMsg ?? '' });
-  // });
 
   // 꿀팁 아이콘
   // const { data: tipInfo } = useQuery(queryKey.tipInfo, async () => {
@@ -118,22 +107,15 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     },
   );
 
-  const { data: notice } = useQuery(
-    queryKey.notice.lists,
-    async () => {
-      const res = await (await client()).selectNoticeList({ type: 'NOTICE' });
-      if (res.data.isSuccess) {
-        return res.data.data;
-      } else {
-        // setAlert({ message: res.data.errorMsg ?? '' });
-        throw new Error(res.data.errorMsg);
-      }
-    },
-
-    // {
-    //   initialData,
-    // },
-  );
+  const { data: notice } = useQuery(queryKey.notice.lists, async () => {
+    const res = await (await client()).selectNoticeList({ type: 'NOTICE' });
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      // setAlert({ message: res.data.errorMsg ?? '' });
+      throw new Error(res.data.errorMsg);
+    }
+  });
   useEffect(() => {
     if (filter) {
       setDummyFilter(filter);
@@ -174,15 +156,10 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
     },
   });
 
-  // refreshingContent={    <div className="text-center mb-4">
-  //         <div className="spinner-border text-blue-500"></div>
-  //         <p className="mt-2">Loading...</p>
-  //       </div>}
   return (
     <main className='max-md:w-[100vw]'>
       {/* Tab */}
       <HomeTab mainData={data} />
-      {/* <Loading /> */}
       <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
         <>
           {/* Content - 바로추천 */}
@@ -201,7 +178,6 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
                     : []
                 }
               />
-
               <HomeAbbreviationCuration
                 data={defaultCurationAbbreviation.concat(
                   (curationData ?? []).filter(
@@ -234,9 +210,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
             </div>
           )}
           <div className='h-4 bg-grey-90' />
-
           <HomeNotice data={notice as []} />
-
           <HomeFooter />
         </>
       </PullToRefresh>

@@ -25,7 +25,7 @@ const config = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    minimumCacheTTL: 2592000,
+    minimumCacheTTL: 604800,
     disableStaticImages: true,
     remotePatterns: [
       {

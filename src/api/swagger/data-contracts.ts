@@ -15,19 +15,6 @@ export interface PortOneBodyData {
   status?: string;
 }
 
-export interface ErrorExceptionRequestInternal {
-  internalErrorFields1?: string;
-  /** @format int32 */
-  internalErrorFields2?: number;
-}
-
-export interface ExceptionRequest {
-  errorFields1?: string;
-  /** @format int32 */
-  errorFields2?: number;
-  internalFields?: ErrorExceptionRequestInternal[];
-}
-
 export interface Category {
   /** @format int32 */
   id?: number;
@@ -121,10 +108,10 @@ export interface OrderProductInfo {
   order?: Orders;
   product?: Product;
   cfix?: boolean;
-  cifOver?: boolean;
-  fix?: boolean;
   ifOver?: boolean;
   free?: boolean;
+  cifOver?: boolean;
+  fix?: boolean;
 }
 
 export interface Orders {
@@ -2044,10 +2031,6 @@ export interface AddAdminReq {
   accessSetting?: boolean;
 }
 
-export interface ExceptionEntity {
-  data?: string;
-}
-
 export interface CustomResponseListTopBar {
   isSuccess?: boolean;
   code?: string;
@@ -2073,11 +2056,11 @@ export interface PageProductListDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2089,8 +2072,8 @@ export interface PageableObject {
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
-  paged?: boolean;
   unpaged?: boolean;
+  paged?: boolean;
 }
 
 export interface SortObject {
@@ -2132,11 +2115,11 @@ export interface PageReviewDtoV2 {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2249,11 +2232,11 @@ export interface PageAdminReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2304,11 +2287,11 @@ export interface PageUserInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2337,11 +2320,11 @@ export interface PageTip {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2384,11 +2367,11 @@ export interface PageStoreDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2468,11 +2451,11 @@ export interface PageOrderProductInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2494,11 +2477,11 @@ export interface PageSettlementDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2597,11 +2580,11 @@ export interface PageReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2623,11 +2606,11 @@ export interface PageReportDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2703,11 +2686,11 @@ export interface PageSimpleProductDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2745,11 +2728,11 @@ export interface PageOrderDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2804,11 +2787,11 @@ export interface PageNotification {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2830,11 +2813,11 @@ export interface PageNotice {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -2903,11 +2886,11 @@ export interface PageInquiryDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -3041,11 +3024,11 @@ export interface PageCurationDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -3092,11 +3075,11 @@ export interface PageCouponDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -3281,11 +3264,11 @@ export interface PageAdminLogDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -3307,11 +3290,11 @@ export interface PageAdmin {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  /** @format int32 */
-  numberOfElements?: number;
-  pageable?: PageableObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
+  /** @format int32 */
+  numberOfElements?: number;
   empty?: boolean;
 }
 
@@ -3349,10 +3332,6 @@ export interface DeleteBasketReq {
 }
 
 export type PortOneCallbackData = object;
-
-export type ServiceExceptionGetData = string;
-
-export type ServiceExceptionPostData = string;
 
 export type PortOneCallback1Data = object;
 
@@ -4059,16 +4038,6 @@ export interface AddAdminByMasterPayload {
 }
 
 export type AddAdminByMasterData = CustomResponseAdmin;
-
-export type ServiceCallData = string;
-
-export type HelloData = string;
-
-export type MyDataData = ExceptionEntity;
-
-export type CustomData = string;
-
-export type ControllerExceptionData = any;
 
 export type SelectTopBarListV2Data = CustomResponseListTopBar;
 

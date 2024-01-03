@@ -430,7 +430,7 @@ const Order: NextPageWithLayout = () => {
           }
         })
         .catch(err => {
-          setAlert({ message: '1:' + err });
+          setAlert({ message: err.response.data.errorMsg });
         });
     }
   }
@@ -627,21 +627,25 @@ const Order: NextPageWithLayout = () => {
           className='flex h-[68px] w-full items-center gap-1.5 px-4'
           onClick={() => setIsOpenProduct(!isOpenProduct)}
         >
-          <p className='text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+          <p className='w-[20%] text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
             주문 상품
           </p>
-          <p className='line-clamp-1 flex-1 text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
+          <p className='line-clamp-1 w-[65%] flex-1 text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
             {/* {`${data?.data?.title}`}{`${product.length > 1 ? ' 외 1개' :''}`} */}
             {`${selectedOption[0]?.productName}`}
-            {`${selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''}`}
           </p>
+          {selectedOption.length > 1 && (
+            <p className='w-[13%] text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
+              selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''
+            }`}</p>
+          )}
           <Image
             unoptimized
             src='/assets/icons/common/chevron-mypage.svg'
             alt='chevron'
             width={24}
             height={24}
-            className={cm(!isOpenProduct ? 'rotate-90' : 'rotate-[270deg]')}
+            className={cm(!isOpenProduct ? 'w-[5%] rotate-90' : 'w-[5%] rotate-[270deg]')}
           />
         </button>
         {isOpenProduct &&

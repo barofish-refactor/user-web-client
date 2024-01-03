@@ -32,7 +32,6 @@ const SubBanner = ({ data }: Props) => {
         onClick={() => {
           const link = data.link;
           const productionUrl = VARIABLES.PRODUCTION_URL;
-
           if (link) {
             if (link.includes(productionUrl)) return router.push(link.replace(productionUrl, ''));
 
