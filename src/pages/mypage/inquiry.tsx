@@ -19,8 +19,8 @@ import { parseInquiryState } from 'src/utils/parse';
 interface Props {
   initialData: InquiryDto[];
 }
-
-const MypageInquiry: NextPageWithLayout<Props> = ({ initialData }) => {
+// { initialData }
+const MypageInquiry: NextPageWithLayout<Props> = () => {
   const { setAlert } = useAlertStore();
   const router = useRouter();
   const [openIndex, setOpenIndex] = useState<number>();
@@ -41,9 +41,9 @@ const MypageInquiry: NextPageWithLayout<Props> = ({ initialData }) => {
         throw new Error(res.data.errorMsg);
       }
     },
-    {
-      initialData,
-    },
+    // {
+    //   initialData,
+    // },
   );
 
   const { mutateAsync: deleteInquiryByUser, isLoading } = useMutation(
@@ -205,11 +205,11 @@ function Empty() {
 
 MypageInquiry.getLayout = page => <InquiryLayout page={page} />;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const { selectInquiryListWithUserId } = await client();
-  return {
-    props: { initialData: (await selectInquiryListWithUserId()).data.data },
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const { selectInquiryListWithUserId } = await client();
+//   return {
+//     props: { initialData: (await selectInquiryListWithUserId()).data.data },
+//   };
+// };
 
 export default MypageInquiry;

@@ -13,13 +13,12 @@ const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 const Complete: NextPageWithLayout = () => {
   const router = useRouter();
   const [ga, setGa] = useState<any>();
-  const [naverP, setNaverP] = useState(false);
 
   useEffect(() => {
     const LocalGaData: any = localStorage.getItem('ga');
     const LocalFpData: any = localStorage.getItem('fp');
     const LocalKakaoData: any = localStorage.getItem('kakaoP');
-    if (!LocalGaData && LocalFpData && LocalKakaoData) return;
+    if (!LocalGaData && !LocalFpData && !LocalKakaoData) return;
     const jsonGaData = JSON.parse(LocalGaData);
     const jsonFpData = JSON.parse(LocalFpData);
     const jsonKakaoData = JSON.parse(LocalKakaoData);
@@ -35,7 +34,6 @@ const Complete: NextPageWithLayout = () => {
       ...jsonGaData,
     });
     setGa(jsonGaData);
-    setNaverP(true);
   }, []);
 
   const onComplete = () => {
@@ -49,7 +47,7 @@ const Complete: NextPageWithLayout = () => {
   return (
     <>
       <DefaultSeo title={`${ga?.name || '주문완료'} | 바로피쉬`} description='contect' />
-      {naverP && ga.value > 0 && (
+      {ga && ga.value > 0 && (
         <>
           <Script
             id='naver-purchase'

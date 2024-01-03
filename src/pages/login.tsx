@@ -21,6 +21,16 @@ const Login: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+  const { data: KakaoInfo } = useQuery(queryKey.kakao, async () => {
+    const res = await (await client()).selectSiteInfo('URL_KAKAO_CONTACT');
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+    }
+  });
+  console.log(KakaoInfo, 'KakaoInfo');
+
   return (
     <>
       <DefaultSeo title='바로피쉬 | 로그인' description='로그인.' />
@@ -70,19 +80,36 @@ const Login: NextPageWithLayout = () => {
             <Link href='/reset-password'>비밀번호 찾기</Link>
           </div>
         </div>
-        <div className='flex items-center justify-center gap-1.5 text-[16px] font-semibold leading-[20px] -tracking-[0.39px]'>
-          <span className='text-grey-50'>산지 마켓 판매자이신가요?</span>
-          <button
-            className='text-grey-20 underline underline-offset-2'
-            onClick={() => {
-              if (info?.content) {
-                if (window.ReactNativeWebView) requestPermission('link', info.content);
-                else window.open(info.content);
-              }
-            }}
-          >
-            입점 문의하기
-          </button>
+
+        <div className='flex flex-col items-center justify-center gap-1.5 text-[16px] font-semibold leading-[20px] -tracking-[0.39px]'>
+          <div className='mb-[5px]'>
+            <span className='ml-1 text-grey-50'>도움이 필요하신가요? &nbsp;</span>
+            <button
+              className='text-grey-20 underline underline-offset-2'
+              onClick={() => {
+                if (KakaoInfo?.content) {
+                  if (window.ReactNativeWebView) requestPermission('link', KakaoInfo.content);
+                  else window.open(KakaoInfo.content);
+                }
+              }}
+            >
+              1:1 문의하기
+            </button>
+          </div>
+          <div className='mt-[5px]'>
+            <span className='text-grey-50'>산지 마켓 판매자이신가요? &nbsp;</span>
+            <button
+              className='text-grey-20 underline underline-offset-2'
+              onClick={() => {
+                if (info?.content) {
+                  if (window.ReactNativeWebView) requestPermission('link', info.content);
+                  else window.open(info.content);
+                }
+              }}
+            >
+              입점 문의하기
+            </button>
+          </div>
         </div>
       </div>
     </>
