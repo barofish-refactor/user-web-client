@@ -41,8 +41,6 @@ const setOptionData = async (value: miniOptionState[]) =>
   (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
     .then(res => {
-      console.log(res.data.data, 'data');
-
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
         value.forEach(v => {
@@ -63,6 +61,7 @@ const setOptionData = async (value: miniOptionState[]) =>
               productImage: matched[0].image ?? '',
               needTaxation: matched[0].isNeedTaxation ?? false,
               minOrderPrice: matched[0].minOrderPrice ?? 0,
+              minStorePrice: matched[0].minStorePrice ?? 0,
               deliverFeeType: matched[0].deliverFeeType ?? 'FREE',
               storeId: matched[0].storeId ?? -1,
               storeImage: matched[0].storeImage ?? '',
@@ -79,6 +78,7 @@ const setOptionData = async (value: miniOptionState[]) =>
 const Order: NextPageWithLayout = () => {
   const router = useRouter();
   const { options } = router.query;
+
   const { setAlert } = useAlertStore();
   const [refundBankData, setRefundBankData] = useState<RefundAccountType>({
     name: '',
@@ -106,6 +106,7 @@ const Order: NextPageWithLayout = () => {
   );
 
   const [tmpOption, setTmpOption] = useState<OptionState[]>([]);
+
   const [coponValid, setCoponValid] = useState<Coupon[]>();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
@@ -117,10 +118,13 @@ const Order: NextPageWithLayout = () => {
           .reduce((a: number, b: number) => a + b)
       : 0;
 
-  const totalDelivery = changeSectionOption(selectedOption)
-    .map(x => x.deliverFee)
-    .reduce((a, b) => a + b, 0);
-
+  // const totalDelivery = changeSectionOption(selectedOption)
+  //   .map(x => {
+  //     return x.deliverFee;
+  //   })
+  //   .reduce((a, b) => a + b, 0);
+  // console.log(totalDelivery);
+  const totalDelivery = selectedOption[0]?.deliveryFee;
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
@@ -359,6 +363,7 @@ const Order: NextPageWithLayout = () => {
           return setAlert({ message: '계좌번호을 입력해 주세요.' });
       }
       const taxFreePrice = getTaxFreePrice();
+      console.log(taxFreePrice, 'taxFreePrice');
 
       orderProduct({
         products: selectedOption.map((x, i) => {

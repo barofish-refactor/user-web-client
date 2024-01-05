@@ -30,8 +30,9 @@ import Script from 'next/script';
 export interface SectionBasketType {
   index: number;
   deliverFee: number;
-  // deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  // minOrderPrice: number;
+  deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
+  minOrderPrice: number;
+  minStorePrice: number;
   store?: SimpleStore;
   data: BasketProductDto[];
 }
@@ -52,6 +53,7 @@ interface DeliverPriceCheckType {
   sectionTotal: number;
   minOrderPrice: number;
   deliverFeeType?: deliverFeeTypeEnum;
+  minStorePrice: number;
 }
 
 function getAdditionalPrice(
@@ -78,14 +80,19 @@ const deliverPriceAfterCheckType = ({
   sectionTotal,
   minOrderPrice,
   deliverFeeType,
+  minStorePrice,
 }: DeliverPriceCheckType) => {
-  return deliverFeeType === 'FREE'
-    ? 0
-    : deliverFeeType === 'FIX'
-    ? result
-    : sectionTotal >= minOrderPrice
-    ? 0
-    : result;
+  let finalResult;
+  if (deliverFeeType === 'FREE') {
+    finalResult = 0;
+  } else if (deliverFeeType === 'S_CONDITIONAL') {
+    console.log('S_CONDITIONAL', finalResult);
+    finalResult = sectionTotal >= minStorePrice ? 0 : result;
+  } else {
+    finalResult = result;
+  }
+
+  return finalResult;
 };
 const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 /** 장바구니 */
@@ -107,6 +114,7 @@ const Cart: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
@@ -139,6 +147,7 @@ const Cart: NextPageWithLayout = () => {
       enabled: !!data,
     },
   );
+  console.log(data, 'data');
 
   const { mutateAsync: deleteBasket, isLoading: isDeleteLoading } = useMutation(
     async (args: DeleteBasketPayload) =>
@@ -221,7 +230,22 @@ const Cart: NextPageWithLayout = () => {
               .reduce((a: number, b: number) => a + b, 0)
           : 0;
 
-      const totalDelivery = selectedSection.map(x => x.deliverFee).reduce((a, b) => a + b, 0);
+      const totalDelivery = selectedSection
+        .map(x => {
+          const sectionTotal = x.data
+            .map(v => getAdditionalPrice(v, true, true))
+            .reduce((a, b) => a + b, 0);
+
+          const deliverF = deliverPriceAfterCheckType({
+            result: x.deliverFee,
+            sectionTotal,
+            minOrderPrice: x.minOrderPrice,
+            deliverFeeType: x.deliverFeeType,
+            minStorePrice: x.store?.minStorePrice as number,
+          });
+          return deliverF;
+        })
+        .reduce((a, b) => a + b, 0);
 
       setTotalPrice(totalPrice);
       setTotalDelivery(totalDelivery);
@@ -259,6 +283,8 @@ const Cart: NextPageWithLayout = () => {
       setIsKakaoCart(true);
     }
   }, [isKakaoCart, user]);
+  // console.log(data, 'data');
+  // console.log(selectProductOtherCustomerBuy, 'selectProductOtherCustomerBuy');
   if (isLoading)
     return (
       <>
@@ -378,16 +404,16 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
-              console.log(x, 'x');
 
-              const deliverResult = x.deliverFee;
-              // const deliverResult = deliverPriceAfterCheckType({
-              //   result: x.deliverFee,
-              //   sectionTotal,
-              //   minOrderPrice: x.minOrderPrice,
-              //   deliverFeeType: x.deliverFeeType,
-              // });
-
+              // const deliverResult = x.deliverFee;
+              const deliverResult = deliverPriceAfterCheckType({
+                result: x.deliverFee,
+                sectionTotal,
+                minOrderPrice: x.minOrderPrice,
+                deliverFeeType: x.deliverFeeType,
+                minStorePrice: x.store?.minStorePrice as number,
+              });
+              // console.log(deliverResult, x.deliverFeeType, 'x ds');
               return (
                 <div key={x.index}>
                   <div className='flex h-[56px] items-center gap-2 px-4'>
@@ -670,10 +696,9 @@ const Cart: NextPageWithLayout = () => {
                   const deliveryFee = deliverPriceAfterCheckType({
                     result: deliverResult,
                     sectionTotal,
-                    // minOrderPrice: v.store?.minOrderPrice ?? 0,
-                    // deliverFeeType: v.store?.deliverFeeType,
                     minOrderPrice: v.minOrderPrice ?? 0,
-                    deliverFeeType: v.deliverFeeType,
+                    deliverFeeType: v?.deliverFeeType,
+                    minStorePrice: v.store?.minStorePrice as number,
                   });
 
                   return {
@@ -705,7 +730,7 @@ const Cart: NextPageWithLayout = () => {
                   name: v.name,
                   amount: v.amount,
                   additionalPrice: v.additionalPrice,
-                  deliveryFee: v.deliveryFee,
+                  deliveryFee: totalDelivery,
                   stock: v.stock,
                   maxAvailableStock: v.maxAvailableStock,
                   needTaxation: v.needTaxation,

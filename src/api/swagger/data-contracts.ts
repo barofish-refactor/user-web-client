@@ -79,7 +79,8 @@ export interface OrderProductInfo {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   /** @format int32 */
   settlePrice?: number;
   /** @format int32 */
@@ -90,7 +91,7 @@ export interface OrderProductInfo {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliveryFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliveryFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   deliverCompanyCode?: string;
@@ -107,11 +108,8 @@ export interface OrderProductInfo {
   isTaxFree?: boolean;
   order?: Orders;
   product?: Product;
-  cfix?: boolean;
   ifOver?: boolean;
   free?: boolean;
-  cifOver?: boolean;
-  fix?: boolean;
 }
 
 export interface Orders {
@@ -131,7 +129,8 @@ export interface Orders {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   paymentWay?:
     | 'CARD'
     | 'KEY_IN'
@@ -196,7 +195,7 @@ export interface Product {
   promotionStartAt?: string;
   /** @format date-time */
   promotionEndAt?: string;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   deliverFee?: number;
   /** @format int32 */
@@ -210,10 +209,10 @@ export interface Product {
   recommendedCookingWay?: string;
   /** @format int32 */
   categoryId?: number;
-  deliveryTypeFreeIfOver?: boolean;
   deliveryTypeFix?: boolean;
   promotionEnd?: boolean;
-  deliveryTypeFee?: boolean;
+  deliveryTypeFreeIfOver?: boolean;
+  deliveryTypeFree?: boolean;
 }
 
 export interface Review {
@@ -237,8 +236,8 @@ export interface Review {
   createdAt?: string;
   isDeleted?: boolean;
   evaluations?: ReviewEvaluation[];
-  deleted?: boolean;
   imageUrls?: string[];
+  deleted?: boolean;
 }
 
 export interface ReviewEvaluation {
@@ -275,8 +274,11 @@ export interface StoreInfo {
   oneLineDescription?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional?: boolean;
   /** @format int32 */
-  minOrderPrice?: number;
+  minStorePrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
   /** @format float */
   settlementRate?: number;
   bankName?: string;
@@ -298,6 +300,7 @@ export interface StoreInfo {
   businessRegistration?: string;
   bankAccountCopy?: string;
   deliverCompany?: string;
+  conditional?: boolean;
 }
 
 export interface TopBar {
@@ -518,7 +521,8 @@ export interface OrderDto {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   ordererName?: string;
   ordererTel?: string;
   paymentWay?:
@@ -558,7 +562,7 @@ export interface OrderProductDto {
   storeName?: string;
   /** @format int32 */
   deliverFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   product?: ProductListDto;
@@ -575,7 +579,8 @@ export interface OrderProductDto {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   optionName?: string;
   optionItem?: OptionItemDto;
   /** @format int32 */
@@ -623,8 +628,10 @@ export interface ProductListDto {
   storeName?: string;
   /** @format int32 */
   minOrderPrice?: number;
+  /** @format int32 */
+  minStorePrice?: number;
   storeImage?: string;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   parentCategoryId?: number;
   filterValues?: ProductFilterValueDto[];
@@ -667,6 +674,19 @@ export interface UserInfoDto {
   notificationCount?: number;
   /** @format int32 */
   saveProductCount?: number;
+}
+
+export interface AddBasketOptionReq {
+  /** @format int32 */
+  optionId?: number;
+  /** @format int32 */
+  amount?: number;
+}
+
+export interface AddBasketReq {
+  /** @format int32 */
+  productId?: number;
+  options?: AddBasketOptionReq[];
 }
 
 export interface VerifyCodeReq {
@@ -962,6 +982,11 @@ export interface StoreAdditionalDto {
   mosRegistration?: string;
   businessRegistration?: string;
   bankAccountCopy?: string;
+  isConditional?: boolean;
+  /** @format int32 */
+  minOrderPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
 }
 
 export interface StoreDto {
@@ -983,6 +1008,11 @@ export interface StoreDto {
   oneLineDescription?: string;
   deliverCompany?: string;
   additionalData?: StoreAdditionalDto;
+  isConditional?: boolean;
+  /** @format int32 */
+  minOrderPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
 }
 
 export interface SetMainPartnerReq {
@@ -1115,8 +1145,11 @@ export interface SimpleStore {
   oneLineDescription?: string;
   deliverCompany?: string;
   isLike?: boolean;
+  isConditional?: boolean;
   /** @format int32 */
-  minOrderPrice?: number;
+  minStorePrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
   reviewStatistic?: ReviewStatistic[];
   products?: ProductListDto[];
   reviews?: ReviewDto[];
@@ -1220,7 +1253,7 @@ export interface ProductUpdateReq {
   isActive?: boolean;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   deliveryInfo?: string;
@@ -1312,7 +1345,7 @@ export interface ProductTastingNoteInquiryDto {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   oily?: string;
@@ -1383,7 +1416,7 @@ export interface ProductTastingNoteResponse {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   tastes?: TastingNoteTaste[];
@@ -1424,7 +1457,7 @@ export interface SimpleProductDto {
   deliveryInfo?: string;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   descriptionImages?: string[];
@@ -1518,7 +1551,7 @@ export interface ProductAddReq {
   isActive?: boolean;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   deliveryInfo?: string;
@@ -1890,12 +1923,15 @@ export interface BasketProductDto {
   product?: ProductListDto;
   /** @format int32 */
   amount?: number;
-  /** @format int32 */
-  deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   option?: OptionItemDto;
+  /** @format int32 */
+  deliveryFee?: number;
+  isConditional?: boolean;
+  /** @format int32 */
+  minStorePrice?: number;
 }
 
 export interface CustomResponseBasketProductDto {
@@ -1903,19 +1939,6 @@ export interface CustomResponseBasketProductDto {
   code?: string;
   data?: BasketProductDto;
   errorMsg?: string;
-}
-
-export interface AddBasketOptionReq {
-  /** @format int32 */
-  optionId?: number;
-  /** @format int32 */
-  amount?: number;
-}
-
-export interface AddBasketReq {
-  /** @format int32 */
-  productId?: number;
-  options?: AddBasketOptionReq[];
 }
 
 export interface BasketTastingNoteDeleteReq {
@@ -2056,11 +2079,11 @@ export interface PageProductListDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2115,11 +2138,11 @@ export interface PageReviewDtoV2 {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2232,11 +2255,11 @@ export interface PageAdminReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2287,11 +2310,11 @@ export interface PageUserInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2320,11 +2343,11 @@ export interface PageTip {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2367,11 +2390,11 @@ export interface PageStoreDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2411,7 +2434,8 @@ export interface OrderProductInfoDto {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   /** @format int32 */
   settlePrice?: number;
   /** @format int32 */
@@ -2422,7 +2446,7 @@ export interface OrderProductInfoDto {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   deliverCompany?: string;
@@ -2451,11 +2475,11 @@ export interface PageOrderProductInfoDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2477,11 +2501,11 @@ export interface PageSettlementDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2580,11 +2604,11 @@ export interface PageReviewDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2606,11 +2630,11 @@ export interface PageReportDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2686,11 +2710,11 @@ export interface PageSimpleProductDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2728,11 +2752,11 @@ export interface PageOrderDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2787,11 +2811,11 @@ export interface PageNotification {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2813,11 +2837,11 @@ export interface PageNotice {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -2886,11 +2910,11 @@ export interface PageInquiryDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3024,11 +3048,11 @@ export interface PageCurationDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3075,11 +3099,11 @@ export interface PageCouponDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3095,7 +3119,7 @@ export interface CompareProductDto {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   compareFilters?: CompareFilterDto[];
@@ -3231,7 +3255,7 @@ export interface TastingNoteCompareBasketProductDto {
   /** @format int32 */
   minOrderPrice?: number;
   storeImage?: string;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   parentCategoryId?: number;
   tastingNoteExists?: boolean;
@@ -3264,11 +3288,11 @@ export interface PageAdminLogDto {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3290,11 +3314,11 @@ export interface PageAdmin {
   /** @format int32 */
   number?: number;
   sort?: SortObject;
-  first?: boolean;
-  last?: boolean;
-  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
+  pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   empty?: boolean;
 }
 
@@ -3372,6 +3396,12 @@ export interface UpdateReviewV2Payload {
 export type UpdateReviewV2Data = CustomResponseObject;
 
 export type OrderProductV2Data = CustomResponseOrderDto;
+
+export interface AddBasketV2Payload {
+  data: AddBasketReq;
+}
+
+export type AddBasketV2Data = CustomResponseBoolean;
 
 export type VerifyCodeData = CustomResponseInteger;
 
@@ -3532,6 +3562,11 @@ export interface UpdateStoreInfoPayload {
   deliverCompany?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional: boolean;
+  /** @format int32 */
+  minStorePrice: number;
+  /** @format int32 */
+  deliveryFee: number;
   oneLineDescription?: string;
   additionalData?: AddStoreAdditionalReq;
   /** @format binary */
@@ -3557,6 +3592,11 @@ export interface UpdateStoreInfo1Payload {
   deliverCompany?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional: boolean;
+  /** @format int32 */
+  minStorePrice: number;
+  /** @format int32 */
+  deliveryFee: number;
   oneLineDescription?: string;
   additionalData?: AddStoreAdditionalReq;
   /** @format binary */
@@ -3597,6 +3637,11 @@ export interface AddStorePayload {
   visitNote?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional: boolean;
+  /** @format int32 */
+  minStorePrice: number;
+  /** @format int32 */
+  deliveryFee: number;
   oneLineDescription?: string;
   deliverCompany?: string;
   additionalData: AddStoreAdditionalReq;

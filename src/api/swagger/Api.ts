@@ -14,6 +14,8 @@ import {
   AddAdminByMasterPayload,
   AddBasketData,
   AddBasketPayload,
+  AddBasketV2Data,
+  AddBasketV2Payload,
   AddCategoryCompareFilterData,
   AddCategoryCompareFilterPayload,
   AddCategoryData,
@@ -493,6 +495,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   orderProductV2 = (data: OrderReq, params: RequestParams = {}) =>
     this.request<OrderProductV2Data, any>({
       path: `/api/v2/order`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name AddBasketV2
+   * @request POST:/api/v2/basket/add
+   * @response `200` `AddBasketV2Data` OK
+   */
+  addBasketV2 = (data: AddBasketV2Payload, params: RequestParams = {}) =>
+    this.request<AddBasketV2Data, any>({
+      path: `/api/v2/basket/add`,
       method: 'POST',
       body: data,
       type: ContentType.Json,

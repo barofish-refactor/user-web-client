@@ -77,8 +77,6 @@ const ReviewAll: NextPageWithLayout = () => {
                 x?.content
                   ?.filter(v => v.images?.[0] !== '')
                   .map(v => {
-                    console.log(v, 'vvvs');
-
                     return (
                       <Link
                         key={`review${v.id}`}

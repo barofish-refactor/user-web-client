@@ -68,7 +68,6 @@ const Store: NextPageWithLayout = () => {
       },
     },
   );
-  console.log(data);
 
   const { data: likedData, refetch: likedRefecth } = useQuery(
     queryKey.scrapedStore,

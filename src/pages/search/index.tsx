@@ -71,7 +71,6 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     ) {
       deleteCookie(REFRESH_TOKEN);
       deleteCookie(ACCESS_TOKEN);
-      console.log('dha');
       return;
     } else setAlert({ message: res.data.errorMsg + 's' ?? '' });
   });

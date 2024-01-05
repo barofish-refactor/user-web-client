@@ -40,6 +40,7 @@ export interface OptionState {
   needTaxation: boolean;
   pointRate: number;
   allDelveryFee?: number;
+  minStorePrice?: number;
 }
 
 export interface miniOptionState {

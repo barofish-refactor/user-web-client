@@ -94,7 +94,6 @@ export function ReviewPhoto({ id, type }: Props) {
 
   useEffect(() => {
     if (data) refetch();
-    console.log('ss');
   }, []);
   useEffect(() => {
     if (data && data.pages[0]?.pagedReviews) {

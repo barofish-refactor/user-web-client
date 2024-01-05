@@ -29,7 +29,6 @@ const Login: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-  console.log(KakaoInfo, 'KakaoInfo');
 
   return (
     <>
