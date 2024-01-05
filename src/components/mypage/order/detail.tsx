@@ -45,6 +45,7 @@ const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] =>
       type: cur.deliverFeeType ?? 'FREE',
       deliverFee: cur.deliverFee ?? 0,
       totalPrice: curTotalPrice,
+      minStorePrice: cur.minStorePrice ?? 0,
       minOrderPrice: cur.minOrderPrice ?? 0,
     });
 
