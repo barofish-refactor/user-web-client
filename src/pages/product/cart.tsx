@@ -387,9 +387,7 @@ const Cart: NextPageWithLayout = () => {
                   onDelete({
                     data: {
                       ids: data
-                        .filter((x: { id: number | undefined }) =>
-                          selectedItem.map(v => v.id).includes(x.id),
-                        )
+                        .filter((x: any) => selectedItem.map(v => v.id).includes(x.id))
                         .map((x: { id: any }) => x.id ?? -1),
                     },
                   });
