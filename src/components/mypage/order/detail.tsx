@@ -91,7 +91,7 @@ export function MypageOrderDetail({ id }: Props) {
   console.log(data, 'datas');
 
   const totalProductPrice = data?.productInfos
-    ?.map((v: { price: number }) => v.price ?? 0)
+    ?.map((v: any) => v.price ?? 0)
     .reduce((a: number, b: number) => a + b, 0);
 
   const section = changeSectionProduct(data?.productInfos ?? []);
