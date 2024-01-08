@@ -132,7 +132,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       enabled: !!data?.id,
     },
   );
-  console.log(data);
+  console.log(data, 'data');
 
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
     async (args: AddBasketPayload) =>
@@ -319,7 +319,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                               storeName: data?.store?.name ?? '',
                               needTaxation: data?.needTaxation ?? false, //
                               pointRate: data?.pointRate ?? 0,
-                              minStorePrice: data?.store.minStorePrice,
+                              minStorePrice: data?.store?.minStorePrice ?? '100000000',
                             });
                             setSelectedOption(tmp);
                           }
