@@ -388,7 +388,7 @@ const Cart: NextPageWithLayout = () => {
                     data: {
                       ids: data
                         .filter((x: any) => selectedItem.map(v => v.id).includes(x.id))
-                        .map((x: { id: any }) => x.id ?? -1),
+                        .map((x: any) => x.id ?? -1),
                     },
                   });
                   setSelectedItem([]);
