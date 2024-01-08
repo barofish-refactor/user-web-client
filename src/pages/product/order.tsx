@@ -40,7 +40,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 const setOptionData = async (value: miniOptionState[]) =>
   (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
-    .then((res: { data: { data: any[] } }) => {
+    .then((res: any) => {
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
         value.forEach(v => {
@@ -494,7 +494,6 @@ const Order: NextPageWithLayout = () => {
       : [];
 
     if (tmpMiniOption && tmpMiniOption.length > 0) {
-      console.log(tmpMiniOption, '      console.log(tmpMiniOption);');
       setOptionData(tmpMiniOption).then(res => {
         if (res) {
           setTmpOption(res);
