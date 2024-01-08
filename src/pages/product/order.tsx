@@ -450,9 +450,7 @@ const Order: NextPageWithLayout = () => {
     setName(user?.name ?? '');
     setPhone(user?.phone ?? '');
 
-    const deliver = (user?.deliverPlaces ?? []).filter(
-      (x: { isDefault: boolean }) => x.isDefault === true,
-    );
+    const deliver = (user?.deliverPlaces ?? []).filter((x: any) => x.isDefault === true);
     setShippingAddress(deliver && deliver.length > 0 ? deliver[0] : undefined);
   }, [user]);
 
