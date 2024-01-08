@@ -505,9 +505,7 @@ const Order: NextPageWithLayout = () => {
   useEffect(() => {
     if (couponData) {
       const totalPrices = totalDelivery + totalPrice;
-      const filter = couponData.filter(
-        (item: { minPrice: number }) => item?.minPrice <= totalPrices,
-      );
+      const filter = couponData.filter((item: any) => item?.minPrice <= totalPrices);
       setCoponValid(filter);
     }
   }, [couponData, totalDelivery, totalPrice]);
