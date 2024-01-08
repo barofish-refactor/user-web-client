@@ -1162,7 +1162,7 @@ function BusinessInformation() {
         </button>
         {showInfo && info?.tcContent && (
           <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
-            {info.tcContent.map((v: { title: string; content: string }, i: number) => {
+            {info.tcContent.map((v: any, i: number) => {
               return <p key={i}>{`${v.title} : ${v.content}`}</p>;
             })}
           </div>
