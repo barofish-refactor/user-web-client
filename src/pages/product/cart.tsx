@@ -130,9 +130,7 @@ const Cart: NextPageWithLayout = () => {
   });
 
   const { data: selectProductOtherCustomerBuy } = useQuery(
-    queryKey.orderRecommend.list(
-      data?.map((x: { product: { id: string | number } }) => x.product?.id).join(','),
-    ),
+    queryKey.orderRecommend.list(data?.map((x: any) => x.product?.id).join(',')),
     async () => {
       const res = await (
         await client()
