@@ -135,7 +135,7 @@ const Cart: NextPageWithLayout = () => {
       const res = await (
         await client()
       ).selectProductOtherCustomerBuy({
-        ids: data?.map((x: { product: { id: string | number } }) => x.product?.id).join(',') ?? '',
+        ids: data?.map((x: any) => x.product?.id).join(',') ?? '',
       });
       if (res.data.isSuccess) {
         return res.data.data;
