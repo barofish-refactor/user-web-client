@@ -31,6 +31,7 @@ interface SectionProductType {
 /** 장바구니 타입 변경 */
 const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] => {
   let idx = 0;
+
   const result = value.reduce((acc, cur) => {
     const ownerId = cur.storeId;
 
@@ -87,8 +88,11 @@ export function MypageOrderDetail({ id }: Props) {
       enabled: !!id,
     },
   );
+  console.log(data, 'datas');
 
-  const totalProductPrice = data?.productInfos?.map(v => v.price ?? 0).reduce((a, b) => a + b, 0);
+  const totalProductPrice = data?.productInfos
+    ?.map((v: { price: number }) => v.price ?? 0)
+    .reduce((a: number, b: number) => a + b, 0);
 
   const section = changeSectionProduct(data?.productInfos ?? []);
 
@@ -113,7 +117,7 @@ export function MypageOrderDetail({ id }: Props) {
     data?.productInfos
       ? data.productInfos
           .map((v: any) => v.price * v.optionItem?.pointRate * v.amount)
-          .reduce((a, b) => a + b, 0)
+          .reduce((a: number, b: number) => a + b, 0)
       : 0,
   );
   /** 후기 작성 적립금 */
@@ -191,6 +195,8 @@ export function MypageOrderDetail({ id }: Props) {
             <article className='space-y-4 pt-[22px]'>
               {(section ?? []).map((v, idx) => {
                 const sectionDeliverFee = v.deliverFee;
+                console.log(v, 'vv');
+
                 const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
@@ -349,7 +355,7 @@ export function MypageOrderDetail({ id }: Props) {
             </div>
           </button>
           {isOpenProductPoint &&
-            data?.productInfos?.map((item: any, idx) => {
+            data?.productInfos?.map((item: any, idx: number) => {
               return (
                 <Fragment key={idx}>
                   <div className='flex items-center justify-between'>

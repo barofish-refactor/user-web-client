@@ -106,7 +106,7 @@ const Cart: NextPageWithLayout = () => {
   const [sectionCart, setSectionCart] = useState<SectionBasketType[]>([]);
 
   const { data, refetch, isLoading } = useQuery(queryKey.cart.lists, async () => {
-    const res = await (await client()).selectBasket();
+    const res = await (await client()).selectBasketV2();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -130,12 +130,14 @@ const Cart: NextPageWithLayout = () => {
   });
 
   const { data: selectProductOtherCustomerBuy } = useQuery(
-    queryKey.orderRecommend.list(data?.map(x => x.product?.id).join(',')),
+    queryKey.orderRecommend.list(
+      data?.map((x: { product: { id: string | number } }) => x.product?.id).join(','),
+    ),
     async () => {
       const res = await (
         await client()
       ).selectProductOtherCustomerBuy({
-        ids: data?.map(x => x.product?.id).join(',') ?? '',
+        ids: data?.map((x: { product: { id: string | number } }) => x.product?.id).join(',') ?? '',
       });
       if (res.data.isSuccess) {
         return res.data.data;
@@ -156,7 +158,7 @@ const Cart: NextPageWithLayout = () => {
 
   const { mutateAsync: updateBasket, isLoading: isUpdateLoading } = useMutation(
     async ({ id, query }: { id: number; query: { amount: number } }) =>
-      await (await client()).updateBasket(id, query, { type: ContentType.FormData }),
+      await (await client()).updateBasketV2(id, query, { type: ContentType.FormData }),
   );
 
   const onDelete = ({ data }: DeleteBasketPayload) => {
@@ -362,7 +364,9 @@ const Cart: NextPageWithLayout = () => {
                   onCheckedChange={checked => {
                     if (typeof checked === 'boolean') {
                       const value = checked;
-                      const filterData = data.map(v => v?.product?.state);
+                      const filterData = data.map(
+                        (v: { product: { state: string } }) => v?.product?.state,
+                      );
                       if (filterData.includes('INACTIVE'))
                         return setAlert({
                           message: '구매할 수 없는 상품이 포함되어 있습니다.',
@@ -387,8 +391,10 @@ const Cart: NextPageWithLayout = () => {
                   onDelete({
                     data: {
                       ids: data
-                        .filter(x => selectedItem.map(v => v.id).includes(x.id))
-                        .map(x => x.id ?? -1),
+                        .filter((x: { id: number | undefined }) =>
+                          selectedItem.map(v => v.id).includes(x.id),
+                        )
+                        .map((x: { id: any }) => x.id ?? -1),
                     },
                   });
                   setSelectedItem([]);

@@ -196,6 +196,7 @@ import {
   SelectBannerListByAdminData,
   SelectBannerListData,
   SelectBasketData,
+  SelectBasketV2Data,
   SelectCanceledOrderListData,
   SelectCanDownloadCouponData,
   SelectCanUseCouponData,
@@ -319,6 +320,7 @@ import {
   UpdateBannerStateData,
   UpdateBannerStatePayload,
   UpdateBasketData,
+  UpdateBasketV2Data,
   UpdateCategoryData,
   UpdateCategoryPayload,
   UpdateCurationData,
@@ -498,6 +500,28 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       method: 'POST',
       body: data,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name UpdateBasketV2
+   * @request POST:/api/v2/basket/update/{id}
+   * @response `200` `UpdateBasketV2Data` OK
+   */
+  updateBasketV2 = (
+    id: number,
+    query: {
+      /** @format int32 */
+      amount: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<UpdateBasketV2Data, any>({
+      path: `/api/v2/basket/update/${id}`,
+      method: 'POST',
+      query: query,
       ...params,
     });
   /**
@@ -2680,6 +2704,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v2/product/arrival-date/${id}`,
       method: 'GET',
       query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name SelectBasketV2
+   * @request GET:/api/v2/basket/list
+   * @response `200` `SelectBasketV2Data` OK
+   */
+  selectBasketV2 = (params: RequestParams = {}) =>
+    this.request<SelectBasketV2Data, any>({
+      path: `/api/v2/basket/list`,
+      method: 'GET',
       ...params,
     });
   /**

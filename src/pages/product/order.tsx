@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, Key, useEffect, useMemo, useState } from 'react';
 import { NumericFormat, PatternFormat } from 'react-number-format';
 import { client } from 'src/api/client';
 import {
@@ -40,11 +40,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 const setOptionData = async (value: miniOptionState[]) =>
   (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
-    .then(res => {
+    .then((res: { data: { data: any[] } }) => {
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
         value.forEach(v => {
-          const matched = res.data.data?.filter(x => x.id === v.productId);
+          const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
           if (matched && matched.length > 0) {
             optionData.push({
               isNeeded: true,
@@ -363,7 +363,6 @@ const Order: NextPageWithLayout = () => {
           return setAlert({ message: '계좌번호을 입력해 주세요.' });
       }
       const taxFreePrice = getTaxFreePrice();
-      console.log(taxFreePrice, 'taxFreePrice');
 
       orderProduct({
         products: selectedOption.map((x, i) => {
@@ -451,7 +450,9 @@ const Order: NextPageWithLayout = () => {
     setName(user?.name ?? '');
     setPhone(user?.phone ?? '');
 
-    const deliver = (user?.deliverPlaces ?? []).filter(x => x.isDefault === true);
+    const deliver = (user?.deliverPlaces ?? []).filter(
+      (x: { isDefault: boolean }) => x.isDefault === true,
+    );
     setShippingAddress(deliver && deliver.length > 0 ? deliver[0] : undefined);
   }, [user]);
 
@@ -491,7 +492,9 @@ const Order: NextPageWithLayout = () => {
     const tmpMiniOption: miniOptionState[] | undefined = router.isReady
       ? safeParse(bToA(options as string))
       : [];
+
     if (tmpMiniOption && tmpMiniOption.length > 0) {
+      console.log(tmpMiniOption, '      console.log(tmpMiniOption);');
       setOptionData(tmpMiniOption).then(res => {
         if (res) {
           setTmpOption(res);
@@ -505,7 +508,9 @@ const Order: NextPageWithLayout = () => {
   useEffect(() => {
     if (couponData) {
       const totalPrices = totalDelivery + totalPrice;
-      const filter = couponData.filter(item => (item?.minPrice as number) <= totalPrices);
+      const filter = couponData.filter(
+        (item: { minPrice: number }) => item?.minPrice <= totalPrices,
+      );
       setCoponValid(filter);
     }
   }, [couponData, totalDelivery, totalPrice]);
@@ -912,7 +917,7 @@ const Order: NextPageWithLayout = () => {
                         }}
                       >
                         {(paymentMethodData ?? []).length > 0 ? (
-                          (paymentMethodData ?? []).map((x, idx) => {
+                          (paymentMethodData ?? []).map((x: any, idx: number) => {
                             return (
                               <SwiperSlide key={`${idx}`} className='py-6'>
                                 <button
@@ -1162,7 +1167,7 @@ function BusinessInformation() {
         </button>
         {showInfo && info?.tcContent && (
           <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
-            {info.tcContent.map((v, i) => {
+            {info.tcContent.map((v: { title: string; content: string }, i: number) => {
               return <p key={i}>{`${v.title} : ${v.content}`}</p>;
             })}
           </div>
