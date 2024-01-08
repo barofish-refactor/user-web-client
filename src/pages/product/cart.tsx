@@ -363,7 +363,7 @@ const Cart: NextPageWithLayout = () => {
                     if (typeof checked === 'boolean') {
                       const value = checked;
                       const filterData = data.map(
-                        (v: { product: { state: string } }) => v?.product?.state,
+                        (v: { product: { state: any } }) => v?.product?.state,
                       );
                       if (filterData.includes('INACTIVE'))
                         return setAlert({
