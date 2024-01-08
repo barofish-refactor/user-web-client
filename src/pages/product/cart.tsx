@@ -362,9 +362,7 @@ const Cart: NextPageWithLayout = () => {
                   onCheckedChange={checked => {
                     if (typeof checked === 'boolean') {
                       const value = checked;
-                      const filterData = data.map(
-                        (v: { product: { state: any } }) => v?.product?.state,
-                      );
+                      const filterData = data.map((v: any) => v?.product?.state);
                       if (filterData.includes('INACTIVE'))
                         return setAlert({
                           message: '구매할 수 없는 상품이 포함되어 있습니다.',
