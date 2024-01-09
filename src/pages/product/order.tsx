@@ -37,8 +37,8 @@ import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-const setOptionData = async (value: miniOptionState[]) =>
-  (await client())
+const setOptionData = async (value: miniOptionState[]) => {
+  return (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
     .then((res: any) => {
       if (res.data.data && res.data.data.length > 0) {
@@ -73,6 +73,7 @@ const setOptionData = async (value: miniOptionState[]) =>
         return optionData;
       }
     });
+};
 
 /** 주문하기 */
 const Order: NextPageWithLayout = () => {
@@ -102,7 +103,7 @@ const Order: NextPageWithLayout = () => {
   const [selectedCard, setSelectedCard] = useState<PaymentMethodDto>();
   const { onIamport } = useIamport();
   const { mutateAsync: orderProduct } = useMutation(
-    async (args: OrderReq) => await (await client()).orderProduct(args),
+    async (args: OrderReq) => await (await client()).orderProductV2(args),
   );
 
   const [tmpOption, setTmpOption] = useState<OptionState[]>([]);
@@ -198,6 +199,8 @@ const Order: NextPageWithLayout = () => {
     () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
     [buyPoint, imageReviewPoint, productPoint],
   );
+  console.log(selectedOption);
+
   useEffect(() => {
     if (!selectedOption) return;
     localStorage.setItem(
@@ -490,6 +493,7 @@ const Order: NextPageWithLayout = () => {
     const tmpMiniOption: miniOptionState[] | undefined = router.isReady
       ? safeParse(bToA(options as string))
       : [];
+    console.log(tmpMiniOption, 'tmpMiniOption');
 
     if (tmpMiniOption && tmpMiniOption.length > 0) {
       setOptionData(tmpMiniOption).then(res => {

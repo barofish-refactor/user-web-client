@@ -161,6 +161,8 @@ const Cart: NextPageWithLayout = () => {
 
   const onDelete = ({ data }: DeleteBasketPayload) => {
     if (isDeleteLoading) return;
+    console.log(data, 'datasss');
+
     deleteBasket({ data: formatToBlob<DeleteBasketPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
@@ -306,6 +308,7 @@ const Cart: NextPageWithLayout = () => {
         </div>
       </>
     );
+  console.log(selectedItem, 'selectedItem');
 
   return (
     <>
@@ -682,6 +685,8 @@ const Cart: NextPageWithLayout = () => {
             onClick={async () => {
               if (selectedItem.length > 0) {
                 const selectedOption: OptionState[] = selectedItem.map(v => {
+                  console.log(v, 'selectedItemselectedItemselectedItem');
+
                   // 같은 스토어 총 금액
                   const sectionTotal = selectedItem
                     .filter(
@@ -723,6 +728,7 @@ const Cart: NextPageWithLayout = () => {
                     pointRate: v.option?.pointRate ?? 0,
                   };
                 });
+                console.log(selectedOption, 'selectedOption');
 
                 const querySendData: miniOptionState[] = selectedOption.map(v => ({
                   productId: v.productId,
