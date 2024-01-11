@@ -160,7 +160,6 @@ const Cart: NextPageWithLayout = () => {
 
   const onDelete = ({ data }: DeleteBasketPayload) => {
     if (isDeleteLoading) return;
-    console.log(data, 'datasss');
 
     deleteBasket({ data: formatToBlob<DeleteBasketPayload['data']>(data, true) })
       .then(res => {

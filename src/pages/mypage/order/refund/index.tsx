@@ -56,7 +56,7 @@ const MypageOrder: NextPageWithLayout = () => {
           ) : (
             data?.data?.map(v => (
               // eslint-disable-next-line react/jsx-key
-              <div key={v.id} className='flex h-[calc(100dvb)]'>
+              <div key={v.id} className='flex h-[auto]'>
                 <MypageOrderListItem data={v} apiKey={smartApi ?? ''} />
               </div>
             ))

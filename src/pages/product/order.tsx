@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Fragment, Key, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { NumericFormat, PatternFormat } from 'react-number-format';
 import { client } from 'src/api/client';
 import {
@@ -765,7 +765,7 @@ const Order: NextPageWithLayout = () => {
             <button
               className='flex h-[44px] w-[93px] items-center justify-center rounded-lg border border-grey-80'
               type='button'
-              disabled={!couponData?.length}
+              disabled={!couponData?.length || !coponValid?.length}
               onClick={() => {
                 setIsCouponVisible(true);
                 history.pushState(location.href, '', '');
