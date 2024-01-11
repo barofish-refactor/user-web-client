@@ -124,7 +124,9 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => {
-        // if (error.message) setAlert(error.message);
+        console.log(error.response.data.errorMsg);
+        if (error.response.data.isSuccess === false)
+          setAlert({ message: error.response.data.errorMsg });
         console.log('error:', error);
       });
   };
@@ -152,7 +154,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => {
-        // if (error.message) setAlert(error.message);
+        if (!error.response.data.isSuccess) setAlert(error.response.data.errorMsg);
         console.log('error:', error);
       });
   };
@@ -180,7 +182,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => {
-        // if (error.message) setAlert(error.message);
+        if (error.message) setAlert(error.message);
         console.log(error);
       });
   };
