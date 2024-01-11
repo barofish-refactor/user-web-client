@@ -7,6 +7,7 @@ import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
+import { type deliverFeeTypeEnum } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString, formatToPhone, getDeliverFee } from 'src/utils/functions';
 import { parsePaymentWay2, parseProductInfoState } from 'src/utils/parse';
@@ -27,7 +28,13 @@ interface SectionProductType {
   deliverFee: number;
   data: OrderProductDto[];
 }
-
+interface DeliverPriceCheckType {
+  result: number;
+  sectionTotal: number;
+  minOrderPrice: number;
+  deliverFeeType?: deliverFeeTypeEnum;
+  minStorePrice: number;
+}
 /** 장바구니 타입 변경 */
 const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] => {
   let idx = 0;
@@ -40,7 +47,7 @@ const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] =>
 
     const curTotalPrice = value
       .filter(v => v.product?.id === productId)
-      .map(v => (v.amount ?? 0) * (v.price ?? 0))
+      .map(v => (v.amount ?? 0) * (v.originPrice ?? 0))
       .reduce((a, b) => a + b, 0);
     const curDeliverFee = getDeliverFee({
       type: cur.deliverFeeType ?? 'FREE',
@@ -68,7 +75,42 @@ const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] =>
   }, [] as SectionProductType[]);
   return result;
 };
+const deliverPriceAfterCheckType = ({
+  result,
+  sectionTotal,
+  minOrderPrice,
+  deliverFeeType,
+  minStorePrice,
+}: DeliverPriceCheckType) => {
+  let finalResult;
+  if (deliverFeeType === 'FREE') {
+    finalResult = 0;
+  } else if (deliverFeeType === 'S_CONDITIONAL') {
+    finalResult = sectionTotal >= minStorePrice ? 0 : result;
+  } else {
+    finalResult = result;
+  }
 
+  return finalResult;
+};
+function getAdditionalPrice(
+  value: any,
+  // addDiscountPrice?: boolean,
+  multiple?: boolean,
+) {
+  const discountPrice = value?.price ?? 0;
+  let result = (value?.originPrice ?? 0) - discountPrice;
+
+  // if (addDiscountPrice) {
+  //   result = discountPrice + result;
+  // }
+
+  if (multiple) {
+    result = result * (value.amount ?? 0);
+  }
+
+  return result;
+}
 export function MypageOrderDetail({ id }: Props) {
   const { setAlert } = useAlertStore();
 
@@ -88,7 +130,6 @@ export function MypageOrderDetail({ id }: Props) {
       enabled: !!id,
     },
   );
-  console.log(data, 'datas');
 
   const totalProductPrice = data?.productInfos
     ?.map((v: any) => v.price ?? 0)
@@ -178,7 +219,9 @@ export function MypageOrderDetail({ id }: Props) {
               <h3 className={headingClassName}>주문 상품</h3>
               <div className='flex flex-1 items-center gap-1.5'>
                 <div className='flex flex-1 font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
-                  <p className='line-clamp-1 flex-1'>{data?.productInfos?.[0]?.product?.title}</p>
+                  <p className='line-clamp-1 flex-1 text-end'>
+                    &nbsp;{data?.productInfos?.[0]?.product?.title}
+                  </p>
                   {(data?.productInfos?.length ?? 0) > 1 &&
                     `외 ${(data?.productInfos?.length ?? 0) - 1}건`}
                 </div>
@@ -194,9 +237,23 @@ export function MypageOrderDetail({ id }: Props) {
             </summary>
             <article className='space-y-4 pt-[22px]'>
               {(section ?? []).map((v, idx) => {
-                const sectionDeliverFee = v.deliverFee;
-                console.log(v, 'vv');
+                // const sectionDeliverFee = v.deliverFee;
+                const totalDelivery = v.data
+                  .map(x => {
+                    const sectionTotal = v.data
+                      .map(v => getAdditionalPrice(v, true))
+                      .reduce((a, b) => a + b, 0);
 
+                    const deliverF = deliverPriceAfterCheckType({
+                      result: x.deliverFee ?? 0,
+                      sectionTotal,
+                      minOrderPrice: x.minOrderPrice ?? 10000000,
+                      deliverFeeType: x.deliverFeeType,
+                      minStorePrice: x.minStorePrice ?? 10000000,
+                    });
+                    return deliverF;
+                  })
+                  .reduce((a, b) => a + b, 0);
                 const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
@@ -222,9 +279,9 @@ export function MypageOrderDetail({ id }: Props) {
                           배송비
                         </span>
                         <span className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                          {sectionDeliverFee === 0
+                          {totalDelivery === 0
                             ? '무료'
-                            : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
+                            : formatToLocaleString(totalDelivery, { suffix: '원' })}
                         </span>
                       </div>
                     </div>

@@ -199,7 +199,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       });
     }
     const value = {
-      content_ids: [data?.id],
+      content_ids: ['facebook_' + data?.id],
       content_type: 'product',
       currency: 'KRW',
       value:

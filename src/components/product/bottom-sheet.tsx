@@ -255,7 +255,6 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       });
     }
   };
-  console.log(selectedOption, 'selectedOption');
 
   return (
     <>
@@ -427,11 +426,11 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                       if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
                         return setAlert({ message: '필수옵션을 선택해주세요.' });
                       fpixel.addToCart({
-                        content_ids: selectedOption[0]?.productId,
+                        content_ids: ['facebook_' + selectedOption[0]?.productId],
                         content_type: 'product',
                         contents: selectedOption.map(item => {
                           return {
-                            item_id: item.productId,
+                            item_id: [item.productId],
                             item_name: item.productName + item.name,
                             affiliation: '바로피쉬',
                             currency: 'KRW',
@@ -535,7 +534,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           deliverFeeType: v.deliverFeeType,
                           minStorePrice: (v.minStorePrice as number) ?? '100000000',
                         });
-                        console.log(deliverResult, 'deliverResult');
+
                         return {
                           productId: v.productId,
                           optionId: v.optionId,
@@ -549,7 +548,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           pointRate: v.pointRate,
                         };
                       });
-                      console.log(querySendData, 'querySendData');
+                      // console.log(querySendData, 'querySendData');
 
                       router.push({
                         pathname: '/product/order',

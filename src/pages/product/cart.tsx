@@ -86,7 +86,6 @@ const deliverPriceAfterCheckType = ({
   if (deliverFeeType === 'FREE') {
     finalResult = 0;
   } else if (deliverFeeType === 'S_CONDITIONAL') {
-    console.log('S_CONDITIONAL', finalResult);
     finalResult = sectionTotal >= minStorePrice ? 0 : result;
   } else {
     finalResult = result;
@@ -685,8 +684,6 @@ const Cart: NextPageWithLayout = () => {
             onClick={async () => {
               if (selectedItem.length > 0) {
                 const selectedOption: OptionState[] = selectedItem.map(v => {
-                  console.log(v, 'selectedItemselectedItemselectedItem');
-
                   // 같은 스토어 총 금액
                   const sectionTotal = selectedItem
                     .filter(
@@ -728,7 +725,6 @@ const Cart: NextPageWithLayout = () => {
                     pointRate: v.option?.pointRate ?? 0,
                   };
                 });
-                console.log(selectedOption, 'selectedOption');
 
                 const querySendData: miniOptionState[] = selectedOption.map(v => ({
                   productId: v.productId,

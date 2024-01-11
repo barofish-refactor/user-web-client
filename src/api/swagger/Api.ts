@@ -100,6 +100,8 @@ import {
   DeleteBannerData,
   DeleteBasketData,
   DeleteBasketPayload,
+  DeleteBasketV2Data,
+  DeleteBasketV2Payload,
   DeleteCategoryCompareFilterData,
   DeleteCategoryCompareFilterPayload,
   DeleteCategoryData,
@@ -5434,6 +5436,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v1/address/list`,
       method: 'GET',
       query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name DeleteBasketV2
+   * @request DELETE:/api/v2/basket/
+   * @response `200` `DeleteBasketV2Data` OK
+   */
+  deleteBasketV2 = (data: DeleteBasketV2Payload, params: RequestParams = {}) =>
+    this.request<DeleteBasketV2Data, any>({
+      path: `/api/v2/basket/`,
+      method: 'DELETE',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**

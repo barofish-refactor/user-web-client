@@ -240,7 +240,7 @@ const Order: NextPageWithLayout = () => {
         content_type: 'product',
         items: selectedOption.map(item => {
           return {
-            item_id: item.storeId,
+            item_id: ['facebook_' + item.productId],
             item_name: item.productName + item.name,
             affiliation: '바로피쉬',
             item_brand: item.storeName,
@@ -285,6 +285,7 @@ const Order: NextPageWithLayout = () => {
       router.push('/mypage');
       return;
     }
+
     router.push({
       pathname: '/product/payment',
       query: {
@@ -373,7 +374,7 @@ const Order: NextPageWithLayout = () => {
             productId: x.productId,
             optionId: x.optionId === -1 ? undefined : x.optionId,
             amount: x.amount,
-            deliveryFee: x.deliveryFee,
+            // deliveryFee: x.deliveryFee,
             needTaxation: x.needTaxation, //
             taxFreeAmount: taxFreePrice.allList[i],
           };
@@ -384,6 +385,7 @@ const Order: NextPageWithLayout = () => {
         point: Number(point),
         deliverPlaceId: shippingAddress.id,
         totalPrice: orderPrice,
+        totalDeliveryFee: totalDelivery,
         couponDiscountPrice: couponDiscountPoint,
         paymentMethodId: selectedCard?.id,
         paymentWay: parsePaymentWay(payMethod),
@@ -411,6 +413,7 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
+            console.log(res, 'orderIdorderId');
 
             onIamport({
               data: {
