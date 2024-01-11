@@ -74,9 +74,13 @@ import {
   CancelOrderByPartnerData,
   CancelOrderByUserData,
   CancelOrderByUserPayload,
+  CancelOrderByUserV2Data,
+  CancelOrderByUserV2Payload,
   CancelOrderData,
   CancelOrdersByPartnerData,
   CancelOrdersByPartnerPayload,
+  CancelOrdersByPartnerV2Data,
+  CancelOrdersByPartnerV2Payload,
   CancelSettleByAdminData,
   CancelSettleByAdminPayload,
   CheckPaymentDoneData,
@@ -499,6 +503,42 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   orderProductV2 = (data: OrderReq, params: RequestParams = {}) =>
     this.request<OrderProductV2Data, any>({
       path: `/api/v2/order`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller-v-2
+   * @name CancelOrderByUserV2
+   * @request POST:/api/v2/order/cancel/{orderProductInfoId}
+   * @response `200` `CancelOrderByUserV2Data` OK
+   */
+  cancelOrderByUserV2 = (
+    orderProductInfoId: number,
+    data: CancelOrderByUserV2Payload,
+    params: RequestParams = {},
+  ) =>
+    this.request<CancelOrderByUserV2Data, any>({
+      path: `/api/v2/order/cancel/${orderProductInfoId}`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller-v-2
+   * @name CancelOrdersByPartnerV2
+   * @request POST:/api/v2/order/cancel/partner
+   * @response `200` `CancelOrdersByPartnerV2Data` OK
+   */
+  cancelOrdersByPartnerV2 = (data: CancelOrdersByPartnerV2Payload, params: RequestParams = {}) =>
+    this.request<CancelOrdersByPartnerV2Data, any>({
+      path: `/api/v2/order/cancel/partner`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
