@@ -146,11 +146,10 @@ const Cart: NextPageWithLayout = () => {
       enabled: !!data,
     },
   );
-  console.log(data, 'data');
 
   const { mutateAsync: deleteBasket, isLoading: isDeleteLoading } = useMutation(
     async (args: DeleteBasketPayload) =>
-      await (await client()).deleteBasket(args, { type: ContentType.FormData }),
+      await (await client()).deleteBasketV2(args, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: updateBasket, isLoading: isUpdateLoading } = useMutation(
@@ -160,7 +159,6 @@ const Cart: NextPageWithLayout = () => {
 
   const onDelete = ({ data }: DeleteBasketPayload) => {
     if (isDeleteLoading) return;
-
     deleteBasket({ data: formatToBlob<DeleteBasketPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
