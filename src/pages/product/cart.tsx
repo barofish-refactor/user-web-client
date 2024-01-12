@@ -85,6 +85,8 @@ const deliverPriceAfterCheckType = ({
   let finalResult;
   if (deliverFeeType === 'FREE') {
     finalResult = 0;
+  } else if (deliverFeeType === 'FIX') {
+    finalResult = result;
   } else if (deliverFeeType === 'S_CONDITIONAL') {
     finalResult = sectionTotal >= minStorePrice ? 0 : result;
   } else {
@@ -403,6 +405,7 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
+              console.log(x, 'x', x.deliverFeeType);
 
               // const deliverResult = x.deliverFee;
               const deliverResult = deliverPriceAfterCheckType({
@@ -412,6 +415,7 @@ const Cart: NextPageWithLayout = () => {
                 deliverFeeType: x.deliverFeeType,
                 minStorePrice: x.store?.minStorePrice as number,
               });
+              let deliverS = 0;
               // console.log(deliverResult, x.deliverFeeType, 'x ds');
               return (
                 <div key={x.index}>
@@ -431,6 +435,22 @@ const Cart: NextPageWithLayout = () => {
                   </div>
                   <Fragment>
                     {x.data.map((v, idx) => {
+                      console.log(v, 'v');
+
+                      const deliverResult = deliverPriceAfterCheckType({
+                        result: v.deliveryFee as number,
+                        sectionTotal,
+                        minOrderPrice: v.minOrderPrice ?? 10000000,
+                        deliverFeeType: v.deliverFeeType,
+                        minStorePrice: v.store?.minStorePrice ?? 10000000,
+                      });
+                      if (deliverS > 0) {
+                        deliverS = deliverS;
+                      } else {
+                        deliverS = deliverResult;
+                      }
+                      console.log(deliverResult);
+
                       return (
                         <div key={`cart${idx}`} className=''>
                           <div className='h-[1px] bg-grey-90' />
@@ -564,7 +584,6 @@ const Cart: NextPageWithLayout = () => {
                       );
                     })}
                   </Fragment>
-
                   <div className='mx-4 mb-6 mt-3.5 flex flex-col gap-1.5 rounded bg-grey-90 px-4 py-3'>
                     <div className='flex items-center justify-between'>
                       <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
@@ -580,9 +599,7 @@ const Cart: NextPageWithLayout = () => {
                         배송비
                       </p>
                       <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
-                        {deliverResult === 0
-                          ? '무료'
-                          : formatToLocaleString(deliverResult, { suffix: '원' })}
+                        {deliverS === 0 ? '무료' : formatToLocaleString(deliverS, { suffix: '원' })}
                       </p>
                     </div>
                   </div>

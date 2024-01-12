@@ -389,7 +389,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
           ) : (
             // 검색 결과 없을 경우
             <div className=''>
-              <div className='flex h-[176px] flex-col items-center justify-center gap-2 px-4'>
+              <div className='flex h-[500px] flex-col items-center justify-center gap-2 px-4'>
                 <Image
                   unoptimized
                   src='/assets/icons/search/search-error.svg'
