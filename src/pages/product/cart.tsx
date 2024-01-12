@@ -87,6 +87,8 @@ const deliverPriceAfterCheckType = ({
     finalResult = 0;
   } else if (deliverFeeType === 'FIX') {
     finalResult = result;
+  } else if (deliverFeeType === 'FREE_IF_OVER') {
+    finalResult = sectionTotal >= minOrderPrice ? 0 : result;
   } else if (deliverFeeType === 'S_CONDITIONAL') {
     finalResult = sectionTotal >= minStorePrice ? 0 : result;
   } else {
@@ -436,20 +438,27 @@ const Cart: NextPageWithLayout = () => {
                   <Fragment>
                     {x.data.map((v, idx) => {
                       console.log(v, 'v');
-
+                      const amount = v?.amount as number;
                       const deliverResult = deliverPriceAfterCheckType({
                         result: v.deliveryFee as number,
-                        sectionTotal,
+                        sectionTotal:
+                          v.deliverFeeType === 'FREE_IF_OVER'
+                            ? (v.product?.discountPrice as number) * amount
+                            : sectionTotal,
                         minOrderPrice: v.minOrderPrice ?? 10000000,
                         deliverFeeType: v.deliverFeeType,
                         minStorePrice: v.store?.minStorePrice ?? 10000000,
                       });
+                      console.log(
+                        deliverResult,
+                        (v.product?.discountPrice as number) * amount,
+                        amount,
+                      );
                       if (deliverS > 0) {
                         deliverS = deliverS;
                       } else {
                         deliverS = deliverResult;
                       }
-                      console.log(deliverResult);
 
                       return (
                         <div key={`cart${idx}`} className=''>
