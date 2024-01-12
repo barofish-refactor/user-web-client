@@ -237,14 +237,31 @@ const Cart: NextPageWithLayout = () => {
           const sectionTotal = x.data
             .map(v => getAdditionalPrice(v, true, true))
             .reduce((a, b) => a + b, 0);
+          const deliverF = x.data
+            .map(v => {
+              const amount = v?.amount as number;
+              const deliverResult = deliverPriceAfterCheckType({
+                result: v.deliveryFee as number,
+                sectionTotal:
+                  v.deliverFeeType === 'FREE_IF_OVER'
+                    ? (v.product?.discountPrice as number) * amount
+                    : sectionTotal,
+                minOrderPrice: v.minOrderPrice ?? 10000000,
+                deliverFeeType: v.deliverFeeType,
+                minStorePrice: v.store?.minStorePrice ?? 10000000,
+              });
+              return deliverResult;
+            })
+            .reduce((a, b) => a + b, 0);
+          // console.log(deliverF2, 'deliverF2');
 
-          const deliverF = deliverPriceAfterCheckType({
-            result: x.deliverFee,
-            sectionTotal,
-            minOrderPrice: x.minOrderPrice,
-            deliverFeeType: x.deliverFeeType,
-            minStorePrice: x.store?.minStorePrice as number,
-          });
+          // const deliverF = deliverPriceAfterCheckType({
+          //   result: x.deliverFee,
+          //   sectionTotal,
+          //   minOrderPrice: x.minOrderPrice,
+          //   deliverFeeType: x.deliverFeeType,
+          //   minStorePrice: x.store?.minStorePrice as number,
+          // });
           return deliverF;
         })
         .reduce((a, b) => a + b, 0);
@@ -407,16 +424,16 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
-              console.log(x, 'x', x.deliverFeeType);
+              // console.log(x, 'x', x.deliverFeeType);
 
               // const deliverResult = x.deliverFee;
-              const deliverResult = deliverPriceAfterCheckType({
-                result: x.deliverFee,
-                sectionTotal,
-                minOrderPrice: x.minOrderPrice,
-                deliverFeeType: x.deliverFeeType,
-                minStorePrice: x.store?.minStorePrice as number,
-              });
+              // const deliverResult = deliverPriceAfterCheckType({
+              //   result: x.deliverFee,
+              //   sectionTotal,
+              //   minOrderPrice: x.minOrderPrice,
+              //   deliverFeeType: x.deliverFeeType,
+              //   minStorePrice: x.store?.minStorePrice as number,
+              // });
               let deliverS = 0;
               // console.log(deliverResult, x.deliverFeeType, 'x ds');
               return (
@@ -437,7 +454,6 @@ const Cart: NextPageWithLayout = () => {
                   </div>
                   <Fragment>
                     {x.data.map((v, idx) => {
-                      console.log(v, 'v');
                       const amount = v?.amount as number;
                       const deliverResult = deliverPriceAfterCheckType({
                         result: v.deliveryFee as number,
@@ -449,11 +465,11 @@ const Cart: NextPageWithLayout = () => {
                         deliverFeeType: v.deliverFeeType,
                         minStorePrice: v.store?.minStorePrice ?? 10000000,
                       });
-                      console.log(
-                        deliverResult,
-                        (v.product?.discountPrice as number) * amount,
-                        amount,
-                      );
+                      // console.log(
+                      //   deliverResult,
+                      //   (v.product?.discountPrice as number) * amount,
+                      //   amount,
+                      // );
                       if (deliverS > 0) {
                         deliverS = deliverS;
                       } else {
