@@ -237,22 +237,21 @@ const Cart: NextPageWithLayout = () => {
           const sectionTotal = x.data
             .map(v => getAdditionalPrice(v, true, true))
             .reduce((a, b) => a + b, 0);
-          const deliverF = x.data
-            .map(v => {
-              const amount = v?.amount as number;
-              const deliverResult = deliverPriceAfterCheckType({
-                result: v.deliveryFee as number,
-                sectionTotal:
-                  v.deliverFeeType === 'FREE_IF_OVER'
-                    ? (v.product?.discountPrice as number) * amount
-                    : sectionTotal,
-                minOrderPrice: v.minOrderPrice ?? 10000000,
-                deliverFeeType: v.deliverFeeType,
-                minStorePrice: v.store?.minStorePrice ?? 10000000,
-              });
-              return deliverResult;
-            })
-            .reduce((a, b) => a + b, 0);
+          const deliverF = x.data.map(v => {
+            const amount = v?.amount as number;
+            const deliverResult = deliverPriceAfterCheckType({
+              result: v.deliveryFee as number,
+              sectionTotal:
+                v.deliverFeeType === 'FREE_IF_OVER'
+                  ? (v.product?.discountPrice as number) * amount
+                  : sectionTotal,
+              minOrderPrice: v.minOrderPrice ?? 10000000,
+              deliverFeeType: v.deliverFeeType,
+              minStorePrice: v.store?.minStorePrice ?? 10000000,
+            });
+            return deliverResult;
+          });
+
           // console.log(deliverF2, 'deliverF2');
 
           // const deliverF = deliverPriceAfterCheckType({
@@ -262,9 +261,11 @@ const Cart: NextPageWithLayout = () => {
           //   deliverFeeType: x.deliverFeeType,
           //   minStorePrice: x.store?.minStorePrice as number,
           // });
-          return deliverF;
+          return Math.max(...deliverF);
         })
         .reduce((a, b) => a + b, 0);
+
+      console.log(totalDelivery);
 
       setTotalPrice(totalPrice);
       setTotalDelivery(totalDelivery);
