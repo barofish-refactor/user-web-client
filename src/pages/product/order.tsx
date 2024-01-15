@@ -413,7 +413,6 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
-            console.log(res, 'orderIdorderId');
 
             onIamport({
               data: {
@@ -478,7 +477,6 @@ const Order: NextPageWithLayout = () => {
       setIsCouponVisible(false);
     };
     window.addEventListener('popstate', close, { passive: false });
-
     return () => {
       window.removeEventListener('popstate', close);
     };
@@ -496,7 +494,6 @@ const Order: NextPageWithLayout = () => {
     const tmpMiniOption: miniOptionState[] | undefined = router.isReady
       ? safeParse(bToA(options as string))
       : [];
-    console.log(tmpMiniOption, 'tmpMiniOption');
 
     if (tmpMiniOption && tmpMiniOption.length > 0) {
       setOptionData(tmpMiniOption).then(res => {

@@ -351,7 +351,7 @@ const Cart: NextPageWithLayout = () => {
           wcs_add["wa"] = "${NAVER_PIXEL_ID}";
           if (!_nasa) var _nasa={};
           if(window.wcs){
-          wcs.inflow();
+          wcs.inflow(barofish.com);
           wcs_do(_nasa);
           }
           `,
@@ -466,11 +466,6 @@ const Cart: NextPageWithLayout = () => {
                         deliverFeeType: v.deliverFeeType,
                         minStorePrice: v.store?.minStorePrice ?? 10000000,
                       });
-                      // console.log(
-                      //   deliverResult,
-                      //   (v.product?.discountPrice as number) * amount,
-                      //   amount,
-                      // );
                       if (deliverS > 0) {
                         deliverS = deliverS;
                       } else {
@@ -550,8 +545,13 @@ const Cart: NextPageWithLayout = () => {
                                             (v.product?.discountPrice ?? 0),
                                         )}원)`)}
                                   </p>
+
+                                  <p className='text-[14px] text-[red]'>
+                                    {v.deliverFeeType === 'FIX' && ' 고정상품이라서 배송비는 붙음'}
+                                  </p>
                                 </div>
                               </Link>
+
                               <button
                                 className=''
                                 onClick={() => {
@@ -600,7 +600,7 @@ const Cart: NextPageWithLayout = () => {
                                     : 'text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'
                                 }
                               >
-                                {`${formatToLocaleString(getAdditionalPrice(v, true), {
+                                {`${formatToLocaleString(getAdditionalPrice(v, true) * amount, {
                                   suffix: '원',
                                 })}`}
                               </p>

@@ -11,7 +11,7 @@ interface Props {
 export function MypageOrderListItem({ data, apiKey }: Props) {
   const productInfos = data?.productInfos ?? [];
   return (
-    <div>
+    <div className='w-full'>
       <Link
         href={{ pathname: '/mypage/order/[id]', query: { id: data?.id } }}
         className='flex h-[56px] items-center justify-between border-b border-b-grey-90 px-4'
