@@ -392,8 +392,9 @@ export function MypageOrderDetail({ id }: Props) {
               <span className={labelClassName}>환불&취소 금액</span>
               <span className={subValueClassName}>
                 {formatToLocaleString(totalProductPrice - refundTotalProductPrice, {
-                  suffix: '원',
+                  prefix: '-',
                 })}
+                원
               </span>
             </div>
           </div>

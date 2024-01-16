@@ -265,8 +265,6 @@ const Cart: NextPageWithLayout = () => {
         })
         .reduce((a, b) => a + b, 0);
 
-      console.log(totalDelivery);
-
       setTotalPrice(totalPrice);
       setTotalDelivery(totalDelivery);
       setIsAllCheck(selectedItem.length === data.length);
@@ -293,6 +291,7 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
+  // 카카오 픽셀
   const [isKakaoCart, setIsKakaoCart] = useState(false);
   useEffect(() => {
     if (!user || isKakaoCart) return;
@@ -303,8 +302,6 @@ const Cart: NextPageWithLayout = () => {
       setIsKakaoCart(true);
     }
   }, [isKakaoCart, user]);
-  // console.log(data, 'data');
-  // console.log(selectProductOtherCustomerBuy, 'selectProductOtherCustomerBuy');
   if (isLoading)
     return (
       <>
@@ -326,8 +323,6 @@ const Cart: NextPageWithLayout = () => {
         </div>
       </>
     );
-  console.log(selectedItem, 'selectedItem');
-
   return (
     <>
       <DefaultSeo title='장바구니 | 바로피쉬' description='장바구니' />
@@ -436,10 +431,10 @@ const Cart: NextPageWithLayout = () => {
               //   minStorePrice: x.store?.minStorePrice as number,
               // });
               let deliverS = 0;
-              // console.log(deliverResult, x.deliverFeeType, 'x ds');
+
               return (
                 <div key={x.index}>
-                  <div className='flex h-[56px] items-center gap-2 px-4'>
+                  <div className='mt-[5px] flex h-[50px] items-center gap-2 px-4'>
                     <Image
                       unoptimized
                       src={x.store?.profileImage ?? ''}
@@ -451,6 +446,13 @@ const Cart: NextPageWithLayout = () => {
                     />
                     <p className='text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
                       {x.store?.name ?? ''}
+                    </p>
+                  </div>
+                  <div className='mb-[5px] h-[auto] w-full items-center gap-2 text-center'>
+                    <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-50'>
+                      {x.deliverFeeType === 'S_CONDITIONAL' &&
+                        x.minStorePrice > 0 &&
+                        `${x.minStorePrice} 원 이상 구매시 무료배송`}
                     </p>
                   </div>
                   <Fragment>
@@ -466,12 +468,12 @@ const Cart: NextPageWithLayout = () => {
                         deliverFeeType: v.deliverFeeType,
                         minStorePrice: v.store?.minStorePrice ?? 10000000,
                       });
+
                       if (deliverS > 0) {
-                        deliverS = deliverS;
+                        deliverS = v.deliveryFee ?? 0;
                       } else {
                         deliverS = deliverResult;
                       }
-
                       return (
                         <div key={`cart${idx}`} className=''>
                           <div className='h-[1px] bg-grey-90' />
@@ -545,10 +547,11 @@ const Cart: NextPageWithLayout = () => {
                                             (v.product?.discountPrice ?? 0),
                                         )}원)`)}
                                   </p>
-
-                                  <p className='text-[14px] text-[red]'>
-                                    {v.deliverFeeType === 'FIX' && ' 고정상품이라서 배송비는 붙음'}
-                                  </p>
+                                  {v.deliverFeeType === 'FIX' && (
+                                    <p className='text-[14px] text-[red]'>
+                                      고정상품이라서 배송비는 붙음
+                                    </p>
+                                  )}
                                 </div>
                               </Link>
 
