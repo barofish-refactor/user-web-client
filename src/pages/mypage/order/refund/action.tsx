@@ -70,7 +70,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
     }) =>
       await (
         await client()
-      ).cancelOrderByUser(orderProductInfoId, data, { type: ContentType.FormData }),
+      ).cancelOrderByUserV2(orderProductInfoId, data, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: rejectCancelOrder, isLoading: isRejectCancelLoading } = useMutation(
