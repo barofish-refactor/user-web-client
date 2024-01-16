@@ -469,7 +469,7 @@ const Cart: NextPageWithLayout = () => {
                       console.log(v, 'v');
 
                       const deliverResult = deliverPriceAfterCheckType({
-                        result: v.deliveryFee as number,
+                        result: (v.store?.deliveryFee as number) ?? 0,
                         sectionTotal:
                           v.deliverFeeType === 'FREE_IF_OVER'
                             ? (v.product?.discountPrice as number) * amount
