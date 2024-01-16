@@ -420,6 +420,8 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
+              console.log(x, 'ccc');
+
               // console.log(x, 'x', x.deliverFeeType);
 
               // const deliverResult = x.deliverFee;
@@ -430,6 +432,7 @@ const Cart: NextPageWithLayout = () => {
               //   deliverFeeType: x.deliverFeeType,
               //   minStorePrice: x.store?.minStorePrice as number,
               // });
+              const deliverPrice = x.deliverFee;
               let deliverS = 0;
 
               return (
@@ -470,7 +473,7 @@ const Cart: NextPageWithLayout = () => {
                       });
 
                       if (deliverS > 0) {
-                        deliverS = v.deliveryFee ?? 0;
+                        deliverS = deliverPrice;
                       } else {
                         deliverS = deliverResult;
                       }
