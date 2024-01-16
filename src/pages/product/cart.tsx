@@ -94,7 +94,6 @@ const deliverPriceAfterCheckType = ({
   } else {
     finalResult = result;
   }
-  console.log(result, sectionTotal, minOrderPrice, deliverFeeType, minStorePrice);
 
   return finalResult;
 };
@@ -256,7 +255,6 @@ const Cart: NextPageWithLayout = () => {
 
             return deliverResult;
           });
-          console.log(deliverF);
 
           // console.log(deliverF2, 'deliverF2');
 
@@ -437,36 +435,39 @@ const Cart: NextPageWithLayout = () => {
               //   deliverFeeType: x.deliverFeeType,
               //   minStorePrice: x.store?.minStorePrice as number,
               // });
-              const deliverPrice = x.deliverFee;
               let deliverS = 0;
 
               return (
                 <div key={x.index}>
-                  <div className='mt-[5px] flex h-[50px] items-center gap-2 px-4'>
+                  <div className='mt-[5px] flex h-[70px] items-center gap-2 px-4'>
                     <Image
                       unoptimized
                       src={x.store?.profileImage ?? ''}
                       alt='store'
-                      width={28}
-                      height={28}
+                      width={40}
+                      height={40}
                       className='rounded-full border border-grey-90 object-cover'
-                      style={{ width: '28px', height: '28px' }}
+                      style={{ width: '40px', height: '40px' }}
                     />
-                    <p className='text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                      {x.store?.name ?? ''}
-                    </p>
-                  </div>
-                  <div className='mb-[5px] h-[auto] w-full items-center gap-2 text-center'>
-                    <p className='text-[16px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-50'>
-                      {x.deliverFeeType === 'S_CONDITIONAL' &&
-                        x.minStorePrice > 0 &&
-                        `${x.minStorePrice} 원 이상 구매시 무료배송`}
-                    </p>
+                    <div className='flex h-[auto] w-full flex-col  gap-2'>
+                      <div
+                        className={cm(
+                          'mx-1 text-[18px] font-semibold  -tracking-[0.03em] text-grey-10',
+                        )}
+                      >
+                        {x.store?.name ?? ''}
+                      </div>
+                      {x.deliverFeeType === 'S_CONDITIONAL' && x.minStorePrice > 0 && (
+                        <div className='mx-1 text-[14px] font-semibold -tracking-[0.03em] text-[#A2A4A9]'>
+                          {x.minStorePrice} 원 이상 구매시{' '}
+                          <span className='text-[#2689E5]'> 무료배송</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <Fragment>
                     {x.data.map((v, idx) => {
                       const amount = v?.amount as number;
-                      console.log(v, 'v');
 
                       const deliverResult = deliverPriceAfterCheckType({
                         result: (v.store?.deliveryFee as number) ?? 0,
@@ -478,7 +479,6 @@ const Cart: NextPageWithLayout = () => {
                         deliverFeeType: v.deliverFeeType,
                         minStorePrice: v.store?.minStorePrice ?? 10000000,
                       });
-
                       if (deliverS > 0) {
                         // 상품중 가장 비싼 배송비
                         deliverS = (v.store?.deliveryFee as number) ?? 0;
@@ -558,14 +558,23 @@ const Cart: NextPageWithLayout = () => {
                                             (v.product?.discountPrice ?? 0),
                                         )}원)`)}
                                   </p>
-                                  {v.deliverFeeType === 'FIX' && (
-                                    <p className='text-[14px] text-[red]'>
-                                      고정상품이라서 배송비는 붙음
-                                    </p>
-                                  )}
+
+                                  <p
+                                    className={cm('text-[14px]', {
+                                      'text-[#E53926]': v.deliverFeeType === 'FIX',
+                                      'text-[#2689E5]': v.deliverFeeType === 'FREE',
+                                      'text-[#67696F]':
+                                        v.deliverFeeType === 'S_CONDITIONAL' ||
+                                        v.deliverFeeType === 'FREE_IF_OVER',
+                                    })}
+                                  >
+                                    {v.deliverFeeType === 'FIX' && '개별배송'}
+                                    {v.deliverFeeType === 'FREE' && '무료배송'}
+                                    {v.deliverFeeType === 'S_CONDITIONAL' && '기본배송'}
+                                    {v.deliverFeeType === 'FREE_IF_OVER' && '기본배송'}
+                                  </p>
                                 </div>
                               </Link>
-
                               <button
                                 className=''
                                 onClick={() => {
