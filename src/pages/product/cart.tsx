@@ -94,6 +94,7 @@ const deliverPriceAfterCheckType = ({
   } else {
     finalResult = result;
   }
+  console.log(result, sectionTotal, minOrderPrice, deliverFeeType, minStorePrice);
 
   return finalResult;
 };
@@ -224,6 +225,7 @@ const Cart: NextPageWithLayout = () => {
   useEffect(() => {
     if (data) {
       const selectedSection = changeSectionBasket(selectedItem);
+      console.log(selectedItem, 'selectedItem');
 
       const totalPrice =
         selectedItem.length > 0
@@ -234,13 +236,15 @@ const Cart: NextPageWithLayout = () => {
 
       const totalDelivery = selectedSection
         .map(x => {
+          console.log(x, 'x');
+
           const sectionTotal = x.data
             .map(v => getAdditionalPrice(v, true, true))
             .reduce((a, b) => a + b, 0);
           const deliverF = x.data.map(v => {
             const amount = v?.amount as number;
             const deliverResult = deliverPriceAfterCheckType({
-              result: v.deliveryFee as number,
+              result: (v.store?.deliveryFee as number) ?? 0,
               sectionTotal:
                 v.deliverFeeType === 'FREE_IF_OVER'
                   ? (v.product?.discountPrice as number) * amount
@@ -249,8 +253,10 @@ const Cart: NextPageWithLayout = () => {
               deliverFeeType: v.deliverFeeType,
               minStorePrice: v.store?.minStorePrice ?? 10000000,
             });
+
             return deliverResult;
           });
+          console.log(deliverF);
 
           // console.log(deliverF2, 'deliverF2');
 
@@ -346,7 +352,7 @@ const Cart: NextPageWithLayout = () => {
           wcs_add["wa"] = "${NAVER_PIXEL_ID}";
           if (!_nasa) var _nasa={};
           if(window.wcs){
-          wcs.inflow(barofish.com);
+          wcs.inflow("barofish.com");
           wcs_do(_nasa);
           }
           `,
@@ -420,7 +426,6 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
-              console.log(x, 'ccc');
 
               // console.log(x, 'x', x.deliverFeeType);
 
@@ -461,6 +466,8 @@ const Cart: NextPageWithLayout = () => {
                   <Fragment>
                     {x.data.map((v, idx) => {
                       const amount = v?.amount as number;
+                      console.log(v, 'v');
+
                       const deliverResult = deliverPriceAfterCheckType({
                         result: v.deliveryFee as number,
                         sectionTotal:
@@ -473,7 +480,8 @@ const Cart: NextPageWithLayout = () => {
                       });
 
                       if (deliverS > 0) {
-                        deliverS = deliverPrice;
+                        // 상품중 가장 비싼 배송비
+                        deliverS = (v.store?.deliveryFee as number) ?? 0;
                       } else {
                         deliverS = deliverResult;
                       }
