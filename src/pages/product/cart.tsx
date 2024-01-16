@@ -166,11 +166,10 @@ const Cart: NextPageWithLayout = () => {
     deleteBasket({ data: formatToBlob<DeleteBasketPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
-          // setIsAddCart(true);
           refetch();
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
-      .catch(error => console.log(error));
+      .catch(error => setAlert({ message: error.response.data.errorMsg }));
   };
 
   const onUpdate = ({ id, query }: { id: number; query: { amount: number } }) => {
