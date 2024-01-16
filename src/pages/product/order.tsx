@@ -642,12 +642,13 @@ const Order: NextPageWithLayout = () => {
           <p className='line-clamp-1 w-[65%] flex-1 text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
             {/* {`${data?.data?.title}`}{`${product.length > 1 ? ' 외 1개' :''}`} */}
             {`${selectedOption[0]?.productName}`}
+            {selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''}
           </p>
-          {selectedOption.length > 1 && (
+          {/* {selectedOption.length > 1 && (
             <p className='w-[13%] text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
               selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''
             }`}</p>
-          )}
+          )} */}
           <Image
             unoptimized
             src='/assets/icons/common/chevron-mypage.svg'
