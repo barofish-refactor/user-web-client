@@ -56,7 +56,7 @@ const setOptionData = async (value: miniOptionState[]) => {
               productId: v.productId,
               name: v.name,
               amount: v.amount,
-              price: v.price,
+              price: v.price ?? 0,
               additionalPrice: v.additionalPrice,
               deliveryFee: v.deliveryFee,
               stock: v.stock,
