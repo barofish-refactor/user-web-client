@@ -55,7 +55,9 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
     case 'REFUND_REQUEST':
     case 'REFUND_ACCEPT':
     case 'REFUND_DONE':
+    case 'DELIVERY_DIFFICULT':
       break;
+
     default:
       buttonList = [0, 1, 2, 3, 4, 5];
       break;
@@ -130,7 +132,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
         </div>
       </div>
       {buttonList.length > 0 && (
-        <nav className='mt-3 grid h-8 grid-flow-col gap-x-1.5'>
+        <nav className='mt-3 grid h-8 grid-flow-col gap-x-1'>
           {buttonList.includes(0) && (
             <button
               className={buttonClassName}
