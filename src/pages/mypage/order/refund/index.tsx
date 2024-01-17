@@ -52,11 +52,13 @@ const MypageOrder: NextPageWithLayout = () => {
       <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
         <article className='divide-y-8 divide-grey-90'>
           {data?.data && data.data.length === 0 ? (
-            <div className='flex h-[calc(100dvb-100px)] items-center justify-center'>{Empty()}</div>
+            <div className='flex h-[calc(100dvb-100px)]  items-center justify-center'>
+              {Empty()}
+            </div>
           ) : (
             data?.data?.map(v => (
               // eslint-disable-next-line react/jsx-key
-              <div key={v.id} className='flex h-[calc(100dvb)]'>
+              <div key={v.id} className='flex h-[auto] w-full'>
                 <MypageOrderListItem data={v} apiKey={smartApi ?? ''} />
               </div>
             ))

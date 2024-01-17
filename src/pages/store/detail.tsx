@@ -93,7 +93,6 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       },
     },
   );
-  console.log(productData);
 
   const { mutateAsync: likeStoreByUser, isLoading } = useMutation(
     async (args: { storeId: number; type: 'LIKE' | 'UNLIKE' }) =>

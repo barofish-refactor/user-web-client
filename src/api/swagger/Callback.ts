@@ -16,7 +16,7 @@ export class Callback<SecurityDataType = unknown> extends HttpClient<SecurityDat
   /**
    * No description
    *
-   * @tags port-one-callback-handler
+   * @tags port-one-callback-handler-v-2
    * @name PortOneCallback1
    * @request POST:/callback/iamport_pay_result
    * @response `200` `PortOneCallback1Data` OK

@@ -28,9 +28,11 @@ interface Props {
 export function ReviewPhoto({ id, type }: Props) {
   // const queryClient = useQueryClient();
   const [selectedSort, setSelectedSort] = useState<number>(0); // 베스트순, 최신순
-  const { data: imges } = useQuery(queryKey.reviewPhoto, async () => {
+  const { data: imges, refetch: imgesFefetch } = useQuery(queryKey.reviewPhoto, async () => {
     const res = await (await client()).getProductReviewPhotos(id);
     if (res.data.isSuccess) {
+      console.log(res.data.data, 'res');
+
       return res.data.data;
     } else {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -91,10 +93,14 @@ export function ReviewPhoto({ id, type }: Props) {
       }
     }
   };
+  console.log(imges);
 
   useEffect(() => {
-    if (data) refetch();
-    console.log('ss');
+    if (data || imges) {
+      refetch();
+      imgesFefetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (data && data.pages[0]?.pagedReviews) {
@@ -128,43 +134,47 @@ export function ReviewPhoto({ id, type }: Props) {
             </div>
           </Link>
         </div>
-        <Swiper
-          freeMode
-          slidesPerView={3.5}
-          modules={[FreeMode]}
-          spaceBetween={11}
-          className='mt-3.5'
-          style={{ marginInline: '-16px', paddingInline: '16px' }}
-        >
-          {imges &&
-            imges.map((v: any, idx: number) => {
-              return (
-                <SwiperSlide key={`reviews${idx}${v.reviewId}`} className=''>
-                  <Link href={{ pathname: '/store/review', query: { id: v.reviewId } }}>
-                    <div className='relative overflow-hidden'>
-                      <Image
-                        unoptimized
-                        width={100}
-                        height={100}
-                        src={v?.imageUrls?.[0] ?? ''}
-                        alt='review'
-                        draggable={false}
-                        className='aspect-square w-full rounded-lg object-cover'
-                      />
-                      {Number(v?.imageUrls.length) > 1 && (
-                        <div
-                          className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
-                          style={{ background: 'rgba(111, 111, 111, 0.65)' }}
-                        >
-                          +{Number(v?.imageUrls.length) - 1}
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                </SwiperSlide>
-              );
-            })}
-        </Swiper>
+        {(imges?.length as number) <= 0 ? (
+          Empty(50, '사진')
+        ) : (
+          <Swiper
+            freeMode
+            slidesPerView={3.5}
+            modules={[FreeMode]}
+            spaceBetween={11}
+            className='mt-3.5'
+            style={{ marginInline: '-16px', paddingInline: '16px' }}
+          >
+            {imges &&
+              imges.map((v: any, idx: number) => {
+                return (
+                  <SwiperSlide key={`reviews${idx}${v.reviewId}`} className=''>
+                    <Link href={{ pathname: '/store/review', query: { id: v.reviewId } }}>
+                      <div className='relative overflow-hidden'>
+                        <Image
+                          unoptimized
+                          width={100}
+                          height={100}
+                          src={v?.imageUrls?.[0] ?? ''}
+                          alt='review'
+                          draggable={false}
+                          className='aspect-square w-full rounded-lg object-cover'
+                        />
+                        {Number(v?.imageUrls.length) > 1 && (
+                          <div
+                            className='z-1 absolute bottom-[35px] left-[33.5px] rounded-full  px-[3.5px] py-[3px] text-white'
+                            style={{ background: 'rgba(111, 111, 111, 0.65)' }}
+                          >
+                            +{Number(v?.imageUrls.length) - 1}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  </SwiperSlide>
+                );
+              })}
+          </Swiper>
+        )}
       </div>
       <div className='h-2 bg-grey-90' />
       {/* 후기 리스트 */}
@@ -204,7 +214,7 @@ export function ReviewPhoto({ id, type }: Props) {
       {(data?.pages ?? [])
         .filter(x => (x?.pagedReviews?.content ?? []).length > 0)
         .map(x => x?.pagedReviews?.content).length === 0 ? (
-        Empty()
+        Empty(100)
       ) : (
         <div className='pb-[0px] pl-[17px] pr-[15px]'>
           {(data?.pages ?? []).map((x, i) =>
@@ -237,9 +247,9 @@ export function ReviewPhoto({ id, type }: Props) {
   );
 }
 
-function Empty() {
+function Empty(px?: number, text?: string) {
   return (
-    <div className='my-[100px] grid flex-1 place-items-center'>
+    <div className={`my-[${px}px] grid flex-1 place-items-center`}>
       <div className='flex flex-col items-center gap-2'>
         <Image
           unoptimized
@@ -249,7 +259,7 @@ function Empty() {
           height={40}
         />
         <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-          후기가 없습니다.
+          {text} 후기가 없습니다.
         </p>
       </div>
     </div>

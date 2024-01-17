@@ -14,6 +14,8 @@ import {
   AddAdminByMasterPayload,
   AddBasketData,
   AddBasketPayload,
+  AddBasketV2Data,
+  AddBasketV2Payload,
   AddCategoryCompareFilterData,
   AddCategoryCompareFilterPayload,
   AddCategoryData,
@@ -72,9 +74,13 @@ import {
   CancelOrderByPartnerData,
   CancelOrderByUserData,
   CancelOrderByUserPayload,
+  CancelOrderByUserV2Data,
+  CancelOrderByUserV2Payload,
   CancelOrderData,
   CancelOrdersByPartnerData,
   CancelOrdersByPartnerPayload,
+  CancelOrdersByPartnerV2Data,
+  CancelOrdersByPartnerV2Payload,
   CancelSettleByAdminData,
   CancelSettleByAdminPayload,
   CheckPaymentDoneData,
@@ -98,6 +104,8 @@ import {
   DeleteBannerData,
   DeleteBasketData,
   DeleteBasketPayload,
+  DeleteBasketV2Data,
+  DeleteBasketV2Payload,
   DeleteCategoryCompareFilterData,
   DeleteCategoryCompareFilterPayload,
   DeleteCategoryData,
@@ -194,6 +202,7 @@ import {
   SelectBannerListByAdminData,
   SelectBannerListData,
   SelectBasketData,
+  SelectBasketV2Data,
   SelectCanceledOrderListData,
   SelectCanDownloadCouponData,
   SelectCanUseCouponData,
@@ -317,6 +326,7 @@ import {
   UpdateBannerStateData,
   UpdateBannerStatePayload,
   UpdateBasketData,
+  UpdateBasketV2Data,
   UpdateCategoryData,
   UpdateCategoryPayload,
   UpdateCurationData,
@@ -493,6 +503,80 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   orderProductV2 = (data: OrderReq, params: RequestParams = {}) =>
     this.request<OrderProductV2Data, any>({
       path: `/api/v2/order`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller-v-2
+   * @name CancelOrderByUserV2
+   * @request POST:/api/v2/order/cancel/{orderProductInfoId}
+   * @response `200` `CancelOrderByUserV2Data` OK
+   */
+  cancelOrderByUserV2 = (
+    orderProductInfoId: number,
+    data: CancelOrderByUserV2Payload,
+    params: RequestParams = {},
+  ) =>
+    this.request<CancelOrderByUserV2Data, any>({
+      path: `/api/v2/order/cancel/${orderProductInfoId}`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags order-controller-v-2
+   * @name CancelOrdersByPartnerV2
+   * @request POST:/api/v2/order/cancel/partner
+   * @response `200` `CancelOrdersByPartnerV2Data` OK
+   */
+  cancelOrdersByPartnerV2 = (data: CancelOrdersByPartnerV2Payload, params: RequestParams = {}) =>
+    this.request<CancelOrdersByPartnerV2Data, any>({
+      path: `/api/v2/order/cancel/partner`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name UpdateBasketV2
+   * @request POST:/api/v2/basket/update/{id}
+   * @response `200` `UpdateBasketV2Data` OK
+   */
+  updateBasketV2 = (
+    id: number,
+    query: {
+      /** @format int32 */
+      amount: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<UpdateBasketV2Data, any>({
+      path: `/api/v2/basket/update/${id}`,
+      method: 'POST',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name AddBasketV2
+   * @request POST:/api/v2/basket/add
+   * @response `200` `AddBasketV2Data` OK
+   */
+  addBasketV2 = (data: AddBasketV2Payload, params: RequestParams = {}) =>
+    this.request<AddBasketV2Data, any>({
+      path: `/api/v2/basket/add`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -2662,6 +2746,20 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v2/product/arrival-date/${id}`,
       method: 'GET',
       query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name SelectBasketV2
+   * @request GET:/api/v2/basket/list
+   * @response `200` `SelectBasketV2Data` OK
+   */
+  selectBasketV2 = (params: RequestParams = {}) =>
+    this.request<SelectBasketV2Data, any>({
+      path: `/api/v2/basket/list`,
+      method: 'GET',
       ...params,
     });
   /**
@@ -5378,6 +5476,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v1/address/list`,
       method: 'GET',
       query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags basket-controller-v-2
+   * @name DeleteBasketV2
+   * @request DELETE:/api/v2/basket/
+   * @response `200` `DeleteBasketV2Data` OK
+   */
+  deleteBasketV2 = (data: DeleteBasketV2Payload, params: RequestParams = {}) =>
+    this.request<DeleteBasketV2Data, any>({
+      path: `/api/v2/basket/`,
+      method: 'DELETE',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**

@@ -74,4 +74,4 @@ type FileType = {
   file: File | null;
   previewUrl: string;
 };
-export type deliverFeeTypeEnum = 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+export type deliverFeeTypeEnum = 'FREE' | 'C_FIX' | 'S_CONDITIONAL' | 'FIX' | 'FREE_IF_OVER';

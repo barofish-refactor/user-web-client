@@ -70,7 +70,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
     }) =>
       await (
         await client()
-      ).cancelOrderByUser(orderProductInfoId, data, { type: ContentType.FormData }),
+      ).cancelOrderByUserV2(orderProductInfoId, data, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: rejectCancelOrder, isLoading: isRejectCancelLoading } = useMutation(
@@ -124,7 +124,9 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => {
-        // if (error.message) setAlert(error.message);
+        console.log(error.response.data.errorMsg);
+        if (error.response.data.isSuccess === false)
+          setAlert({ message: error.response.data.errorMsg });
         console.log('error:', error);
       });
   };
@@ -152,7 +154,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => {
-        // if (error.message) setAlert(error.message);
+        if (!error.response.data.isSuccess) setAlert(error.response.data.errorMsg);
         console.log('error:', error);
       });
   };
@@ -180,7 +182,7 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
       .catch(error => {
-        // if (error.message) setAlert(error.message);
+        if (error.message) setAlert(error.message);
         console.log(error);
       });
   };
@@ -258,6 +260,14 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
                 }
                 onChange={e => setContent(e.target.value)}
               />
+            </div>
+            <div className='mt-[5px] text-[14px] font-medium leading-[22px] -tracking-[0.42px] text-[#E53926] '>
+              부분 취소가 불가하오니 해당 스토어 전체 취소만 가능합니다.
+              <br /> 추가 도움이 필요하시면{' '}
+              <Link href='/contact'>
+                <span className='underline'> 1:1 문의</span>
+              </Link>{' '}
+              부탁드립니다.
             </div>
           </div>
           <button

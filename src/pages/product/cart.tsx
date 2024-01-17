@@ -30,8 +30,9 @@ import Script from 'next/script';
 export interface SectionBasketType {
   index: number;
   deliverFee: number;
-  // deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER';
-  // minOrderPrice: number;
+  deliverFeeType: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
+  minOrderPrice: number;
+  minStorePrice: number;
   store?: SimpleStore;
   data: BasketProductDto[];
 }
@@ -52,6 +53,7 @@ interface DeliverPriceCheckType {
   sectionTotal: number;
   minOrderPrice: number;
   deliverFeeType?: deliverFeeTypeEnum;
+  minStorePrice: number;
 }
 
 function getAdditionalPrice(
@@ -78,14 +80,22 @@ const deliverPriceAfterCheckType = ({
   sectionTotal,
   minOrderPrice,
   deliverFeeType,
+  minStorePrice,
 }: DeliverPriceCheckType) => {
-  return deliverFeeType === 'FREE'
-    ? 0
-    : deliverFeeType === 'FIX'
-    ? result
-    : sectionTotal >= minOrderPrice
-    ? 0
-    : result;
+  let finalResult;
+  if (deliverFeeType === 'FREE') {
+    finalResult = 0;
+  } else if (deliverFeeType === 'FIX') {
+    finalResult = result;
+  } else if (deliverFeeType === 'FREE_IF_OVER') {
+    finalResult = sectionTotal >= minOrderPrice ? 0 : result;
+  } else if (deliverFeeType === 'S_CONDITIONAL') {
+    finalResult = sectionTotal >= minStorePrice ? 0 : result;
+  } else {
+    finalResult = result;
+  }
+
+  return finalResult;
 };
 const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 /** 장바구니 */
@@ -97,9 +107,8 @@ const Cart: NextPageWithLayout = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [totalDelivery, setTotalDelivery] = useState<number>(0);
   const [sectionCart, setSectionCart] = useState<SectionBasketType[]>([]);
-
   const { data, refetch, isLoading } = useQuery(queryKey.cart.lists, async () => {
-    const res = await (await client()).selectBasket();
+    const res = await (await client()).selectBasketV2();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
@@ -107,6 +116,7 @@ const Cart: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
@@ -122,12 +132,12 @@ const Cart: NextPageWithLayout = () => {
   });
 
   const { data: selectProductOtherCustomerBuy } = useQuery(
-    queryKey.orderRecommend.list(data?.map(x => x.product?.id).join(',')),
+    queryKey.orderRecommend.list(data?.map((x: any) => x.product?.id).join(',')),
     async () => {
       const res = await (
         await client()
       ).selectProductOtherCustomerBuy({
-        ids: data?.map(x => x.product?.id).join(',') ?? '',
+        ids: data?.map((x: any) => x.product?.id).join(',') ?? '',
       });
       if (res.data.isSuccess) {
         return res.data.data;
@@ -142,12 +152,12 @@ const Cart: NextPageWithLayout = () => {
 
   const { mutateAsync: deleteBasket, isLoading: isDeleteLoading } = useMutation(
     async (args: DeleteBasketPayload) =>
-      await (await client()).deleteBasket(args, { type: ContentType.FormData }),
+      await (await client()).deleteBasketV2(args, { type: ContentType.FormData }),
   );
 
   const { mutateAsync: updateBasket, isLoading: isUpdateLoading } = useMutation(
     async ({ id, query }: { id: number; query: { amount: number } }) =>
-      await (await client()).updateBasket(id, query, { type: ContentType.FormData }),
+      await (await client()).updateBasketV2(id, query, { type: ContentType.FormData }),
   );
 
   const onDelete = ({ data }: DeleteBasketPayload) => {
@@ -155,11 +165,10 @@ const Cart: NextPageWithLayout = () => {
     deleteBasket({ data: formatToBlob<DeleteBasketPayload['data']>(data, true) })
       .then(res => {
         if (res.data.isSuccess) {
-          // setIsAddCart(true);
           refetch();
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
-      .catch(error => console.log(error));
+      .catch(error => setAlert({ message: error.response.data.errorMsg }));
   };
 
   const onUpdate = ({ id, query }: { id: number; query: { amount: number } }) => {
@@ -213,6 +222,7 @@ const Cart: NextPageWithLayout = () => {
   useEffect(() => {
     if (data) {
       const selectedSection = changeSectionBasket(selectedItem);
+      console.log(selectedItem, 'selectedItem');
 
       const totalPrice =
         selectedItem.length > 0
@@ -221,7 +231,42 @@ const Cart: NextPageWithLayout = () => {
               .reduce((a: number, b: number) => a + b, 0)
           : 0;
 
-      const totalDelivery = selectedSection.map(x => x.deliverFee).reduce((a, b) => a + b, 0);
+      const totalDelivery = selectedSection
+        .map(x => {
+          console.log(x, 'x');
+
+          const sectionTotal = x.data
+            .map(v => getAdditionalPrice(v, true, true))
+            .reduce((a, b) => a + b, 0);
+          const deliverF = x.data.map(v => {
+            const amount = v?.amount as number;
+            const deliverResult = deliverPriceAfterCheckType({
+              result: (v.store?.deliveryFee as number) ?? 0,
+              sectionTotal:
+                v.deliverFeeType === 'FREE_IF_OVER'
+                  ? (v.product?.discountPrice as number) * amount
+                  : sectionTotal,
+              minOrderPrice: v.minOrderPrice ?? 10000000,
+              deliverFeeType: v.deliverFeeType,
+              minStorePrice: v.store?.minStorePrice ?? 10000000,
+            });
+
+            return deliverResult;
+          });
+
+          // console.log(deliverF2, 'deliverF2');
+
+          // const deliverF = deliverPriceAfterCheckType({
+          //   result: x.deliverFee,
+          //   sectionTotal,
+          //   minOrderPrice: x.minOrderPrice,
+          //   deliverFeeType: x.deliverFeeType,
+          //   minStorePrice: x.store?.minStorePrice as number,
+          // });
+
+          return Math.max(...deliverF);
+        })
+        .reduce((a, b) => a + b, 0);
 
       setTotalPrice(totalPrice);
       setTotalDelivery(totalDelivery);
@@ -249,6 +294,7 @@ const Cart: NextPageWithLayout = () => {
           .reduce((a, b) => a + b, 0)
       : 0,
   );
+  // 카카오 픽셀
   const [isKakaoCart, setIsKakaoCart] = useState(false);
   useEffect(() => {
     if (!user || isKakaoCart) return;
@@ -304,7 +350,7 @@ const Cart: NextPageWithLayout = () => {
           wcs_add["wa"] = "${NAVER_PIXEL_ID}";
           if (!_nasa) var _nasa={};
           if(window.wcs){
-          wcs.inflow();
+          wcs.inflow("barofish.com");
           wcs_do(_nasa);
           }
           `,
@@ -336,7 +382,7 @@ const Cart: NextPageWithLayout = () => {
                   onCheckedChange={checked => {
                     if (typeof checked === 'boolean') {
                       const value = checked;
-                      const filterData = data.map(v => v?.product?.state);
+                      const filterData = data.map((v: any) => v?.product?.state);
                       if (filterData.includes('INACTIVE'))
                         return setAlert({
                           message: '구매할 수 없는 상품이 포함되어 있습니다.',
@@ -361,8 +407,8 @@ const Cart: NextPageWithLayout = () => {
                   onDelete({
                     data: {
                       ids: data
-                        .filter(x => selectedItem.map(v => v.id).includes(x.id))
-                        .map(x => x.id ?? -1),
+                        .filter((x: any) => selectedItem.map(v => v.id).includes(x.id))
+                        .map((x: any) => x.id ?? -1),
                     },
                   });
                   setSelectedItem([]);
@@ -378,34 +424,68 @@ const Cart: NextPageWithLayout = () => {
               const sectionTotal = x.data
                 .map(v => getAdditionalPrice(v, true, true))
                 .reduce((a, b) => a + b, 0);
-              console.log(x, 'x');
 
-              const deliverResult = x.deliverFee;
+              // console.log(x, 'x', x.deliverFeeType);
+
+              // const deliverResult = x.deliverFee;
               // const deliverResult = deliverPriceAfterCheckType({
               //   result: x.deliverFee,
               //   sectionTotal,
               //   minOrderPrice: x.minOrderPrice,
               //   deliverFeeType: x.deliverFeeType,
+              //   minStorePrice: x.store?.minStorePrice as number,
               // });
+              let deliverS = 0;
 
               return (
                 <div key={x.index}>
-                  <div className='flex h-[56px] items-center gap-2 px-4'>
+                  <div className='mt-[5px] flex h-[70px] items-center gap-2 px-4'>
                     <Image
                       unoptimized
                       src={x.store?.profileImage ?? ''}
                       alt='store'
-                      width={28}
-                      height={28}
+                      width={40}
+                      height={40}
                       className='rounded-full border border-grey-90 object-cover'
-                      style={{ width: '28px', height: '28px' }}
+                      style={{ width: '40px', height: '40px' }}
                     />
-                    <p className='text-[18px] font-semibold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                      {x.store?.name ?? ''}
-                    </p>
+                    <div className='flex h-[auto] w-full flex-col  gap-2'>
+                      <div
+                        className={cm(
+                          'mx-1 text-[18px] font-semibold  -tracking-[0.03em] text-grey-10',
+                        )}
+                      >
+                        {x.store?.name ?? ''}
+                      </div>
+                      {x.deliverFeeType === 'S_CONDITIONAL' && x.minStorePrice > 0 && (
+                        <div className='mx-1 text-[14px] font-semibold -tracking-[0.03em] text-[#A2A4A9]'>
+                          {x.minStorePrice} 원 이상 구매시{' '}
+                          <span className='text-[#2689E5]'> 무료배송</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <Fragment>
                     {x.data.map((v, idx) => {
+                      const amount = v?.amount as number;
+
+                      const deliverResult = deliverPriceAfterCheckType({
+                        result: (v.store?.deliveryFee as number) ?? 0,
+                        sectionTotal:
+                          v.deliverFeeType === 'FREE_IF_OVER'
+                            ? (v.product?.discountPrice as number) * amount
+                            : sectionTotal,
+                        minOrderPrice: v.minOrderPrice ?? 10000000,
+                        deliverFeeType: v.deliverFeeType,
+                        minStorePrice: v.store?.minStorePrice ?? 10000000,
+                      });
+                      if (deliverS > 0) {
+                        // 상품중 가장 비싼 배송비
+                        deliverS = (v.store?.deliveryFee as number) ?? 0;
+                      } else {
+                        deliverS = deliverResult;
+                      }
+
                       return (
                         <div key={`cart${idx}`} className=''>
                           <div className='h-[1px] bg-grey-90' />
@@ -479,6 +559,21 @@ const Cart: NextPageWithLayout = () => {
                                             (v.product?.discountPrice ?? 0),
                                         )}원)`)}
                                   </p>
+
+                                  <p
+                                    className={cm('text-[14px]', {
+                                      'text-[#E53926]': v.deliverFeeType === 'FIX',
+                                      'text-[#2689E5]': v.deliverFeeType === 'FREE',
+                                      'text-[#67696F]':
+                                        v.deliverFeeType === 'S_CONDITIONAL' ||
+                                        v.deliverFeeType === 'FREE_IF_OVER',
+                                    })}
+                                  >
+                                    {v.deliverFeeType === 'FIX' && '개별배송'}
+                                    {v.deliverFeeType === 'FREE' && '무료배송'}
+                                    {v.deliverFeeType === 'S_CONDITIONAL' && '기본배송'}
+                                    {v.deliverFeeType === 'FREE_IF_OVER' && '기본배송'}
+                                  </p>
                                 </div>
                               </Link>
                               <button
@@ -529,7 +624,7 @@ const Cart: NextPageWithLayout = () => {
                                     : 'text-[18px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'
                                 }
                               >
-                                {`${formatToLocaleString(getAdditionalPrice(v, true), {
+                                {`${formatToLocaleString(getAdditionalPrice(v, true) * amount, {
                                   suffix: '원',
                                 })}`}
                               </p>
@@ -539,7 +634,6 @@ const Cart: NextPageWithLayout = () => {
                       );
                     })}
                   </Fragment>
-
                   <div className='mx-4 mb-6 mt-3.5 flex flex-col gap-1.5 rounded bg-grey-90 px-4 py-3'>
                     <div className='flex items-center justify-between'>
                       <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
@@ -555,9 +649,7 @@ const Cart: NextPageWithLayout = () => {
                         배송비
                       </p>
                       <p className='text-[14px] font-medium leading-[22px] -tracking-[0.03em] text-grey-50'>
-                        {deliverResult === 0
-                          ? '무료'
-                          : formatToLocaleString(deliverResult, { suffix: '원' })}
+                        {deliverS === 0 ? '무료' : formatToLocaleString(deliverS, { suffix: '원' })}
                       </p>
                     </div>
                   </div>
@@ -670,10 +762,9 @@ const Cart: NextPageWithLayout = () => {
                   const deliveryFee = deliverPriceAfterCheckType({
                     result: deliverResult,
                     sectionTotal,
-                    // minOrderPrice: v.store?.minOrderPrice ?? 0,
-                    // deliverFeeType: v.store?.deliverFeeType,
                     minOrderPrice: v.minOrderPrice ?? 0,
-                    deliverFeeType: v.deliverFeeType,
+                    deliverFeeType: v?.deliverFeeType,
+                    minStorePrice: v.store?.minStorePrice as number,
                   });
 
                   return {
@@ -705,11 +796,12 @@ const Cart: NextPageWithLayout = () => {
                   name: v.name,
                   amount: v.amount,
                   additionalPrice: v.additionalPrice,
-                  deliveryFee: v.deliveryFee,
+                  deliveryFee: totalDelivery,
                   stock: v.stock,
                   maxAvailableStock: v.maxAvailableStock,
                   needTaxation: v.needTaxation,
                   pointRate: v.pointRate,
+                  individualDeliveryFee: v.storeDeliverFee ? v.storeDeliverFee : v.deliveryFee,
                 }));
 
                 router.push({

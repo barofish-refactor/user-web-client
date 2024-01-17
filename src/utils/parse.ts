@@ -49,6 +49,7 @@ export const parseProductInfoState = (
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
     | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT'
   >,
 ) => {
   switch (v) {
@@ -60,6 +61,8 @@ export const parseProductInfoState = (
       return '배송 준비중';
     case 'ON_DELIVERY':
       return '배송중';
+    case 'DELIVERY_DIFFICULT':
+      return '배송 불가지역';
     case 'DELIVERY_DONE':
       return '배송 완료';
     case 'EXCHANGE_REQUEST':

@@ -48,7 +48,6 @@ const ProductList = ({
   }, [clearFilter]);
   const blurDataURL =
     'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
-  console.log(dataDto, 'dto');
 
   return (
     <div className={cm('px-4 py-[16px]', className)} id='test'>

@@ -40,6 +40,9 @@ export interface OptionState {
   needTaxation: boolean;
   pointRate: number;
   allDelveryFee?: number;
+  minStorePrice?: number;
+  storeDeliverFee?: number;
+  individualDeliveryFee?: number;
 }
 
 export interface miniOptionState {
@@ -54,6 +57,8 @@ export interface miniOptionState {
   needTaxation: boolean;
   pointRate: number;
   allDelveryFee?: number;
+  storeDeliverFee?: number;
+  individualDeliveryFee?: number;
 }
 
 export interface optionSelectorType {
@@ -64,12 +69,40 @@ export interface optionSelectorType {
 
 interface Props {
   data?: SimpleProductDto;
-  isVisible: boolean;
   setIsVisible: (value: boolean) => void;
 }
+interface DeliverPriceCheckType {
+  result: number;
+  sectionTotal: number;
+  minOrderPrice: number;
+  deliverFeeType?: deliverFeeTypeEnum;
+  minStorePrice: number;
+}
+
+const deliverPriceAfterCheckType = ({
+  result,
+  sectionTotal,
+  minOrderPrice,
+  deliverFeeType,
+  minStorePrice,
+}: DeliverPriceCheckType) => {
+  let finalResult;
+  if (deliverFeeType === 'FREE') {
+    finalResult = 0;
+  } else if (deliverFeeType === 'FREE_IF_OVER') {
+    finalResult = sectionTotal >= minOrderPrice ? 0 : result;
+  } else if (deliverFeeType === 'S_CONDITIONAL') {
+    console.log('S_CONDITIONAL', finalResult);
+    finalResult = sectionTotal >= minStorePrice ? 0 : result;
+  } else {
+    finalResult = result;
+  }
+
+  return finalResult;
+};
 
 /** 옵션 선택 BottomSheet */
-const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
+const BottomSheet = ({ data, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -102,9 +135,11 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
       enabled: !!data?.id,
     },
   );
+  console.log(data, 'data');
+
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
     async (args: AddBasketPayload) =>
-      await (await client()).addBasket(args, { type: ContentType.FormData }),
+      await (await client()).addBasketV2(args, { type: ContentType.FormData }),
   );
 
   const onMutate = ({ data }: AddBasketPayload) => {
@@ -286,6 +321,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                               storeName: data?.store?.name ?? '',
                               needTaxation: data?.needTaxation ?? false, //
                               pointRate: data?.pointRate ?? 0,
+                              minStorePrice: data?.store?.minStorePrice ?? 100000000,
                             });
                             setSelectedOption(tmp);
                           }
@@ -393,11 +429,11 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                       if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
                         return setAlert({ message: '필수옵션을 선택해주세요.' });
                       fpixel.addToCart({
-                        content_ids: selectedOption[0]?.productId,
+                        content_ids: ['facebook_' + selectedOption[0]?.productId],
                         content_type: 'product',
                         contents: selectedOption.map(item => {
                           return {
-                            item_id: item.productId,
+                            item_id: [item.productId],
                             item_name: item.productName + item.name,
                             affiliation: '바로피쉬',
                             currency: 'KRW',
@@ -447,18 +483,27 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                       if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                         setIsVisible(false);
                         if (selectedOption.filter(v => v.isNeeded === true).length > 0) {
-                          const querySendData: miniOptionState[] = selectedOption.map(v => ({
-                            productId: v.productId,
-                            optionId: v.optionId,
-                            name: v.name,
-                            amount: v.amount,
-                            additionalPrice: v.additionalPrice,
-                            deliveryFee: v.deliveryFee,
-                            stock: v.stock,
-                            maxAvailableStock: v.maxAvailableStock,
-                            needTaxation: v.needTaxation,
-                            pointRate: v.pointRate,
-                          }));
+                          const querySendData: miniOptionState[] = selectedOption.map(v => {
+                            const deliverResult = deliverPriceAfterCheckType({
+                              result: v.deliveryFee,
+                              sectionTotal: totalPrice,
+                              minOrderPrice: v.minOrderPrice ?? '1000000000',
+                              deliverFeeType: v.deliverFeeType,
+                              minStorePrice: (v.minStorePrice as number) ?? '100000000',
+                            });
+                            return {
+                              productId: v.productId,
+                              optionId: v.optionId,
+                              name: v.name,
+                              amount: v.amount,
+                              additionalPrice: v.additionalPrice,
+                              deliveryFee: deliverResult,
+                              stock: v.stock,
+                              maxAvailableStock: v.maxAvailableStock,
+                              needTaxation: v.needTaxation,
+                              pointRate: v.pointRate,
+                            };
+                          });
                           sessionStorage.setItem(
                             'Paths',
                             JSON.stringify({
@@ -476,18 +521,39 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                       if (selectedOption.filter(v => v.isNeeded === true).length === 0)
                         return setAlert({ message: '필수옵션을 1개 이상 선택해주세요.' });
 
-                      const querySendData: miniOptionState[] = selectedOption.map(v => ({
-                        productId: v.productId,
-                        optionId: v.optionId,
-                        name: v.name,
-                        amount: v.amount,
-                        additionalPrice: v.additionalPrice,
-                        deliveryFee: v.deliveryFee,
-                        stock: v.stock,
-                        maxAvailableStock: v.maxAvailableStock,
-                        needTaxation: v.needTaxation,
-                        pointRate: v.pointRate,
-                      }));
+                      const querySendData: miniOptionState[] = selectedOption.map(v => {
+                        console.log(
+                          v.deliveryFee,
+                          totalPrice,
+                          v.minOrderPrice ?? '1000000000',
+                          v.deliverFeeType,
+                          (v.minStorePrice as number) ?? '100000000',
+                        );
+
+                        const deliverResult = deliverPriceAfterCheckType({
+                          result: v.deliveryFee,
+                          sectionTotal: totalPrice,
+                          minOrderPrice: v.minOrderPrice ?? '1000000000',
+                          deliverFeeType: v.deliverFeeType,
+                          minStorePrice: (v.minStorePrice as number) ?? '100000000',
+                        });
+
+                        return {
+                          productId: v.productId,
+                          optionId: v.optionId,
+                          name: v.name,
+                          amount: v.amount,
+                          additionalPrice: v.additionalPrice,
+                          deliveryFee: deliverResult,
+                          stock: v.stock,
+                          maxAvailableStock: v.maxAvailableStock,
+                          needTaxation: v.needTaxation,
+                          pointRate: v.pointRate,
+                          individualDeliveryFee: v.storeDeliverFee ?? v.deliveryFee,
+                        };
+                      });
+                      // console.log(querySendData, 'querySendData');
+
                       router.push({
                         pathname: '/product/order',
                         query: { id: data?.id, options: aToB(JSON.stringify(querySendData)) },

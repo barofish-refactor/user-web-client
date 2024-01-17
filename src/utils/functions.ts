@@ -288,6 +288,7 @@ export interface checkDeliverType {
   totalPrice: number;
   deliverFee: number;
   minOrderPrice: number;
+  minStorePrice: number;
 }
 
 export const getDeliverFee = ({
@@ -295,15 +296,32 @@ export const getDeliverFee = ({
   deliverFee,
   minOrderPrice,
   totalPrice,
+  minStorePrice,
 }: checkDeliverType): number => {
-  const result =
-    type === 'FREE'
-      ? 0
-      : type === 'FIX'
-      ? deliverFee
-      : totalPrice >= (minOrderPrice ?? 0)
-      ? 0
-      : deliverFee;
+  // const result =
+  //   type === 'FREE'
+  //     ? 0
+  //     : type === 'FIX'
+  //     ? deliverFee
+  //     : totalPrice >= (minOrderPrice ?? 0)
+  //     ? 0
+  //     : deliverFee;
+
+  // else if (type === 'FIX') {
+  //   result = deliverFee;
+  // }
+  let result;
+
+  if (type === 'FREE') {
+    result = 0;
+  } else if (type === 'FREE_IF_OVER') {
+    result = totalPrice >= (minOrderPrice ?? 0) ? 0 : deliverFee;
+  } else if (type === 'S_CONDITIONAL') {
+    result = totalPrice >= (minStorePrice ?? 0) ? 0 : deliverFee;
+  } else {
+    result = deliverFee;
+  }
+
   return result;
 };
 
@@ -325,6 +343,7 @@ export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketTyp
       deliverFee: cur.deliveryFee ?? 0,
       totalPrice: curTotalPrice,
       minOrderPrice: cur.minOrderPrice ?? 0,
+      minStorePrice: cur.minStorePrice ?? 0,
     });
 
     if (index === -1) {
@@ -333,6 +352,9 @@ export const changeSectionBasket = (value: BasketProductDto[]): SectionBasketTyp
         store: cur.store,
         deliverFee: curDeliverFee,
         data: [cur],
+        deliverFeeType: cur.deliverFeeType ?? 'FREE',
+        minOrderPrice: cur.minOrderPrice as number,
+        minStorePrice: cur.minStorePrice as number,
       });
       idx++;
     } else {
@@ -357,11 +379,13 @@ export const changeSectionOption = (value: OptionState[]): SectionOptionType[] =
       .filter(v => v.productId === productId)
       .map(v => v.amount * (v.price + v.additionalPrice))
       .reduce((a, b) => a + b, 0);
+
     const curDeliverFee = getDeliverFee({
       type: cur.deliverFeeType,
       deliverFee: cur.deliveryFee,
       totalPrice: curTotalPrice,
       minOrderPrice: cur.minOrderPrice,
+      minStorePrice: cur.minStorePrice as number,
     });
 
     if (index === -1) {

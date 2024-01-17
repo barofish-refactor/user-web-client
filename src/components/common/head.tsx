@@ -170,7 +170,7 @@ function NaverScript() {
           wcs_add["wa"] = "${NAVER_PIXEL_ID}";
           if (!_nasa) var _nasa={};
           if(window.wcs){
-          wcs.inflow();
+          wcs.inflow("barofish.com");
           wcs_do(_nasa);
           }
           `,

@@ -37,16 +37,16 @@ import { VARIABLES } from 'src/variables';
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-const setOptionData = async (value: miniOptionState[]) =>
-  (await client())
+const setOptionData = async (value: miniOptionState[]) => {
+  return (await client())
     .selectRecentViewList({ ids: value.map(v => v.productId).join(',') })
-    .then(res => {
-      console.log(res.data.data, 'data');
-
+    .then((res: any) => {
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
+        console.log(res.data.data);
+
         value.forEach(v => {
-          const matched = res.data.data?.filter(x => x.id === v.productId);
+          const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
           if (matched && matched.length > 0) {
             optionData.push({
               isNeeded: true,
@@ -63,22 +63,26 @@ const setOptionData = async (value: miniOptionState[]) =>
               productImage: matched[0].image ?? '',
               needTaxation: matched[0].isNeedTaxation ?? false,
               minOrderPrice: matched[0].minOrderPrice ?? 0,
+              minStorePrice: matched[0].minStorePrice ?? 0,
               deliverFeeType: matched[0].deliverFeeType ?? 'FREE',
               storeId: matched[0].storeId ?? -1,
               storeImage: matched[0].storeImage ?? '',
               storeName: matched[0].storeName ?? '',
               pointRate: v.pointRate,
+              individualDeliveryFee: v.individualDeliveryFee,
             });
           }
         });
         return optionData;
       }
     });
+};
 
 /** 주문하기 */
 const Order: NextPageWithLayout = () => {
   const router = useRouter();
   const { options } = router.query;
+
   const { setAlert } = useAlertStore();
   const [refundBankData, setRefundBankData] = useState<RefundAccountType>({
     name: '',
@@ -102,14 +106,16 @@ const Order: NextPageWithLayout = () => {
   const [selectedCard, setSelectedCard] = useState<PaymentMethodDto>();
   const { onIamport } = useIamport();
   const { mutateAsync: orderProduct } = useMutation(
-    async (args: OrderReq) => await (await client()).orderProduct(args),
+    async (args: OrderReq) => await (await client()).orderProductV2(args),
   );
 
   const [tmpOption, setTmpOption] = useState<OptionState[]>([]);
+
   const [coponValid, setCoponValid] = useState<Coupon[]>();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
+
   const totalPrice =
     selectedOption.length > 0
       ? selectedOption
@@ -117,10 +123,13 @@ const Order: NextPageWithLayout = () => {
           .reduce((a: number, b: number) => a + b)
       : 0;
 
-  const totalDelivery = changeSectionOption(selectedOption)
-    .map(x => x.deliverFee)
-    .reduce((a, b) => a + b, 0);
-
+  // const totalDelivery = changeSectionOption(selectedOption)
+  //   .map(x => {
+  //     return x.deliverFee;
+  //   })
+  //   .reduce((a, b) => a + b, 0);
+  // console.log(totalDelivery);
+  const totalDelivery = selectedOption[0]?.deliveryFee;
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
@@ -194,6 +203,8 @@ const Order: NextPageWithLayout = () => {
     () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
     [buyPoint, imageReviewPoint, productPoint],
   );
+  // console.log(selectedOption);
+
   useEffect(() => {
     if (!selectedOption) return;
     localStorage.setItem(
@@ -233,7 +244,7 @@ const Order: NextPageWithLayout = () => {
         content_type: 'product',
         items: selectedOption.map(item => {
           return {
-            item_id: item.storeId,
+            item_id: ['facebook_' + item.productId],
             item_name: item.productName + item.name,
             affiliation: '바로피쉬',
             item_brand: item.storeName,
@@ -278,6 +289,7 @@ const Order: NextPageWithLayout = () => {
       router.push('/mypage');
       return;
     }
+
     router.push({
       pathname: '/product/payment',
       query: {
@@ -366,7 +378,7 @@ const Order: NextPageWithLayout = () => {
             productId: x.productId,
             optionId: x.optionId === -1 ? undefined : x.optionId,
             amount: x.amount,
-            deliveryFee: x.deliveryFee,
+            // deliveryFee: x.deliveryFee,
             needTaxation: x.needTaxation, //
             taxFreeAmount: taxFreePrice.allList[i],
           };
@@ -377,6 +389,7 @@ const Order: NextPageWithLayout = () => {
         point: Number(point),
         deliverPlaceId: shippingAddress.id,
         totalPrice: orderPrice,
+        totalDeliveryFee: totalDelivery,
         couponDiscountPrice: couponDiscountPoint,
         paymentMethodId: selectedCard?.id,
         paymentWay: parsePaymentWay(payMethod),
@@ -445,8 +458,9 @@ const Order: NextPageWithLayout = () => {
     if (!user) return;
     setName(user?.name ?? '');
     setPhone(user?.phone ?? '');
+    console.log(user, 'user');
 
-    const deliver = (user?.deliverPlaces ?? []).filter(x => x.isDefault === true);
+    const deliver = (user?.deliverPlaces ?? []).filter((x: any) => x.isDefault === true);
     setShippingAddress(deliver && deliver.length > 0 ? deliver[0] : undefined);
   }, [user]);
 
@@ -468,7 +482,6 @@ const Order: NextPageWithLayout = () => {
       setIsCouponVisible(false);
     };
     window.addEventListener('popstate', close, { passive: false });
-
     return () => {
       window.removeEventListener('popstate', close);
     };
@@ -486,6 +499,7 @@ const Order: NextPageWithLayout = () => {
     const tmpMiniOption: miniOptionState[] | undefined = router.isReady
       ? safeParse(bToA(options as string))
       : [];
+
     if (tmpMiniOption && tmpMiniOption.length > 0) {
       setOptionData(tmpMiniOption).then(res => {
         if (res) {
@@ -500,7 +514,7 @@ const Order: NextPageWithLayout = () => {
   useEffect(() => {
     if (couponData) {
       const totalPrices = totalDelivery + totalPrice;
-      const filter = couponData.filter(item => (item?.minPrice as number) <= totalPrices);
+      const filter = couponData.filter((item: any) => item?.minPrice <= totalPrices);
       setCoponValid(filter);
     }
   }, [couponData, totalDelivery, totalPrice]);
@@ -621,7 +635,6 @@ const Order: NextPageWithLayout = () => {
           )}
         </div>
         <div className='h-2 bg-grey-90' />
-
         {/* 주문 상품 */}
         <button
           className='flex h-[68px] w-full items-center gap-1.5 px-4'
@@ -633,12 +646,13 @@ const Order: NextPageWithLayout = () => {
           <p className='line-clamp-1 w-[65%] flex-1 text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
             {/* {`${data?.data?.title}`}{`${product.length > 1 ? ' 외 1개' :''}`} */}
             {`${selectedOption[0]?.productName}`}
+            {selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''}
           </p>
-          {selectedOption.length > 1 && (
+          {/* {selectedOption.length > 1 && (
             <p className='w-[13%] text-end text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>{`${
               selectedOption.length > 1 ? ` 외 ${selectedOption.length - 1}개` : ''
             }`}</p>
-          )}
+          )} */}
           <Image
             unoptimized
             src='/assets/icons/common/chevron-mypage.svg'
@@ -650,8 +664,14 @@ const Order: NextPageWithLayout = () => {
         </button>
         {isOpenProduct &&
           sectionOption.map(x => {
-            const deliverText =
-              x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
+            // const deliverText =
+            //   x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
+            const deliverText: any = x.data.map(v => {
+              return v.individualDeliveryFee;
+            });
+            const deliverRes =
+              Array.isArray(deliverText) === true ? Math.max(...deliverText) : deliverText;
+            console.log(deliverRes, 'deliverRes');
 
             return (
               <Fragment key={`${x.storeId}`}>
@@ -674,7 +694,12 @@ const Order: NextPageWithLayout = () => {
                       배송비
                     </p>
                     <p className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                      {deliverText}
+                      {deliverRes === 0 ? '무료' : deliverRes + '원'}
+                      {/* {Array.isArray(deliverText) === true
+                        ? `${Math.max(...deliverText)}원`
+                        : deliverText === 0
+                        ? '무료'
+                        : `${deliverText}원`} */}
                     </p>
                   </div>
                 </div>
@@ -753,7 +778,7 @@ const Order: NextPageWithLayout = () => {
             <button
               className='flex h-[44px] w-[93px] items-center justify-center rounded-lg border border-grey-80'
               type='button'
-              disabled={!couponData?.length}
+              disabled={!couponData?.length || !coponValid?.length}
               onClick={() => {
                 setIsCouponVisible(true);
                 history.pushState(location.href, '', '');
@@ -907,7 +932,7 @@ const Order: NextPageWithLayout = () => {
                         }}
                       >
                         {(paymentMethodData ?? []).length > 0 ? (
-                          (paymentMethodData ?? []).map((x, idx) => {
+                          (paymentMethodData ?? []).map((x: any, idx: number) => {
                             return (
                               <SwiperSlide key={`${idx}`} className='py-6'>
                                 <button
@@ -1157,7 +1182,7 @@ function BusinessInformation() {
         </button>
         {showInfo && info?.tcContent && (
           <div className='leaidng-[16px] mt-[18px] flex flex-col gap-2 text-[12px] font-medium -tracking-[0.03em] text-grey-60'>
-            {info.tcContent.map((v, i) => {
+            {info.tcContent.map((v: any, i: number) => {
               return <p key={i}>{`${v.title} : ${v.content}`}</p>;
             })}
           </div>

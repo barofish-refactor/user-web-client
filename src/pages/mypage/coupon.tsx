@@ -48,7 +48,6 @@ const MypageCoupon: NextPageWithLayout = () => {
   const { mutateAsync: selectDownloadCoupon, isLoading: isAddLoading } = useMutation(
     async (id: number) => await (await client()).selectDownloadCoupon(id, {}),
   );
-
   const onSelectDownloadCouponMutate = ({ id }: { id: number }) => {
     if (isAddLoading) return;
     selectDownloadCoupon(id)

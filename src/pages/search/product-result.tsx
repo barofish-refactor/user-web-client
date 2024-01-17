@@ -121,7 +121,6 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
       },
     },
   );
-  console.log(productData, 'productData');
 
   useEffect(() => {
     if (id && subItemId && data.data) {
@@ -227,8 +226,6 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
           <div
             onClick={() => {
               if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
-                console.log(router.asPath, 'asPath');
-
                 sessionStorage.setItem('Path', router.asPath);
                 router.push('/login');
                 return;

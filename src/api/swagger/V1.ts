@@ -12,18 +12,18 @@
 import { PortOneBodyData, PortOneCallbackData } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
-export class V2<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class V1<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
-   * @tags port-one-callback-handler-v-2
+   * @tags port-one-callback-handler
    * @name PortOneCallback
-   * @request POST:/v2/callback/iamport_pay_result
+   * @request POST:/v1/callback/iamport_pay_result
    * @response `200` `PortOneCallbackData` OK
    */
   portOneCallback = (data: PortOneBodyData, params: RequestParams = {}) =>
     this.request<PortOneCallbackData, any>({
-      path: `/v2/callback/iamport_pay_result`,
+      path: `/v1/callback/iamport_pay_result`,
       method: 'POST',
       body: data,
       type: ContentType.Json,

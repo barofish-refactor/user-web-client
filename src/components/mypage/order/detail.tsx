@@ -7,6 +7,7 @@ import { type OrderProductDto } from 'src/api/swagger/data-contracts';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
+import { type deliverFeeTypeEnum } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { formatToLocaleString, formatToPhone, getDeliverFee } from 'src/utils/functions';
 import { parsePaymentWay2, parseProductInfoState } from 'src/utils/parse';
@@ -27,10 +28,17 @@ interface SectionProductType {
   deliverFee: number;
   data: OrderProductDto[];
 }
-
+interface DeliverPriceCheckType {
+  result: number;
+  sectionTotal: number;
+  minOrderPrice: number;
+  deliverFeeType?: deliverFeeTypeEnum;
+  minStorePrice: number;
+}
 /** 장바구니 타입 변경 */
 const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] => {
   let idx = 0;
+
   const result = value.reduce((acc, cur) => {
     const ownerId = cur.storeId;
 
@@ -39,12 +47,13 @@ const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] =>
 
     const curTotalPrice = value
       .filter(v => v.product?.id === productId)
-      .map(v => (v.amount ?? 0) * (v.price ?? 0))
+      .map(v => (v.amount ?? 0) * (v.originPrice ?? 0))
       .reduce((a, b) => a + b, 0);
     const curDeliverFee = getDeliverFee({
       type: cur.deliverFeeType ?? 'FREE',
       deliverFee: cur.deliverFee ?? 0,
       totalPrice: curTotalPrice,
+      minStorePrice: cur.minStorePrice ?? 0,
       minOrderPrice: cur.minOrderPrice ?? 0,
     });
 
@@ -66,7 +75,42 @@ const changeSectionProduct = (value: OrderProductDto[]): SectionProductType[] =>
   }, [] as SectionProductType[]);
   return result;
 };
+const deliverPriceAfterCheckType = ({
+  result,
+  sectionTotal,
+  minOrderPrice,
+  deliverFeeType,
+  minStorePrice,
+}: DeliverPriceCheckType) => {
+  let finalResult;
+  if (deliverFeeType === 'FREE') {
+    finalResult = 0;
+  } else if (deliverFeeType === 'S_CONDITIONAL') {
+    finalResult = sectionTotal >= minStorePrice ? 0 : result;
+  } else {
+    finalResult = result;
+  }
 
+  return finalResult;
+};
+function getAdditionalPrice(
+  value: any,
+  // addDiscountPrice?: boolean,
+  multiple?: boolean,
+) {
+  const discountPrice = value?.price ?? 0;
+  let result = (value?.originPrice ?? 0) - discountPrice;
+
+  // if (addDiscountPrice) {
+  //   result = discountPrice + result;
+  // }
+
+  if (multiple) {
+    result = result * (value.amount ?? 0);
+  }
+
+  return result;
+}
 export function MypageOrderDetail({ id }: Props) {
   const { setAlert } = useAlertStore();
 
@@ -87,7 +131,20 @@ export function MypageOrderDetail({ id }: Props) {
     },
   );
 
-  const totalProductPrice = data?.productInfos?.map(v => v.price ?? 0).reduce((a, b) => a + b, 0);
+  const totalProductPrice = data?.productInfos
+    ?.map((v: any) => v.price ?? 0)
+    .reduce((a: number, b: number) => a + b, 0);
+  const refundTotalProductPrice = data?.productInfos
+    ?.map((v: any) => {
+      let price = v.price;
+      if (v.state === 'CANCELED') price = 0;
+      if (v.state === 'REFUND_DONE') price = 0;
+
+      return price ?? 0;
+      // v.price ?? 0;
+    })
+    .reduce((a: number, b: number) => a + b, 0);
+  console.log(refundTotalProductPrice, 'refundTotalProductPrice');
 
   const section = changeSectionProduct(data?.productInfos ?? []);
 
@@ -112,7 +169,7 @@ export function MypageOrderDetail({ id }: Props) {
     data?.productInfos
       ? data.productInfos
           .map((v: any) => v.price * v.optionItem?.pointRate * v.amount)
-          .reduce((a, b) => a + b, 0)
+          .reduce((a: number, b: number) => a + b, 0)
       : 0,
   );
   /** 후기 작성 적립금 */
@@ -123,6 +180,7 @@ export function MypageOrderDetail({ id }: Props) {
     [buyPoint, imageReviewPoint, productPoint],
   );
   const [isOpenProductPoint, setIsOpenProductPoint] = useState<boolean>(false);
+  console.log(data, 'data');
 
   return (
     <div>
@@ -173,7 +231,9 @@ export function MypageOrderDetail({ id }: Props) {
               <h3 className={headingClassName}>주문 상품</h3>
               <div className='flex flex-1 items-center gap-1.5'>
                 <div className='flex flex-1 font-medium leading-[24px] -tracking-[0.03em] text-grey-20'>
-                  <p className='line-clamp-1 flex-1'>{data?.productInfos?.[0]?.product?.title}</p>
+                  <p className='line-clamp-1 flex-1 text-end'>
+                    &nbsp;{data?.productInfos?.[0]?.product?.title}
+                  </p>
                   {(data?.productInfos?.length ?? 0) > 1 &&
                     `외 ${(data?.productInfos?.length ?? 0) - 1}건`}
                 </div>
@@ -189,8 +249,37 @@ export function MypageOrderDetail({ id }: Props) {
             </summary>
             <article className='space-y-4 pt-[22px]'>
               {(section ?? []).map((v, idx) => {
-                const sectionDeliverFee = v.deliverFee;
+                // const sectionDeliverFee = v.deliverFee;
+                const totalDelivery = v.data
+                  .map(x => {
+                    const sectionTotal = v.data
+                      .map(v => getAdditionalPrice(v, true))
+                      .reduce((a, b) => a + b, 0);
+
+                    const deliverF = deliverPriceAfterCheckType({
+                      result: x.deliverFee ?? 0,
+                      sectionTotal,
+                      minOrderPrice: x.minOrderPrice ?? 10000000,
+                      deliverFeeType: x.deliverFeeType,
+                      minStorePrice: x.minStorePrice ?? 10000000,
+                    });
+                    return deliverF;
+                  })
+                  .reduce((a, b) => a + b, 0);
                 const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
+                const exceptRefundTotalPriceData = v.data
+                  .map(x => {
+                    let price = x.price;
+                    if (x.state === 'CANCELED') price = 0;
+                    if (x.state === 'REFUND_DONE') price = 0;
+
+                    return price ?? 0;
+                  })
+                  .reduce((a, b) => a + b, 0);
+                // x => x.state !== 'CANCELED' || x.state !== 'REFUND_DONE',
+
+                console.log(exceptRefundTotalPriceData, '환불');
+
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>
                     <div className='flex items-center justify-between'>
@@ -215,9 +304,9 @@ export function MypageOrderDetail({ id }: Props) {
                           배송비
                         </span>
                         <span className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                          {sectionDeliverFee === 0
+                          {totalDelivery === 0
                             ? '무료'
-                            : formatToLocaleString(sectionDeliverFee, { suffix: '원' })}
+                            : formatToLocaleString(totalDelivery, { suffix: '원' })}
                         </span>
                       </div>
                     </div>
@@ -256,7 +345,7 @@ export function MypageOrderDetail({ id }: Props) {
                       );
                     })}
                     <p className='text-right font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
-                      {formatToLocaleString(totalPrice, { suffix: '원' })}
+                      {formatToLocaleString(exceptRefundTotalPriceData, { suffix: '원' })}
                     </p>
                   </div>
                 );
@@ -299,12 +388,27 @@ export function MypageOrderDetail({ id }: Props) {
                 {formatToLocaleString(data?.usePoint, { prefix: '-' })}원
               </span>
             </div>
+            <div className='flex items-center justify-between'>
+              <span className={labelClassName}>환불&취소 금액</span>
+              <span className={subValueClassName}>
+                {formatToLocaleString(totalProductPrice - refundTotalProductPrice, {
+                  prefix: '-',
+                })}
+                원
+              </span>
+            </div>
           </div>
           <hr className='border-[#f7f7f7]' />
           <div className='mt-4 flex items-center justify-between'>
             <h4 className={headingClassName}>최종 결제 금액</h4>
             <strong className='text-[20px] leading-[30px] -tracking-[0.03em] text-grey-10'>
-              {formatToLocaleString(data?.totalAmount, { suffix: '원' })}
+              {formatToLocaleString(
+                refundTotalProductPrice +
+                  totalDeliverFee -
+                  Number(data?.couponDiscount) -
+                  Number(data?.usePoint),
+                { suffix: '원' },
+              )}
             </strong>
           </div>
         </div>
@@ -348,7 +452,7 @@ export function MypageOrderDetail({ id }: Props) {
             </div>
           </button>
           {isOpenProductPoint &&
-            data?.productInfos?.map((item: any, idx) => {
+            data?.productInfos?.map((item: any, idx: number) => {
               return (
                 <Fragment key={idx}>
                   <div className='flex items-center justify-between'>

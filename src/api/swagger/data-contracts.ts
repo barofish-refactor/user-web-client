@@ -65,6 +65,8 @@ export interface OrderProductInfo {
   /** @format int32 */
   productId?: number;
   /** @format int32 */
+  storeId?: number;
+  /** @format int32 */
   optionItemId?: number;
   state?:
     | 'WAIT_DEPOSIT'
@@ -79,7 +81,8 @@ export interface OrderProductInfo {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   /** @format int32 */
   settlePrice?: number;
   /** @format int32 */
@@ -90,7 +93,7 @@ export interface OrderProductInfo {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliveryFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliveryFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   deliverCompanyCode?: string;
@@ -107,11 +110,14 @@ export interface OrderProductInfo {
   isTaxFree?: boolean;
   order?: Orders;
   product?: Product;
-  cfix?: boolean;
   ifOver?: boolean;
   free?: boolean;
-  cifOver?: boolean;
-  fix?: boolean;
+  /** @format int32 */
+  totalPriceMinusDeliveryFee?: number;
+  /** @format int32 */
+  totalPriceContainsDeliveryFee?: number;
+  /** @format int32 */
+  totalProductPrice?: number;
 }
 
 export interface Orders {
@@ -131,7 +137,8 @@ export interface Orders {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   paymentWay?:
     | 'CARD'
     | 'KEY_IN'
@@ -162,6 +169,13 @@ export interface Orders {
   bankName?: string;
   productInfos?: OrderProductInfo[];
   deliverPlace?: OrderDeliverPlace;
+  pointUsed?: boolean;
+  vbankRefundInfo?: VBankRefundInfo;
+  couponUsed?: boolean;
+  /** @format int32 */
+  usedPoint?: number;
+  /** @format int32 */
+  usedCouponId?: number;
 }
 
 export interface Product {
@@ -196,7 +210,7 @@ export interface Product {
   promotionStartAt?: string;
   /** @format date-time */
   promotionEndAt?: string;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   deliverFee?: number;
   /** @format int32 */
@@ -210,10 +224,11 @@ export interface Product {
   recommendedCookingWay?: string;
   /** @format int32 */
   categoryId?: number;
-  deliveryTypeFreeIfOver?: boolean;
+  deliveryTypeFree?: boolean;
   deliveryTypeFix?: boolean;
+  deliveryTypeFreeIfOver?: boolean;
   promotionEnd?: boolean;
-  deliveryTypeFee?: boolean;
+  sconditional?: boolean;
 }
 
 export interface Review {
@@ -275,8 +290,11 @@ export interface StoreInfo {
   oneLineDescription?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional?: boolean;
   /** @format int32 */
-  minOrderPrice?: number;
+  minStorePrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
   /** @format float */
   settlementRate?: number;
   bankName?: string;
@@ -298,6 +316,9 @@ export interface StoreInfo {
   businessRegistration?: string;
   bankAccountCopy?: string;
   deliverCompany?: string;
+  /** @format int32 */
+  id?: number;
+  conditional?: boolean;
 }
 
 export interface TopBar {
@@ -359,6 +380,13 @@ export interface UserInfo {
   /** @format int32 */
   point?: number;
   grade?: Grade;
+}
+
+export interface VBankRefundInfo {
+  bankHolder?: string;
+  bankCode?: string;
+  bankName?: string;
+  bankAccount?: string;
 }
 
 export interface CustomResponseTopBarProductMap {
@@ -423,6 +451,8 @@ export interface OrderReq {
   point?: number;
   /** @format int32 */
   totalPrice?: number;
+  /** @format int32 */
+  totalDeliveryFee?: number;
   /** @format int32 */
   couponDiscountPrice?: number;
   products?: OrderProductReq[];
@@ -518,7 +548,8 @@ export interface OrderDto {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   ordererName?: string;
   ordererTel?: string;
   paymentWay?:
@@ -558,9 +589,11 @@ export interface OrderProductDto {
   storeName?: string;
   /** @format int32 */
   deliverFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
+  /** @format int32 */
+  minStorePrice?: number;
   product?: ProductListDto;
   state?:
     | 'WAIT_DEPOSIT'
@@ -575,7 +608,8 @@ export interface OrderProductDto {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   optionName?: string;
   optionItem?: OptionItemDto;
   /** @format int32 */
@@ -621,10 +655,17 @@ export interface ProductListDto {
   /** @format int32 */
   storeId?: number;
   storeName?: string;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
+  /** @format int32 */
+  productDeliveryFee?: number;
+  isConditional?: boolean;
+  /** @format int32 */
+  minStorePrice?: number;
+  /** @format int32 */
+  storeDeliverFee?: number;
   storeImage?: string;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
   /** @format int32 */
   parentCategoryId?: number;
   filterValues?: ProductFilterValueDto[];
@@ -667,6 +708,24 @@ export interface UserInfoDto {
   notificationCount?: number;
   /** @format int32 */
   saveProductCount?: number;
+}
+
+export interface RequestCancelReq {
+  cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
+  content?: string;
+}
+
+export interface AddBasketOptionReq {
+  /** @format int32 */
+  optionId?: number;
+  /** @format int32 */
+  amount?: number;
+}
+
+export interface AddBasketReq {
+  /** @format int32 */
+  productId?: number;
+  options?: AddBasketOptionReq[];
 }
 
 export interface VerifyCodeReq {
@@ -962,6 +1021,11 @@ export interface StoreAdditionalDto {
   mosRegistration?: string;
   businessRegistration?: string;
   bankAccountCopy?: string;
+  isConditional?: boolean;
+  /** @format int32 */
+  minOrderPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
 }
 
 export interface StoreDto {
@@ -983,6 +1047,11 @@ export interface StoreDto {
   oneLineDescription?: string;
   deliverCompany?: string;
   additionalData?: StoreAdditionalDto;
+  isConditional?: boolean;
+  /** @format int32 */
+  minOrderPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
 }
 
 export interface SetMainPartnerReq {
@@ -1115,8 +1184,11 @@ export interface SimpleStore {
   oneLineDescription?: string;
   deliverCompany?: string;
   isLike?: boolean;
+  isConditional?: boolean;
   /** @format int32 */
-  minOrderPrice?: number;
+  minStorePrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
   reviewStatistic?: ReviewStatistic[];
   products?: ProductListDto[];
   reviews?: ReviewDto[];
@@ -1220,7 +1292,7 @@ export interface ProductUpdateReq {
   isActive?: boolean;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   deliveryInfo?: string;
@@ -1312,7 +1384,7 @@ export interface ProductTastingNoteInquiryDto {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   oily?: string;
@@ -1383,7 +1455,7 @@ export interface ProductTastingNoteResponse {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   tastes?: TastingNoteTaste[];
@@ -1424,7 +1496,7 @@ export interface SimpleProductDto {
   deliveryInfo?: string;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   descriptionImages?: string[];
@@ -1518,7 +1590,7 @@ export interface ProductAddReq {
   isActive?: boolean;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   deliveryInfo?: string;
@@ -1574,11 +1646,6 @@ export interface ProductInformation {
   /** @format int32 */
   productId?: number;
   itemCode?: string;
-}
-
-export interface RequestCancelReq {
-  cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
-  content?: string;
 }
 
 export interface ProcessDeliverStartReq {
@@ -1890,11 +1957,14 @@ export interface BasketProductDto {
   product?: ProductListDto;
   /** @format int32 */
   amount?: number;
-  /** @format int32 */
-  deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
+  isConditional?: boolean;
+  /** @format int32 */
+  minStorePrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
   option?: OptionItemDto;
 }
 
@@ -1903,19 +1973,6 @@ export interface CustomResponseBasketProductDto {
   code?: string;
   data?: BasketProductDto;
   errorMsg?: string;
-}
-
-export interface AddBasketOptionReq {
-  /** @format int32 */
-  optionId?: number;
-  /** @format int32 */
-  amount?: number;
-}
-
-export interface AddBasketReq {
-  /** @format int32 */
-  productId?: number;
-  options?: AddBasketOptionReq[];
 }
 
 export interface BasketTastingNoteDeleteReq {
@@ -2072,8 +2129,8 @@ export interface PageableObject {
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
-  unpaged?: boolean;
   paged?: boolean;
+  unpaged?: boolean;
 }
 
 export interface SortObject {
@@ -2255,6 +2312,66 @@ export interface ProductPhotiReviewDto {
   imageUrls?: string[];
 }
 
+export interface BasketProductDtoV2 {
+  /** @format int32 */
+  id?: number;
+  store?: BasketStoreDto;
+  product?: BasketProductInfoDto;
+  /** @format int32 */
+  amount?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
+  /** @format int32 */
+  minOrderPrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
+  isConditional?: boolean;
+  /** @format int32 */
+  minStorePrice?: number;
+  option?: OptionItemDto;
+}
+
+export interface BasketProductInfoDto {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  productId?: number;
+  state?: 'ACTIVE' | 'INACTIVE' | 'INACTIVE_PARTNER' | 'SOLD_OUT' | 'DELETED';
+  image?: string;
+  title?: string;
+  isNeedTaxation?: boolean;
+  /** @format int32 */
+  discountPrice?: number;
+  /** @format int32 */
+  originPrice?: number;
+  /** @format int32 */
+  storeId?: number;
+  /** @format int32 */
+  minOrderPrice?: number;
+  /** @format int32 */
+  minStorePrice?: number;
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
+}
+
+export interface BasketStoreDto {
+  /** @format int32 */
+  storeId?: number;
+  name?: string;
+  backgroundImage?: string;
+  profileImage?: string;
+  isConditional?: boolean;
+  /** @format int32 */
+  minStorePrice?: number;
+  /** @format int32 */
+  deliveryFee?: number;
+}
+
+export interface CustomResponseListBasketProductDtoV2 {
+  isSuccess?: boolean;
+  code?: string;
+  data?: BasketProductDtoV2[];
+  errorMsg?: string;
+}
+
 export interface CustomResponseString {
   isSuccess?: boolean;
   code?: string;
@@ -2411,7 +2528,8 @@ export interface OrderProductInfoDto {
     | 'CANCEL_REQUEST'
     | 'REFUND_REQUEST'
     | 'REFUND_ACCEPT'
-    | 'REFUND_DONE';
+    | 'REFUND_DONE'
+    | 'DELIVERY_DIFFICULT';
   /** @format int32 */
   settlePrice?: number;
   /** @format int32 */
@@ -2422,7 +2540,7 @@ export interface OrderProductInfoDto {
   amount?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   cancelReason?: 'JUST' | 'DELIVER_DELAY' | 'ORDER_FAULT' | 'BAD_SERVICE';
   cancelReasonContent?: string;
   deliverCompany?: string;
@@ -3095,7 +3213,7 @@ export interface CompareProductDto {
   discountPrice?: number;
   /** @format int32 */
   deliveryFee?: number;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   minOrderPrice?: number;
   compareFilters?: CompareFilterDto[];
@@ -3231,7 +3349,7 @@ export interface TastingNoteCompareBasketProductDto {
   /** @format int32 */
   minOrderPrice?: number;
   storeImage?: string;
-  deliverFeeType?: 'FREE' | 'C_FIX' | 'C_FREE_IF_OVER' | 'FIX' | 'FREE_IF_OVER';
+  deliverFeeType?: 'FREE' | 'FIX' | 'FREE_IF_OVER' | 'S_CONDITIONAL';
   /** @format int32 */
   parentCategoryId?: number;
   tastingNoteExists?: boolean;
@@ -3305,6 +3423,10 @@ export interface CustomResponseListAddress {
   errorMsg?: string;
 }
 
+export interface DeleteBasketReq {
+  ids?: number[];
+}
+
 export interface DeleteReportReq {
   reportIds?: number[];
 }
@@ -3325,10 +3447,6 @@ export interface DeleteCompareSetReq {
 
 export interface DeleteSaveProductReq {
   productId?: number[];
-}
-
-export interface DeleteBasketReq {
-  ids?: number[];
 }
 
 export type PortOneCallbackData = object;
@@ -3372,6 +3490,26 @@ export interface UpdateReviewV2Payload {
 export type UpdateReviewV2Data = CustomResponseObject;
 
 export type OrderProductV2Data = CustomResponseOrderDto;
+
+export interface CancelOrderByUserV2Payload {
+  data: RequestCancelReq;
+}
+
+export type CancelOrderByUserV2Data = CustomResponseBoolean;
+
+export interface CancelOrdersByPartnerV2Payload {
+  orderProductInfoIds: number[];
+}
+
+export type CancelOrdersByPartnerV2Data = CustomResponseBoolean;
+
+export type UpdateBasketV2Data = CustomResponseBoolean;
+
+export interface AddBasketV2Payload {
+  data: AddBasketReq;
+}
+
+export type AddBasketV2Data = CustomResponseBoolean;
 
 export type VerifyCodeData = CustomResponseInteger;
 
@@ -3532,6 +3670,11 @@ export interface UpdateStoreInfoPayload {
   deliverCompany?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional: boolean;
+  /** @format int32 */
+  minStorePrice: number;
+  /** @format int32 */
+  deliveryFee: number;
   oneLineDescription?: string;
   additionalData?: AddStoreAdditionalReq;
   /** @format binary */
@@ -3557,6 +3700,11 @@ export interface UpdateStoreInfo1Payload {
   deliverCompany?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional: boolean;
+  /** @format int32 */
+  minStorePrice: number;
+  /** @format int32 */
+  deliveryFee: number;
   oneLineDescription?: string;
   additionalData?: AddStoreAdditionalReq;
   /** @format binary */
@@ -3597,6 +3745,11 @@ export interface AddStorePayload {
   visitNote?: string;
   /** @format int32 */
   refundDeliverFee?: number;
+  isConditional: boolean;
+  /** @format int32 */
+  minStorePrice: number;
+  /** @format int32 */
+  deliveryFee: number;
   oneLineDescription?: string;
   deliverCompany?: string;
   additionalData: AddStoreAdditionalReq;
@@ -4067,6 +4220,8 @@ export type SelectProductCountByUserV2Data = CustomResponseInteger;
 
 export type GetExpectedArrivalDateData = CustomResponseObject;
 
+export type SelectBasketV2Data = CustomResponseListBasketProductDtoV2;
+
 export type VerifyCodeWithImpUidData = CustomResponseString;
 
 export type WhoamiData = CustomResponseString;
@@ -4332,6 +4487,12 @@ export type SelectAdminLogListData = CustomResponsePageAdminLogDto;
 export type SelectAdminListData = CustomResponsePageAdmin;
 
 export type SelectAddressListData = CustomResponseListAddress;
+
+export interface DeleteBasketV2Payload {
+  data: DeleteBasketReq;
+}
+
+export type DeleteBasketV2Data = CustomResponseBoolean;
 
 export type DeleteSearchFilterFieldData = CustomResponseBoolean;
 
