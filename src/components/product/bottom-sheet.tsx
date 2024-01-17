@@ -550,6 +550,7 @@ const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
                           maxAvailableStock: v.maxAvailableStock,
                           needTaxation: v.needTaxation,
                           pointRate: v.pointRate,
+                          individualDeliveryFee: v.storeDeliverFee ?? v.deliveryFee,
                         };
                       });
                       // console.log(querySendData, 'querySendData');

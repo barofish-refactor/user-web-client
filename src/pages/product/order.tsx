@@ -115,7 +115,6 @@ const Order: NextPageWithLayout = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
-  console.log(selectedOption, 'selectedOptionselectedOption');
 
   const totalPrice =
     selectedOption.length > 0
@@ -204,7 +203,7 @@ const Order: NextPageWithLayout = () => {
     () => buyPoint + (imageReviewPoint ?? 0) + productPoint,
     [buyPoint, imageReviewPoint, productPoint],
   );
-  console.log(selectedOption);
+  // console.log(selectedOption);
 
   useEffect(() => {
     if (!selectedOption) return;
@@ -459,6 +458,7 @@ const Order: NextPageWithLayout = () => {
     if (!user) return;
     setName(user?.name ?? '');
     setPhone(user?.phone ?? '');
+    console.log(user, 'user');
 
     const deliver = (user?.deliverPlaces ?? []).filter((x: any) => x.isDefault === true);
     setShippingAddress(deliver && deliver.length > 0 ? deliver[0] : undefined);
@@ -664,9 +664,7 @@ const Order: NextPageWithLayout = () => {
           />
         </button>
         {isOpenProduct &&
-          sectionOption.map((x, idx) => {
-            console.log(x, 'sds', idx);
-
+          sectionOption.map(x => {
             // const deliverText =
             //   x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
             const deliverText: any = x.data.map(v => {
@@ -674,7 +672,6 @@ const Order: NextPageWithLayout = () => {
             });
             const deliverRes =
               Array.isArray(deliverText) === true ? Math.max(...deliverText) : deliverText;
-            console.log(deliverRes, 'deliverRes');
 
             return (
               <Fragment key={`${x.storeId}`}>
