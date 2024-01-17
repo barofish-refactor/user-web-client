@@ -94,7 +94,8 @@ export function ReviewPhoto({ id, type }: Props) {
 
   useEffect(() => {
     if (data) refetch();
-  }, [data, refetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     if (data && data.pages[0]?.pagedReviews) {
       const totalPages = data?.pages[0]?.pagedReviews?.totalPages as number;
