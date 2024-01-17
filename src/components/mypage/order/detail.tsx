@@ -344,9 +344,9 @@ export function MypageOrderDetail({ id }: Props) {
                         </div>
                       );
                     })}
-                    <p className='text-right font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
+                    {/* <p className='text-right font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
                       {formatToLocaleString(exceptRefundTotalPriceData, { suffix: '원' })}
-                    </p>
+                    </p> */}
                   </div>
                 );
               })}
@@ -391,7 +391,7 @@ export function MypageOrderDetail({ id }: Props) {
             <div className='flex items-center justify-between'>
               <span className={labelClassName}>환불&취소 금액</span>
               <span className={subValueClassName}>
-                {formatToLocaleString(totalProductPrice - refundTotalProductPrice, {
+                {formatToLocaleString(totalProductPrice, {
                   prefix: '-',
                 })}
                 원
@@ -403,10 +403,7 @@ export function MypageOrderDetail({ id }: Props) {
             <h4 className={headingClassName}>최종 결제 금액</h4>
             <strong className='text-[20px] leading-[30px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(
-                refundTotalProductPrice +
-                  totalDeliverFee -
-                  Number(data?.couponDiscount) -
-                  Number(data?.usePoint),
+                totalProductPrice - Number(data?.couponDiscount) - Number(data?.usePoint),
                 { suffix: '원' },
               )}
             </strong>
