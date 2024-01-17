@@ -107,7 +107,6 @@ const Cart: NextPageWithLayout = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [totalDelivery, setTotalDelivery] = useState<number>(0);
   const [sectionCart, setSectionCart] = useState<SectionBasketType[]>([]);
-  const [deliveryOrder, setDeliveryOrder] = useState<any>([]);
   const { data, refetch, isLoading } = useQuery(queryKey.cart.lists, async () => {
     const res = await (await client()).selectBasketV2();
     if (res.data.isSuccess) {
@@ -218,7 +217,6 @@ const Cart: NextPageWithLayout = () => {
       query: { amount: amount + 1 },
     });
   };
-  console.log(deliveryOrder, ']');
 
   // 옵션에 따른 총 가격
   useEffect(() => {
@@ -265,10 +263,7 @@ const Cart: NextPageWithLayout = () => {
           //   deliverFeeType: x.deliverFeeType,
           //   minStorePrice: x.store?.minStorePrice as number,
           // });
-          if (Math.max(...deliverF) > 0) {
-            const deliveryOrders = Math.max(...deliverF);
-            setDeliveryOrder((prev: any) => [...prev, deliveryOrders]);
-          }
+
           return Math.max(...deliverF);
         })
         .reduce((a, b) => a + b, 0);
