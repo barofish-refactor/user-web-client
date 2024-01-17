@@ -635,7 +635,6 @@ const Order: NextPageWithLayout = () => {
           )}
         </div>
         <div className='h-2 bg-grey-90' />
-
         {/* 주문 상품 */}
         <button
           className='flex h-[68px] w-full items-center gap-1.5 px-4'
@@ -672,6 +671,7 @@ const Order: NextPageWithLayout = () => {
             });
             const deliverRes =
               Array.isArray(deliverText) === true ? Math.max(...deliverText) : deliverText;
+            console.log(deliverRes, 'deliverRes');
 
             return (
               <Fragment key={`${x.storeId}`}>

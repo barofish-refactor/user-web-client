@@ -368,7 +368,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (
             <div className='absolute top-0 z-[100] flex h-[100vh] w-full flex-col justify-end bg-black/50'>
-              <ProductBottomSheet data={data} isVisible={isVisible} setIsVisible={setIsVisible} />
+              <ProductBottomSheet data={data} setIsVisible={setIsVisible} />
             </div>
           )}
         </div>
@@ -498,74 +498,73 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 className='product-delivery-description mt-5 px-4'
               /> */}
             </div>
-            {/* 하단 부분 */}
-            <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
-              <button
-                className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
-                onClick={() => {
-                  if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
-                    sessionStorage.setItem('Path', router.asPath);
-                    router.push('/login');
-                    return;
-                  }
-                  if (data?.isLike)
-                    onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
-                  else {
-                    if (data?.tastingNoteInfo?.length === 0)
-                      return setAlert({
-                        message: '테이스팅 노트 준비중입니다.',
-                      });
-                    onSaveMutate({ data: { productId: Number(id) } });
-                  }
-                }}
-              >
-                <Image
-                  unoptimized
-                  alt='heart'
-                  width={30}
-                  height={30}
-                  src={
-                    isLiked
-                      ? '/assets/icons/product/product-bookmark-on.svg'
-                      : '/assets/icons/product/product-bookmark-off.svg'
-                  }
-                />
-              </button>
-              <button
-                disabled={data?.state === 'INACTIVE'}
-                className={
-                  data?.state === 'ACTIVE'
-                    ? 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
-                    : 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-grey-70'
-                }
-                onClick={() => {
-                  if (data?.state !== 'ACTIVE') {
-                    let message = '';
-                    switch (data?.state) {
-                      case 'DELETED':
-                        message = '삭제된 상품입니다.';
-                        break;
-                      case 'SOLD_OUT':
-                        message = '품절된 상품입니다.';
-                        break;
-                      case 'INACTIVE':
-                        message = '비활성화된 상품입니다.';
-                        break;
-                      default:
-                        break;
-                    }
-                    return setAlert({ message });
-                  }
-                  setIsVisible(true);
-                }}
-              >
-                <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
-                  {data?.state === 'ACTIVE' ? '구매하기' : '상품 준비중'}
-                </p>
-              </button>
-            </div>
           </>
         </PullToRefresh>
+        {/* 하단 부분 */}
+        <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
+          <button
+            className='flex h-[52px] w-[54px] items-center justify-center rounded-lg border border-grey-80'
+            onClick={() => {
+              if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                sessionStorage.setItem('Path', router.asPath);
+                router.push('/login');
+                return;
+              }
+              if (data?.isLike) onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
+              else {
+                if (data?.tastingNoteInfo?.length === 0)
+                  return setAlert({
+                    message: '테이스팅 노트 준비중입니다.',
+                  });
+                onSaveMutate({ data: { productId: Number(id) } });
+              }
+            }}
+          >
+            <Image
+              unoptimized
+              alt='heart'
+              width={30}
+              height={30}
+              src={
+                isLiked
+                  ? '/assets/icons/product/product-bookmark-on.svg'
+                  : '/assets/icons/product/product-bookmark-off.svg'
+              }
+            />
+          </button>
+          <button
+            disabled={data?.state === 'INACTIVE'}
+            className={
+              data?.state === 'ACTIVE'
+                ? 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-primary-50'
+                : 'flex h-[52px] flex-1 items-center justify-center rounded-lg bg-grey-70'
+            }
+            onClick={() => {
+              if (data?.state !== 'ACTIVE') {
+                let message = '';
+                switch (data?.state) {
+                  case 'DELETED':
+                    message = '삭제된 상품입니다.';
+                    break;
+                  case 'SOLD_OUT':
+                    message = '품절된 상품입니다.';
+                    break;
+                  case 'INACTIVE':
+                    message = '비활성화된 상품입니다.';
+                    break;
+                  default:
+                    break;
+                }
+                return setAlert({ message });
+              }
+              setIsVisible(true);
+            }}
+          >
+            <p className='text-[18px] font-bold -tracking-[0.03em] text-white'>
+              {data?.state === 'ACTIVE' ? '구매하기' : '상품 준비중'}
+            </p>
+          </button>
+        </div>
       </div>
     </>
   );

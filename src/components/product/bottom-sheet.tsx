@@ -69,7 +69,6 @@ export interface optionSelectorType {
 
 interface Props {
   data?: SimpleProductDto;
-  isVisible: boolean;
   setIsVisible: (value: boolean) => void;
 }
 interface DeliverPriceCheckType {
@@ -103,7 +102,7 @@ const deliverPriceAfterCheckType = ({
 };
 
 /** 옵션 선택 BottomSheet */
-const BottomSheet = ({ data, isVisible, setIsVisible }: Props) => {
+const BottomSheet = ({ data, setIsVisible }: Props) => {
   const target = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
