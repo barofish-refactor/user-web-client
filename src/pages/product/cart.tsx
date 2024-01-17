@@ -266,10 +266,9 @@ const Cart: NextPageWithLayout = () => {
           //   minStorePrice: x.store?.minStorePrice as number,
           // });
           if (Math.max(...deliverF) > 0) {
-            const deliveryOrder = Math.max(...deliverF);
-            setDeliveryOrder((prev: any) => [...prev, deliveryOrder]);
+            const deliveryOrders = Math.max(...deliverF);
+            setDeliveryOrder((prev: any) => [...prev, deliveryOrders]);
           }
-
           return Math.max(...deliverF);
         })
         .reduce((a, b) => a + b, 0);
@@ -807,7 +806,7 @@ const Cart: NextPageWithLayout = () => {
                   maxAvailableStock: v.maxAvailableStock,
                   needTaxation: v.needTaxation,
                   pointRate: v.pointRate,
-                  individualDeliveryFee: deliveryOrder,
+                  individualDeliveryFee: v.deliveryFee,
                 }));
 
                 router.push({

@@ -42,7 +42,7 @@ export interface OptionState {
   allDelveryFee?: number;
   minStorePrice?: number;
   storeDeliverFee?: number;
-  individualDeliveryFee?: number[];
+  individualDeliveryFee?: number;
 }
 
 export interface miniOptionState {
@@ -58,7 +58,7 @@ export interface miniOptionState {
   pointRate: number;
   allDelveryFee?: number;
   storeDeliverFee?: number;
-  individualDeliveryFee?: number[];
+  individualDeliveryFee?: number;
 }
 
 export interface optionSelectorType {

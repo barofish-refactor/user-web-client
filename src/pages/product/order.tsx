@@ -667,8 +667,14 @@ const Order: NextPageWithLayout = () => {
           sectionOption.map((x, idx) => {
             console.log(x, 'sds', idx);
 
-            const deliverText =
-              x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
+            // const deliverText =
+            //   x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
+            const deliverText: any = x.data.map(v => {
+              return v.individualDeliveryFee;
+            });
+            const deliverRes =
+              Array.isArray(deliverText) === true ? Math.max(...deliverText) : deliverText;
+            console.log(deliverRes, 'deliverRes');
 
             return (
               <Fragment key={`${x.storeId}`}>
@@ -691,9 +697,12 @@ const Order: NextPageWithLayout = () => {
                       배송비
                     </p>
                     <p className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                      {selectedOption[0].individualDeliveryFee &&
-                        selectedOption[0]?.individualDeliveryFee[idx]}
-                      원
+                      {deliverRes === 0 ? '무료' : deliverRes + '원'}
+                      {/* {Array.isArray(deliverText) === true
+                        ? `${Math.max(...deliverText)}원`
+                        : deliverText === 0
+                        ? '무료'
+                        : `${deliverText}원`} */}
                     </p>
                   </div>
                 </div>
