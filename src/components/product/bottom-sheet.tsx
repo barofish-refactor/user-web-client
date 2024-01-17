@@ -41,6 +41,8 @@ export interface OptionState {
   pointRate: number;
   allDelveryFee?: number;
   minStorePrice?: number;
+  storeDeliverFee?: number;
+  individualDeliveryFee?: number[];
 }
 
 export interface miniOptionState {
@@ -55,6 +57,8 @@ export interface miniOptionState {
   needTaxation: boolean;
   pointRate: number;
   allDelveryFee?: number;
+  storeDeliverFee?: number;
+  individualDeliveryFee?: number[];
 }
 
 export interface optionSelectorType {

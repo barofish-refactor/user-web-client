@@ -107,7 +107,7 @@ const Cart: NextPageWithLayout = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [totalDelivery, setTotalDelivery] = useState<number>(0);
   const [sectionCart, setSectionCart] = useState<SectionBasketType[]>([]);
-
+  const [deliveryOrder, setDeliveryOrder] = useState<any>([]);
   const { data, refetch, isLoading } = useQuery(queryKey.cart.lists, async () => {
     const res = await (await client()).selectBasketV2();
     if (res.data.isSuccess) {
@@ -218,6 +218,7 @@ const Cart: NextPageWithLayout = () => {
       query: { amount: amount + 1 },
     });
   };
+  console.log(deliveryOrder, ']');
 
   // 옵션에 따른 총 가격
   useEffect(() => {
@@ -264,6 +265,11 @@ const Cart: NextPageWithLayout = () => {
           //   deliverFeeType: x.deliverFeeType,
           //   minStorePrice: x.store?.minStorePrice as number,
           // });
+          if (Math.max(...deliverF) > 0) {
+            const deliveryOrder = Math.max(...deliverF);
+            setDeliveryOrder((prev: any) => [...prev, deliveryOrder]);
+          }
+
           return Math.max(...deliverF);
         })
         .reduce((a, b) => a + b, 0);
@@ -326,6 +332,7 @@ const Cart: NextPageWithLayout = () => {
         </div>
       </>
     );
+
   return (
     <>
       <DefaultSeo title='장바구니 | 바로피쉬' description='장바구니' />
@@ -484,6 +491,7 @@ const Cart: NextPageWithLayout = () => {
                       } else {
                         deliverS = deliverResult;
                       }
+
                       return (
                         <div key={`cart${idx}`} className=''>
                           <div className='h-[1px] bg-grey-90' />
@@ -799,6 +807,7 @@ const Cart: NextPageWithLayout = () => {
                   maxAvailableStock: v.maxAvailableStock,
                   needTaxation: v.needTaxation,
                   pointRate: v.pointRate,
+                  individualDeliveryFee: deliveryOrder,
                 }));
 
                 router.push({

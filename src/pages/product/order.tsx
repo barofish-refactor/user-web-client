@@ -43,6 +43,8 @@ const setOptionData = async (value: miniOptionState[]) => {
     .then((res: any) => {
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
+        console.log(res.data.data);
+
         value.forEach(v => {
           const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
           if (matched && matched.length > 0) {
@@ -67,6 +69,7 @@ const setOptionData = async (value: miniOptionState[]) => {
               storeImage: matched[0].storeImage ?? '',
               storeName: matched[0].storeName ?? '',
               pointRate: v.pointRate,
+              individualDeliveryFee: v.individualDeliveryFee,
             });
           }
         });
@@ -112,6 +115,8 @@ const Order: NextPageWithLayout = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
+  console.log(selectedOption, 'selectedOptionselectedOption');
+
   const totalPrice =
     selectedOption.length > 0
       ? selectedOption
@@ -659,7 +664,9 @@ const Order: NextPageWithLayout = () => {
           />
         </button>
         {isOpenProduct &&
-          sectionOption.map(x => {
+          sectionOption.map((x, idx) => {
+            console.log(x, 'sds', idx);
+
             const deliverText =
               x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
 
@@ -684,7 +691,9 @@ const Order: NextPageWithLayout = () => {
                       배송비
                     </p>
                     <p className='text-[15px] font-bold leading-[20px] -tracking-[0.03em] text-grey-20'>
-                      {deliverText}
+                      {selectedOption[0].individualDeliveryFee &&
+                        selectedOption[0]?.individualDeliveryFee[idx]}
+                      원
                     </p>
                   </div>
                 </div>
