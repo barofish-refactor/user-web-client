@@ -789,6 +789,7 @@ const Cart: NextPageWithLayout = () => {
                     pointRate: v.option?.pointRate ?? 0,
                   };
                 });
+                console.log(selectedOption, 'selectedOption');
 
                 const querySendData: miniOptionState[] = selectedOption.map(v => ({
                   productId: v.productId,
@@ -802,6 +803,7 @@ const Cart: NextPageWithLayout = () => {
                   needTaxation: v.needTaxation,
                   pointRate: v.pointRate,
                   individualDeliveryFee: v.storeDeliverFee ? v.storeDeliverFee : v.deliveryFee,
+                  price: v.price,
                 }));
 
                 router.push({

@@ -43,10 +43,12 @@ const setOptionData = async (value: miniOptionState[]) => {
     .then((res: any) => {
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
-        console.log(res.data.data);
-
+        console.log(res.data.data, 'data');
+        ``;
         value.forEach(v => {
           const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
+          console.log(v, 'matched');
+
           if (matched && matched.length > 0) {
             optionData.push({
               isNeeded: true,
@@ -54,7 +56,7 @@ const setOptionData = async (value: miniOptionState[]) => {
               productId: v.productId,
               name: v.name,
               amount: v.amount,
-              price: matched[0].discountPrice ?? 0,
+              price: v.price,
               additionalPrice: v.additionalPrice,
               deliveryFee: v.deliveryFee,
               stock: v.stock,
@@ -73,6 +75,8 @@ const setOptionData = async (value: miniOptionState[]) => {
             });
           }
         });
+        console.log(optionData, '옵션');
+
         return optionData;
       }
     });
@@ -115,6 +119,7 @@ const Order: NextPageWithLayout = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
+  console.log(selectedOption, 'selectedOptionselectedOption');
 
   const totalPrice =
     selectedOption.length > 0
@@ -499,6 +504,7 @@ const Order: NextPageWithLayout = () => {
     const tmpMiniOption: miniOptionState[] | undefined = router.isReady
       ? safeParse(bToA(options as string))
       : [];
+    console.log(tmpMiniOption, 'tmpMiniOption');
 
     if (tmpMiniOption && tmpMiniOption.length > 0) {
       setOptionData(tmpMiniOption).then(res => {
@@ -664,6 +670,8 @@ const Order: NextPageWithLayout = () => {
         </button>
         {isOpenProduct &&
           sectionOption.map(x => {
+            console.log(sectionOption);
+
             // const deliverText =
             //   x.deliverFee === 0 ? '무료' : formatToLocaleString(x.deliverFee, { suffix: '원' });
             const deliverText: any = x.data.map(v => {
@@ -705,6 +713,8 @@ const Order: NextPageWithLayout = () => {
                 </div>
                 <div>
                   {x.data.map((v, idx) => {
+                    console.log(v, 'xx');
+
                     return (
                       <div key={`option${idx}`} className='px-4'>
                         <div className='mt-[13px] flex items-center gap-3'>
