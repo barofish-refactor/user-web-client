@@ -503,6 +503,8 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                               maxAvailableStock: v.maxAvailableStock,
                               needTaxation: v.needTaxation,
                               pointRate: v.pointRate,
+                              individualDeliveryFee: deliverResult,
+                              price: v.price,
                             };
                           });
                           sessionStorage.setItem(
