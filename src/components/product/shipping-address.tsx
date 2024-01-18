@@ -76,7 +76,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
           onClear();
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
-      .catch(error => console.log(error));
+      .catch(error => setAlert({ message: error.response.data.errorMsg ?? '' }));
   };
 
   const onUpdateMutate = ({ id, data }: { id: number; data: AddDeliverPlaceReq }) => {
@@ -137,6 +137,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
     if (receiverName.trim() === '') return setAlert({ message: '수령인을 입력해주세요.' });
     if (tel.trim() === '') return setAlert({ message: '연락처를 입력해주세요.' });
     if (address.trim() === '') return setAlert({ message: '주소를 입력해주세요.' });
+    if (addressDetail.trim() === '') return setAlert({ message: '상세주소를 입력해주세요.' });
     if (addressDetail.trim() === '') return setAlert({ message: '상세주소를 입력해주세요.' });
   };
 
