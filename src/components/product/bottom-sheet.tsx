@@ -550,11 +550,10 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                           maxAvailableStock: v.maxAvailableStock,
                           needTaxation: v.needTaxation,
                           pointRate: v.pointRate,
-                          individualDeliveryFee: v.storeDeliverFee ?? v.deliveryFee,
+                          individualDeliveryFee: deliverResult,
                           price: v.price,
                         };
                       });
-                      console.log(querySendData, 'querySendData');
 
                       router.push({
                         pathname: '/product/order',
@@ -593,7 +592,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
             <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>
               다른 고객이 함께 구매한 상품
             </p>
-
             {(selectProductOtherCustomerBuy ?? []).length > 0 ? (
               <div className='h-[auto] '>
                 <HomeSmallSlideCuration
