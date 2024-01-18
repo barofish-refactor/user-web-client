@@ -47,7 +47,7 @@ const setOptionData = async (value: miniOptionState[]) => {
         ``;
         value.forEach(v => {
           const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
-          console.log(v, 'matched');
+          console.log(matched, 'matched');
 
           if (matched && matched.length > 0) {
             optionData.push({
