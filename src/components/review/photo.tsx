@@ -225,7 +225,7 @@ export function ReviewPhoto({ id, type }: Props) {
           {/* <div ref={ref} className='pb-10' /> */}
         </div>
       )}
-      {!isBtn && (
+      {!isBtn && data?.pages[0]?.pagedReviews?.content && (
         <div className='mb-3  flex'>
           <button
             className='text-grey-50-50 m-[auto] flex   py-[5px] text-[16px] font-semibold text-grey-50'

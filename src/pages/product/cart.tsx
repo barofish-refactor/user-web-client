@@ -789,8 +789,6 @@ const Cart: NextPageWithLayout = () => {
                     pointRate: v.option?.pointRate ?? 0,
                   };
                 });
-                console.log(selectedOption, 'selectedOption');
-
                 const querySendData: miniOptionState[] = selectedOption.map(v => ({
                   productId: v.productId,
                   optionId: v.optionId,
