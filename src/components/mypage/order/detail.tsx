@@ -388,22 +388,16 @@ export function MypageOrderDetail({ id }: Props) {
                 {formatToLocaleString(data?.usePoint, { prefix: '-' })}원
               </span>
             </div>
-            <div className='flex items-center justify-between'>
-              <span className={labelClassName}>환불&취소 금액</span>
-              <span className={subValueClassName}>
-                {formatToLocaleString(totalProductPrice, {
-                  prefix: '-',
-                })}
-                원
-              </span>
-            </div>
           </div>
           <hr className='border-[#f7f7f7]' />
           <div className='mt-4 flex items-center justify-between'>
             <h4 className={headingClassName}>최종 결제 금액</h4>
             <strong className='text-[20px] leading-[30px] -tracking-[0.03em] text-grey-10'>
               {formatToLocaleString(
-                totalProductPrice - Number(data?.couponDiscount) - Number(data?.usePoint),
+                totalProductPrice +
+                  totalDeliverFee -
+                  Number(data?.couponDiscount) -
+                  Number(data?.usePoint),
                 { suffix: '원' },
               )}
             </strong>
