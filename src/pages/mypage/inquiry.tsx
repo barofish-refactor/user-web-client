@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
@@ -15,11 +16,13 @@ import { type NextPageWithLayout } from 'src/types/common';
 import cm from 'src/utils/class-merge';
 import { formatToUtc, maskingName, setSquareBrackets } from 'src/utils/functions';
 import { parseInquiryState } from 'src/utils/parse';
+import { VARIABLES } from 'src/variables';
 
 interface Props {
   initialData: InquiryDto[];
 }
 // { initialData }
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const MypageInquiry: NextPageWithLayout<Props> = () => {
   const { setAlert } = useAlertStore();
   const router = useRouter();
@@ -37,7 +40,19 @@ const MypageInquiry: NextPageWithLayout<Props> = () => {
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
-        setAlert({ message: res.data.errorMsg ?? '' });
+        if (res.data.code === '101' || res.data.code === '102') {
+          setAlert({ message: res.data.errorMsg ?? '' });
+          router.replace('/login');
+          return;
+        } else if (res.data.code === '103') {
+          deleteCookie(ACCESS_TOKEN);
+          deleteCookie(REFRESH_TOKEN);
+          setAlert({ message: res.data.errorMsg ?? '' });
+          router.replace('/login');
+          return;
+        }
+        console.log(res.data.errorMsg);
+        //
         throw new Error(res.data.errorMsg);
       }
     },

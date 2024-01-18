@@ -14,10 +14,17 @@ import { type NextPageWithLayout } from 'src/types/common';
 import { formatToLocaleString, handleRefresh } from 'src/utils/functions';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
+import { useAlertStore } from 'src/store';
+import { useRouter } from 'next/router';
+import { deleteCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
 const take = 10;
-
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 /** 마이페이지/구매 후기 */
 const MypageReview: NextPageWithLayout = () => {
+  const router = useRouter();
+
+  const { setAlert } = useAlertStore();
   const { data, isLoading, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery(
     queryKey.myReview,
     async ({ pageParam = 1 }) => {
@@ -26,7 +33,20 @@ const MypageReview: NextPageWithLayout = () => {
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
-        throw new Error(res.data.code + ': ' + res.data.errorMsg);
+        if (res.data.code === '101' || res.data.code === '102') {
+          setAlert({ message: res.data.errorMsg ?? '' });
+          router.replace('/login');
+          return;
+        } else if (res.data.code === '103') {
+          deleteCookie(ACCESS_TOKEN);
+          deleteCookie(REFRESH_TOKEN);
+          setAlert({ message: res.data.errorMsg ?? '' });
+          router.replace('/login');
+          return;
+        }
+        console.log(res.data.errorMsg);
+        //
+        throw new Error(res.data.errorMsg);
       }
     },
     {

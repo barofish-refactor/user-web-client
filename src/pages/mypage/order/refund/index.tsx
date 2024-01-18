@@ -11,14 +11,35 @@ import { type NextPageWithLayout } from 'src/types/common';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import { handleRefresh } from 'src/utils/functions';
 import Loading from 'src/components/common/loading';
+import { useRouter } from 'next/router';
+import { useAlertStore } from 'src/store';
+import { deleteCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
 /** 마이페이지 - 취소/환불/교환 내역 */
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const MypageOrder: NextPageWithLayout = () => {
+  const router = useRouter();
+
+  const { setAlert } = useAlertStore();
   const { data, isLoading, isFetched } = useQuery(queryKey.order.list('canceled'), async () => {
     const res = await (await client()).selectCanceledOrderList();
     if (res.data.isSuccess) {
       return res.data;
     } else {
-      throw new Error(res.data.code + ': ' + res.data.errorMsg);
+      if (res.data.code === '101' || res.data.code === '102') {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+        return;
+      } else if (res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+        return;
+      }
+      console.log(res.data.errorMsg);
+      //
+      throw new Error(res.data.errorMsg);
     }
   });
 

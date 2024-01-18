@@ -1,7 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
 import { ContentType } from 'src/api/swagger/http-client';
 import Layout from 'src/components/common/layout';
@@ -11,18 +13,32 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore, useConfirmStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { setSquareBrackets } from 'src/utils/functions';
-
+import { VARIABLES } from 'src/variables';
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const MypagePayMethod: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
   const { setConfirm } = useConfirmStore();
   // const isEmpty = false;
+  const router = useRouter();
 
   const { data, refetch } = useQuery(queryKey.paymentMethod, async () => {
     const res = await (await client()).selectPaymentMethodList();
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
-      setAlert({ message: res.data.errorMsg ?? '' });
+      if (res.data.code === '101' || res.data.code === '102') {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+        return;
+      } else if (res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+        return;
+      }
+      console.log(res.data.errorMsg);
+      //
       throw new Error(res.data.errorMsg);
     }
   });
