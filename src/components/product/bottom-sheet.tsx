@@ -551,9 +551,10 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                           needTaxation: v.needTaxation,
                           pointRate: v.pointRate,
                           individualDeliveryFee: v.storeDeliverFee ?? v.deliveryFee,
+                          price: v.price,
                         };
                       });
-                      // console.log(querySendData, 'querySendData');
+                      console.log(querySendData, 'querySendData');
 
                       router.push({
                         pathname: '/product/order',
