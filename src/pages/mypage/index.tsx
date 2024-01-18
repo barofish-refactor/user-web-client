@@ -29,15 +29,18 @@ const MyPage: NextPageWithLayout = () => {
       return res.data.data;
     } else {
       if (res.data.code === '101' || res.data.code === '102') {
+        setAlert({ message: res.data.errorMsg ?? '' });
         router.replace('/login');
         return;
       } else if (res.data.code === '103') {
         deleteCookie(ACCESS_TOKEN);
         deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
         return;
       }
       console.log(res.data.errorMsg);
-      // setAlert({ message: res.data.errorMsg ?? '' });
+      //
       throw new Error(res.data.errorMsg);
     }
   });
