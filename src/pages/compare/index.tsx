@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
@@ -33,6 +33,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
 /** 저장함 */
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const Storage: NextPageWithLayout = () => {
   const { setAlert } = useAlertStore();
   const router = useRouter();
@@ -58,7 +59,22 @@ const Storage: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-
+  const { data: user, isLoading } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+      }
+      console.log(res.data.errorMsg);
+      //
+      throw new Error(res.data.errorMsg);
+    }
+  });
   // const { mutateAsync: deleteSaveProducts, isLoading: isDeleteLoading } = useMutation(
   //   async (args: DeleteSaveProductsPayload) =>
   //     await (await client()).deleteSaveProducts(args, { type: ContentType.FormData }),

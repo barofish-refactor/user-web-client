@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { deleteCookie, getCookie } from 'cookies-next';
+import { getCookie } from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -19,7 +19,7 @@ interface Props {
   data: InquiryDto[];
   refetch: () => void;
 }
-const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
+
 const Inquiry = ({ productId, data, refetch }: Props) => {
   const router = useRouter();
   const { setConfirm } = useConfirmStore();
@@ -31,19 +31,6 @@ const Inquiry = ({ productId, data, refetch }: Props) => {
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
-      if (res.data.code === '101' || res.data.code === '102') {
-        setAlert({ message: res.data.errorMsg ?? '' });
-        router.replace('/login');
-        return;
-      } else if (res.data.code === '103') {
-        deleteCookie(ACCESS_TOKEN);
-        deleteCookie(REFRESH_TOKEN);
-        setAlert({ message: res.data.errorMsg ?? '' });
-        router.replace('/login');
-        return;
-      }
-      console.log(res.data.errorMsg);
-      //
       throw new Error(res.data.errorMsg);
     }
   });
