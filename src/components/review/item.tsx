@@ -48,8 +48,6 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
       if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
         deleteCookie(ACCESS_TOKEN);
         deleteCookie(REFRESH_TOKEN);
-        setAlert({ message: res.data.errorMsg ?? '' });
-        router.replace('/login');
       }
       console.log(res.data.errorMsg);
       //
