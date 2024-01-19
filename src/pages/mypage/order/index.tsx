@@ -14,6 +14,9 @@ import { type NextPageWithLayout } from 'src/types/common';
 import { handleRefresh } from 'src/utils/functions';
 // import Loading from 'src/components/common/loading';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { deleteCookie } from 'cookies-next';
+import { VARIABLES } from 'src/variables';
 export const Loading = dynamic(() => import('src/components/common/loading'), { ssr: false });
 export const PullToRefresh = dynamic(() => import('react-simple-pull-to-refresh'), { ssr: false });
 
@@ -21,10 +24,11 @@ const perView = 10;
 interface Props {
   initialData: InfiniteData<OrderDto[]>;
 }
-
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 /** 마이페이지/주문 내역 */
 const MypageOrder: NextPageWithLayout<Props> = ({}) => {
   const { setAlert } = useAlertStore();
+  const router = useRouter();
   const { data, hasNextPage, isLoading, fetchNextPage, isFetched } = useInfiniteQuery(
     queryKey.order.lists,
     async ({ pageParam = 0 }) => {
@@ -38,7 +42,10 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
         setAlert({ message: res.data.code + ': ' + res.data.errorMsg });
+        router.replace('/login');
         throw new Error(res.data.code + ': ' + res.data.errorMsg);
       }
     },
@@ -75,7 +82,7 @@ const MypageOrder: NextPageWithLayout<Props> = ({}) => {
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
-        setAlert({ message: res.data.errorMsg ?? '' });
+        setAlert({ message: '121' + res.data.errorMsg ?? '' });
         throw new Error(res.data.errorMsg);
       }
     },

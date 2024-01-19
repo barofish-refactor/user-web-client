@@ -21,7 +21,7 @@ import cm from 'src/utils/class-merge';
 import { changeSectionBasket, formatToBlob, formatToLocaleString } from 'src/utils/functions';
 import { aToB } from 'src/utils/parse';
 import { VARIABLES } from 'src/variables';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import Link from 'next/link';
 import { DefaultSeo } from 'next-seo';
 import Skeleton from 'src/components/common/skeleton';
@@ -97,6 +97,7 @@ const deliverPriceAfterCheckType = ({
 
   return finalResult;
 };
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
 /** 장바구니 */
 const Cart: NextPageWithLayout = () => {
@@ -122,11 +123,14 @@ const Cart: NextPageWithLayout = () => {
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
-      if (res.data.code === 'FORBIDDEN') {
+      if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
         router.replace('/login');
-        return;
       }
-      setAlert({ message: res.data.errorMsg ?? '' });
+      console.log(res.data.errorMsg);
+      //
       throw new Error(res.data.errorMsg);
     }
   });

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import { type GetServerSideProps, type GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
@@ -14,13 +15,14 @@ import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob } from 'src/utils/functions';
+import { VARIABLES } from 'src/variables';
 
 export type MypageEditType = 'nickname' | 'password' | 'phone';
 
 interface Props {
   type: MypageEditType;
 }
-
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const MypageEditDynamic: NextPageWithLayout<Props> = ({ type }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -31,7 +33,14 @@ const MypageEditDynamic: NextPageWithLayout<Props> = ({ type }) => {
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
-      setAlert({ message: res.data.errorMsg ?? '' });
+      if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+      }
+      console.log(res.data.errorMsg);
+      //
       throw new Error(res.data.errorMsg);
     }
   });

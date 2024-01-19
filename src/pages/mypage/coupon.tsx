@@ -1,6 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { client } from 'src/api/client';
 import { type Coupon } from 'src/api/swagger/data-contracts';
@@ -11,11 +13,12 @@ import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
 import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
-
+import { VARIABLES } from 'src/variables';
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 const MypageCoupon: NextPageWithLayout = () => {
   const [navType, setNavType] = useState<CouponNavType>('holding');
   const { setAlert } = useAlertStore();
-
+  const router = useRouter();
   // 보유 쿠폰
   const {
     data: downloadedCoupon,
@@ -26,7 +29,17 @@ const MypageCoupon: NextPageWithLayout = () => {
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
-      throw new Error('[selectDownloadedCoupon]' + res.data.code + ': ' + res.data.errorMsg);
+      if (res.data.code === '101' || res.data.code === '102') {
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+        return;
+      } else if (res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+        return;
+      }
     }
   });
 

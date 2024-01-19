@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import { type GetServerSideProps } from 'next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
@@ -29,7 +29,7 @@ export type inquiryType = 'PRODUCT' | 'DELIVERY' | 'CANCEL' | 'ETC'; // 상품�
 interface Props {
   initialData: SimpleProductDto;
 }
-
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 /** 문의하기 */
 const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
@@ -61,6 +61,24 @@ const Inquiry: NextPageWithLayout<Props> = ({ initialData }) => {
       initialData,
     },
   );
+  // 로그인 검증용
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: user } = useQuery(queryKey.user, async () => {
+    const res = await (await client()).selectUserSelfInfo();
+    if (res.data.isSuccess) {
+      return res.data.data;
+    } else {
+      if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+        setAlert({ message: res.data.errorMsg ?? '' });
+        router.replace('/login');
+      }
+      console.log(res.data.errorMsg);
+      //
+      throw new Error(res.data.errorMsg);
+    }
+  });
 
   const { data: inquiryData } = useQuery(
     queryKey.inquiry.detail(inquiryId),

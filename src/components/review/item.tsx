@@ -3,7 +3,7 @@ import { FreeMode } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getCookie } from 'cookies-next';
+import { deleteCookie, getCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { client } from 'src/api/client';
 import { type ReviewDtoV2 } from 'src/api/swagger/data-contracts';
@@ -25,7 +25,7 @@ interface Props {
   showInfo?: boolean;
   refetch: () => void;
 }
-
+const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
 /** 구매후기 */
 export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
   const router = useRouter();
@@ -45,6 +45,12 @@ export function ReviewItem({ data, isMine, showInfo = true, refetch }: Props) {
     if (res.data.isSuccess) {
       return res.data.data;
     } else {
+      if (res.data.code === '101' || res.data.code === '102' || res.data.code === '103') {
+        deleteCookie(ACCESS_TOKEN);
+        deleteCookie(REFRESH_TOKEN);
+      }
+      console.log(res.data.errorMsg);
+      //
       throw new Error(res.data.errorMsg);
     }
   });

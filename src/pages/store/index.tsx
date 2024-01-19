@@ -185,7 +185,6 @@ const Store: NextPageWithLayout = () => {
           <div className='mt-4 flex w-full items-center justify-around border-b border-b-[#F7F7F7] px-[46px] md:justify-between'>
             {['추천 ', '즐겨찾기'].map((v, idx) => {
               const isActive = selectedTab === idx;
-
               return (
                 <button
                   key={`storeTab${idx}`}

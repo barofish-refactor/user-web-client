@@ -93,7 +93,6 @@ export function ReviewPhoto({ id, type }: Props) {
       }
     }
   };
-  console.log(imges);
 
   useEffect(() => {
     if (data || imges) {
@@ -112,6 +111,8 @@ export function ReviewPhoto({ id, type }: Props) {
       }
     }
   }, [data, lastNumber]);
+  console.log(data?.pages[0]?.pagedReviews?.content);
+
   return (
     <div>
       <div className='px-4 pb-6 pt-5'>
@@ -214,7 +215,7 @@ export function ReviewPhoto({ id, type }: Props) {
       {(data?.pages ?? [])
         .filter(x => (x?.pagedReviews?.content ?? []).length > 0)
         .map(x => x?.pagedReviews?.content).length === 0 ? (
-        Empty(100)
+        Empty(200)
       ) : (
         <div className='pb-[0px] pl-[17px] pr-[15px]'>
           {(data?.pages ?? []).map((x, i) =>
@@ -225,7 +226,7 @@ export function ReviewPhoto({ id, type }: Props) {
           {/* <div ref={ref} className='pb-10' /> */}
         </div>
       )}
-      {!isBtn && data?.pages[0]?.pagedReviews?.content && (
+      {!isBtn && data && (data?.pages[0]?.pagedReviews?.content?.length as number) > 0 && (
         <div className='mb-3  flex'>
           <button
             className='text-grey-50-50 m-[auto] flex   py-[5px] text-[16px] font-semibold text-grey-50'
@@ -249,7 +250,7 @@ export function ReviewPhoto({ id, type }: Props) {
 
 function Empty(px?: number, text?: string) {
   return (
-    <div className={`my-[${px}px] grid flex-1 place-items-center`}>
+    <div className="my-[50px] grid flex-1 place-items-center">
       <div className='flex flex-col items-center gap-2'>
         <Image
           unoptimized
