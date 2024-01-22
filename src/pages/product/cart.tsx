@@ -804,7 +804,7 @@ const Cart: NextPageWithLayout = () => {
                   maxAvailableStock: v.maxAvailableStock,
                   needTaxation: v.needTaxation,
                   pointRate: v.pointRate,
-                  individualDeliveryFee: v.storeDeliverFee,
+                  individualDeliveryFee: v.storeDeliverFee ? v.storeDeliverFee : v.deliveryFee,
                   price: v.price,
                 }));
                 console.log(querySendData, 'querySendData');
