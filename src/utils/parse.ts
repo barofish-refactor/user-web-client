@@ -50,6 +50,8 @@ export const parseProductInfoState = (
     | 'REFUND_ACCEPT'
     | 'REFUND_DONE'
     | 'DELIVERY_DIFFICULT'
+    | 'CANCELED_BY_PARTNER'
+    | 'CANCELED_BY_ADMIN'
   >,
 ) => {
   switch (v) {
@@ -73,6 +75,10 @@ export const parseProductInfoState = (
       return '구매확정';
     case 'CANCELED':
       return '취소됨';
+    case 'CANCELED_BY_PARTNER':
+      return '취소됨(파트너)';
+    case 'CANCELED_BY_ADMIN':
+      return '취소됨(관리자)';
     case 'CANCEL_REQUEST':
       return '취소/환불 요청됨';
     case 'REFUND_REQUEST':
