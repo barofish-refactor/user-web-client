@@ -804,9 +804,10 @@ const Cart: NextPageWithLayout = () => {
                   maxAvailableStock: v.maxAvailableStock,
                   needTaxation: v.needTaxation,
                   pointRate: v.pointRate,
-                  individualDeliveryFee: v.storeDeliverFee ? v.storeDeliverFee : v.deliveryFee,
+                  individualDeliveryFee: v.storeDeliverFee,
                   price: v.price,
                 }));
+                console.log(querySendData, 'querySendData');
 
                 router.push({
                   pathname: '/product/order',

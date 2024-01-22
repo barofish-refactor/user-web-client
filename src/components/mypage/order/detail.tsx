@@ -85,6 +85,10 @@ const deliverPriceAfterCheckType = ({
   let finalResult;
   if (deliverFeeType === 'FREE') {
     finalResult = 0;
+  } else if (deliverFeeType === 'FIX') {
+    finalResult = result;
+  } else if (deliverFeeType === 'FREE_IF_OVER') {
+    finalResult = sectionTotal >= minOrderPrice ? 0 : result;
   } else if (deliverFeeType === 'S_CONDITIONAL') {
     finalResult = sectionTotal >= minStorePrice ? 0 : result;
   } else {
@@ -266,19 +270,17 @@ export function MypageOrderDetail({ id }: Props) {
                     return deliverF;
                   })
                   .reduce((a, b) => a + b, 0);
-                const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
-                const exceptRefundTotalPriceData = v.data
-                  .map(x => {
-                    let price = x.price;
-                    if (x.state === 'CANCELED') price = 0;
-                    if (x.state === 'REFUND_DONE') price = 0;
+                // const totalPrice = v.data.map(x => x.price ?? 0).reduce((a, b) => a + b, 0);
+                // const exceptRefundTotalPriceData = v.data
+                //   .map(x => {
+                //     let price = x.price;
+                //     if (x.state === 'CANCELED') price = 0;
+                //     if (x.state === 'REFUND_DONE') price = 0;
 
-                    return price ?? 0;
-                  })
-                  .reduce((a, b) => a + b, 0);
+                //     return price ?? 0;
+                //   })
+                //   .reduce((a, b) => a + b, 0);
                 // x => x.state !== 'CANCELED' || x.state !== 'REFUND_DONE',
-
-                console.log(exceptRefundTotalPriceData, '환불');
 
                 return (
                   <div key={idx} className='border-b border-b-grey-90 pb-4 last:border-0 last:pb-0'>

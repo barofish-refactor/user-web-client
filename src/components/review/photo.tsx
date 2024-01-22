@@ -2,7 +2,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+// import { useInView } from 'react-intersection-observer';
 import { client } from 'src/api/client';
 import { type Api } from 'src/api/swagger/Api';
 import { ReviewItem } from 'src/components/review';
@@ -250,7 +250,7 @@ export function ReviewPhoto({ id, type }: Props) {
 
 function Empty(px?: number, text?: string) {
   return (
-    <div className="my-[50px] grid flex-1 place-items-center">
+    <div className='my-[50px] grid flex-1 place-items-center'>
       <div className='flex flex-col items-center gap-2'>
         <Image
           unoptimized

@@ -130,7 +130,7 @@ export function SignupForm({
           }
         })
         .catch(error => {
-          console.error(error);
+          setAlert({ message: error.response.data.errorMsg ?? '' });
         });
     }
   });

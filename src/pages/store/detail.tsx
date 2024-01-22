@@ -115,6 +115,9 @@ const StoreDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           refetch();
         } else {
           setAlert({ message: res.data.errorMsg ?? '' });
+          if (res.data.errorMsg?.includes('로그아웃')) {
+            router.push('/login');
+          }
         }
       })
       .catch(error => {
