@@ -16,7 +16,7 @@ const Confirm = () => {
   return (
     <div role='alertdialog' className='sticky top-0 z-[150] w-full'>
       {confirm && (
-        <div className='absolute top-0 z-[100] flex h-[100dvb] w-full flex-col justify-center bg-black/40 px-4'>
+        <div className='absolute top-0 z-[100] flex h-[100vh] w-full flex-col justify-center bg-black/40 px-4'>
           <div
             ref={target}
             className='flex w-full flex-col items-center gap-10 rounded-[10px] bg-white px-6 pb-5 pt-10'
