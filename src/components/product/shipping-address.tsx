@@ -39,6 +39,18 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
   const [message, setMessage] = useState<SelectorType>();
   const { setAlert } = useAlertStore();
 
+  const [updateId, setUpdateId] = useState<number>();
+  const [name, setName] = useState<string>('');
+  const [receiverName, setReceiverName] = useState<string>('');
+  const [tel, setTel] = useState<string>('');
+  const [bCode, setBCode] = useState<string>('');
+  const [postalCode, setPostalCode] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [addressDetail, setAddressDetail] = useState<string>('');
+  const [isDefault, setIsDefault] = useState<boolean>(false);
+  const [openDaum, setOpenDaum] = useState(false);
+  const [content, setContent] = useState<string>('');
+
   const { data: deliverPlace, refetch } = useQuery(queryKey.deliverPlace, async () => {
     const res = await (await client()).selectDeliverPlace();
     if (res.data.isSuccess) {
@@ -108,18 +120,6 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
       })
       .catch(error => console.log(error));
   };
-
-  const [updateId, setUpdateId] = useState<number>();
-  const [name, setName] = useState<string>('');
-  const [receiverName, setReceiverName] = useState<string>('');
-  const [tel, setTel] = useState<string>('');
-  const [bCode, setBCode] = useState<string>('');
-  const [postalCode, setPostalCode] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
-  const [addressDetail, setAddressDetail] = useState<string>('');
-  const [isDefault, setIsDefault] = useState<boolean>(false);
-  const [openDaum, setOpenDaum] = useState(false);
-  const [content, setContent] = useState<string>('');
 
   const onClear = () => {
     setName('');
@@ -232,6 +232,7 @@ const ShippingAddress = ({ setIsVisible, onClick }: Props) => {
                         setName(v.name ?? '');
                         setReceiverName(v.receiverName ?? '');
                         setTel(v.tel ?? '');
+                        setBCode(v.bcode ?? '');
                         setPostalCode(v.postalCode ?? '');
                         setAddress(v.address ?? '');
                         setAddressDetail(v.addressDetail ?? '');

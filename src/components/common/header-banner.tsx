@@ -11,7 +11,7 @@ export const HeaderBanner = () => {
         width={768}
         height={200}
         loading='lazy'
-        alt='bannerAds'
+        alt='bannerAdss'
         sizes='(max-width: 768px) 100vw, (max-width: 1200px) 100vw'
       />
     </button>
