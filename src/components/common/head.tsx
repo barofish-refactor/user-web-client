@@ -35,7 +35,7 @@ export default function Head() {
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
       {kakaoPixel.KAKAO_TRACKING_ID && <KakaoScript />}
-      {NAVER_PIXEL_ID && <NaverScript />}
+      {/* {NAVER_PIXEL_ID && <NaverScript />} */}
     </Fragment>
   );
 }
@@ -151,31 +151,31 @@ function KakaoScript() {
     </>
   );
 }
-const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
-function NaverScript() {
-  return (
-    <>
-      <Script
-        id='naver-init'
-        strategy='afterInteractive'
-        type='text/javascript'
-        src='//wcs.naver.net/wcslog.js'
-      />
-      <Script
-        id='naver-tracking'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
-          if (!wcs_add) var wcs_add={};
-          wcs_add["wa"] = "${NAVER_PIXEL_ID}";
-          if (!_nasa) var _nasa={};
-          if(window.wcs){
-          wcs.inflow("barofish.com");
-          wcs_do(_nasa);
-          }
-          `,
-        }}
-      />
-    </>
-  );
-}
+// const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
+// function NaverScript() {
+//   return (
+//     <>
+//       <Script
+//         id='naver-init'
+//         strategy='afterInteractive'
+//         type='text/javascript'
+//         src='//wcs.naver.net/wcslog.js'
+//       />
+//       <Script
+//         id='naver-tracking'
+//         strategy='afterInteractive'
+//         dangerouslySetInnerHTML={{
+//           __html: `
+//           if (!wcs_add) var wcs_add={};
+//           wcs_add["wa"] = "${NAVER_PIXEL_ID}";
+//           if (!_nasa) var _nasa={};
+//           if(window.wcs){
+//           wcs.inflow("barofish.com");
+//           wcs_do(_nasa);
+//           }
+//           `,
+//         }}
+//       />
+//     </>
+//   );
+// }

@@ -2,7 +2,6 @@ import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { getCookie } from 'cookies-next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -103,6 +102,9 @@ const Store: NextPageWithLayout = () => {
           likedRefecth();
         } else {
           setAlert({ message: res.data.errorMsg ?? '' });
+          if (res.data.errorMsg?.includes('로그아웃')) {
+            router.push('/login');
+          }
         }
       })
       .catch(error => {
@@ -303,6 +305,7 @@ const Store: NextPageWithLayout = () => {
                         onButtonClick={e => {
                           e.preventDefault();
                           if (isLoading) return;
+
                           onMutate({
                             storeId: v.storeId ?? -1,
                             type: v.isLike ? 'UNLIKE' : 'LIKE',

@@ -44,11 +44,9 @@ const setOptionData = async (value: miniOptionState[]) => {
     .then((res: any) => {
       if (res.data.data && res.data.data.length > 0) {
         const optionData: OptionState[] = [];
-        console.log(res.data.data, 'data');
-        ``;
+
         value.forEach(v => {
           const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
-          console.log(matched, 'matched');
 
           if (matched && matched.length > 0) {
             optionData.push({
@@ -120,7 +118,6 @@ const Order: NextPageWithLayout = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectedOption: OptionState[] = tmpOption ?? [];
   const sectionOption = changeSectionOption(selectedOption);
-  console.log(selectedOption, 'selectedOptionselectedOption');
 
   const totalPrice =
     selectedOption.length > 0
@@ -413,7 +410,8 @@ const Order: NextPageWithLayout = () => {
             : undefined,
       })
         .then(res => {
-          if (res.data.isSuccess) {
+          console.log(res);
+          if (res.data.isSuccess && res.data.code === '200') {
             if (selectedCard) {
               router.push({
                 pathname: '/product/payment',
@@ -447,6 +445,8 @@ const Order: NextPageWithLayout = () => {
               },
               onFailure: (error_msg: string) => onIamportResult(orderId, false, error_msg),
             });
+          } else if (res.data.isSuccess && res.data.code === '400') {
+            setAlert({ message: res.data.errorMsg ?? '' });
           } else {
             setAlert({ message: res.data.errorMsg ?? '' });
           }

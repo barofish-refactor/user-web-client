@@ -59,6 +59,7 @@ const Storage: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: user, isLoading } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
     if (res.data.isSuccess) {
@@ -71,7 +72,6 @@ const Storage: NextPageWithLayout = () => {
         router.replace('/login');
       }
       console.log(res.data.errorMsg);
-      //
       throw new Error(res.data.errorMsg);
     }
   });
