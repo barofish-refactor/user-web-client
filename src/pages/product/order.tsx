@@ -410,7 +410,6 @@ const Order: NextPageWithLayout = () => {
             : undefined,
       })
         .then(res => {
-          console.log(res);
           if (res.data.isSuccess && res.data.code === '200') {
             if (selectedCard) {
               router.push({
