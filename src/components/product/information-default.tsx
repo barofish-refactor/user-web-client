@@ -176,7 +176,9 @@ const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) =>
                   : data?.deliverFeeType === 'FIX'
                   ? formatToLocaleString(data?.deliveryFee, { suffix: '원' })
                   : formatToLocaleString(data?.deliveryFee, { suffix: '원 (' }) +
-                    formatToLocaleString(data?.minOrderPrice) +
+                    formatToLocaleString(
+                      data?.minStorePrice ? data?.minStorePrice : data?.minOrderPrice,
+                    ) +
                     '원 이상 구매 시 무료)'
               }`}
             </p>
