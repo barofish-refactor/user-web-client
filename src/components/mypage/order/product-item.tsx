@@ -56,6 +56,8 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
     case 'REFUND_ACCEPT':
     case 'REFUND_DONE':
     case 'DELIVERY_DIFFICULT':
+    case 'CANCELED_BY_PARTNER':
+    case 'CANCELED_BY_ADMIN':
       break;
 
     default:
