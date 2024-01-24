@@ -42,7 +42,7 @@ const Payment: NextPageWithLayout = () => {
               setAlert({
                 message: FAILURE_MESSAGE,
                 onClick: () => {
-                  //
+                  router.push('/');
                 },
               });
               router.back();
