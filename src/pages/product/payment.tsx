@@ -42,10 +42,10 @@ const Payment: NextPageWithLayout = () => {
               setAlert({
                 message: FAILURE_MESSAGE,
                 onClick: () => {
-                  router.push('/');
+                  //
                 },
               });
-              router.back();
+              router.push('/');
             }
             // 확인 안되면 사이클 계속 돌림
             else {
