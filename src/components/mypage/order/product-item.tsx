@@ -93,7 +93,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
   return (
     <div className={clsx('last:pb-0', hasButtons ? 'pb-5' : 'pb-0')}>
       <p
-        data-done={item.state !== 'DELIVERY_READY'}
+        // data-done={item.state !== 'DELIVERY_READY'}
         className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50 data-[done=true]:text-grey-50'
       >
         {parseProductInfoState(item.state)}
