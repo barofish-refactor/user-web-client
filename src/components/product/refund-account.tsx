@@ -19,7 +19,6 @@ interface Props {
   refunData: RefundAccountType;
   isRefundBankData: boolean;
 }
-
 /** 주문하기 - 환불받을 계좌 */
 const RefundAccount = ({
   setRefundData,
@@ -36,7 +35,6 @@ const RefundAccount = ({
       return res.data.data;
     } else setAlert({ message: res.data.errorMsg ?? '' });
   });
-  console.log(refunData, 'bank', isRefundBankData);
 
   const { mutateAsync: checkAccount } = useMutation(
     async (args: AccountCheckRequest) => await (await client()).checkAccount(args),
@@ -129,7 +127,7 @@ const RefundAccount = ({
           />
         </div>
       </div>
-      <div className='flex pb-6 pt-10'>
+      {/* <div className='flex pb-6 pt-10'>
         <div
           className='mr-[10px] flex h-[52px] w-[60%] cursor-pointer items-center justify-center rounded-lg bg-primary-50 font-bold leading-[24px] -tracking-[0.03em] text-white disabled:bg-grey-80'
           onClick={onCheckBtn}
@@ -142,7 +140,7 @@ const RefundAccount = ({
         >
           초기화
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

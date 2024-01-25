@@ -120,7 +120,7 @@ const ImageBox = ({ storeType, title }: Props) => {
       {title?.includes('신규스토어') && storeType.includes('curation') && (
         <div style={{ marginTop: '20px' }}>
           <Image
-            src='/assets/icons/common/curationE.png'
+            src='/assets/icons/common/curationR.png'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
             width={400}
             height={200}

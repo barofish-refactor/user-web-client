@@ -371,7 +371,7 @@ const Order: NextPageWithLayout = () => {
     if (isCheck) {
       if (!shippingAddress) return setAlert({ message: '배송지를 입력해주세요' });
       if (payMethod === IamportPayMethod.Vbank) {
-        if (!isRefundBankData) return setAlert({ message: '계좌 인증을 확인해주세요.' });
+        // if (!isRefundBankData) return setAlert({ message: '계좌 인증을 확인해주세요.' });
         if (!refundBankData.name) return setAlert({ message: '예금주명을 입력해 주세요.' });
         else if (!refundBankData.bankCode)
           return setAlert({ message: '입금 은행을 선택해 주세요.' });
