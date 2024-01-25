@@ -381,8 +381,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <div
           className={
             !user
-              ? 'sticky top-11 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'
-              : 'sticky top-0 z-50 flex h-[56px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'
+              ? 'sticky top-[42px] z-50 flex h-[50px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'
+              : 'sticky top-0 z-50 flex h-[50px] items-center justify-between gap-3.5 bg-white pl-4 pr-[18px]'
           }
         >
           <BackButton />
@@ -404,10 +404,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         </div>
 
         <div
+          style={{ borderTop: '1px solid #dcdcdc' }}
           className={
             !user
-              ? 'sticky top-[100px] z-50 flex  w-full items-center justify-between bg-white'
-              : 'sticky top-10 z-50 flex  w-full items-center justify-between bg-white '
+              ? 'sticky top-[90px] z-50 flex  w-full items-center justify-between bg-white'
+              : 'sticky top-[50px] z-50 flex  w-full items-center justify-between bg-white '
           }
         >
           <ProductTab

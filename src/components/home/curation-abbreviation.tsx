@@ -15,7 +15,7 @@ const CurationAbbreviation = ({ data }: Props) => {
       className='my-1'
       style={{ padding: '16px' }}
       modules={[FreeMode]}
-      slidesPerView='auto'
+      slidesPerView={4.5}
       freeMode={{
         momentumRatio: 0.3,
         momentumBounceRatio: 0.5,

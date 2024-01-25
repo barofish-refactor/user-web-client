@@ -12,7 +12,6 @@ import { requestPermission } from 'src/utils/functions';
 
 const Login: NextPageWithLayout = () => {
   const router = useRouter();
-
   const { data: info } = useQuery(queryKey.partnerJoin, async () => {
     const res = await (await client()).selectSiteInfo('URL_PARTNER_JOIN');
     if (res.data.isSuccess) {

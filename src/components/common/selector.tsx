@@ -13,9 +13,10 @@ interface Props {
   className?: string;
   value?: SelectorType;
   setValue?: (value: SelectorType) => void;
+  disabled?: boolean;
 }
 
-const Selector = ({ list, placeHolder, className, value, setValue }: Props) => {
+const Selector = ({ list, placeHolder, className, value, setValue, disabled }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
@@ -25,7 +26,10 @@ const Selector = ({ list, placeHolder, className, value, setValue }: Props) => {
           'flex h-11 w-full items-center justify-between rounded-lg border border-grey-80 pl-3 pr-[14.5px]',
           { 'rounded-b-none border-grey-40': isOpen },
         )}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (disabled) return;
+          setIsOpen(!isOpen);
+        }}
       >
         <p
           className={cm('text-[14px] font-medium -tracking-[0.03em] text-grey-10', {

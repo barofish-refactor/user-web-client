@@ -92,6 +92,7 @@ const Order: NextPageWithLayout = () => {
     bankCode: '',
     accountNumber: '',
   });
+  const [isRefundBankData, setIsRefundBankData] = useState<boolean>(false);
   const [isAddressVisible, setIsAddressVisible] = useState<boolean>(false);
   const [isCouponVisible, setIsCouponVisible] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
@@ -370,6 +371,7 @@ const Order: NextPageWithLayout = () => {
     if (isCheck) {
       if (!shippingAddress) return setAlert({ message: '배송지를 입력해주세요' });
       if (payMethod === IamportPayMethod.Vbank) {
+        // if (!isRefundBankData) return setAlert({ message: '계좌 인증을 확인해주세요.' });
         if (!refundBankData.name) return setAlert({ message: '예금주명을 입력해 주세요.' });
         else if (!refundBankData.bankCode)
           return setAlert({ message: '입금 은행을 선택해 주세요.' });
@@ -377,6 +379,7 @@ const Order: NextPageWithLayout = () => {
           return setAlert({ message: '계좌번호을 입력해 주세요.' });
       }
       const taxFreePrice = getTaxFreePrice();
+      // return console.log(payMethod, 'payMethod', refundBankData);
 
       orderProduct({
         products: selectedOption.map((x, i) => {
@@ -1002,7 +1005,12 @@ const Order: NextPageWithLayout = () => {
         {payMethod === IamportPayMethod.Vbank && (
           <Fragment>
             <div className='h-2 bg-grey-90' />
-            <ProductRefundAccount setRefundData={setRefundBankData} />
+            <ProductRefundAccount
+              refunData={refundBankData}
+              isRefundBankData={isRefundBankData}
+              setRefundData={setRefundBankData}
+              setIsRefundBankData={setIsRefundBankData}
+            />
           </Fragment>
         )}
 

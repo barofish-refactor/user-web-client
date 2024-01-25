@@ -97,15 +97,15 @@ const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) =>
   //   );
   // }}
   return (
-    <div className=''>
+    <Fragment>
       <div className='px-4 pb-5 pt-[15px]'>
         <p className='text-[15px] font-medium leading-[20px] -tracking-[0.03em] text-grey-60'>{`${data?.category?.parentCategoryName}>${data?.category?.name}`}</p>
         <p className='text-[18px] font-medium leading-[24px] -tracking-[0.03em] text-grey-10'>
           {data?.title}
         </p>
-        <p className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'>
+        {/* <p className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'>
           {`${formatToLocaleString(data?.reviewCount)}개의 후기`}
-        </p>
+        </p> */}
         <div className='mt-3 flex items-center justify-between'>
           <div>
             <div className='flex items-center gap-0.5'>
@@ -224,7 +224,7 @@ const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) =>
         </Link>
       </div>
       {/* <div className='h-2 bg-grey-90' /> */}
-    </div>
+    </Fragment>
   );
 };
 

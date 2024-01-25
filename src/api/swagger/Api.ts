@@ -10,6 +10,7 @@
  */
 
 import {
+  AccountCheckRequest,
   AddAdminByMasterData,
   AddAdminByMasterPayload,
   AddBasketData,
@@ -83,6 +84,7 @@ import {
   CancelOrdersByPartnerV2Payload,
   CancelSettleByAdminData,
   CancelSettleByAdminPayload,
+  CheckAccountData,
   CheckPaymentDoneData,
   CheckStoreIsActiveData,
   CompareProductListData,
@@ -1401,6 +1403,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   create = (data: CreatePayload, params: RequestParams = {}) =>
     this.request<CreateData, any>({
       path: `/api/v1/product-info-notice/add`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags port-one-controller
+   * @name CheckAccount
+   * @request POST:/api/v1/portone/check-account
+   * @response `200` `CheckAccountData` OK
+   */
+  checkAccount = (data: AccountCheckRequest, params: RequestParams = {}) =>
+    this.request<CheckAccountData, any>({
+      path: `/api/v1/portone/check-account`,
       method: 'POST',
       body: data,
       type: ContentType.Json,

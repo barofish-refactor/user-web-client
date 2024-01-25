@@ -127,6 +127,8 @@ export const queryKey = {
   footer: ['footer'],
   /** 결제수단 */
   paymentMethod: ['paymentMethod'],
+  /** 가상계좌체크 */
+  paymentMetodCheck: ['paymentCheck'],
   /** 문의하기 */
   inquiry: getQueryKeys('inquiry'),
   /** 큐레이션 제일 처음 부분 (꿀팁) */

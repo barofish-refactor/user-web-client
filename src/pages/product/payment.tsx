@@ -23,7 +23,7 @@ const Payment: NextPageWithLayout = () => {
   const [timer, setTimer] = useState<number>(interval);
   const [limit, setLimit] = useState<number>(10); // 확인할 반복 횟수 (3 * 10 -> 30초동안 반복)
   const [isPurchaseCheck, setIsPurchaseCheck] = useState<boolean>(false);
-
+  const [isPage, setIsPage] = useState(false);
   const onCountDown = useCallback(async () => {
     if (timer > 0) {
       setTimer(timer - 1);
@@ -42,10 +42,9 @@ const Payment: NextPageWithLayout = () => {
               setAlert({
                 message: FAILURE_MESSAGE,
                 onClick: () => {
-                  //
+                  setIsPage(true);
                 },
               });
-              router.back();
             }
             // 확인 안되면 사이클 계속 돌림
             else {
@@ -60,7 +59,11 @@ const Payment: NextPageWithLayout = () => {
       }
     }
   }, [limit, orderId, queryClient, router, setAlert, timer]);
-
+  useEffect(() => {
+    if (isPage) {
+      router.push('/');
+    }
+  }, [isPage, router]);
   useEffect(() => {
     // 모바일은 isError, pc는 imp_success 체크 (모바일은 imp_success가 없는게 있음)
     if (!router.isReady) return;
