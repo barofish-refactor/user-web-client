@@ -185,6 +185,7 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
                   ),
                 )}
               />
+
               <div className='h-[1px]' />
               {isLoading ? (
                 <div className='h-[50vh]' />

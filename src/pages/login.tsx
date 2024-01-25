@@ -1,20 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { deleteCookie } from 'cookies-next';
 import { DefaultSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { client } from 'src/api/client';
 import Layout from 'src/components/common/layout';
 import { AppleButton, KakaoButton, NaverButton } from 'src/components/signup';
 import { queryKey } from 'src/query-key';
-import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { requestPermission } from 'src/utils/functions';
-import { VARIABLES } from 'src/variables';
 
-const { ACCESS_TOKEN } = VARIABLES;
 const Login: NextPageWithLayout = () => {
   const router = useRouter();
   const { data: info } = useQuery(queryKey.partnerJoin, async () => {
@@ -33,11 +28,6 @@ const Login: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
-  useEffect(() => {
-    if (ACCESS_TOKEN) {
-      router.replace('/');
-    }
-  }, [router]);
 
   return (
     <>

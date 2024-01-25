@@ -219,67 +219,68 @@ const Storage: NextPageWithLayout = () => {
                 <div className='mt-2.5 grid grid-cols-3 gap-x-1.5 gap-y-[22px] px-4'>
                   {(data ?? []).map((v: any, idx: number) => {
                     return (
-                      <Link
-                        key={`storage${idx}`}
-                        href={{ pathname: '/product', query: { id: v.productId } }}
-                      >
-                        <div className='relative aspect-square'>
-                          <Image
-                            unoptimized
-                            width={110}
-                            height={110}
-                            src={v.image ?? ''}
-                            alt='product'
-                            className='aspect-square w-full rounded-lg object-cover'
-                          />
-                          <button
-                            className='absolute left-2 top-2'
-                            onClick={e => {
-                              e.preventDefault();
-
-                              const tmp = [...selectedItem];
-                              console.log(tmp, 'selectedItem', tmp.length);
-                              // if (tmp.length >= 2)
-                              //   return setAlert({ message: '상품을 2개까지만 선택해주세요.' });
-                              const findIndex = tmp.findIndex(x => v.id === x.id);
-                              if (findIndex > -1) tmp.splice(findIndex, 1);
-                              else tmp.push(v);
-                              setSelectedItem(tmp);
-                            }}
-                          >
+                      <Fragment key={`storage${idx}`}>
+                        <div>
+                          <div className='relative aspect-square'>
                             <Image
                               unoptimized
-                              alt='check'
-                              width={24}
-                              height={24}
-                              src={
-                                selectedItem.map(x => x.id).includes(v.id)
-                                  ? '/assets/icons/common/check-box-on.svg'
-                                  : '/assets/icons/common/check-box-off-gray.svg'
-                              }
+                              width={110}
+                              height={110}
+                              src={v.image ?? ''}
+                              alt='product'
+                              className='aspect-square w-full rounded-lg object-cover'
                             />
-                          </button>
-                        </div>
-                        <p className='mt-2 line-clamp-1 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
-                          {`${setSquareBrackets(v.storeName)} ${v.title}`}
-                        </p>
-                        <div className='mt-0.5 flex items-center gap-0.5'>
-                          {(v.originPrice ?? 0) !== 0 && (
-                            <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
-                              v.originPrice,
-                              v.discountPrice,
-                            )}%`}</p>
-                          )}
-                          <p className='line-clamp-1 text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
-                            v.discountPrice,
-                          )}원`}</p>
-                        </div>
-                        {(v.originPrice ?? 0) !== 0 && (
-                          <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
-                            v.originPrice,
-                          )}원`}</p>
-                        )}
-                        {/* <div className='mt-1 flex items-center gap-0.5'>
+                            <button
+                              className='absolute left-2 top-2'
+                              onClick={e => {
+                                e.preventDefault();
+                                const tmp = [...selectedItem];
+                                console.log(tmp, 'selectedItem', tmp.length);
+                                // if (tmp.length >= 2)
+                                //   return setAlert({ message: '상품을 2개까지만 선택해주세요.' });
+                                const findIndex = tmp.findIndex(x => v.id === x.id);
+                                if (findIndex > -1) tmp.splice(findIndex, 1);
+                                else tmp.push(v);
+                                setSelectedItem(tmp);
+                              }}
+                            >
+                              <Image
+                                unoptimized
+                                alt='check'
+                                width={24}
+                                height={24}
+                                src={
+                                  selectedItem.map(x => x.id).includes(v.id)
+                                    ? '/assets/icons/common/check-box-on.svg'
+                                    : '/assets/icons/common/check-box-off-gray.svg'
+                                }
+                              />
+                            </button>
+                          </div>
+                          <Link
+                            // key={`storage${idx}`}
+                            href={{ pathname: '/product', query: { id: v.productId } }}
+                          >
+                            <p className='mt-2 line-clamp-1 text-start text-[14px] font-normal leading-[22px] -tracking-[0.03em] text-grey-10'>
+                              {`${setSquareBrackets(v.storeName)} ${v.title}`}
+                            </p>
+                            <div className='mt-0.5 flex items-center gap-0.5'>
+                              {(v.originPrice ?? 0) !== 0 && (
+                                <p className='text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+                                  v.originPrice,
+                                  v.discountPrice,
+                                )}%`}</p>
+                              )}
+                              <p className='line-clamp-1 text-[16px] font-bold leading-[24px] -tracking-[0.03em] text-grey-10'>{`${formatToLocaleString(
+                                v.discountPrice,
+                              )}원`}</p>
+                            </div>
+                            {(v.originPrice ?? 0) !== 0 && (
+                              <p className='-mt-0.5 text-start text-[13px] font-normal leading-[20px] -tracking-[0.03em] text-grey-60 line-through'>{`${formatToLocaleString(
+                                v.originPrice,
+                              )}원`}</p>
+                            )}
+                            {/* <div className='mt-1 flex items-center gap-0.5'>
                       <Image
                         unoptimized
                         src='/assets/icons/common/speech-bubble.svg'
@@ -295,7 +296,9 @@ const Storage: NextPageWithLayout = () => {
                         v.reviewCount ?? 0
                       }`}</p>
                     </div> */}
-                      </Link>
+                          </Link>
+                        </div>
+                      </Fragment>
                     );
                   })}
                 </div>
