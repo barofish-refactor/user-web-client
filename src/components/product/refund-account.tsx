@@ -138,7 +138,7 @@ const RefundAccount = ({
           className='flex h-[52px] w-[35%] cursor-pointer items-center justify-center rounded-lg bg-grey-60 font-bold leading-[24px] -tracking-[0.03em] text-white disabled:bg-grey-80'
           onClick={onReset}
         >
-          초기화
+          수정
         </div>
       </div>
     </div>
