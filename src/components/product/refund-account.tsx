@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { type Dispatch, type SetStateAction, useState, useEffect } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { client } from 'src/api/client';
-// import { type AccountCheckRequest } from 'src/api/swagger/data-contracts';
+import { type AccountCheckRequest } from 'src/api/swagger/data-contracts';
 import { Selector } from 'src/components/common';
 import { type SelectorType } from 'src/components/common/selector';
 import { queryKey } from 'src/query-key';
@@ -36,30 +36,30 @@ const RefundAccount = ({
     } else setAlert({ message: res.data.errorMsg ?? '' });
   });
 
-  // const { mutateAsync: checkAccount } = useMutation(
-  //   async (args: AccountCheckRequest) => await (await client()).checkAccount(args),
-  // );
+  const { mutateAsync: checkAccount } = useMutation(
+    async (args: AccountCheckRequest) => await (await client()).checkAccount(args),
+  );
 
-  // const onCheckBtn = () => {
-  //   checkAccount({
-  //     bankCodeId: Number(refunData.bankCode),
-  //     bankNum: refunData.accountNumber,
-  //     holderName: refunData.name,
-  //   })
-  //     .then(res => {
-  //       if (res.data.data === true) {
-  //         setIsRefundBankData(true);
-  //         setAlert({ message: '인증완료' });
-  //         return;
-  //       } else if (res.data.data === false) {
-  //         setAlert({ message: res.data.errorMsg ?? '' });
-  //       }
-  //     })
-  //     .catch(err => setAlert({ message: err.response.data.errorMsg ?? '' }));
-  // };
-  // const onReset = () => {
-  //   setIsRefundBankData(false);
-  // };
+  const onCheckBtn = () => {
+    checkAccount({
+      bankCodeId: Number(refunData.bankCode),
+      bankNum: refunData.accountNumber,
+      holderName: refunData.name,
+    })
+      .then(res => {
+        if (res.data.data === true) {
+          setIsRefundBankData(true);
+          setAlert({ message: '인증완료' });
+          return;
+        } else if (res.data.data === false) {
+          setAlert({ message: res.data.errorMsg ?? '' });
+        }
+      })
+      .catch(err => setAlert({ message: err.response.data.errorMsg ?? '' }));
+  };
+  const onReset = () => {
+    setIsRefundBankData(false);
+  };
 
   useEffect(() => {
     if (bank) {
