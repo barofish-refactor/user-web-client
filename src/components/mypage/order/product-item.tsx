@@ -36,7 +36,6 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
   switch (item.state) {
     case 'WAIT_DEPOSIT':
     case 'PAYMENT_DONE':
-    case 'DELIVERY_READY':
       buttonList = [0];
       break;
     case 'ON_DELIVERY':
@@ -48,6 +47,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
     case 'FINAL_CONFIRM':
       buttonList = [4, 5];
       break;
+    case 'DELIVERY_READY':
     case 'CANCELED':
     case 'CANCEL_REQUEST':
     case 'EXCHANGE_REQUEST':
