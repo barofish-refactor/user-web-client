@@ -103,7 +103,7 @@ const RefundAccount = ({
             disabled={isRefundBankData}
             value={bank}
             setValue={setBank}
-            list={(bankData ?? []).map((v: { name: string; id: string }) => ({
+            list={(bankData ?? []).map(v => ({
               label: v.name ?? '',
               value: v.id?.toString() ?? '',
             }))}
