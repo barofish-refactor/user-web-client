@@ -179,12 +179,12 @@ export interface Orders {
   productInfos?: OrderProductInfo[];
   deliverPlace?: OrderDeliverPlace;
   /** @format int32 */
-  usedCouponId?: number;
-  pointUsed?: boolean;
+  usedPoint?: number;
   vbankRefundInfo?: VBankRefundInfo;
   couponUsed?: boolean;
+  pointUsed?: boolean;
   /** @format int32 */
-  usedPoint?: number;
+  usedCouponId?: number;
 }
 
 export interface Product {
@@ -261,8 +261,8 @@ export interface Review {
   createdAt?: string;
   isDeleted?: boolean;
   evaluations?: ReviewEvaluation[];
-  deleted?: boolean;
   imageUrls?: string[];
+  deleted?: boolean;
 }
 
 export interface ReviewEvaluation {
@@ -1669,9 +1669,9 @@ export type ProcessedFoodInfoDto = ProductInformation & {
 };
 
 export interface ProductInformation {
+  itemCode?: string;
   /** @format int32 */
   productId?: number;
-  itemCode?: string;
 }
 
 export interface AccountCheckRequest {

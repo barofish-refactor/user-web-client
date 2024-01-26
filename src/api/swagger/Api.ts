@@ -3730,7 +3730,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @response `200` `SelectReviewListWithStoreId1Data` OK
    */
   selectReviewListWithStoreId1 = (
-    id: number,
+    id: string,
     query?: {
       /** @default "RECENT" */
       orderType?: 'BEST' | 'RECENT';
