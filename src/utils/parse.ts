@@ -76,7 +76,7 @@ export const parseProductInfoState = (
     case 'CANCELED':
       return '취소됨';
     case 'CANCELED_BY_PARTNER':
-      return '취소됨(파트너)';
+      return '취소됨(스토어)';
     case 'CANCELED_BY_ADMIN':
       return '취소됨(관리자)';
     case 'CANCEL_REQUEST':
