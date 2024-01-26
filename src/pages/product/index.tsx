@@ -113,6 +113,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       router.push('/login');
       return;
     }
+
     if (isSaveLoading) return;
 
     saveProduct({ data: formatToBlob<SaveProductPayload['data']>(data, true) })
