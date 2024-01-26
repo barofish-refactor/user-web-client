@@ -29,10 +29,9 @@ export function ReviewPhoto({ id, type }: Props) {
   // const queryClient = useQueryClient();
   const [selectedSort, setSelectedSort] = useState<number>(0); // 베스트순, 최신순
   const { data: imges, refetch: imgesFefetch } = useQuery(queryKey.reviewPhoto, async () => {
-    const res = await (await client()).getProductReviewPhotos(id);
+    const res = await (await client()).getProductReviewPhotos(id, { type });
     if (res.data.isSuccess) {
       console.log(res.data.data, 'res');
-
       return res.data.data;
     } else {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
@@ -72,7 +71,7 @@ export function ReviewPhoto({ id, type }: Props) {
       },
     },
   );
-
+  console.log(data, type, 'imgesimges');
   // const { ref } = useInView({
   //   initialInView: false,
   //   skip: !hasNextPage,

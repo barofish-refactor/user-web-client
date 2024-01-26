@@ -149,6 +149,7 @@ import {
   GetFormData,
   GetMyProductTastingNotes1Data,
   GetMyProductTastingNotesData,
+  GetProductReviewPhotos1Data,
   GetProductReviewPhotosData,
   GetReviewsData,
   GetTastingNoteBasketData,
@@ -2495,6 +2496,27 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags review-controller-v-2
+   * @name GetProductReviewPhotos
+   * @request GET:/api/v2/review/{id}/pictures
+   * @response `200` `GetProductReviewPhotosData` OK
+   */
+  getProductReviewPhotos = (
+    id: number,
+    query: {
+      type: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<GetProductReviewPhotosData, any>({
+      path: `/api/v2/review/${id}/pictures`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags review-controller-v-2
    * @name SelectReviewListWithStoreIdV2
    * @request GET:/api/v2/review/store
    * @response `200` `SelectReviewListWithStoreIdV2Data` OK
@@ -2669,12 +2691,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags product-controller-v-2
-   * @name GetProductReviewPhotos
+   * @name GetProductReviewPhotos1
    * @request GET:/api/v2/product/{id}/review-pictures
-   * @response `200` `GetProductReviewPhotosData` OK
+   * @response `200` `GetProductReviewPhotos1Data` OK
    */
-  getProductReviewPhotos = (id: number, params: RequestParams = {}) =>
-    this.request<GetProductReviewPhotosData, any>({
+  getProductReviewPhotos1 = (id: number, params: RequestParams = {}) =>
+    this.request<GetProductReviewPhotos1Data, any>({
       path: `/api/v2/product/${id}/review-pictures`,
       method: 'GET',
       ...params,
