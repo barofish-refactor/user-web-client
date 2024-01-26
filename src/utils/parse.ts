@@ -70,7 +70,7 @@ export const parseProductInfoState = (
     case 'EXCHANGE_REQUEST':
       return '교환 요청';
     case 'EXCHANGE_ACCEPT':
-      return '교환 완료';
+      return '교환 접수';
     case 'FINAL_CONFIRM':
       return '구매확정';
     case 'CANCELED':
