@@ -28,7 +28,7 @@ const ReviewAll: NextPageWithLayout = () => {
       };
       const res = await (type === 'product'
         ? (await client()).selectReviewListWithProductId(Number(id), query)
-        : (await client()).selectReviewListWithStoreId1(id, query));
+        : (await client()).selectReviewListWithStoreId1(id?.toString(), query));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {
