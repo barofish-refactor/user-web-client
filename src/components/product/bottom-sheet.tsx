@@ -136,7 +136,6 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
       enabled: !!data?.id,
     },
   );
-  console.log(data, 'data');
 
   const { mutateAsync: addBasket, isLoading: isMutateLoading } = useMutation(
     async (args: AddBasketPayload) =>
@@ -152,7 +151,7 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
           queryClient.invalidateQueries(queryKey.cartCount);
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
-      .catch(error => console.log(error));
+      .catch(error => setAlert({ message: error.response.data.errorMsg ?? '' }));
   };
 
   const [selectedOption, setSelectedOption] = useState<OptionState[]>([]);
