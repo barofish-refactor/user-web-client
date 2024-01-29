@@ -13,7 +13,7 @@ import {
   type DeleteTastingNoteToBasketPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
-import { CartIcon, Chat } from 'src/components/common';
+import { CartIcon, Chat, Footer } from 'src/components/common';
 import {
   // HEAD_DESCRIPTION,
   HEAD_NAME,
@@ -44,6 +44,7 @@ import { DefaultSeo } from 'next-seo';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
+import HomeFooter from 'src/components/home/footer';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -373,7 +374,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           )}
         </div>
         {/* header */}
-
         {!user && (
           <div className='sticky top-0 z-50'>
             <HeaderBanner />
@@ -574,6 +574,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 ProductDetail.getLayout = page => (
   <Layout headerProps={{ disable: true }} footerProps={{ disable: true }}>
     {page}
+    <HomeFooter />
   </Layout>
 );
 

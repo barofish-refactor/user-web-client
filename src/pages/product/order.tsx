@@ -47,7 +47,6 @@ const setOptionData = async (value: miniOptionState[]) => {
 
         value.forEach(v => {
           const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
-
           if (matched && matched.length > 0) {
             optionData.push({
               isNeeded: true,
@@ -74,8 +73,6 @@ const setOptionData = async (value: miniOptionState[]) => {
             });
           }
         });
-        console.log(optionData, '옵션');
-
         return optionData;
       }
     });
@@ -151,15 +148,16 @@ const Order: NextPageWithLayout = () => {
     }
   });
 
-  const { data: paymentMethodData } = useQuery(queryKey.paymentMethod, async () => {
-    const res = await (await client()).selectPaymentMethodList();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else {
-      setAlert({ message: res.data.errorMsg ?? '' });
-      throw new Error(res.data.errorMsg);
-    }
-  });
+  // const { data: paymentMethodData } = useQuery(queryKey.paymentMethod, async () => {
+  //   const res = await (await client()).selectPaymentMethodList();
+  //   if (res.data.isSuccess) {
+  //     return res.data.data;
+  //   } else {
+  //     setAlert({ message: res.data.errorMsg ?? '' });
+  //     throw new Error(res.data.errorMsg);
+  //   }
+  // });
+  // console.log(paymentMethodData, 'paymentMethodData');
 
   const { data: pointData } = useQuery(queryKey.pointRule, async () => {
     const res = await (await client()).selectPointRule();
@@ -380,6 +378,7 @@ const Order: NextPageWithLayout = () => {
       }
       const taxFreePrice = getTaxFreePrice();
       // return console.log(payMethod, 'payMethod', refundBankData);
+      console.log(shippingAddress, 'shippingAddress');
 
       orderProduct({
         products: selectedOption.map((x, i) => {
@@ -719,8 +718,6 @@ const Order: NextPageWithLayout = () => {
                 </div>
                 <div>
                   {x.data.map((v, idx) => {
-                    console.log(v, 'xx');
-
                     return (
                       <div key={`option${idx}`} className='px-4'>
                         <div className='mt-[13px] flex items-center gap-3'>
@@ -935,7 +932,7 @@ const Order: NextPageWithLayout = () => {
                           : 'text-grey-10',
                       )}
                     >
-                      {v.type ? parseIamportPayMethod(v.type) : '등록된 카드'}
+                      {v.type ? parseIamportPayMethod(v.type) : ''}
                     </p>
                   </button>
                   {/* {i === 3 && isActive && (
