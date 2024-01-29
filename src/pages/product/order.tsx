@@ -884,10 +884,11 @@ const Order: NextPageWithLayout = () => {
                   type: IamportPayMethod.Tosspay,
                 },
                 // {}, // 등록된 카드
-                { type: IamportPayMethod.Card },
+
                 { type: IamportPayMethod.Phone },
                 { type: IamportPayMethod.Vbank },
                 { type: IamportPayMethod.Trans },
+                { type: IamportPayMethod.Card },
               ] as { image?: string; activeImage?: string; type?: IamportPayMethod }[]
             ).map((v, i) => {
               const isActive = payMethod === v.type;
@@ -928,10 +929,13 @@ const Order: NextPageWithLayout = () => {
                     <p
                       className={cm(
                         'text-[15px] font-medium -tracking-[0.03em]',
-                        isActive ? 'text-grey-90' : 'text-grey-10',
+                        (isActive && ![0].includes(i)) ||
+                          (i === 3 && isActive && selectedCard !== undefined)
+                          ? 'text-grey-90'
+                          : 'text-grey-10',
                       )}
                     >
-                      {v.type ? parseIamportPayMethod(v.type) : ''}
+                      {v.type ? parseIamportPayMethod(v.type) : '등록된 카드'}
                     </p>
                   </button>
                   {/* {i === 3 && isActive && (
