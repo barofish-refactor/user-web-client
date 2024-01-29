@@ -453,7 +453,7 @@ const Order: NextPageWithLayout = () => {
           }
         })
         .catch(err => {
-          setAlert({ message: err.response.data.errorMsg });
+          setAlert({ message: err.response.data.errorMsg ?? '' });
         });
     }
   }

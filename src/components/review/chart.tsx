@@ -95,7 +95,7 @@ export function ReviewChart({ data }: Props) {
                 신선도가 좋아요
               </p>
             </div>
-            <p className='text-[14px] font-bold -tracking-[0.03em] text-primary-70'>{`${data.freshness}명`}</p>
+            <p className='text-[16px] font-bold -tracking-[0.03em] text-primary-70'>{`${data.freshness}명`}</p>
           </div>
         </div>
         {/* 가격 */}
