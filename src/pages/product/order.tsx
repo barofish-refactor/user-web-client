@@ -883,7 +883,7 @@ const Order: NextPageWithLayout = () => {
                   activeImage: '/assets/icons/product/payment-toss-active.png',
                   type: IamportPayMethod.Tosspay,
                 },
-                {}, // 등록된 카드
+                // {}, // 등록된 카드
                 { type: IamportPayMethod.Card },
                 { type: IamportPayMethod.Phone },
                 { type: IamportPayMethod.Vbank },
@@ -901,12 +901,13 @@ const Order: NextPageWithLayout = () => {
                     className={cm(
                       'flex h-[48px] w-full items-center justify-center gap-3 rounded-lg border border-[#E2E2E2]',
                       {
-                        'col-span-2': i < 4,
+                        'col-span-2': i < 3,
                         'bg-[#FEE33A]': i === 0 && isActive,
                         'bg-[#03C75A]': i === 1 && isActive,
                         'bg-[#0064FF]': i === 2 && isActive,
-                        'bg-primary-50': (i > 3 || selectedCard !== undefined) && isActive,
-                        'rounded-b-none': i === 3 && isActive,
+                        // 'bg-primary-50': i === 3 && isActive,
+                        'bg-primary-50': i >= 3 && isActive,
+                        // 'rounded-b-none': i === 3 && isActive,
                         'border-0': isActive && selectedCard !== undefined,
                       },
                     )}
@@ -927,16 +928,13 @@ const Order: NextPageWithLayout = () => {
                     <p
                       className={cm(
                         'text-[15px] font-medium -tracking-[0.03em]',
-                        (isActive && ![0, 3].includes(i)) ||
-                          (i === 3 && isActive && selectedCard !== undefined)
-                          ? 'text-grey-90'
-                          : 'text-grey-10',
+                        isActive ? 'text-grey-90' : 'text-grey-10',
                       )}
                     >
-                      {v.type ? parseIamportPayMethod(v.type) : '등록된 카드'}
+                      {v.type ? parseIamportPayMethod(v.type) : ''}
                     </p>
                   </button>
-                  {i === 3 && isActive && (
+                  {/* {i === 3 && isActive && (
                     <div className='col-span-2 -mt-2 rounded-b-lg border-[#E2E2E2] bg-grey-90'>
                       <Swiper
                         loop={false}
@@ -996,7 +994,7 @@ const Order: NextPageWithLayout = () => {
                         )}
                       </Swiper>
                     </div>
-                  )}
+                  )} */}
                 </Fragment>
               );
             })}

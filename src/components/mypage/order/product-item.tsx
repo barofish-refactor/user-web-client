@@ -143,7 +143,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
               onClick={() => {
                 const AlertMessage =
                   item.state === 'DELIVERY_DONE'
-                    ? '환불처리하시겠습니까?'
+                    ? '환불 처리 하시겠습니까?'
                     : '쿠폰이 적용된 주문은 전체 취소만 가능합니다.\n취소 하시겠습니까?';
                 if (isAllCancel) {
                   setConfirm({

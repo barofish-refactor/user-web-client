@@ -162,8 +162,8 @@ export const parsePaymentWay = (v: Nullish<IamportPayMethod>) => {
       return 'DEPOSIT';
     case IamportPayMethod.Tosspay:
       return 'TOSS_PAY';
-    default:
-      return 'KEY_IN';
+    // default:
+    //   return 'KEY_IN';
   }
 };
 
