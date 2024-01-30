@@ -378,7 +378,6 @@ const Order: NextPageWithLayout = () => {
       }
       const taxFreePrice = getTaxFreePrice();
       // return console.log(payMethod, 'payMethod', refundBankData);
-      console.log(shippingAddress, 'shippingAddress');
 
       orderProduct({
         products: selectedOption.map((x, i) => {
@@ -684,7 +683,6 @@ const Order: NextPageWithLayout = () => {
             });
             const deliverRes =
               Array.isArray(deliverText) === true ? Math.max(...deliverText) : deliverText;
-            console.log(deliverRes, 'deliverRes');
 
             return (
               <Fragment key={`${x.storeId}`}>
@@ -892,7 +890,7 @@ const Order: NextPageWithLayout = () => {
               // 네이버 페이 숨김
               if (v.type === IamportPayMethod.Naverpay) return null;
               // 등록된 카드 숨김
-              if (i === 3 && VARIABLES.IS_MASTER) return null;
+              // if (i === 3 && VARIABLES.IS_MASTER) return null;
               return (
                 <Fragment key={`payment${i}`}>
                   <button
