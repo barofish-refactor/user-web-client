@@ -95,7 +95,7 @@ const MypagePayMethodCreate: NextPageWithLayout = () => {
           });
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
-      .catch(error => console.log(error));
+      .catch(error => setAlert({ message: error.response.data.errorMsg ?? '' }));
   };
 
   const onSubmit = handleSubmit(data => {

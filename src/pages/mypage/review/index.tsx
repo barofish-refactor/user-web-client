@@ -117,22 +117,20 @@ const MypageReview: NextPageWithLayout = () => {
 
 function Empty() {
   return (
-    <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
-      <div className='grid flex-1 place-items-center'>
-        <div className='flex flex-col items-center gap-2'>
-          <Image
-            unoptimized
-            src='/assets/icons/search/search-error.svg'
-            alt='up'
-            width={40}
-            height={40}
-          />
-          <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
-            구매 후기가 없습니다.
-          </p>
-        </div>
+    <div className='grid h-[auto] flex-1 place-items-center'>
+      <div className='flex flex-col items-center gap-2'>
+        <Image
+          unoptimized
+          src='/assets/icons/search/search-error.svg'
+          alt='up'
+          width={40}
+          height={40}
+        />
+        <p className='whitespace-pre text-center text-[16px] font-medium leading-[20px] -tracking-[0.05em] text-[#B5B5B5]'>
+          구매 후기가 없습니다.
+        </p>
       </div>
-    </PullToRefresh>
+    </div>
   );
 }
 

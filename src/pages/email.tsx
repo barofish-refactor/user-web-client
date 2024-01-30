@@ -34,7 +34,7 @@ const Login: NextPageWithLayout = () => {
           setToken(res.data.data);
           return true;
         } else {
-          setAlert({ message: res.data.errorMsg ?? '' });
+          // setAlert({ message: res.response.data.data.errorMsg ?? '' });
           return false;
         }
       })
@@ -53,7 +53,7 @@ const Login: NextPageWithLayout = () => {
           if (!getPath && !getPaths) return router.push('/');
         }
       })
-      .catch(console.error);
+      .catch(err => setAlert({ message: err.response.data.errorMsg ?? '' }));
   });
 
   return (

@@ -70,13 +70,13 @@ export const parseProductInfoState = (
     case 'EXCHANGE_REQUEST':
       return '교환 요청';
     case 'EXCHANGE_ACCEPT':
-      return '교환 완료';
+      return '교환 접수';
     case 'FINAL_CONFIRM':
       return '구매확정';
     case 'CANCELED':
       return '취소됨';
     case 'CANCELED_BY_PARTNER':
-      return '취소됨(파트너)';
+      return '취소됨(스토어)';
     case 'CANCELED_BY_ADMIN':
       return '취소됨(관리자)';
     case 'CANCEL_REQUEST':
@@ -162,8 +162,8 @@ export const parsePaymentWay = (v: Nullish<IamportPayMethod>) => {
       return 'DEPOSIT';
     case IamportPayMethod.Tosspay:
       return 'TOSS_PAY';
-    default:
-      return 'KEY_IN';
+    // default:
+    //   return 'KEY_IN';
   }
 };
 

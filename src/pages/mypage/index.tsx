@@ -225,7 +225,7 @@ const MyPage: NextPageWithLayout = () => {
         <NavLink href='/mypage/order'>주문내역</NavLink>
         <NavLink href='/mypage/order/refund'>취소 환불 교환 내역</NavLink>
         <NavLink href='/mypage/coupon'>쿠폰함</NavLink>
-        <NavLink href='/mypage/pay-method'>결제수단 관리</NavLink>
+        {/* <NavLink href='/mypage/pay-method'>결제수단 관리</NavLink> */}
         <NavLink href='/mypage/inquiry'>상품 문의내역</NavLink>
         <NavLink href='/mypage/review'>구매후기</NavLink>
         <hr className='border-t-8 border-grey-90' />

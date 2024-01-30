@@ -59,6 +59,8 @@ const ProductCoupon = ({ setIsVisible, setCoupon, data, totalPrice }: Props) => 
                         : false
                     )
                       return setAlert({ message: '쿠폰 사용날짜가 지났습니다.' });
+                    console.log(value, 'value');
+
                     setCoupon(value);
                     history.back();
                     setIsVisible(false);

@@ -47,7 +47,6 @@ const setOptionData = async (value: miniOptionState[]) => {
 
         value.forEach(v => {
           const matched = res.data.data?.filter((x: { id: number }) => x.id === v.productId);
-
           if (matched && matched.length > 0) {
             optionData.push({
               isNeeded: true,
@@ -74,8 +73,6 @@ const setOptionData = async (value: miniOptionState[]) => {
             });
           }
         });
-        console.log(optionData, '옵션');
-
         return optionData;
       }
     });
@@ -151,15 +148,16 @@ const Order: NextPageWithLayout = () => {
     }
   });
 
-  const { data: paymentMethodData } = useQuery(queryKey.paymentMethod, async () => {
-    const res = await (await client()).selectPaymentMethodList();
-    if (res.data.isSuccess) {
-      return res.data.data;
-    } else {
-      setAlert({ message: res.data.errorMsg ?? '' });
-      throw new Error(res.data.errorMsg);
-    }
-  });
+  // const { data: paymentMethodData } = useQuery(queryKey.paymentMethod, async () => {
+  //   const res = await (await client()).selectPaymentMethodList();
+  //   if (res.data.isSuccess) {
+  //     return res.data.data;
+  //   } else {
+  //     setAlert({ message: res.data.errorMsg ?? '' });
+  //     throw new Error(res.data.errorMsg);
+  //   }
+  // });
+  // console.log(paymentMethodData, 'paymentMethodData');
 
   const { data: pointData } = useQuery(queryKey.pointRule, async () => {
     const res = await (await client()).selectPointRule();
@@ -371,7 +369,7 @@ const Order: NextPageWithLayout = () => {
     if (isCheck) {
       if (!shippingAddress) return setAlert({ message: '배송지를 입력해주세요' });
       if (payMethod === IamportPayMethod.Vbank) {
-        // if (!isRefundBankData) return setAlert({ message: '계좌 인증을 확인해주세요.' });
+        if (!isRefundBankData) return setAlert({ message: '계좌 인증을 확인해주세요.' });
         if (!refundBankData.name) return setAlert({ message: '예금주명을 입력해 주세요.' });
         else if (!refundBankData.bankCode)
           return setAlert({ message: '입금 은행을 선택해 주세요.' });
@@ -380,6 +378,7 @@ const Order: NextPageWithLayout = () => {
       }
       const taxFreePrice = getTaxFreePrice();
       // return console.log(payMethod, 'payMethod', refundBankData);
+      console.log(shippingAddress, 'shippingAddress');
 
       orderProduct({
         products: selectedOption.map((x, i) => {
@@ -454,7 +453,7 @@ const Order: NextPageWithLayout = () => {
           }
         })
         .catch(err => {
-          setAlert({ message: err.response.data.errorMsg });
+          setAlert({ message: err.response.data.errorMsg ?? '' });
         });
     }
   }
@@ -719,8 +718,6 @@ const Order: NextPageWithLayout = () => {
                 </div>
                 <div>
                   {x.data.map((v, idx) => {
-                    console.log(v, 'xx');
-
                     return (
                       <div key={`option${idx}`} className='px-4'>
                         <div className='mt-[13px] flex items-center gap-3'>
@@ -883,11 +880,12 @@ const Order: NextPageWithLayout = () => {
                   activeImage: '/assets/icons/product/payment-toss-active.png',
                   type: IamportPayMethod.Tosspay,
                 },
-                {}, // 등록된 카드
-                { type: IamportPayMethod.Card },
+                // {}, // 등록된 카드
+
                 { type: IamportPayMethod.Phone },
                 { type: IamportPayMethod.Vbank },
                 { type: IamportPayMethod.Trans },
+                { type: IamportPayMethod.Card },
               ] as { image?: string; activeImage?: string; type?: IamportPayMethod }[]
             ).map((v, i) => {
               const isActive = payMethod === v.type;
@@ -901,12 +899,13 @@ const Order: NextPageWithLayout = () => {
                     className={cm(
                       'flex h-[48px] w-full items-center justify-center gap-3 rounded-lg border border-[#E2E2E2]',
                       {
-                        'col-span-2': i < 4,
+                        'col-span-2': i < 3,
                         'bg-[#FEE33A]': i === 0 && isActive,
                         'bg-[#03C75A]': i === 1 && isActive,
                         'bg-[#0064FF]': i === 2 && isActive,
-                        'bg-primary-50': (i > 3 || selectedCard !== undefined) && isActive,
-                        'rounded-b-none': i === 3 && isActive,
+                        // 'bg-primary-50': i === 3 && isActive,
+                        'bg-primary-50': i >= 3 && isActive,
+                        // 'rounded-b-none': i === 3 && isActive,
                         'border-0': isActive && selectedCard !== undefined,
                       },
                     )}
@@ -927,16 +926,16 @@ const Order: NextPageWithLayout = () => {
                     <p
                       className={cm(
                         'text-[15px] font-medium -tracking-[0.03em]',
-                        (isActive && ![0, 3].includes(i)) ||
+                        (isActive && ![0].includes(i)) ||
                           (i === 3 && isActive && selectedCard !== undefined)
                           ? 'text-grey-90'
                           : 'text-grey-10',
                       )}
                     >
-                      {v.type ? parseIamportPayMethod(v.type) : '등록된 카드'}
+                      {v.type ? parseIamportPayMethod(v.type) : ''}
                     </p>
                   </button>
-                  {i === 3 && isActive && (
+                  {/* {i === 3 && isActive && (
                     <div className='col-span-2 -mt-2 rounded-b-lg border-[#E2E2E2] bg-grey-90'>
                       <Swiper
                         loop={false}
@@ -996,7 +995,7 @@ const Order: NextPageWithLayout = () => {
                         )}
                       </Swiper>
                     </div>
-                  )}
+                  )} */}
                 </Fragment>
               );
             })}

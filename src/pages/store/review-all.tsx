@@ -17,7 +17,7 @@ const perView = 30;
 const ReviewAll: NextPageWithLayout = () => {
   const router = useRouter();
   const { id, type } = router.query;
-
+  const ids = id as string;
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.review.list({ id, type }),
     async ({ pageParam = 0 }) => {
@@ -28,7 +28,7 @@ const ReviewAll: NextPageWithLayout = () => {
       };
       const res = await (type === 'product'
         ? (await client()).selectReviewListWithProductId(Number(id), query)
-        : (await client()).selectReviewListWithStoreId1(Number(id), query));
+        : (await client()).selectReviewListWithStoreId1(ids, query));
       if (res.data.isSuccess) {
         return res.data.data;
       } else {

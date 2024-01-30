@@ -36,7 +36,6 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
   switch (item.state) {
     case 'WAIT_DEPOSIT':
     case 'PAYMENT_DONE':
-    case 'DELIVERY_READY':
       buttonList = [0];
       break;
     case 'ON_DELIVERY':
@@ -48,6 +47,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
     case 'FINAL_CONFIRM':
       buttonList = [4, 5];
       break;
+    case 'DELIVERY_READY':
     case 'CANCELED':
     case 'CANCEL_REQUEST':
     case 'EXCHANGE_REQUEST':
@@ -72,6 +72,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
 
   const onConfirmMutate = ({ orderProductInfoId }: { orderProductInfoId: number }) => {
     if (isConfirmLoading) return;
+
     setConfirm({
       message: '구매확정하시겠습니까?',
       onClick: () => {
@@ -89,12 +90,13 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
       },
     });
   };
-
+  // || item.state !== 'DELIVERY_DONE'
   return (
     <div className={clsx('last:pb-0', hasButtons ? 'pb-5' : 'pb-0')}>
       <p
-        data-done={item.state !== 'DELIVERY_READY'}
-        className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-primary-50 data-[done=true]:text-grey-50'
+        data-confirm={item.state === 'FINAL_CONFIRM'}
+        data-done={item.state === 'DELIVERY_DONE'}
+        className='text-[16px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-50 data-[confirm=true]:text-primary-50 data-[done=true]:text-primary-50'
       >
         {parseProductInfoState(item.state)}
       </p>
@@ -139,9 +141,13 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
             <button
               className={buttonClassName}
               onClick={() => {
+                const AlertMessage =
+                  item.state === 'DELIVERY_DONE'
+                    ? '환불 처리 하시겠습니까?'
+                    : '쿠폰이 적용된 주문은 전체 취소만 가능합니다.\n취소 하시겠습니까?';
                 if (isAllCancel) {
                   setConfirm({
-                    message: '쿠폰이 적용된 주문은 전체 취소만 가능합니다.\n취소 하시겠습니까?',
+                    message: `${AlertMessage}`,
                     onClick: () => {
                       router.push({
                         pathname: '/mypage/order/refund/action',

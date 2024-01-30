@@ -275,6 +275,8 @@ const MypageOrderRefundAction: NextPageWithLayout = () => {
             onClick={() => {
               if (!reportValue?.value) return setAlert({ message: '항목을 선택해주세요' });
               const contentData = !content ? undefined : content;
+              console.log(type, 'type');
+
               if (type === 'change') {
                 onChangeMutate({
                   orderProductInfoId: productInfo?.id ?? -1,

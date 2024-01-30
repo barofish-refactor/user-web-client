@@ -117,6 +117,7 @@ const Cart: NextPageWithLayout = () => {
       throw new Error(res.data.code + ': ' + res.data.errorMsg);
     }
   });
+  console.log(data, 'datadata');
 
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
@@ -180,7 +181,6 @@ const Cart: NextPageWithLayout = () => {
     updateBasket({ id, query })
       .then(res => {
         if (res.data.isSuccess) {
-          // setIsAddCart(true);
           refetch();
         } else setAlert({ message: res.data.errorMsg ?? '' });
       })
@@ -190,6 +190,7 @@ const Cart: NextPageWithLayout = () => {
   /** 옵션 갯수 -1 처리 */
   const onPressMinus = (item: BasketProductDto) => {
     const amount = item.amount ?? 0;
+
     if (amount - 1 <= 0) return;
     let tmp = selectedItem.filter(x => x.id === item.id)[0];
     tmp = { ...tmp, amount: amount - 1 };
@@ -206,8 +207,22 @@ const Cart: NextPageWithLayout = () => {
   /** 옵션 갯수 +1 처리 */
   const onPressPlus = (item: BasketProductDto) => {
     const amount = item.amount ?? 0;
-
-    if (item.option?.maxAvailableAmount === amount) return;
+    const inventoryQuantity = item.option?.inventoryQuantity ?? 0;
+    if (inventoryQuantity <= amount) {
+      if (inventoryQuantity < amount) {
+        let tmp = selectedItem.filter(x => x.id === item.id)[0];
+        tmp = { ...tmp, amount: amount + 1 };
+        const tmp2 = [...selectedItem];
+        const findIndex = tmp2.findIndex(x => x.id === item.id);
+        tmp2[findIndex] = tmp;
+        setSelectedItem(tmp2);
+        onUpdate({
+          id: item.id ?? -1,
+          query: { amount: inventoryQuantity },
+        });
+      }
+      return setAlert({ message: `최대 주문수량은 ${inventoryQuantity}개 입니다.` });
+    }
 
     let tmp = selectedItem.filter(x => x.id === item.id)[0];
     tmp = { ...tmp, amount: amount + 1 };
