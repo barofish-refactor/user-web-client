@@ -356,6 +356,8 @@ const Order: NextPageWithLayout = () => {
       sum: priceListAdd.reduce((a, b) => a + b, 0),
     };
   };
+  const taxFreePrice = getTaxFreePrice();
+  console.log(taxFreePrice, '과세');
 
   async function onPayment() {
     if (Number(point) !== 0 && Number(point) < 100) {
