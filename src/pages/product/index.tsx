@@ -13,7 +13,7 @@ import {
   type DeleteTastingNoteToBasketPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
-import { CartIcon, Chat, Footer } from 'src/components/common';
+import { CartIcon, Chat } from 'src/components/common';
 import {
   // HEAD_DESCRIPTION,
   HEAD_NAME,
@@ -45,6 +45,7 @@ import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
 import HomeFooter from 'src/components/home/footer';
+import { useInView } from 'react-intersection-observer';
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -121,7 +122,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       .then(res => {
         if (res.data.isSuccess) {
           setToast({
-            text: '1개의 상품이 저장함에 담겼어요.',
+            text: '해당 상품이 피쉬저장소에 담겼어요.',
             onClick: () => router.push('/compare'),
           });
           refetch();
@@ -277,7 +278,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     // 화면높이
     setIsScroll(true);
     const clientHeight = document.documentElement.clientHeight;
-
     if (
       infoRef.current &&
       reviewRef.current &&
@@ -293,12 +293,14 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       reviewRef.current.getBoundingClientRect().bottom >= clientHeight / 2
     ) {
       setSelectedTab(1);
+      setIsFloating(true);
     } else if (
       inquiryRef.current &&
       inquiryRef.current.getBoundingClientRect().top <= clientHeight / 2 &&
       inquiryRef.current.getBoundingClientRect().bottom >= clientHeight / 2
     ) {
       setSelectedTab(2);
+      setIsFloating(true);
     }
   }, []);
   useEffect(() => {
@@ -311,7 +313,33 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       window.removeEventListener('scroll', _infiniteScroll, true);
     };
   }, [_infiniteScroll, isTap]);
+  const [isFloating, setIsFloating] = useState(false);
+  const [isRef, setIsRef] = useState(false);
+  useEffect(() => {
+    const clientHeight = document.documentElement.clientHeight;
+    if (infoRef.current && infoRef.current.getBoundingClientRect().top <= clientHeight / 2) {
+      setIsFloating(true);
+    } else {
+      setIsFloating(false);
+    }
+  }, [isRef, isTap]);
 
+  const { ref } = useInView({
+    initialInView: false,
+    onChange: inView => {
+      if (inView) setIsRef(true);
+      else setIsRef(false);
+    },
+  });
+
+  const onFloating = () => {
+    infoRef.current?.scrollIntoView({
+      behavior: 'auto',
+      block: 'start',
+    });
+    if (!user) window.scrollBy(0, -170);
+    else window.scrollBy(0, -150);
+  };
   return (
     <>
       {data && (
@@ -439,6 +467,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 <div className='mb-[10px] mt-7 w-[230px] items-center rounded-full bg-[#002486] p-[5px] py-[5px] text-center text-[20px] font-bold  text-[#fff] '>
                   피쉬 테이스팅 노트
                 </div>
+                <p className='mb-[5px] text-[12px]'>수산물 30년 경력의 매니아부터 초보자까지!</p>
+                <p className='mb-[15px] text-[12px]'>
+                  바로피쉬가 직접 먹어보고 솔직한 노트로 전해드립니다.
+                </p>
                 <Chat data={data?.tastingNoteInfo ?? []} />
                 <TastingInfo
                   keyword={data?.tastingNoteInfo[0]?.textures ?? []}
@@ -449,15 +481,46 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                     theScentOfTheSea: data?.tastingNoteInfo[0]?.theScentOfTheSea ?? 0,
                   }}
                 />
+                <button
+                  className='mb-[10px] mt-[30px] flex h-[52px] w-[60%] flex-1 items-center justify-center rounded-full bg-primary-50 px-[5px] py-[10px] text-white'
+                  style={{
+                    background:
+                      'linear-gradient(90deg, #4974E6 6.36%, #6965E8 50.17%, #8956E9 92.66%)',
+                  }}
+                  onClick={() => {
+                    if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
+                      sessionStorage.setItem('Path', router.asPath);
+                      router.push('/login');
+                      return;
+                    }
+                    if (data?.isLike)
+                      onDeleteSaveProductsMutate({ data: { productId: [Number(id)] } });
+                    else {
+                      if (data?.tastingNoteInfo?.length === 0)
+                        return setAlert({
+                          message: '테이스팅 노트 준비중입니다.',
+                        });
+                      onSaveMutate({ data: { productId: Number(id) } });
+                    }
+                  }}
+                >
+                  <span className='mr-[5px]'>피쉬 저장소에 담아보세요</span>
+                  <Image
+                    src='/assets/icons/product/tastingAdd.webp'
+                    alt='add'
+                    width={20}
+                    height={20}
+                  />
+                </button>
               </div>
             )}
-            {/* <div className='h-2 bg-grey-90' /> */}
 
             {/* Tab Content */}
             {/* <div className=' w-full flex-col items-center '> */}
 
             {/* </div> */}
             <div className='mt-[30px] min-h-[calc(100dvb-180px)]'>
+              <div ref={ref} className='h-2 bg-grey-90' />
               <Fragment>
                 <div
                   ref={infoRef}
@@ -466,7 +529,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 />
                 {/* <ProductInfoNotice id={Number(id)} /> */}
               </Fragment>
-              <div className='h-2 bg-grey-90' />
+
               <div>
                 {/* 구매자들의 솔직 리뷰 */}
                 <ReviewChart
@@ -501,6 +564,22 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             </div>
           </>
         </PullToRefresh>
+        {/* 플러팅 버튼 */}
+        {isFloating && (
+          <button
+            className='fixed bottom-[110px] z-50 flex w-[375px] justify-end max-md:w-full'
+            onClick={onFloating}
+          >
+            <Image
+              width={100}
+              height={100}
+              src='/assets/icons/product/floating.png'
+              alt='floating'
+              className='relative top-[45px] h-[100px] w-[100px]'
+            />
+          </button>
+        )}
+
         {/* 하단 부분 */}
         <div className='fixed bottom-0 z-50 flex w-[375px] items-center gap-2 bg-white px-4 pb-5 pt-2 max-md:w-full'>
           <button

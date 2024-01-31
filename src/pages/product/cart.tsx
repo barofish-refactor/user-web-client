@@ -94,7 +94,6 @@ const deliverPriceAfterCheckType = ({
   } else {
     finalResult = result;
   }
-
   return finalResult;
 };
 const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
@@ -489,7 +488,6 @@ const Cart: NextPageWithLayout = () => {
                         </div>
                       )}
                     </div>
-                    {'>'}
                   </div>
                   <Fragment>
                     {x.data.map((v, idx) => {

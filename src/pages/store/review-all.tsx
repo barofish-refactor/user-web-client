@@ -17,7 +17,7 @@ const perView = 30;
 const ReviewAll: NextPageWithLayout = () => {
   const router = useRouter();
   const { id, type } = router.query;
-  const ids = id as string;
+  const ids = id as unknown as number;
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     queryKey.review.list({ id, type }),
     async ({ pageParam = 0 }) => {
