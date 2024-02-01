@@ -135,7 +135,7 @@ export function MypageOrderProductItem({ id, item, apiKey, isAllCancel = false }
           </div>
         </div>
       </div>
-      {buttonList.length > 0 && (
+      {buttonList.length > 0 && item.needed && (
         <nav className='mt-3 grid h-8 grid-flow-col gap-x-1'>
           {buttonList.includes(0) && (
             <button
