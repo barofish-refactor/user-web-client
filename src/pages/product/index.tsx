@@ -415,8 +415,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           }
         >
           <BackButton />
+          {/* <div className='cursor-pointer pl-[25px]' onClick={() => router.push('/')}>
+            홈
+          </div> */}
           <div className=' flex items-center gap-4'>
             <div
+              className='cursor-pointer'
               onClick={() => {
                 if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
                   sessionStorage.setItem('Path', router.asPath);

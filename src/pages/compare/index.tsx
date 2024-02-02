@@ -115,6 +115,9 @@ const Storage: NextPageWithLayout = () => {
   const handleRefresh = async () => {
     location.reload();
   };
+  const blurDataURL =
+    'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==';
+
   return (
     <div
       className={cm(' pb-6 max-md:w-[100vw]', {
@@ -124,15 +127,13 @@ const Storage: NextPageWithLayout = () => {
       {/* header */}
       <div className='sticky top-0 z-50 flex h-[56px] items-center bg-white pl-4 pr-[18px]'>
         <BackButton />
-        <p className='flex-1 text-center text-[16px] font-bold -tracking-[0.03em] text-grey-10'>
-          피쉬저장소
-        </p>
+
         <Link href='/product/cart'>
           <CartIcon />
         </Link>
       </div>
       <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
-        <div className='h-[calc(100dvb)]'>
+        <div className='h-[calc(100dvb-100px)]'>
           {/* Tab */}
           {/* <div className='mt-4 flex w-full items-center justify-around border-b border-b-[#F7F7F7] px-[46px] md:justify-between'>
         {['저장한 상품', '저장한 조합'].map((v, idx) => {
@@ -165,13 +166,23 @@ const Storage: NextPageWithLayout = () => {
           );
         })}
       </div> */}
-
+          <Image
+            src='/assets/icons/compare/tastingNoteGui.webp'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='guideImg'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
           {selectedTab === 0 ? (
             (data ?? []).length === 0 ? (
               Empty('저장한 상품')
             ) : (
               <Fragment>
-                <div className='min-h- mt-6 flex items-center px-4'>
+                <div className='mt-6 flex min-h-[] items-center px-4'>
                   <p className='flex-1 text-[14px] font-semibold leading-[22px] -tracking-[0.03em] text-grey-60'>
                     {`저장한 상품 ${formatToLocaleString(data?.length ?? 0)}`}
                   </p>
@@ -465,7 +476,6 @@ const Storage: NextPageWithLayout = () => {
               </div>
             </Fragment>
           )}
-
           {selectedItem.length > 0 && (
             <div className='fixed bottom-0 z-50 flex w-[375px] flex-col rounded-t-lg border-t border-t-grey-90 bg-white px-4 pb-7 pt-2.5 max-md:w-full'>
               <div className='h-1 w-9 self-center rounded-full bg-grey-80' />
