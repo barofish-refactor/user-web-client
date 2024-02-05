@@ -373,25 +373,27 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           />
           <meta property='product:item_group_id' content={data?.id?.toString()} />
           <meta property='product:retailer_item_id' content={'facebook_' + data?.id?.toString()} />
-          <DefaultSeo
-            title={headTitle}
-            description={testtext}
-            openGraph={{
-              title: headTitle,
-              description: testtext,
-              images: data?.images?.map((v: string) => {
-                return {
-                  url: v[0],
-                  alt: headTitle,
-                };
-              }),
-            }}
-          />
         </Head>
       )}
 
       {/* <Head></Head> */}
       <div className='overflow-y-visible pb-[80px] max-md:w-[100vw]'>
+        <DefaultSeo
+          title={headTitle}
+          description={testtext}
+          openGraph={{
+            title: headTitle,
+            description: testtext,
+            images:
+              data &&
+              data?.images?.map((v: string) => {
+                return {
+                  url: v[0],
+                  alt: headTitle,
+                };
+              }),
+          }}
+        />
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (
