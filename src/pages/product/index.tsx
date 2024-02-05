@@ -384,14 +384,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           openGraph={{
             title: headTitle,
             description: testtext,
-            images:
-              data &&
-              data?.images?.map((v: string) => {
-                return {
-                  url: v[0],
-                  alt: headTitle,
-                };
-              }),
+            images: data?.images?.map((v: string) => {
+              return {
+                url: v[0],
+                alt: headTitle,
+              };
+            }),
           }}
         />
         {/* bottomSheet : 옵션 선택 */}
