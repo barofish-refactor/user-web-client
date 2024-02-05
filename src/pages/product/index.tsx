@@ -40,7 +40,7 @@ import { formatToBlob, formatToLocaleString, handleRefresh } from 'src/utils/fun
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import { HeaderBanner } from 'src/components/common/header-banner';
-import { DefaultSeo } from 'next-seo';
+import { NextSeo } from 'next-seo';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
@@ -346,7 +346,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
         <Head>
           <meta property='og:price:currency' content='KRW' />
           <meta property='og:image' content={`${data?.images ? data?.images[0] : ''}`} />
-
           <meta
             property='og:url'
             content={`https://barofish.com${router.pathname}?id=${router?.query.id}`}
@@ -374,7 +373,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           />
           <meta property='product:item_group_id' content={data?.id?.toString()} />
           <meta property='product:retailer_item_id' content={'facebook_' + data?.id?.toString()} />
-          <DefaultSeo
+          <NextSeo
             title={headTitle}
             description={testtext}
             openGraph={{
