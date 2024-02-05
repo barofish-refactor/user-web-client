@@ -248,7 +248,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-
+  // console.log('여기ㅇ', searchData);
   return (
     <>
       <DefaultSeo title='검색 | 바로피쉬' description='바로피쉬 검색' />

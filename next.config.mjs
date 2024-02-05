@@ -25,8 +25,8 @@ const config = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    minimumCacheTTL: 604800,
-    disableStaticImages: true,
+    minimumCacheTTL: 360,
+    disableStaticImages: false,
     remotePatterns: [
       {
         hostname: 'barofish-dev.s3.ap-northeast-2.amazonaws.com',

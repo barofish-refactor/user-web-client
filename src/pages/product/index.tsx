@@ -374,25 +374,25 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           />
           <meta property='product:item_group_id' content={data?.id?.toString()} />
           <meta property='product:retailer_item_id' content={'facebook_' + data?.id?.toString()} />
+          <DefaultSeo
+            title={headTitle}
+            description={testtext}
+            openGraph={{
+              title: headTitle,
+              description: testtext,
+              images: data?.images?.map((v: string) => {
+                return {
+                  url: v[0],
+                  alt: headTitle,
+                };
+              }),
+            }}
+          />
         </Head>
       )}
 
       {/* <Head></Head> */}
       <div className='overflow-y-visible pb-[80px] max-md:w-[100vw]'>
-        <DefaultSeo
-          title={headTitle}
-          description={testtext}
-          openGraph={{
-            title: headTitle,
-            description: testtext,
-            images: data?.images?.map((v: string) => {
-              return {
-                url: v,
-                alt: headTitle,
-              };
-            }),
-          }}
-        />
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (
@@ -467,7 +467,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             {/* BARO’s 피쉬 노트 */}
 
             {data && data?.tastingNoteInfo && isTasting && (
-              <div className='flex h-[auto] min-h-[600px] w-full flex-col items-center bg-[#EEF3FF] pb-[15px]'>
+              <div className='flex h-[auto]  w-full flex-col items-center bg-[#EEF3FF] pb-[15px]'>
                 <div className='mb-[10px] mt-7 w-[230px] items-center rounded-full bg-[#002486] p-[5px] py-[5px] text-center text-[20px] font-bold  text-[#fff] '>
                   피쉬 테이스팅 노트
                 </div>
@@ -486,7 +486,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                   }}
                 />
                 <button
-                  className='mb-[10px] mt-[30px] flex h-[52px] w-[60%] flex-1 items-center justify-center rounded-full bg-primary-50 px-[5px] py-[10px] text-white'
+                  className='mb-[10px] mt-[30px] flex h-[52px] w-[230px] flex-1 items-center justify-center rounded-full bg-primary-50 px-[5px] py-[10px] text-white'
                   style={{
                     background:
                       'linear-gradient(90deg, #4974E6 6.36%, #6965E8 50.17%, #8956E9 92.66%)',
@@ -518,13 +518,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 </button>
               </div>
             )}
-
             {/* Tab Content */}
             {/* <div className=' w-full flex-col items-center '> */}
 
             {/* </div> */}
-            <div className='mt-[30px] min-h-[calc(100dvb-180px)]'>
-              <div ref={ref} className='h-2 bg-grey-90' />
+            <div className=' min-h-[calc(100dvb-180px)]'>
+              <div ref={ref} className='h-2' />
               <Fragment>
                 <div
                   ref={infoRef}
