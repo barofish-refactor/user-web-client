@@ -12,7 +12,7 @@ export default function Head() {
   const router = useRouter();
   return (
     <Fragment>
-      {router.asPath.includes('product?id=') ? null : (
+      {/* {router.asPath.includes('product?id=') ? null : (
         <DefaultSeo
           title={HEAD_NAME}
           description={HEAD_DESCRIPTION}
@@ -34,7 +34,7 @@ export default function Head() {
             type: 'website',
           }}
         />
-      )}
+      )} */}
 
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
