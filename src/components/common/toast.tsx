@@ -36,7 +36,7 @@ const Toast = () => {
           >
             <div className='flex h-[50px] w-full items-center justify-between rounded-lg bg-primary-10 px-4'>
               <p className='text-[14px] font-bold leading-[18px] -tracking-[0.03em] text-white'>
-                {toast.text ?? '1개의 상품이 저장함에 담겼어요.'}
+                {toast.text ?? '해당 상품이 피쉬저장소에 담겼어요.'}
               </p>
               <button
                 onClick={() => {
@@ -45,7 +45,7 @@ const Toast = () => {
                 }}
               >
                 <p className='text-[14px] font-medium leading-[18px] -tracking-[0.03em] text-primary-80'>
-                  {toast.buttonText ? toast.buttonText : '저장함에서 비교하기'}
+                  {toast.buttonText ? toast.buttonText : '비교하기'}
                 </p>
               </button>
             </div>

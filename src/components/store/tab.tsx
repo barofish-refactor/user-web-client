@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { type SimpleStore } from 'src/api/swagger/data-contracts';
 import cm from 'src/utils/class-merge';
 
@@ -11,6 +12,15 @@ interface Props {
 const Tab = ({ data, selectedTab, setSelectedTab }: Props) => {
   const router = useRouter();
   const { id } = router.query;
+  // const [isCart, setIsCart] = useState(true);
+  useEffect(() => {
+    const cart = sessionStorage.getItem('cart') ? sessionStorage.getItem('cart') : null;
+    if (cart) {
+      setSelectedTab(1);
+      // setIsCart(!isCart);
+    }
+    sessionStorage.removeItem('cart');
+  }, [setSelectedTab]);
   return (
     <div className='mt-1 flex w-full items-center justify-between border-b border-b-[#F2F2F2] px-[21.5px]'>
       {['방문일지', `판매상품 ${(data?.products ?? []).length}`, `후기 ${data?.reviewCount}`].map(

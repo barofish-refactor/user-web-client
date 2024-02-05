@@ -31,6 +31,17 @@ const ProductItem = ({ dataDto, imageOptimize, onMutate, onDeleteSaveProductsMut
       className='flex w-full flex-col text-start'
     >
       <div className='relative aspect-square w-full overflow-hidden rounded-lg'>
+        {/* {dataDto?.isNeedTaxation === false && (
+          <Image
+            unoptimized
+            src='/assets/icons/product/soldout.png'
+            alt='판매중지'
+            width={170}
+            height={170}
+            className='z-5 absolute'
+            style={{ width: '170px', height: '170px', objectFit: 'cover' }}
+          />
+        )} */}
         <Image
           width={260}
           height={260}

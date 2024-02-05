@@ -94,7 +94,6 @@ const deliverPriceAfterCheckType = ({
   } else {
     finalResult = result;
   }
-
   return finalResult;
 };
 const { ACCESS_TOKEN, REFRESH_TOKEN } = VARIABLES;
@@ -458,7 +457,13 @@ const Cart: NextPageWithLayout = () => {
 
               return (
                 <div key={x.index}>
-                  <div className='mt-[5px] flex h-[70px] items-center gap-2 px-4'>
+                  <div
+                    className='mt-[5px] flex h-[70px] cursor-pointer items-center gap-2 px-4'
+                    onClick={() => {
+                      sessionStorage.setItem('cart', 'cart');
+                      router.replace(`/store/detail?id=${x.store?.storeId}`);
+                    }}
+                  >
                     <Image
                       unoptimized
                       src={x.store?.profileImage ?? ''}

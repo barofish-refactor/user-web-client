@@ -114,8 +114,8 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const { data: directData } = useQuery(
     queryKey.search.list(searchText),
     async () => {
-      const { searchingProductDirect } = await client();
-      const res = await searchingProductDirect({ keyword: searchText as string });
+      const { searchingProductDirectV2 } = await client();
+      const res = await searchingProductDirectV2({ keyword: searchText as string });
       return res.data.data;
     },
     { enabled: searchText !== '' },
@@ -142,7 +142,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       .then(res => {
         if (res.data.isSuccess) {
           setToast({
-            text: '1개의 상품이 저장함에 담겼어요.',
+            text: '해당 상품이 피쉬저장소에 담겼어요.',
             onClick: () => router.push('/compare/storage'),
           });
           if (isRefetch) refetch();
@@ -248,7 +248,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-
+  // console.log('여기ㅇ', searchData);
   return (
     <>
       <DefaultSeo title='검색 | 바로피쉬' description='바로피쉬 검색' />

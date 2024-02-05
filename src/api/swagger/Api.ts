@@ -192,6 +192,7 @@ import {
   SaveProductData,
   SaveProductPayload,
   SearchingProductDirectData,
+  SearchingProductDirectV2Data,
   SearchProductData,
   SelectAddressListData,
   SelectAdminData,
@@ -2488,6 +2489,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   ) =>
     this.request<SelectRecommendStoreListV2Data, any>({
       path: `/api/v2/store/recommend`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags search-keyword-controller-v-2
+   * @name SearchingProductDirectV2
+   * @request GET:/api/v2/search/direct
+   * @response `200` `SearchingProductDirectV2Data` OK
+   */
+  searchingProductDirectV2 = (
+    query: {
+      keyword: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SearchingProductDirectV2Data, any>({
+      path: `/api/v2/search/direct`,
       method: 'GET',
       query: query,
       ...params,
