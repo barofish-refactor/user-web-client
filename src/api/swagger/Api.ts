@@ -30,6 +30,8 @@ import {
   AddCompareSetPayload,
   AddCouponData,
   AddCouponPayload,
+  AddCouponV2Data,
+  AddCouponV2Payload,
   AddDeliverPlaceData,
   AddDeliverPlacePayload,
   AddGradeData,
@@ -96,6 +98,7 @@ import {
   ConfirmReportsData,
   ConfirmReportsPayload,
   CountBasketData,
+  CouponDeleteRequest,
   CreateBannerData,
   CreateBannerPayload,
   CreateCurationData,
@@ -138,6 +141,7 @@ import {
   DeleteTipData,
   DeleteTopBarData,
   DeleteTopBarV2Data,
+  DeleteUserCouponData,
   DeliverReadyData,
   DoneRefundOrderProductData,
   DownloadStoresWithExcelData,
@@ -543,6 +547,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   cancelOrdersByPartnerV2 = (data: CancelOrdersByPartnerV2Payload, params: RequestParams = {}) =>
     this.request<CancelOrdersByPartnerV2Data, any>({
       path: `/api/v2/order/cancel/partner`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags coupon-controller-v-2
+   * @name AddCouponV2
+   * @request POST:/api/v2/coupon/add
+   * @response `200` `AddCouponV2Data` OK
+   */
+  addCouponV2 = (data: AddCouponV2Payload, params: RequestParams = {}) =>
+    this.request<AddCouponV2Data, any>({
+      path: `/api/v2/coupon/add`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -1986,6 +2006,22 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags coupon-controller
+   * @name DeleteUserCoupon
+   * @request POST:/api/v1/coupon
+   * @response `200` `DeleteUserCouponData` OK
+   */
+  deleteUserCoupon = (data: CouponDeleteRequest, params: RequestParams = {}) =>
+    this.request<DeleteUserCouponData, any>({
+      path: `/api/v1/coupon`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags coupon-controller
    * @name UpdateSystemCoupon
    * @request POST:/api/v1/coupon/system-coupon/update
    * @response `200` `UpdateSystemCouponData` OK
@@ -2750,6 +2786,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       curationId?: number;
       /** @default "" */
       keyword?: string;
+      productIds?: number[];
       /** @format int32 */
       storeId?: number;
     },
@@ -2777,6 +2814,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       curationId?: number;
       /** @default "" */
       keyword?: string;
+      productIds?: number[];
       /** @format int32 */
       storeId?: number;
     },

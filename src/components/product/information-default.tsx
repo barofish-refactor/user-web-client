@@ -8,7 +8,7 @@ import { type UserInfoDto, type SimpleProductDto } from 'src/api/swagger/data-co
 import { ChevronIcon } from 'src/components/icons';
 import { queryKey } from 'src/query-key';
 import { calcDiscountRate, formatToLocaleString, setDeliverDate } from 'src/utils/functions';
-
+import { ShareButton } from 'src/components/product';
 interface Props {
   data?: SimpleProductDto;
   user: UserInfoDto | undefined;
@@ -106,27 +106,32 @@ const InformationDefault = ({ data, user, setSelectedTab, isTasting }: Props) =>
         {/* <p className='mt-[5px] text-[15px] font-normal leading-[20px] -tracking-[0.03em] text-grey-50 underline underline-offset-[3px]'>
           {`${formatToLocaleString(data?.reviewCount)}개의 후기`}
         </p> */}
-        <div className='mt-3 flex items-center justify-between'>
-          <div>
-            <div className='flex items-center gap-0.5'>
-              {(data?.originPrice ?? 0) !== 0 && (
-                <Fragment>
-                  <p className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
-                    data?.originPrice,
-                    data?.discountPrice,
-                  )}%`}</p>
-                  <p className='text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-70 line-through'>{`${formatToLocaleString(
-                    data?.originPrice,
-                  )}원`}</p>
-                </Fragment>
-              )}
+        <div className='mt-3 flex flex-col justify-between'>
+          <div className='flex items-center gap-0.5'>
+            {(data?.originPrice ?? 0) !== 0 && (
+              <Fragment>
+                <p className='text-[16px] font-medium leading-[22px] -tracking-[0.03em] text-teritory'>{`${calcDiscountRate(
+                  data?.originPrice,
+                  data?.discountPrice,
+                )}%`}</p>
+                <p className='text-[16px] font-normal leading-[22px] -tracking-[0.03em] text-grey-70 line-through'>{`${formatToLocaleString(
+                  data?.originPrice,
+                )}원`}</p>
+              </Fragment>
+            )}
+          </div>
+          <div className='flex w-full items-center justify-between gap-3.5'>
+            <div>
+              <p className='-mt-[5px] text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-black'>{`${formatToLocaleString(
+                data?.discountPrice,
+              )}원`}</p>
+              <p className='-mt-[5px] text-[17px] font-bold leading-[30px] -tracking-[0.03em] text-grey-70'>{`${formatToLocaleString(
+                point,
+              )}원 적립`}</p>
             </div>
-            <p className='-mt-[5px] text-[22px] font-bold leading-[30px] -tracking-[0.03em] text-black'>{`${formatToLocaleString(
-              data?.discountPrice,
-            )}원`}</p>
-            <p className='-mt-[5px] text-[17px] font-bold leading-[30px] -tracking-[0.03em] text-grey-70'>{`${formatToLocaleString(
-              point,
-            )}원 적립`}</p>
+            <div className='relative top-[-12ppx] gap-4 pr-[10px] '>
+              <ShareButton />
+            </div>
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ import {
   type DeleteTastingNoteToBasketPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
-import { CartIcon, Chat } from 'src/components/common';
+import { CartIcon, Chat, HomeBtn } from 'src/components/common';
 import {
   // HEAD_DESCRIPTION,
   HEAD_NAME,
@@ -28,7 +28,6 @@ import {
   ProductInformationDefault,
   ProductInquiry,
   ProductTab,
-  ShareButton,
   TastingInfo,
 } from 'src/components/product';
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
@@ -46,6 +45,7 @@ import Loading from 'src/components/common/loading';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
 import HomeFooter from 'src/components/home/footer';
 import { useInView } from 'react-intersection-observer';
+
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -417,7 +417,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           {/* <div className='cursor-pointer pl-[25px]' onClick={() => router.push('/')}>
             홈
           </div> */}
-          <div className=' flex items-center gap-4'>
+          <div className=' flex items-center gap-2.5'>
+            <HomeBtn />
             <div
               className='cursor-pointer'
               onClick={() => {
@@ -431,7 +432,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             >
               <CartIcon />
             </div>
-            <ShareButton />
+            {/* <ShareButton /> */}
           </div>
         </div>
 

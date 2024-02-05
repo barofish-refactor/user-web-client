@@ -291,7 +291,7 @@ const ProductResult: NextPageWithLayout<Props> = ({ initialData }) => {
 };
 
 ProductResult.getLayout = page => (
-  <Layout headerProps={{ disable: true }} footerProps={{ disable: true }}>
+  <Layout headerProps={{ disable: true }} footerProps={{ disable: false }}>
     {page}
   </Layout>
 );

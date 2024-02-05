@@ -10,7 +10,7 @@ export function BackButton({ onBack }: Props) {
     <button
       type='button'
       className='aspect-square h-6 w-6 bg-[url(/assets/icons/common/arrow-back.svg)] bg-cover'
-      onClick={onBack ?? router.back}
+      onClick={onBack ?? router.back ?? router.push('/')}
     />
   );
 }
