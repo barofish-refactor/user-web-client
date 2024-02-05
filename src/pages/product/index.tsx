@@ -373,7 +373,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           />
           <meta property='product:item_group_id' content={data?.id?.toString()} />
           <meta property='product:retailer_item_id' content={'facebook_' + data?.id?.toString()} />
-          <DefaultSeo
+          {/* <DefaultSeo
             title={headTitle}
             description={testtext}
             openGraph={{
@@ -386,7 +386,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
                 };
               }),
             }}
-          />
+          /> */}
         </Head>
       )}
 
