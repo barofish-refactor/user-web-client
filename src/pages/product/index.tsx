@@ -376,16 +376,16 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           <DefaultSeo
             title={headTitle}
             description={testtext}
-            // openGraph={{
-            //   title: headTitle,
-            //   description: testtext,
-            //   images: data?.images?.map((v: string) => {
-            //     return {
-            //       url: v[0],
-            //       alt: headTitle,
-            //     };
-            //   }),
-            // }}
+            openGraph={{
+              title: headTitle,
+              description: testtext,
+              images: data?.images?.map((v: string) => {
+                return {
+                  url: v[0],
+                  alt: headTitle,
+                };
+              }),
+            }}
           />
         </Head>
       )}
