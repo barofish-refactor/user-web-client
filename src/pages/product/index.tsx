@@ -345,7 +345,10 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       {data && (
         <Head>
           <meta property='og:price:currency' content='KRW' />
-          <meta property='og:image' content={`${data?.images ? data?.images[0] : ''}`} />
+          <meta
+            property='og:image'
+            content={`${initialData?.images ? initialData?.images[0] : ''}`}
+          />
           <meta
             property='og:url'
             content={`https://barofish.com${router.pathname}?id=${router?.query.id}`}
@@ -384,9 +387,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           openGraph={{
             title: headTitle,
             description: testtext,
-            images: data?.images?.map((v: string) => {
+            images: initialData?.images?.map((v: string) => {
               return {
-                url: v[0],
+                url: v,
                 alt: headTitle,
               };
             }),
