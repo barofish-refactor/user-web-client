@@ -97,11 +97,10 @@ const MyPage: NextPageWithLayout = () => {
                 className={clsx(
                   'mr-2 inline-flex rounded border px-2 py-0.5 text-[14px] font-medium leading-[18px] -tracking-[0.03em]',
                   {
-                    'border-primary-60 text-primary-50':
-                      !user?.grade || user?.grade?.pointRate === 1,
-                    'border-[#561BFF] text-[#561BFF]': user?.grade?.pointRate === 2,
-                    'border-[#BA27FF] text-[#BA27FF]': user?.grade?.pointRate === 3,
-                    'border-[#FF3868] text-[#FF3868]': user?.grade?.pointRate === 4,
+                    'border-[#009E54] text-[#009E54]': !user?.grade || user?.grade?.name === '멸치',
+                    'border-[#00A8DD] text-[#00A8DD]': user?.grade?.name === '고등어',
+                    'border-[#EB322E] text-[#EB322E]': user?.grade?.name === '방어',
+                    'border-[#FBDC2B] text-[#FBDC2B]': user?.grade?.name === '참치',
                   },
                 )}
               >
