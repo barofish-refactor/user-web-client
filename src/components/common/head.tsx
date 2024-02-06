@@ -9,8 +9,6 @@ export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
 export default function Head({ metaData }: any) {
-  console.log(metaData, 'metaData');
-
   return (
     <Fragment>
       <DefaultSeo

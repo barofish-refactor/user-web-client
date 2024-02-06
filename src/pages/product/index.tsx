@@ -193,10 +193,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   useEffect(() => {
     // 정보 넘기기
-    if (!data) return;
     const title = initialData.title as string;
     const images = initialData.images as string[];
     setMetaData({ title, image: { alt: '상품', url: images[0] } });
+    if (!data) return;
+
     if (typeof window.kakaoPixel !== 'undefined') {
       window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).viewContent({
         id: `${data?.id}`,
