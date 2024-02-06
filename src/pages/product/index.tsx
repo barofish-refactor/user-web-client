@@ -674,3 +674,6 @@ export const getServerSideProps: GetServerSideProps = async context => {
 };
 
 export default ProductDetail;
+function setMetaData(arg0: { title: string; image: { alt: string; url: string } }) {
+  throw new Error('Function not implemented.');
+}
