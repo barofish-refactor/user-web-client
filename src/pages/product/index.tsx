@@ -192,6 +192,9 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   useEffect(() => {
     // 정보 넘기기
+    const title = initialData.title as string;
+    const images = initialData.images as string[];
+    setMetaData({ title: '[바로피쉬]' + title, image: { alt: '상품', url: images[0] } });
     if (!data) return;
 
     if (typeof window.kakaoPixel !== 'undefined') {
@@ -226,7 +229,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     // google ads
     gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
     fpixel.view({ value });
-  }, [data, headTitle, initialData.images, initialData.title]);
+  }, [data, headTitle, initialData.images, initialData.title, router.events]);
   // 배너 확인용 유저
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
@@ -380,7 +383,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
       {/* <Head></Head> */}
       <div className='overflow-y-visible pb-[80px] max-md:w-[100vw]'>
-        <DefaultSeo
+        {/* <DefaultSeo
           title={headTitle}
           description={HEAD_DESCRIPTION}
           openGraph={{
@@ -393,7 +396,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               };
             }),
           }}
-        />
+        /> */}
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (

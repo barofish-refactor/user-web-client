@@ -127,3 +127,22 @@ export const useProductOptionStore = create<ProductOptionStore>()(set => ({
   setProductOption: productOption => set({ productOption }),
   clearProductOption: () => set({ productOption: null }),
 }));
+interface MetaStore {
+  metaData: {
+    title: string;
+    image?:
+      | {
+          url: string;
+          alt: string;
+        }
+      | any;
+  };
+  setMetaData: (toast: MetaStore['metaData']) => void;
+}
+export const useMetaStore = create<MetaStore>()(set => ({
+  metaData: {
+    title: '바로피쉬',
+    image: { url: '/assets/icons/common/logo-title.svg', alt: 'logo' },
+  },
+  setMetaData: metaData => set({ metaData }),
+}));
