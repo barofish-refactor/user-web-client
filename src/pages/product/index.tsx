@@ -33,13 +33,13 @@ import {
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useToastStore } from 'src/store';
+import { useAlertStore, useMetaStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, formatToLocaleString, handleRefresh } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
 import * as fpixel from 'src/utils/fpixel';
 import { HeaderBanner } from 'src/components/common/header-banner';
-import { DefaultSeo, NextSeo } from 'next-seo';
+import { DefaultSeo } from 'next-seo';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import Loading from 'src/components/common/loading';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
@@ -58,7 +58,7 @@ declare global {
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { id, openState } = router.query;
-
+  const { setMetaData } = useMetaStore();
   const { setAlert } = useAlertStore();
   const { setToast } = useToastStore();
   const [isTasting, setIsTasting] = useState(false);
@@ -92,7 +92,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   //       throw new Error(res.data.code + ': ' + res.data.errorMsg);
   //     }
   //   },
-
   // );
 
   const { data: deliverInfo } = useQuery(queryKey.deliverInfo, async () => {
@@ -193,7 +192,11 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   }, [id]);
 
   useEffect(() => {
+    // 정보 넘기기
     if (!data) return;
+    const title = initialData.title as string;
+    const images = initialData.images as string[];
+    setMetaData({ title, image: { alt: '상품', url: images[0] } });
     if (typeof window.kakaoPixel !== 'undefined') {
       window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).viewContent({
         id: `${data?.id}`,
@@ -381,7 +384,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
       {/* <Head></Head> */}
       <div className='overflow-y-visible pb-[80px] max-md:w-[100vw]'>
-        <DefaultSeo
+        {/* <DefaultSeo
           title={headTitle}
           description={testtext}
           openGraph={{
@@ -394,7 +397,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               };
             }),
           }}
-        />
+        /> */}
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (

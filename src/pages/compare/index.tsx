@@ -167,8 +167,9 @@ const Storage: NextPageWithLayout = () => {
         })}
       </div> */}
           <Image
-            src='/assets/icons/compare/tastingNoteGui.webp'
+            src='/assets/icons/compare/tastingNoteGui.png'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
+            className='w-full'
             width={400}
             height={200}
             loading='lazy'

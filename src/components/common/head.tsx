@@ -8,11 +8,13 @@ import * as kakaoPixel from 'src/utils/kakaoPixel';
 export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
-export default function Head() {
+export default function Head({ metaData }: any) {
+  console.log(metaData, 'metaData');
+
   return (
     <Fragment>
       <DefaultSeo
-        title={HEAD_NAME}
+        title={metaData.tltle}
         description={HEAD_DESCRIPTION}
         additionalMetaTags={[
           {
@@ -25,7 +27,7 @@ export default function Head() {
           },
         ]}
         openGraph={{
-          images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
+          images: [metaData.image],
           title: HEAD_NAME,
           description: HEAD_DESCRIPTION,
           siteName: HEAD_NAME,
