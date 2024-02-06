@@ -23,11 +23,9 @@ import 'swiper/css';
 import PullToRefresh from 'react-simple-pull-to-refresh';
 import { handleRefresh } from 'src/utils/functions';
 import Loading from 'src/components/common/loading';
-import { DefaultSeo } from 'next-seo';
 
 const perView = 10;
-export const HEAD_NAME = '바로피쉬';
-export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
+
 /** 홈화면 */
 const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
   const router = useRouter();
@@ -160,28 +158,6 @@ const Home = (props: { curation: CurationDto[]; mainItem: Main }) => {
 
   return (
     <main className='max-md:w-[100vw]'>
-      <DefaultSeo
-        title={HEAD_NAME}
-        description={HEAD_DESCRIPTION}
-        additionalMetaTags={[
-          {
-            name: 'viewport',
-            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
-          },
-          {
-            name: 'naver-site-verification',
-            content: '1e575d2a85af7f25e9fddd1ce448ecc7bc99335d',
-          },
-        ]}
-        openGraph={{
-          images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
-          title: HEAD_NAME,
-          description: HEAD_DESCRIPTION,
-          siteName: HEAD_NAME,
-          type: 'website',
-        }}
-      />
-
       {/* Tab */}
       <HomeTab mainData={data} />
       <PullToRefresh pullingContent='' refreshingContent={<Loading />} onRefresh={handleRefresh}>
