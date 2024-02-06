@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { client } from 'src/api/client';
 import { Head } from 'src/components/common';
-import { useAlertStore, useMetaStore } from 'src/store';
+import { useAlertStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, setToken } from 'src/utils/functions';
 import useWebview from 'src/utils/use-web-view';
@@ -19,7 +19,7 @@ export default function MyApp(props: CustomAppProps) {
   const getLayout = Component.getLayout || (page => page);
   const router = useRouter();
   const { setAlert } = useAlertStore();
-  const { metaData } = useMetaStore();
+
   const queryClient = useMemo(
     () =>
       new QueryClient({
@@ -113,7 +113,7 @@ export default function MyApp(props: CustomAppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} position='top-right' />
-      <Head metaData={metaData} />
+      <Head />
       <Hydrate state={pageProps.dehydratedState}>{getLayout(<Component {...pageProps} />)}</Hydrate>
     </QueryClientProvider>
   );

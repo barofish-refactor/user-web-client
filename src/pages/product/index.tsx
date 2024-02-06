@@ -33,7 +33,7 @@ import {
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useMetaStore, useToastStore } from 'src/store';
+import { useAlertStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, formatToLocaleString, handleRefresh } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
@@ -58,7 +58,6 @@ declare global {
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { id, openState } = router.query;
-  const { setMetaData } = useMetaStore();
   const { setAlert } = useAlertStore();
   const { setToast } = useToastStore();
   const [isTasting, setIsTasting] = useState(false);
@@ -193,9 +192,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
   useEffect(() => {
     // 정보 넘기기
-    const title = initialData.title as string;
-    const images = initialData.images as string[];
-    setMetaData({ title, image: { alt: '상품', url: images[0] } });
     if (!data) return;
 
     if (typeof window.kakaoPixel !== 'undefined') {
@@ -230,7 +226,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     // google ads
     gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
     fpixel.view({ value });
-  }, [data, headTitle, router.events]);
+  }, [data, headTitle, initialData.images, initialData.title]);
   // 배너 확인용 유저
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
@@ -238,8 +234,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-
-  const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
   const infoRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
@@ -344,6 +338,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     if (!user) window.scrollBy(0, -170);
     else window.scrollBy(0, -150);
   };
+  const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
   return (
     <>
       {data && (
@@ -385,12 +380,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
 
       {/* <Head></Head> */}
       <div className='overflow-y-visible pb-[80px] max-md:w-[100vw]'>
-        {/* <DefaultSeo
+        <DefaultSeo
           title={headTitle}
-          description={testtext}
+          description={HEAD_DESCRIPTION}
           openGraph={{
             title: headTitle,
-            description: testtext,
+            description: HEAD_DESCRIPTION,
             images: initialData?.images?.map((v: string) => {
               return {
                 url: v,
@@ -398,7 +393,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
               };
             }),
           }}
-        /> */}
+        />
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (

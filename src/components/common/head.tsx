@@ -8,30 +8,33 @@ import * as kakaoPixel from 'src/utils/kakaoPixel';
 export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
-export default function Head({ metaData }: any) {
+export default function Head() {
+  const router = useRouter();
   return (
     <Fragment>
-      <DefaultSeo
-        title={metaData.tltle}
-        description={HEAD_DESCRIPTION}
-        additionalMetaTags={[
-          {
-            name: 'viewport',
-            content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
-          },
-          {
-            name: 'naver-site-verification',
-            content: '1e575d2a85af7f25e9fddd1ce448ecc7bc99335d',
-          },
-        ]}
-        openGraph={{
-          images: [metaData.image],
-          title: HEAD_NAME,
-          description: HEAD_DESCRIPTION,
-          siteName: HEAD_NAME,
-          type: 'website',
-        }}
-      />
+      {router.asPath.includes('product?id=') ? null : (
+        <DefaultSeo
+          title={HEAD_NAME}
+          description={HEAD_DESCRIPTION}
+          additionalMetaTags={[
+            {
+              name: 'viewport',
+              content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
+            },
+            {
+              name: 'naver-site-verification',
+              content: '1e575d2a85af7f25e9fddd1ce448ecc7bc99335d',
+            },
+          ]}
+          openGraph={{
+            images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
+            title: HEAD_NAME,
+            description: HEAD_DESCRIPTION,
+            siteName: HEAD_NAME,
+            type: 'website',
+          }}
+        />
+      )}
 
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
