@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { client } from 'src/api/client';
 import { queryKey } from 'src/query-key';
 import cm from 'src/utils/class-merge';
+import { requestPermission } from 'src/utils/functions';
 
 /** 홈화면 - 푸터 (정보) */
 const Footer = () => {
@@ -69,6 +70,44 @@ const Footer = () => {
           <p className='text-[14px] font-medium leading-[16px] -tracking-[0.05em] text-primary-50'>
             partners@barofish.com
           </p>
+        </div>
+        <div className='mt-[30px] flex h-[30px] w-full flex-row-reverse items-end'>
+          <Image
+            className='ml-[6px]'
+            src='/assets/icons/sns/youtube.webp'
+            alt='add'
+            width={30}
+            height={30}
+            onClick={() => {
+              if (window.ReactNativeWebView)
+                requestPermission('link', 'https://www.youtube.com/@Barofish');
+              else window.open('https://www.youtube.com/@Barofish');
+            }}
+          />
+          <Image
+            className='mx-[6px]'
+            src='/assets/icons/sns/naver_blog.webp'
+            alt='add'
+            width={30}
+            height={30}
+            onClick={() => {
+              if (window.ReactNativeWebView)
+                requestPermission('link', 'https://blog.naver.com/barofish');
+              else window.open('https://blog.naver.com/barofish');
+            }}
+          />
+          <Image
+            className='mx-[6px]'
+            src='/assets/icons/sns/instagram.webp'
+            alt='add'
+            width={30}
+            height={30}
+            onClick={() => {
+              if (window.ReactNativeWebView)
+                requestPermission('link', 'https://www.instagram.com/barofish.off/');
+              else window.open('https://www.instagram.com/barofish.off/');
+            }}
+          />
         </div>
       </div>
     </div>

@@ -29,14 +29,14 @@ import {
   changeSectionOption,
   formatToLocaleString,
   formatToPhone,
-  setSquareBrackets,
+  // setSquareBrackets,
 } from 'src/utils/functions';
 import { bToA, parseIamportPayMethod, parsePaymentWay, safeParse } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
 import { IamportPayMethod, impSuccessKey, useIamport, type vBankType } from 'src/utils/use-iamport';
 import { VARIABLES } from 'src/variables';
 import 'swiper/css';
-import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Swiper, SwiperSlide } from 'swiper/react';
 
 const setOptionData = async (value: miniOptionState[]) => {
   return (await client())
