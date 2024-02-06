@@ -132,6 +132,66 @@ const ImageBox = ({ storeType, title }: Props) => {
           />
         </div>
       )}
+      {title?.includes('베스트 리뷰') && storeType.includes('curation') && (
+        <div style={{ marginTop: '20px' }}>
+          <Image
+            src='/assets/icons/common/curationZ.png'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='bannerAds'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
+        </div>
+      )}
+      {title?.includes('혼밥혼술') && storeType.includes('curation') && (
+        <div style={{ marginTop: '20px' }}>
+          <Image
+            src='/assets/icons/common/curationX.png'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='bannerAds'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
+        </div>
+      )}
+      {title?.includes('게과천선') && storeType.includes('curation') && (
+        <div style={{ marginTop: '20px' }}>
+          <Image
+            src='/assets/icons/common/curationV.png'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='bannerAds'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
+        </div>
+      )}
+      {title?.includes('바로레시피') && storeType.includes('curation') && (
+        <div style={{ marginTop: '20px' }}>
+          <Image
+            src='/assets/icons/common/curationN.png'
+            style={{ objectFit: 'fill', borderRadius: '11px' }}
+            width={400}
+            height={200}
+            loading='lazy'
+            alt='bannerAds'
+            blurDataURL={blurDataURL}
+            placeholder='blur'
+            sizes='(max-width: 768px) 100%, (max-width: 1200px) 100vw'
+          />
+        </div>
+      )}
     </>
   );
 };
