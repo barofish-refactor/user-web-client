@@ -30,7 +30,6 @@ const Partner = () => {
     async (args: { storeId: number; type: 'LIKE' | 'UNLIKE' }) =>
       await (await client()).likeStoreByUser(args),
   );
-
   const onMutate = ({ storeId, type }: { storeId: number; type: 'LIKE' | 'UNLIKE' }) => {
     if (!getCookie(VARIABLES.ACCESS_TOKEN)) {
       sessionStorage.setItem('Path', router.asPath);
@@ -50,7 +49,6 @@ const Partner = () => {
         console.log(error);
       });
   };
-
   if (!data?.length) return null;
 
   return (
@@ -61,7 +59,6 @@ const Partner = () => {
       <p className='whitespace-pre-line text-[15px] font-normal leading-[22px] -tracking-[0.03em] text-grey-60'>
         바로피쉬에서 입증한 스토어에서 실패없는 수산물 쇼핑!
       </p>
-
       <Swiper
         freeMode
         slidesPerView={1.1}
