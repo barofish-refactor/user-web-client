@@ -129,7 +129,7 @@ const Category: NextPageWithLayout<Props> = ({ initialData }) => {
   );
 };
 
-Category.getLayout = page => <Layout>{page}</Layout>;
+Category.getLayout = page => <Layout footerProps={{ disable: false }}>{page}</Layout>;
 
 export const getStaticProps: GetStaticProps = async () => {
   const { selectCategories } = await client();

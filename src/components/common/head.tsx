@@ -5,14 +5,16 @@ import { Fragment, useEffect } from 'react';
 import * as gtag from 'src/utils/gtag';
 import * as fpixel from 'src/utils/fpixel';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
+import { useMetaStore } from 'src/store';
 export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
 export default function Head() {
+  const { metaData } = useMetaStore();
   return (
     <Fragment>
       <DefaultSeo
-        title={HEAD_NAME}
+        title={metaData?.title ?? HEAD_NAME}
         description={HEAD_DESCRIPTION}
         additionalMetaTags={[
           {
@@ -25,13 +27,19 @@ export default function Head() {
           },
         ]}
         openGraph={{
-          images: [{ url: '/assets/icons/common/logo-title.svg', alt: 'logo' }],
-          title: HEAD_NAME,
+          images: [
+            { url: metaData?.image?.url, alt: metaData.image?.alt } ?? {
+              url: '/assets/icons/common/logo-title.svg',
+              alt: 'logo',
+            },
+          ],
+          title: metaData?.title ?? HEAD_NAME,
           description: HEAD_DESCRIPTION,
           siteName: HEAD_NAME,
           type: 'website',
         }}
       />
+
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
       {kakaoPixel.KAKAO_TRACKING_ID && <KakaoScript />}

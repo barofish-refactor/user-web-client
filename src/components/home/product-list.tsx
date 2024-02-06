@@ -186,7 +186,7 @@ const ProductList = ({
 
 function Empty() {
   return (
-    <div className='col-span-2 h-[calc(100dvb-170px)]'>
+    <div className='col-span-2 h-[calc(100dvb-300px)]'>
       <div className='grid h-full flex-1 place-items-center'>
         <div className='flex flex-col items-center gap-2'>
           <Image

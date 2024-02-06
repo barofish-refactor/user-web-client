@@ -125,7 +125,7 @@ const Storage: NextPageWithLayout = () => {
       })}
     >
       {/* header */}
-      <div className='sticky top-0 z-50 flex h-[56px] items-center bg-white pl-4 pr-[18px]'>
+      <div className='sticky top-0 z-50 flex h-[56px] items-center justify-between bg-white pl-4 pr-[18px]'>
         <BackButton />
 
         <Link href='/product/cart'>
@@ -167,8 +167,9 @@ const Storage: NextPageWithLayout = () => {
         })}
       </div> */}
           <Image
-            src='/assets/icons/compare/tastingNoteGui.webp'
+            src='/assets/icons/compare/tastingNoteGui.png'
             style={{ objectFit: 'fill', borderRadius: '11px' }}
+            className='w-full'
             width={400}
             height={200}
             loading='lazy'
@@ -591,7 +592,7 @@ function Empty(text: string) {
 }
 
 Storage.getLayout = page => (
-  <Layout headerProps={{ disable: true }} footerProps={{ disable: true }}>
+  <Layout headerProps={{ disable: true }} footerProps={{ disable: false }}>
     <DefaultSeo title='피쉬저장소 | 바로피쉬' description='피쉬저장소' />
     {page}
   </Layout>

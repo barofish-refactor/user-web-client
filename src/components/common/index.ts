@@ -17,5 +17,6 @@ export { default as Selector } from './selector';
 export { default as WatingPage } from './wating';
 export { default as CartIcon } from './cart-icon';
 export { default as Chat } from './chat';
+export { default as HomeBtn } from './home-button';
 
 export const PcBanner = dynamic(() => import('./pc-banner'));

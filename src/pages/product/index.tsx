@@ -13,7 +13,7 @@ import {
   type DeleteTastingNoteToBasketPayload,
 } from 'src/api/swagger/data-contracts';
 import { ContentType } from 'src/api/swagger/http-client';
-import { CartIcon, Chat } from 'src/components/common';
+import { CartIcon, Chat, HomeBtn } from 'src/components/common';
 import {
   // HEAD_DESCRIPTION,
   HEAD_NAME,
@@ -28,13 +28,12 @@ import {
   ProductInformationDefault,
   ProductInquiry,
   ProductTab,
-  ShareButton,
   TastingInfo,
 } from 'src/components/product';
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useToastStore } from 'src/store';
+import { useAlertStore, useMetaStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, formatToLocaleString, handleRefresh } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
@@ -46,6 +45,7 @@ import Loading from 'src/components/common/loading';
 import * as kakaoPixel from 'src/utils/kakaoPixel';
 import HomeFooter from 'src/components/home/footer';
 import { useInView } from 'react-intersection-observer';
+
 interface Props {
   initialData: SimpleProductDto;
 }
@@ -58,9 +58,9 @@ declare global {
 const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { id, openState } = router.query;
-
   const { setAlert } = useAlertStore();
   const { setToast } = useToastStore();
+  const { setMetaData } = useMetaStore();
   const [isTasting, setIsTasting] = useState(false);
   const { data, refetch } = useQuery(
     queryKey.product.detail(id),
@@ -92,7 +92,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   //       throw new Error(res.data.code + ': ' + res.data.errorMsg);
   //     }
   //   },
-
   // );
 
   const { data: deliverInfo } = useQuery(queryKey.deliverInfo, async () => {
@@ -193,7 +192,12 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   }, [id]);
 
   useEffect(() => {
+    // 정보 넘기기
+    const title = initialData.title as string;
+    const images = initialData.images as string[];
+    setMetaData({ title: '[바로피쉬]' + title, image: { alt: '상품', url: images[0] } });
     if (!data) return;
+
     if (typeof window.kakaoPixel !== 'undefined') {
       window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).viewContent({
         id: `${data?.id}`,
@@ -226,7 +230,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     // google ads
     gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
     fpixel.view({ value });
-  }, [data, headTitle, router.events]);
+  }, [data, headTitle, initialData.images, initialData.title, router.events]);
   // 배너 확인용 유저
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
@@ -234,8 +238,6 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
       return res.data.data;
     }
   });
-
-  const testtext = '실패없는 직거래 수산물 쇼핑은 여기서!';
 
   const infoRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
@@ -340,13 +342,16 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     if (!user) window.scrollBy(0, -170);
     else window.scrollBy(0, -150);
   };
+  const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';
   return (
     <>
       {data && (
         <Head>
           <meta property='og:price:currency' content='KRW' />
-          <meta property='og:image' content={`${data?.images ? data?.images[0] : ''}`} />
-
+          <meta
+            property='og:image'
+            content={`${initialData?.images ? initialData?.images[0] : ''}`}
+          />
           <meta
             property='og:url'
             content={`https://barofish.com${router.pathname}?id=${router?.query.id}`}
@@ -374,25 +379,25 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           />
           <meta property='product:item_group_id' content={data?.id?.toString()} />
           <meta property='product:retailer_item_id' content={'facebook_' + data?.id?.toString()} />
-          <DefaultSeo
-            title={headTitle}
-            description={testtext}
-            openGraph={{
-              title: headTitle,
-              description: testtext,
-              images: data?.images?.map((v: string) => {
-                return {
-                  url: v[0],
-                  alt: headTitle,
-                };
-              }),
-            }}
-          />
         </Head>
       )}
 
       {/* <Head></Head> */}
       <div className='overflow-y-visible pb-[80px] max-md:w-[100vw]'>
+        {/* <DefaultSeo
+          title={headTitle}
+          description={HEAD_DESCRIPTION}
+          openGraph={{
+            title: headTitle,
+            description: HEAD_DESCRIPTION,
+            images: initialData?.images?.map((v: string) => {
+              return {
+                url: v,
+                alt: headTitle,
+              };
+            }),
+          }}
+        /> */}
         {/* bottomSheet : 옵션 선택 */}
         <div className='sticky top-0 z-[100] max-md:w-[100vw]'>
           {isVisible && (
@@ -418,7 +423,8 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
           {/* <div className='cursor-pointer pl-[25px]' onClick={() => router.push('/')}>
             홈
           </div> */}
-          <div className=' flex items-center gap-4'>
+          <div className=' flex items-center gap-2.5'>
+            <HomeBtn />
             <div
               className='cursor-pointer'
               onClick={() => {
@@ -432,7 +438,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
             >
               <CartIcon />
             </div>
-            <ShareButton />
+            {/* <ShareButton /> */}
           </div>
         </div>
 
@@ -667,5 +673,4 @@ export const getServerSideProps: GetServerSideProps = async context => {
     props: { initialData: (await selectProduct(Number(id))).data.data },
   };
 };
-
 export default ProductDetail;
