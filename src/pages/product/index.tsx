@@ -33,7 +33,7 @@ import {
 import { ReviewChart, ReviewPhoto } from 'src/components/review';
 import { BackButton } from 'src/components/ui';
 import { queryKey } from 'src/query-key';
-import { useAlertStore, useToastStore } from 'src/store';
+import { useAlertStore, useMetaStore, useToastStore } from 'src/store';
 import { type NextPageWithLayout } from 'src/types/common';
 import { formatToBlob, formatToLocaleString, handleRefresh } from 'src/utils/functions';
 import { VARIABLES } from 'src/variables';
@@ -60,6 +60,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
   const { id, openState } = router.query;
   const { setAlert } = useAlertStore();
   const { setToast } = useToastStore();
+  const { setMetaData } = useMetaStore();
   const [isTasting, setIsTasting] = useState(false);
   const { data, refetch } = useQuery(
     queryKey.product.detail(id),
@@ -672,8 +673,4 @@ export const getServerSideProps: GetServerSideProps = async context => {
     props: { initialData: (await selectProduct(Number(id))).data.data },
   };
 };
-
 export default ProductDetail;
-function setMetaData(arg0: { title: string; image: { alt: string; url: string } }) {
-  throw new Error('Function not implemented.');
-}

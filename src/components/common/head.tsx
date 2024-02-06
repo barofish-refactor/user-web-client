@@ -14,7 +14,7 @@ export default function Head() {
   return (
     <Fragment>
       <DefaultSeo
-        title={metaData?.title}
+        title={metaData?.title ?? HEAD_NAME}
         description={HEAD_DESCRIPTION}
         additionalMetaTags={[
           {
@@ -27,8 +27,13 @@ export default function Head() {
           },
         ]}
         openGraph={{
-          images: [{ url: metaData?.image?.url, alt: metaData.image?.alt }],
-          title: HEAD_NAME,
+          images: [
+            { url: metaData?.image?.url, alt: metaData.image?.alt } ?? {
+              url: '/assets/icons/common/logo-title.svg',
+              alt: 'logo',
+            },
+          ],
+          title: metaData?.title ?? HEAD_NAME,
           description: HEAD_DESCRIPTION,
           siteName: HEAD_NAME,
           type: 'website',
