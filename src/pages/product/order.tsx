@@ -335,6 +335,7 @@ const Order: NextPageWithLayout = () => {
             10,
         ) * 10,
     );
+
     const priceListReduce = priceList.reduce((a, b) => a + b, 0);
     const taxValueList = selectedOption.map(x => x.needTaxation);
     const priceListAdd = [...priceList];
@@ -356,6 +357,7 @@ const Order: NextPageWithLayout = () => {
       sum: priceListAdd.reduce((a, b) => a + b, 0),
     };
   };
+
   async function onPayment() {
     if (Number(point) !== 0 && Number(point) < 100) {
       return setAlert({ message: '적립금은 100원 이상 사용할 수 있습니다.' });
@@ -376,7 +378,6 @@ const Order: NextPageWithLayout = () => {
           return setAlert({ message: '계좌번호을 입력해 주세요.' });
       }
       const taxFreePrice = getTaxFreePrice();
-      // return console.log(payMethod, 'payMethod', refundBankData);
 
       orderProduct({
         products: selectedOption.map((x, i) => {
@@ -386,7 +387,7 @@ const Order: NextPageWithLayout = () => {
             amount: x.amount,
             // deliveryFee: x.deliveryFee,
             needTaxation: x.needTaxation, //
-            taxFreeAmount: taxFreePrice.allList[i],
+            // taxFreeAmount: taxFreePrice.allList[i],
           };
         }),
         name,
@@ -410,6 +411,7 @@ const Order: NextPageWithLayout = () => {
             : undefined,
       })
         .then(res => {
+          console.log(res);
           if (res.data.isSuccess && res.data.code === '200') {
             if (selectedCard) {
               router.push({
@@ -423,7 +425,7 @@ const Order: NextPageWithLayout = () => {
               return;
             }
             const orderId = res.data.data?.id ?? '';
-
+            const orderTaxFree = res.data.data?.taxFreeAmount ?? 0;
             onIamport({
               data: {
                 payMethod,
@@ -437,7 +439,7 @@ const Order: NextPageWithLayout = () => {
                 postcode: '',
                 tel: phone,
                 name,
-                taxFree: taxFreePrice.sum,
+                taxFree: orderTaxFree,
               },
               onSuccess: async (vBankData?: vBankType) => {
                 onIamportResult(orderId, true, '', vBankData);
