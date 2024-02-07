@@ -29,14 +29,14 @@ import {
   changeSectionOption,
   formatToLocaleString,
   formatToPhone,
-  // setSquareBrackets,
+  setSquareBrackets,
 } from 'src/utils/functions';
 import { bToA, parseIamportPayMethod, parsePaymentWay, safeParse } from 'src/utils/parse';
 import { REG_EXP } from 'src/utils/regex';
 import { IamportPayMethod, impSuccessKey, useIamport, type vBankType } from 'src/utils/use-iamport';
 import { VARIABLES } from 'src/variables';
 import 'swiper/css';
-// import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const setOptionData = async (value: miniOptionState[]) => {
   return (await client())
@@ -328,13 +328,19 @@ const Order: NextPageWithLayout = () => {
   const getTaxFreePrice = () => {
     const eachPriceList = selectedOption.map(x => (x.price + x.additionalPrice) * x.amount);
     const priceList = selectedOption.map(
-      x => Math.round(((x.price + x.additionalPrice) * x.amount) / totalPrice / 10) * 10,
+      x =>
+        Math.round(
+          ((couponDiscountPoint + Number(point)) * ((x.price + x.additionalPrice) * x.amount)) /
+            totalPrice /
+            10,
+        ) * 10,
     );
     const priceListReduce = priceList.reduce((a, b) => a + b, 0);
     const taxValueList = selectedOption.map(x => x.needTaxation);
     const priceListAdd = [...priceList];
     const lastIndex = priceListAdd.length - 1;
-    priceListAdd[lastIndex] = priceListAdd[lastIndex] + -priceListReduce;
+    priceListAdd[lastIndex] =
+      priceListAdd[lastIndex] + -(priceListReduce - (couponDiscountPoint + Number(point)));
     const priceListAddAll = [...priceListAdd];
     priceListAdd.forEach((element, index) => {
       if (!taxValueList[index]) {
@@ -350,7 +356,6 @@ const Order: NextPageWithLayout = () => {
       sum: priceListAdd.reduce((a, b) => a + b, 0),
     };
   };
-
   async function onPayment() {
     if (Number(point) !== 0 && Number(point) < 100) {
       return setAlert({ message: '적립금은 100원 이상 사용할 수 있습니다.' });
