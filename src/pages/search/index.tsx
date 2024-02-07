@@ -37,7 +37,9 @@ interface Props {
 /** 검색 */
 const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
-  const { v = '', f } = router.query;
+  const { v = '', f, id } = router.query;
+  console.log(id, 'id');
+
   const [searchText, setSearchText] = useState<string>(v as string);
   const [searchState, setSearchState] = useState<'default' | 'searching' | 'result'>(); // 기본, 검색중, 결과
   const [recentData, setRecentData] = useState<string[]>([]); // 최근 검색어
@@ -86,6 +88,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
       sortby: sort,
       keyword: v as string,
+      productIds: id,
     }),
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
@@ -120,6 +123,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     },
     { enabled: searchText !== '' },
   );
+  console.log(directData, 'directData');
 
   const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
     async (args: SaveProductPayload) =>
@@ -180,7 +184,8 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     const trim = text.trim();
     const deleted = recentData.filter(data => data !== trim);
     setRecentData([trim, ...deleted]);
-    router.replace({ pathname: '/search', query: { v: text } });
+    const ids = directData && directData.map(v => v.id);
+    router.replace({ pathname: '/search', query: { v: text, id: ids } });
   };
 
   // 검색어 삭제
