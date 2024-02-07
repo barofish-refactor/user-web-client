@@ -184,7 +184,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     const trim = text.trim();
     const deleted = recentData.filter(data => data !== trim);
     setRecentData([trim, ...deleted]);
-    const ids = directData && directData.map(v => v.id);
+    const ids = directData?.productIds;
     router.replace({ pathname: '/search', query: { v: text, id: ids as unknown as number } });
   };
 
@@ -359,7 +359,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
                 상품 바로가기
               </p>
               <div className='flex flex-col'>
-                {(directData ?? []).map((v, idx) => {
+                {(directData?.searchProductDtos ?? []).map((v, idx) => {
                   return (
                     <Link
                       key={`searching${idx}`}
