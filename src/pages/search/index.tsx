@@ -185,7 +185,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     const deleted = recentData.filter(data => data !== trim);
     setRecentData([trim, ...deleted]);
     const ids = directData && directData.map(v => v.id);
-    router.replace({ pathname: '/search', query: { v: text, id: ids } });
+    router.replace({ pathname: '/search', query: { v: text, id: ids as unknown as number } });
   };
 
   // 검색어 삭제
