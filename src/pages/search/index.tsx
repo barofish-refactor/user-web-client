@@ -88,7 +88,6 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
       filterFieldIds: savedFilter.length > 0 ? savedFilter.join(',') : undefined,
       sortby: sort,
       keyword: v as string,
-      productIds: id,
     }),
     async ({ pageParam = 1 }) => {
       if (pageParam === -1) return;
@@ -100,6 +99,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
         page: pageParam,
         take: perView,
         keyword: v as string,
+        productIds: id as string[],
       });
       if (res.data.isSuccess) {
         return res.data.data;
