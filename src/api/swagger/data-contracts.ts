@@ -182,9 +182,9 @@ export interface Orders {
   couponUsed?: boolean;
   /** @format int32 */
   usedPoint?: number;
-  pointUsed?: boolean;
   /** @format int32 */
   usedCouponId?: number;
+  pointUsed?: boolean;
 }
 
 export interface Product {
@@ -231,12 +231,12 @@ export interface Product {
   /** @format double */
   theScentOfTheSea?: number;
   recommendedCookingWay?: string;
+  /** @format int32 */
+  categoryId?: number;
   deliveryTypeFree?: boolean;
   deliveryTypeFix?: boolean;
   deliveryTypeFreeIfOver?: boolean;
   promotionEnd?: boolean;
-  /** @format int32 */
-  categoryId?: number;
   sconditional?: boolean;
 }
 
@@ -2191,9 +2191,9 @@ export interface PageProductListDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2201,18 +2201,18 @@ export interface PageableObject {
   /** @format int64 */
   offset?: number;
   sort?: SortObject;
+  paged?: boolean;
+  unpaged?: boolean;
   /** @format int32 */
   pageNumber?: number;
   /** @format int32 */
   pageSize?: number;
-  paged?: boolean;
-  unpaged?: boolean;
 }
 
 export interface SortObject {
   empty?: boolean;
-  sorted?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
 }
 
 export interface CustomResponseLong {
@@ -2283,9 +2283,9 @@ export interface PageReviewDtoV2 {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2400,9 +2400,9 @@ export interface PageAdminReviewDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2502,9 +2502,9 @@ export interface PageUserInfoDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2535,9 +2535,9 @@ export interface PageTip {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2582,9 +2582,9 @@ export interface PageStoreDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2675,9 +2675,9 @@ export interface PageOrderProductInfoDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2701,9 +2701,9 @@ export interface PageSettlementDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2798,9 +2798,9 @@ export interface PageReviewDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2824,9 +2824,9 @@ export interface PageReportDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2904,9 +2904,9 @@ export interface PageSimpleProductDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -2946,9 +2946,9 @@ export interface PageOrderDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -3005,9 +3005,9 @@ export interface PageNotification {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -3031,9 +3031,9 @@ export interface PageNotice {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -3104,9 +3104,9 @@ export interface PageInquiryDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -3167,8 +3167,8 @@ export interface TrackingInfo {
 
 export interface Company {
   name?: string;
-  code?: string;
   international?: boolean;
+  code?: string;
 }
 
 export interface CustomResponseListCompany {
@@ -3242,9 +3242,9 @@ export interface PageCurationDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -3293,9 +3293,9 @@ export interface PageCouponDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -3482,9 +3482,9 @@ export interface PageAdminLogDto {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 
@@ -3508,9 +3508,9 @@ export interface PageAdmin {
   sort?: SortObject;
   first?: boolean;
   last?: boolean;
+  pageable?: PageableObject;
   /** @format int32 */
   numberOfElements?: number;
-  pageable?: PageableObject;
   empty?: boolean;
 }
 

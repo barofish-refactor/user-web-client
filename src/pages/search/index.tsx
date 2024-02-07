@@ -38,7 +38,7 @@ interface Props {
 const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { v = '', f, id } = router.query;
-  console.log(id, 'id');
+  console.log(id);
 
   const [searchText, setSearchText] = useState<string>(v as string);
   const [searchState, setSearchState] = useState<'default' | 'searching' | 'result'>(); // 기본, 검색중, 결과
@@ -99,7 +99,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
         page: pageParam,
         take: perView,
         keyword: v as string,
-        productIds: id as string[],
+        productIds: `${id}`,
       });
       if (res.data.isSuccess) {
         return res.data.data;
@@ -123,7 +123,6 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     },
     { enabled: searchText !== '' },
   );
-  console.log(directData, 'directData');
 
   const { mutateAsync: saveProduct, isLoading: isSaveLoading } = useMutation(
     async (args: SaveProductPayload) =>
