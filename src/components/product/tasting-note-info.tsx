@@ -28,8 +28,8 @@ const TastingInfo = ({ info, keyword }: Props) => {
               {[1, 2, 3, 4, 5].map(idx => {
                 let isClass;
                 const difficultyLevelOfTrimming = info?.difficultyLevelOfTrimming as number;
-                const trimming = Math.floor(difficultyLevelOfTrimming);
-                if (idx < trimming) {
+                // const trimming = Math.floor(difficultyLevelOfTrimming);
+                if (difficultyLevelOfTrimming) {
                   isClass = true;
                 } else {
                   isClass = false;
@@ -43,10 +43,10 @@ const TastingInfo = ({ info, keyword }: Props) => {
                       { 'border-l-1 rounded-l-lg': idx === 0 },
                       { 'rounded-r-lg border-l-0': idx === 4 },
                       {
-                        'bg-[#85a4ff]': isClass,
+                        'bg-transparent': !isClass,
                       },
                       {
-                        'bg-transparent': !isClass,
+                        'bg-[#85a4ff]': isClass,
                       },
                     )}
                   />
