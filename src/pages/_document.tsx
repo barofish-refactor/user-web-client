@@ -1,8 +1,8 @@
 import { Head, Html, Main, NextScript } from 'next/document';
-import Script from 'next/script';
+// import Script from 'next/script';
 
 export default function Document() {
-  const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
+  // const NAVER_PIXEL_ID = process.env.NEXT_PUBLIC_NAVER_PIEXL_ID;
   return (
     <Html lang='ko'>
       <Head>
@@ -24,7 +24,7 @@ export default function Document() {
           content='T3lWWvNBN9VLNavR3ZtyKsKoat_QW1rBqsfxDBo_FAs'
         />
         <meta name='naver-site-verification' content='1e575d2a85af7f25e9fddd1ce448ecc7bc99335d' />
-        <>
+        {/* <>
           <Script
             id='naver-init'
             strategy='afterInteractive'
@@ -46,7 +46,7 @@ export default function Document() {
           `,
             }}
           />
-        </>
+        </> */}
       </Head>
       <body>
         <Main />

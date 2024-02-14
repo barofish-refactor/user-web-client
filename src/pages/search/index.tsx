@@ -38,7 +38,6 @@ interface Props {
 const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
   const { v = '', f, id } = router.query;
-  console.log(id);
 
   const [searchText, setSearchText] = useState<string>(v as string);
   const [searchState, setSearchState] = useState<'default' | 'searching' | 'result'>(); // 기본, 검색중, 결과
