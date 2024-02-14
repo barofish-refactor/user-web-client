@@ -30,8 +30,6 @@ import {
   AddCompareSetPayload,
   AddCouponData,
   AddCouponPayload,
-  AddCouponV2Data,
-  AddCouponV2Payload,
   AddDeliverPlaceData,
   AddDeliverPlacePayload,
   AddGradeData,
@@ -547,22 +545,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   cancelOrdersByPartnerV2 = (data: CancelOrdersByPartnerV2Payload, params: RequestParams = {}) =>
     this.request<CancelOrdersByPartnerV2Data, any>({
       path: `/api/v2/order/cancel/partner`,
-      method: 'POST',
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags coupon-controller-v-2
-   * @name AddCouponV2
-   * @request POST:/api/v2/coupon/add
-   * @response `200` `AddCouponV2Data` OK
-   */
-  addCouponV2 = (data: AddCouponV2Payload, params: RequestParams = {}) =>
-    this.request<AddCouponV2Data, any>({
-      path: `/api/v2/coupon/add`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
@@ -2786,7 +2768,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       curationId?: number;
       /** @default "" */
       keyword?: string;
-      productIds?: string;
       /** @format int32 */
       storeId?: number;
     },
@@ -2814,7 +2795,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       curationId?: number;
       /** @default "" */
       keyword?: string;
-      productIds?: number[];
       /** @format int32 */
       storeId?: number;
     },
