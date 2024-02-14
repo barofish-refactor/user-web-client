@@ -2786,7 +2786,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       curationId?: number;
       /** @default "" */
       keyword?: string;
-      productIds?: number[];
+      productIds?: string;
       /** @format int32 */
       storeId?: number;
     },

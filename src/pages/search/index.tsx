@@ -37,7 +37,8 @@ interface Props {
 /** 검색 */
 const Search: NextPageWithLayout<Props> = ({ initialData }) => {
   const router = useRouter();
-  const { v = '', f } = router.query;
+  const { v = '', f, id } = router.query;
+
   const [searchText, setSearchText] = useState<string>(v as string);
   const [searchState, setSearchState] = useState<'default' | 'searching' | 'result'>(); // 기본, 검색중, 결과
   const [recentData, setRecentData] = useState<string[]>([]); // 최근 검색어
@@ -97,6 +98,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
         page: pageParam,
         take: perView,
         keyword: v as string,
+        productIds: `${id}`,
       });
       if (res.data.isSuccess) {
         return res.data.data;
@@ -180,7 +182,8 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
     const trim = text.trim();
     const deleted = recentData.filter(data => data !== trim);
     setRecentData([trim, ...deleted]);
-    router.replace({ pathname: '/search', query: { v: text } });
+    const ids = directData?.productIds;
+    router.replace({ pathname: '/search', query: { v: text, id: ids as unknown as number } });
   };
 
   // 검색어 삭제
@@ -354,7 +357,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
                 상품 바로가기
               </p>
               <div className='flex flex-col'>
-                {(directData ?? []).map((v, idx) => {
+                {(directData?.searchProductDtos ?? []).map((v, idx) => {
                   return (
                     <Link
                       key={`searching${idx}`}

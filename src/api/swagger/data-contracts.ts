@@ -118,8 +118,6 @@ export interface OrderProductInfo {
   isTaxFree?: boolean;
   order?: Orders;
   product?: Product;
-  /** @format int32 */
-  totalProductPrice?: number;
   ifOver?: boolean;
   free?: boolean;
   /** @format int32 */
@@ -127,6 +125,8 @@ export interface OrderProductInfo {
   /** @format int32 */
   totalPriceContainsDeliveryFee?: number;
   cancelableState?: boolean;
+  /** @format int32 */
+  totalProductPrice?: number;
 }
 
 export interface Orders {
@@ -261,8 +261,8 @@ export interface Review {
   createdAt?: string;
   isDeleted?: boolean;
   evaluations?: ReviewEvaluation[];
-  imageUrls?: string[];
   deleted?: boolean;
+  imageUrls?: string[];
 }
 
 export interface ReviewEvaluation {
@@ -545,6 +545,8 @@ export interface OrderDeliverPlaceDto {
 
 export interface OrderDto {
   id?: string;
+  /** @format int32 */
+  taxFreeAmount?: number;
   user?: UserInfoDto;
   state?:
     | 'WAIT_DEPOSIT'
@@ -2228,11 +2230,16 @@ export interface CustomResponseListSimpleStore {
   errorMsg?: string;
 }
 
-export interface CustomResponseListSearchProductDto {
+export interface CustomResponseSearchDirectResponse {
   isSuccess?: boolean;
   code?: string;
-  data?: SearchProductDto[];
+  data?: SearchDirectResponse;
   errorMsg?: string;
+}
+
+export interface SearchDirectResponse {
+  productIds?: number[];
+  searchProductDtos?: SearchProductDto[];
 }
 
 export interface SearchProductDto {
@@ -2748,6 +2755,13 @@ export interface SearchKeyword {
   amount?: number;
   /** @format int32 */
   prevRank?: number;
+}
+
+export interface CustomResponseListSearchProductDto {
+  isSuccess?: boolean;
+  code?: string;
+  data?: SearchProductDto[];
+  errorMsg?: string;
 }
 
 export interface CustomResponseListSearchFilterFieldDto {
@@ -4296,7 +4310,7 @@ export type SelectTopBarCountV2Data = CustomResponseLong;
 
 export type SelectRecommendStoreListV2Data = CustomResponseListSimpleStore;
 
-export type SearchingProductDirectV2Data = CustomResponseListSearchProductDto;
+export type SearchingProductDirectV2Data = CustomResponseSearchDirectResponse;
 
 export type GetProductReviewPhotosData = CustomResponseListProductPhotoReviewDto;
 

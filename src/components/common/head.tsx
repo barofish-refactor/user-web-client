@@ -42,7 +42,7 @@ export default function Head() {
 
       {gtag.GA_TRACKING_ID && <GAScript />}
       {fpixel.FB_PIXEL_ID && <PxixelScript />}
-      {kakaoPixel.KAKAO_TRACKING_ID && <KakaoScript />}
+      {/* {kakaoPixel.KAKAO_TRACKING_ID && <KakaoScript />} */}
       {/* {NAVER_PIXEL_ID && <NaverScript />} */}
     </Fragment>
   );

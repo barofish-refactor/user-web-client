@@ -230,7 +230,7 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     // google ads
     gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
     fpixel.view({ value });
-  }, [data, headTitle, initialData.images, initialData.title, router.events]);
+  }, [data, headTitle, initialData.images, initialData.title, router.events, setMetaData]);
   // 배너 확인용 유저
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
