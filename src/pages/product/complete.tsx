@@ -46,7 +46,7 @@ const Complete: NextPageWithLayout = () => {
 
   return (
     <>
-      <DefaultSeo title={`${ga?.name || '주문완료'} | 바로피쉬`} description='contect' />
+      <DefaultSeo title={`${'주문완료'} | 바로피쉬`} description='contect' />
       {/* {ga && ga.value > 0 && (
         <>
           <Script
