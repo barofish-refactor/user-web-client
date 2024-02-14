@@ -428,37 +428,37 @@ const BottomSheet = ({ data, setIsVisible }: Props) => {
                       }
                       if (selectedOption.filter(v => v.isNeeded === true).length <= 0)
                         return setAlert({ message: '필수옵션을 선택해주세요.' });
-                      fpixel.addToCart({
-                        content_ids: ['facebook_' + selectedOption[0]?.productId],
-                        content_type: 'product',
-                        contents: selectedOption.map(item => {
-                          return {
-                            item_id: [item.productId],
-                            item_name: item.productName + item.name,
-                            affiliation: '바로피쉬',
-                            currency: 'KRW',
-                            quantity: item.amount,
-                            item_brand: item.storeName,
-                            price: (item.price + item.additionalPrice) * item.amount,
-                          };
-                        }),
-                      });
-                      gtag('event', 'add_to_cart', {
-                        currency: 'KRW',
-                        value: totalPrice,
-                        event_label: selectedOption[0].productName,
-                        items: selectedOption.map(item => {
-                          return {
-                            item_id: item.productId,
-                            item_name: item.productName + item.name,
-                            affiliation: '바로피쉬',
-                            currency: 'KRW',
-                            item_brand: item.storeName,
-                            price: (item.price + item.additionalPrice) * item.amount,
-                            quantity: item.amount,
-                          };
-                        }),
-                      });
+                      // fpixel.addToCart({
+                      //   content_ids: ['facebook_' + selectedOption[0]?.productId],
+                      //   content_type: 'product',
+                      //   contents: selectedOption.map(item => {
+                      //     return {
+                      //       item_id: [item.productId],
+                      //       item_name: item.productName + item.name,
+                      //       affiliation: '바로피쉬',
+                      //       currency: 'KRW',
+                      //       quantity: item.amount,
+                      //       item_brand: item.storeName,
+                      //       price: (item.price + item.additionalPrice) * item.amount,
+                      //     };
+                      //   }),
+                      // });
+                      // gtag('event', 'add_to_cart', {
+                      //   currency: 'KRW',
+                      //   value: totalPrice,
+                      //   event_label: selectedOption[0].productName,
+                      //   items: selectedOption.map(item => {
+                      //     return {
+                      //       item_id: item.productId,
+                      //       item_name: item.productName + item.name,
+                      //       affiliation: '바로피쉬',
+                      //       currency: 'KRW',
+                      //       item_brand: item.storeName,
+                      //       price: (item.price + item.additionalPrice) * item.amount,
+                      //       quantity: item.amount,
+                      //     };
+                      //   }),
+                      // });
 
                       onMutate({
                         data: {

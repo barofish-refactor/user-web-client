@@ -1,10 +1,10 @@
 import { DefaultSeo } from 'next-seo';
-import { useRouter } from 'next/router';
-import Script from 'next/script';
+// import { useRouter } from 'next/router';
+// import Script from 'next/script';
 import { Fragment, useEffect } from 'react';
-import * as gtag from 'src/utils/gtag';
-import * as fpixel from 'src/utils/fpixel';
-import * as kakaoPixel from 'src/utils/kakaoPixel';
+// import * as gtag from 'src/utils/gtag';
+// import * as fpixel from 'src/utils/fpixel';
+// import * as kakaoPixel from 'src/utils/kakaoPixel';
 import { useMetaStore } from 'src/store';
 export const HEAD_NAME = '바로피쉬';
 export const HEAD_DESCRIPTION = '실패없는 직거래 수산물 쇼핑은 여기서!';

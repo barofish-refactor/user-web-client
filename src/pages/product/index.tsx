@@ -191,46 +191,46 @@ const ProductDetail: NextPageWithLayout<Props> = ({ initialData }) => {
     }
   }, [id]);
 
-  useEffect(() => {
-    // 정보 넘기기
-    const title = initialData.title as string;
-    const images = initialData.images as string[];
-    setMetaData({ title: '[바로피쉬]' + title, image: { alt: '상품', url: images[0] } });
-    if (!data) return;
+  // useEffect(() => {
+  //   // 정보 넘기기
+  //   const title = initialData.title as string;
+  //   const images = initialData.images as string[];
+  //   setMetaData({ title: '[바로피쉬]' + title, image: { alt: '상품', url: images[0] } });
+  //   if (!data) return;
 
-    if (typeof window.kakaoPixel !== 'undefined') {
-      window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).viewContent({
-        id: `${data?.id}`,
-        tag: `${data?.title}`,
-      });
-    }
-    const value = {
-      content_ids: ['facebook_' + data?.id],
-      content_type: 'product',
-      currency: 'KRW',
-      value:
-        formatToLocaleString(data?.discountPrice).replace(',', '.') ||
-        formatToLocaleString(data?.originPrice).replace(',', '.'),
-    };
-    gtag('event', 'view_item', {
-      items: [
-        {
-          id: data?.id,
-          name: data?.title,
-          list_name: '해산물',
-          brand: data?.store?.name,
-          category: data?.category?.name,
-          variant: '상품 옵션',
-          list_position: data?.category?.parentCategoryName,
-          quantity: 1,
-          price: data?.discountPrice || data?.originPrice,
-        },
-      ],
-    });
-    // google ads
-    gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
-    fpixel.view({ value });
-  }, [data, headTitle, initialData.images, initialData.title, router.events, setMetaData]);
+  //   if (typeof window.kakaoPixel !== 'undefined') {
+  //     window.kakaoPixel(`${kakaoPixel.KAKAO_TRACKING_ID}`).viewContent({
+  //       id: `${data?.id}`,
+  //       tag: `${data?.title}`,
+  //     });
+  //   }
+  //   const value = {
+  //     content_ids: ['facebook_' + data?.id],
+  //     content_type: 'product',
+  //     currency: 'KRW',
+  //     value:
+  //       formatToLocaleString(data?.discountPrice).replace(',', '.') ||
+  //       formatToLocaleString(data?.originPrice).replace(',', '.'),
+  //   };
+  //   gtag('event', 'view_item', {
+  //     items: [
+  //       {
+  //         id: data?.id,
+  //         name: data?.title,
+  //         list_name: '해산물',
+  //         brand: data?.store?.name,
+  //         category: data?.category?.name,
+  //         variant: '상품 옵션',
+  //         list_position: data?.category?.parentCategoryName,
+  //         quantity: 1,
+  //         price: data?.discountPrice || data?.originPrice,
+  //       },
+  //     ],
+  //   });
+  //   // google ads
+  //   gtag('event', 'conversion', { send_to: 'AW-11315318272/9kSpCOrK_9cYEICcyJMq' });
+  //   fpixel.view({ value });
+  // }, [data, headTitle, initialData.images, initialData.title, router.events, setMetaData]);
   // 배너 확인용 유저
   const { data: user } = useQuery(queryKey.user, async () => {
     const res = await (await client()).selectUserSelfInfo();
