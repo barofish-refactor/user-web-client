@@ -98,7 +98,7 @@ const Search: NextPageWithLayout<Props> = ({ initialData }) => {
         page: pageParam,
         take: perView,
         keyword: v as string,
-        productIds: `${id}`,
+        // productIds: `${id}`,
       });
       if (res.data.isSuccess) {
         return res.data.data;
