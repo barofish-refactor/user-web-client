@@ -25,11 +25,11 @@ const TastingInfo = ({ info, keyword }: Props) => {
           <div className='flex w-full flex-row  items-center px-[10px]'>
             <div className={divClass}>손질 난이도 </div>
             <div className='relative bottom-[5px] flex flex-row'>
-              {[1, 2, 3, 4, 5].map(idx => {
+              {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
                 const difficultyLevelOfTrimming = info?.difficultyLevelOfTrimming as number;
-                // const trimming = Math.floor(difficultyLevelOfTrimming);
-                if (difficultyLevelOfTrimming) {
+                const trimming = Math.floor(difficultyLevelOfTrimming);
+                if (idx < trimming) {
                   isClass = true;
                 } else {
                   isClass = false;
@@ -43,10 +43,10 @@ const TastingInfo = ({ info, keyword }: Props) => {
                       { 'border-l-1 rounded-l-lg': idx === 0 },
                       { 'rounded-r-lg border-l-0': idx === 4 },
                       {
-                        'bg-transparent': !isClass,
+                        'bg-[#85a4ff]': isClass,
                       },
                       {
-                        'bg-[#85a4ff]': isClass,
+                        'bg-transparent': !isClass,
                       },
                     )}
                   />
@@ -57,7 +57,7 @@ const TastingInfo = ({ info, keyword }: Props) => {
           <div className='flex w-full flex-row px-[10px] '>
             <div className={divClass}>바&nbsp;&nbsp; 다&nbsp;&nbsp; 향 </div>
             <div className='relative top-[5px] flex flex-row'>
-              {[1, 2, 3, 4, 5].map(idx => {
+              {[1, 2, 3, 4, 5].map((item, idx) => {
                 let isClass;
                 const theScentOfTheSea = info?.theScentOfTheSea as number;
                 const sea = Math.floor(theScentOfTheSea);
